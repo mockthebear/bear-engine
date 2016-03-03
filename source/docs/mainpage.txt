@@ -1,0 +1,27 @@
+/*! \mainpage Bear engine
+ *
+ * \section intro_sec Introduction
+ *
+ * Bear engine is an game engine made in C++11 using SDL2. So far the engine has total
+ * suport to be ported to android, and partial support to Web using emscripten.
+ *
+ * \section about_sec The engine
+ *
+ * The engine was designed to make all that boring interaction with the system, the screen and the input for you.
+ * You will only have to get the input already processed, create your game behavior and run!
+ * Things like, object pools, screen size and streeching, acessing files in different plataforms, threads and jaaj you dont have to
+ * worry about. The engine will do it for you!
+ *
+ * \subsection Librarys used
+ *		-# SDL2
+ *		-# SDL2 image
+ *		-# SDL2 ttf
+ *		-# SDL2 mixer
+ *		-# pthreads
+ *		-# lua51
+ *
+ * rola
+ *
+ *
+ *
+ */

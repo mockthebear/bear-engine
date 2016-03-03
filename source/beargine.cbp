@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="beargine" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../game/SnakeScape" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../game/" />
+				<Option object_output="../obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="../game/SnakeScape" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../game/" />
+				<Option object_output="../obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-std=c++0x" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-lMinGW32 -lSDL2main -lSDL2 -lSDL2_image" />
+					<Add option="-lSDL2_ttf -lSDL2_mixer -llua51 -pthread" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="engine/behavior.hpp" />
+		<Unit filename="engine/camera.cpp" />
+		<Unit filename="engine/camera.hpp" />
+		<Unit filename="engine/collision.h" />
+		<Unit filename="engine/defaultbehavior.cpp" />
+		<Unit filename="engine/defaultbehavior.hpp" />
+		<Unit filename="engine/gamebase.cpp" />
+		<Unit filename="engine/gamebase.hpp" />
+		<Unit filename="engine/genericstate.cpp" />
+		<Unit filename="engine/genericstate.hpp" />
+		<Unit filename="engine/light.cpp" />
+		<Unit filename="engine/light.hpp" />
+		<Unit filename="engine/music.cpp" />
+		<Unit filename="engine/music.hpp" />
+		<Unit filename="engine/object.hpp" />
+		<Unit filename="engine/particlecreator.cpp" />
+		<Unit filename="engine/particlecreator.hpp" />
+		<Unit filename="engine/particles.cpp" />
+		<Unit filename="engine/particles.hpp" />
+		<Unit filename="engine/renderhelp.cpp" />
+		<Unit filename="engine/renderhelp.hpp" />
+		<Unit filename="engine/screenmanager.cpp" />
+		<Unit filename="engine/screenmanager.hpp" />
+		<Unit filename="engine/shooteffect.cpp" />
+		<Unit filename="engine/shooteffect.hpp" />
+		<Unit filename="engine/smarttexture.cpp" />
+		<Unit filename="engine/smarttexture.hpp" />
+		<Unit filename="engine/smarttexturemanager.cpp" />
+		<Unit filename="engine/smarttexturemanager.hpp" />
+		<Unit filename="engine/sound.cpp" />
+		<Unit filename="engine/sound.hpp" />
+		<Unit filename="engine/sprite.cpp" />
+		<Unit filename="engine/sprite.hpp" />
+		<Unit filename="engine/text.cpp" />
+		<Unit filename="engine/text.hpp" />
+		<Unit filename="engine/tilemap.cpp" />
+		<Unit filename="engine/tilemap.hpp" />
+		<Unit filename="engine/tileset.cpp" />
+		<Unit filename="engine/tileset.hpp" />
+		<Unit filename="engine/timer.cpp" />
+		<Unit filename="engine/timer.hpp" />
+		<Unit filename="framework/basepool.hpp" />
+		<Unit filename="framework/debughelper.cpp" />
+		<Unit filename="framework/debughelper.hpp" />
+		<Unit filename="framework/dirmanager.cpp" />
+		<Unit filename="framework/dirmanager.hpp" />
+		<Unit filename="framework/gamefile.cpp" />
+		<Unit filename="framework/gamefile.hpp" />
+		<Unit filename="framework/geometry.cpp" />
+		<Unit filename="framework/geometry.hpp" />
+		<Unit filename="framework/poolmanager.cpp" />
+		<Unit filename="framework/poolmanager.hpp" />
+		<Unit filename="framework/resourcefiles.cpp" />
+		<Unit filename="framework/resourcefiles.hpp" />
+		<Unit filename="framework/resourcemanager.cpp" />
+		<Unit filename="framework/resourcemanager.hpp" />
+		<Unit filename="framework/threadpool.cpp" />
+		<Unit filename="framework/threadpool.hpp" />
+		<Unit filename="framework/typechecker.cpp" />
+		<Unit filename="framework/typechecker.hpp" />
+		<Unit filename="framework/userfile.cpp" />
+		<Unit filename="framework/userfile.hpp" />
+		<Unit filename="framework/utils.cpp" />
+		<Unit filename="framework/utils.hpp" />
+		<Unit filename="game/ball.cpp" />
+		<Unit filename="game/ball.hpp" />
+		<Unit filename="game/controlableobject.cpp" />
+		<Unit filename="game/controlableobject.hpp" />
+		<Unit filename="game/gamebehavior.cpp" />
+		<Unit filename="game/gamebehavior.hpp" />
+		<Unit filename="game/state.hpp" />
+		<Unit filename="game/title.cpp" />
+		<Unit filename="game/title.hpp" />
+		<Unit filename="input/accelerometer.cpp" />
+		<Unit filename="input/accelerometer.hpp" />
+		<Unit filename="input/inputdefinitions.hpp" />
+		<Unit filename="input/inputmanager.cpp" />
+		<Unit filename="input/inputmanager.hpp" />
+		<Unit filename="input/joystick.cpp" />
+		<Unit filename="input/joystick.hpp" />
+		<Unit filename="input/keyboard.cpp" />
+		<Unit filename="input/keyboard.hpp" />
+		<Unit filename="input/mouse.cpp" />
+		<Unit filename="input/mouse.hpp" />
+		<Unit filename="input/touch.cpp" />
+		<Unit filename="input/touch.hpp" />
+		<Unit filename="input/touchkeys.cpp" />
+		<Unit filename="input/touchkeys.hpp" />
+		<Unit filename="luasystem/luainterface.cpp" />
+		<Unit filename="luasystem/luainterface.hpp" />
+		<Unit filename="luasystem/luaobject.cpp" />
+		<Unit filename="luasystem/luaobject.hpp" />
+		<Unit filename="main.cpp" />
+		<Unit filename="performance/console.cpp" />
+		<Unit filename="performance/console.hpp" />
+		<Unit filename="resource.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Unit filename="settings/configmanager.cpp" />
+		<Unit filename="settings/configmanager.hpp" />
+		<Unit filename="settings/definitions.hpp" />
+		<Unit filename="ui/base.cpp" />
+		<Unit filename="ui/base.hpp" />
+		<Unit filename="ui/button.cpp" />
+		<Unit filename="ui/button.hpp" />
+		<Unit filename="ui/checkbox.cpp" />
+		<Unit filename="ui/checkbox.hpp" />
+		<Unit filename="ui/label.cpp" />
+		<Unit filename="ui/label.hpp" />
+		<Unit filename="ui/numberinput.cpp" />
+		<Unit filename="ui/numberinput.hpp" />
+		<Unit filename="ui/textinput.cpp" />
+		<Unit filename="ui/textinput.hpp" />
+		<Unit filename="ui/window.cpp" />
+		<Unit filename="ui/window.hpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
