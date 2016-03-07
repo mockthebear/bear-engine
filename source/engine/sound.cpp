@@ -1,6 +1,8 @@
 #include "sound.hpp"
 #include "../settings/definitions.hpp"
+#include "../framework/resourcemanager.hpp"
 #include "../framework/dirmanager.hpp"
+#include "../performance/console.hpp"
 #include <stdio.h>
 #include <iostream>
 std::unordered_map<std::string, Mix_Chunk*> Sound::assetTable;
@@ -16,74 +18,74 @@ Sound::Sound(char *s){
     music = NULL;
     channel = -1;
     working = ConfigManager::GetInstance().IsWorkingAudio();
-    Open((const char *)s);
+    music = Open((const char *)s);
+    file = s;
 }
 
 Sound::Sound(const char *s){
     music = NULL;
     channel = -1;
     working = ConfigManager::GetInstance().IsWorkingAudio();
-    Open(s);
+    music = Open(s);
+    file = s;
 }
 
-void Sound::Open(const char *s){
-    std::string stdnamee(s);
-    file = stdnamee;
-    stdnamee = DirManager::AdjustAssetsPath(stdnamee);
-    if (!working)
-        return;
-    if (assetTable[stdnamee]){
-        music = assetTable[stdnamee];
+Mix_Chunk* Sound::Open(SDL_RWops* file,std::string name){
+    if (!ConfigManager::GetInstance().IsWorkingAudio())
+        return NULL;
+    if (assetTable.find(name) == assetTable.end() ){
+        Mix_Chunk* aux_chunk = Mix_LoadWAV_RW(file, 1);
+        if (aux_chunk){
+            assetTable[name] = aux_chunk;
+            return aux_chunk;
+        }else{
+            Console::GetInstance().AddText("Cannot load rwop sound");
+            return NULL;
+        }
     }else{
-        music = Mix_LoadWAV(stdnamee.c_str());
-        if (music){
-            assetTable[stdnamee] = music;
+        std::unordered_map<std::string, Mix_Chunk*>::iterator it = assetTable.find(name);
+        Mix_Chunk* chunk = (*it).second;
+        return chunk;
+    }
+}
+Mix_Chunk* Sound::Open(const char *s){
+    if (!ConfigManager::GetInstance().IsWorkingAudio())
+        return NULL;
+    std::string stdnamee(s);
+    if (stdnamee.find(":")!=std::string::npos){
+        return Open(ResourceManager::GetInstance().GetFile(stdnamee),stdnamee);
+    }
+    Mix_Chunk* r_music=NULL;
+    stdnamee = DirManager::AdjustAssetsPath(stdnamee);
+    if (assetTable[stdnamee]){
+        r_music = assetTable[stdnamee];
+    }else{
+        r_music = Mix_LoadWAV(stdnamee.c_str());
+        if (r_music){
+            assetTable[stdnamee] = r_music;
         }else{
             std::cout << "[Sound::PlayOnce] Cannot play "<<stdnamee<<" because : "<< Mix_GetError() <<"\n";
         }
     }
-    if (IsOpen()){
-        file = s;
-    }
+    return r_music;
+
 }
 bool Sound::PlayOnce(const char *s){
     if (!ConfigManager::GetInstance().IsWorkingAudio())
         return false;
-    Mix_Chunk* mus;
-    std::string stdnamee;
-    std::string ss = s;
-    stdnamee = DirManager::AdjustAssetsPath(ss);
-    if (assetTable[stdnamee]){
-        mus = assetTable[stdnamee];
+    Mix_Chunk* mus = Open(s);
+    if (mus){
         return Mix_PlayChannel(-1,mus, 0);
-    }else{
-        mus = Mix_LoadWAV(stdnamee.c_str());
-        if (mus==NULL){
-            std::cout << "[Sound::PlayOnce] Cannot play "<<stdnamee<<" because : "<< Mix_GetError() <<"\n";
-        }else{
-            assetTable[stdnamee] = mus;
-            return Mix_PlayChannel(-1,mus, 0);
-        }
     }
     return false;
-
 }
 
 bool Sound::Preload(const char *s){
     if (!ConfigManager::GetInstance().IsWorkingAudio())
         return false;
-    Mix_Chunk* mus;
-    std::string stdnamee;
-    std::string ss = s;
-    stdnamee = DirManager::AdjustAssetsPath(ss);
-    if (!assetTable[stdnamee]){
-        mus = Mix_LoadWAV(stdnamee.c_str());
-        if (mus==NULL){
-            std::cout << "[Sound::Preload] Cannot play "<<stdnamee<<" because : "<< Mix_GetError() <<"\n";
-        }else{
-            assetTable[stdnamee] = mus;
-            return true;
-        }
+    Mix_Chunk* mus = Open(s);
+    if (mus != NULL){
+        return true;
     }
     return false;
 

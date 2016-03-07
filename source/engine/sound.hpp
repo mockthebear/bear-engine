@@ -20,7 +20,8 @@ class Sound{
         static void StopAll();
         void FadeOut(float ms);
         void SetPosition(int pos);
-        void Open (const char *s);
+        static Mix_Chunk* Open (const char *s);
+        static Mix_Chunk* Open(SDL_RWops* file,std::string name);
         bool IsOpen();
         bool IsPlaying();
         static void Clear();

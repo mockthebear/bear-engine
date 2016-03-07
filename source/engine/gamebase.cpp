@@ -226,16 +226,8 @@ void Game::Run(){
                     SDL_SetWindowFullscreen(window, SDL_FALSE);
                 full = !full;
             }
-            #ifdef CYCLYC_DEBUG
-            std::cout << "[Render]";
-            #endif
 
-            Render();
-            #ifdef CYCLYC_DEBUG
-            std::cout << "[\\Render]\n";
-            #endif
 
-            SDL_RenderPresent(GetRenderer() );
 
             if (stateStack.top()->RequestedDeleted()){
                 if (stateStack.empty() && storedState == NULL){
@@ -252,8 +244,20 @@ void Game::Run(){
 
                 stateStack.top()->Begin();
                 storedState =NULL;
-                skipRender=0;
+                return;
             }
+
+            #ifdef CYCLYC_DEBUG
+            std::cout << "[Render]";
+            #endif
+
+            Render();
+            SDL_RenderPresent(GetRenderer() );
+            #ifdef CYCLYC_DEBUG
+            std::cout << "[\\Render]\n";
+            #endif
+
+
         }
 };
 DefinedState &Game::GetCurrentState(){
