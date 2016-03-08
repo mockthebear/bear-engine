@@ -117,7 +117,9 @@ class Game{
             only run time
         */
         bool canDebug;
+        void HaltState(bool flag){Halt = flag;};
     private:
+        bool Halt;
         inline void CalculateDeltaTime(){dt = SDL_GetTicks();};
         void Update();
         void Render();

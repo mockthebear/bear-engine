@@ -34,6 +34,7 @@ Game::Game(const char *name){
         hasBeenClosed = false;
         instance = this;
         HasAudio = true;
+        Halt = false;
         GameBegin = false;
         dt = frameStart = 0;
         canDebug = false;
@@ -170,13 +171,15 @@ void Game::Update(){
         #ifndef DISABLE_LUAINTERFACE
         LuaInterface::Instance().Update(dt);
         #endif
-        stateStack.top()->Update(dt);
+        if (!Halt)
+            stateStack.top()->Update(dt);
         ScreenManager::GetInstance().Update(dt);
     }
 
 }
 void Game::Render(){
-    stateStack.top()->Render();
+    if (!Halt)
+        stateStack.top()->Render();
     InputManager::GetInstance().Render();
 }
 

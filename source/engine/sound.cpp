@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <iostream>
 std::unordered_map<std::string, Mix_Chunk*> Sound::assetTable;
-
+bool Sound::working = false;
 
 Sound::Sound(){
     music = NULL;
@@ -117,6 +117,14 @@ void Sound::Play(int times){
         return;
     channel = Mix_PlayChannel(-1,music, times);
 }
+
+void Sound::Resume(){
+    if (!working)
+        return;
+    if (!IsPlaying())
+        return;
+    Mix_Resume(channel);
+}
 bool Sound::IsPlaying(){
     if (!working)
         return false;
@@ -131,10 +139,30 @@ void Sound::Stop(){
         return;
         Mix_HaltChannel(channel);
 }
+void Sound::Pause(){
+    if (!working)
+        return;
+    if (!IsPlaying())
+        return;
+        Mix_Pause(channel);
+}
 
 void Sound::StopAll(){
+    if (!working)
+        return;
     Mix_HaltChannel(-1);
 }
+void Sound::PauseAll(){
+    if (!working)
+        return;
+    Mix_Pause(-1);
+}
+void Sound::ResumeAll(){
+    if (!working)
+        return;
+    Mix_Resume(-1);
+}
+
 void Sound::FadeOut(float ms){
     if (!working)
         return;

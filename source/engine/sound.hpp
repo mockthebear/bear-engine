@@ -17,7 +17,13 @@ class Sound{
         void SetVolume(int vol);
         void Play (int times);
         void Stop();
+        void Pause();
+        void Resume();
         static void StopAll();
+        static void PauseAll();
+        static void ResumeAll();
+
+
         void FadeOut(float ms);
         void SetPosition(int pos);
         static Mix_Chunk* Open (const char *s);
@@ -29,7 +35,7 @@ class Sound{
         static bool Preload(const char *s);
         std::string GetFileName(){return file;};
     private:
-        bool working;
+        bool static working;
         std::string file;
         Mix_Chunk* music;
         int channel;
