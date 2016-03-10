@@ -171,7 +171,9 @@ class ThreadPool{
             Check ThreadPool::Unlock to unlock them and for examples
         */
         bool IsLocked(){return Locked;};
-        void Lock(bool notify=false);
+        bool TryLock();
+
+        void Lock();
         /** @brief Used to deploy threads.
             *
             *Lets say you added 10 Jobs, then you call Unlock to make all\n

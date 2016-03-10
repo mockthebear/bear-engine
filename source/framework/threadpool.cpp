@@ -144,7 +144,9 @@ void ThreadPool::ClearJobs(){
         Jobs.pop();
     }
 }
-void ThreadPool::Lock(bool note){
+
+
+void ThreadPool::Lock(){
     if (!started){
         std::cout << "[ThreadPool]Lock/Unlock with no threads running.\n";
         return;
@@ -160,6 +162,40 @@ void ThreadPool::Lock(bool note){
     }
 
     #endif
+}
+bool ThreadPool::TryLock(){
+    if (!started){
+        std::cout << "[ThreadPool]Lock/Unlock with no threads running.\n";
+        return false;
+    }
+    #ifndef DISABLE_THREADPOOL
+    bool *flags = new bool[UsePThreads];
+    bool sucess = true;
+    for (int e=0;e<UsePThreads;e++){
+        if (pthread_mutex_trylock(&runningM[e])){
+            flags[e] = true;
+        }else{
+            flags[e] = false;
+            sucess = false;
+        }
+    }
+    if (!sucess){
+        for (int e=0;e<UsePThreads;e++){
+            if (flags[e])
+                pthread_mutex_unlock(&runningM[e]);
+        }
+        return false;
+    }
+
+    //Locked = true;
+    //bool done = false;
+
+
+
+
+
+    #endif
+    return true;
 }
 void ThreadPool::Unlock(){
     if (!started){

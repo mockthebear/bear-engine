@@ -314,7 +314,14 @@ bool InputManager::IsKeyUp(int key){
     return keyboard.keyState[key] == JUST_RELEASED or keyboard.keyState[key] == RELEASED;
 }
 
-int InputManager::IsAnyKeyPressed(){
-    return keyboard.anyKeyPressed;
+int InputManager::IsAnyKeyPressed(bool considerTap){
+    if (keyboard.anyKeyPressed != 0)
+        return keyboard.anyKeyPressed;
+    if (considerTap && IsScreenTapped())
+        return  IsScreenTapped();
+    return 0;
+}
+int InputManager::IsScreenTapped(){
+    return touchscreen.m_hasTap;
 }
 

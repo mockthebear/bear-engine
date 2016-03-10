@@ -14,7 +14,10 @@ class Finger{
         PointInt m_position;
         GenericPoint<float> m_truePosition;
         InputState m_state;
+        InputState m_tapState;
         float m_ressure;
+        bool tapping;
+        float tapDelay;
 };
 /**
  * @brief Private class from InputManager to control Touch things
@@ -35,6 +38,7 @@ class Touch{
 
         void SetOffset(Point offset){m_offset = offset;};
         Point m_offset;
+        int m_hasTap;
     private:
 
         int m_lastFinger;

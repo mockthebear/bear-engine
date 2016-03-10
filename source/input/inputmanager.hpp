@@ -88,8 +88,8 @@ class InputManager{
             @brief Literally, true for any kay pressed
             @return the pressed SDLK id
         */
-        int IsAnyKeyPressed();
-
+        int IsAnyKeyPressed(bool considerTap = false);
+        int IsScreenTapped();
         /**
             @brief When requested by input to quit
             @return true or false

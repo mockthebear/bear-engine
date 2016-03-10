@@ -4,14 +4,24 @@
 
 Finger::Finger(){
     m_state = RELEASED;
+    m_tapState = RELEASED;
 
 }
 
 void Finger::Update(float dt){
+    if (tapping){
+        tapDelay -= dt;
+    }
+    m_tapState = RELEASED;
     if (m_state == JUST_PRESSED){
+        tapping = true;
+        tapDelay = 2.0;
         m_state = PRESSED;
     }
     if (m_state == JUST_RELEASED){
+        if (tapping && tapDelay > 0){
+            m_tapState = PRESSED;
+        }
         m_state = RELEASED;
     }
 }
@@ -35,9 +45,15 @@ Touch::~Touch(){
 
 
 void Touch::Update(float dt){
+    m_hasTap = 0;
     for ( int i=0;i<MAX_TOUCHSCREEN_FINGERS;i++ ){
         fingers[i].Update(dt);
+        if (fingers[i].m_tapState == PRESSED){
+            m_hasTap = i+1;
+        }
     }
+
+
 
 
 }
@@ -86,6 +102,8 @@ TouchInfo Touch::GetFinger(int id){
     info.finger     =  id;
     info.state      =  fingers[id].m_state;
     info.pressure   =  fingers[id].m_ressure;
+    info.x_f        =  fingers[id].m_truePosition.x;
+    info.y_f        =  fingers[id].m_truePosition.y;
     return info;
 }
 void Touch::Render(){
