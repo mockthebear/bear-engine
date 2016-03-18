@@ -8,8 +8,8 @@ Rect        Camera::EffectArea(0,0,0,0);
 Rect        Camera::UpdateArea(0,0,0,0);
 GameObject* Camera::focus = NULL;
 
-int         Camera::Offset_x;
-int         Camera::Offset_y;
+int         Camera::Offset_x = 0;
+int         Camera::Offset_y = 0;
 int         Camera::OffsetUpdate;
 int         Camera::OffsetEffect;
 bool        Camera::UseLimits=false;
@@ -79,12 +79,14 @@ void Camera::Initiate(Rect startingPos,int offsetEffect_, int offsetUpdate_){
     OffsetEffect = offsetEffect_;
     OffsetUpdate = offsetUpdate_;
     pos = startingPos;
-    EffectArea = startingPos;
-    UpdateArea = startingPos;
-    EffectArea.w += offsetEffect_*2.0f;
-    EffectArea.h += offsetEffect_*2.0f;
-    UpdateArea.w += offsetUpdate_*2.0f;
-    UpdateArea.h += offsetUpdate_*2.0f;
+    EffectArea.x = startingPos.x;
+    EffectArea.y = startingPos.y;
+    UpdateArea.x = startingPos.y;
+    UpdateArea.y = startingPos.y;
+    EffectArea.w = pos.w+ offsetEffect_*2.0f;
+    EffectArea.h = pos.h+ offsetEffect_*2.0f;
+    UpdateArea.w = pos.w+ offsetUpdate_*2.0f;
+    UpdateArea.h = pos.h+ offsetUpdate_*2.0f;
 }
 
 
@@ -101,12 +103,14 @@ void Camera::Update(float dt){
             pos.y = std::min(maxY,pos.y+pos.h)-pos.h;
             pos.x = std::min(maxX,pos.x+pos.w)-pos.w;
         }
+        EffectArea.x = pos.x-OffsetEffect;
+        EffectArea.y = pos.y-OffsetEffect;
+        UpdateArea.x = pos.x-OffsetUpdate;
+        UpdateArea.y = pos.y-OffsetUpdate;
+
         pos.x += Offset_x;
         pos.y += Offset_y;
-        EffectArea.x = pos.x-OffsetEffect/2.0;
-        EffectArea.y = pos.y-OffsetEffect/2.0;
-        UpdateArea.x = pos.x-OffsetUpdate/2.0;
-        UpdateArea.y = pos.y-OffsetUpdate/2.0;
+
     }else{
         float sx,sy;
         Point mouse = InputManager::GetInstance().GetMouse();
