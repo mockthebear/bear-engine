@@ -23,6 +23,7 @@ class TouchInfo{
             finger = -1;
             state = RELEASED;
             pressure = 0;
+            x_f = y_f = 0;
         }
         /**
             *Current InputManager from the touch
@@ -44,5 +45,17 @@ class TouchInfo{
             *Position y of the touch
         */
         int y;
+        /**
+            *[0-1] value from where the finger is
+            *
+            *Raw
+        */
+        float x_f;
+        /**
+            *[0-1] value from where the finger is
+            *
+            *Raw
+        */
+        float y_f;
 };
 #endif // INPUTDEF_BE
