@@ -25,6 +25,7 @@ class ScreenManager{
         void NotyifyScreenClosed();
         void TerminateScreen();
         void SetResizeAction();
+        int SetRenderTarget(SDL_Texture *t);
         void Resize(int w,int h);
         void SetScreenName(std::string name);
         void SetWindowSize(int w,int h);

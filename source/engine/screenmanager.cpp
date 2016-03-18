@@ -1,5 +1,7 @@
 #include "screenmanager.hpp"
 #include "../settings/configmanager.hpp"
+#include "../performance/console.hpp"
+#include "../framework/utils.hpp"
 #include __BEHAVIOR_FOLDER__
 #include "camera.hpp"
 #include <iostream>
@@ -63,7 +65,13 @@ SDL_Window* ScreenManager::StartScreen(std::string name){
     return m_window;
 }
 SDL_Renderer* ScreenManager::StartRenderer(){
-    m_renderer = SDL_CreateRenderer( m_window, -1, SDL_RENDERER_ACCELERATED);
+    //m_renderer = SDL_CreateRenderer( m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+    m_renderer = SDL_CreateRenderer( m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+    SDL_RendererInfo info;
+    SDL_GetRendererInfo(m_renderer,&info);
+    Console::GetInstance().AddText(utils::format("Driver: %s",info.name));
+    Console::GetInstance().AddText(utils::format("Max view: %d x %d",info.max_texture_width,info.max_texture_height));
+
     if (m_renderer){
         SDL_SetRenderDrawBlendMode(m_renderer,SDL_BLENDMODE_BLEND);
     }
@@ -158,4 +166,7 @@ void ScreenManager::Update(float dt){
         m_frames = 0;
 
     }
+}
+int ScreenManager::SetRenderTarget(SDL_Texture *t){
+    return SDL_SetRenderTarget(m_renderer,t);
 }

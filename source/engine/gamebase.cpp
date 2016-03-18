@@ -34,7 +34,6 @@ Game::Game(const char *name){
         hasBeenClosed = false;
         instance = this;
         HasAudio = true;
-        Halt = false;
         GameBegin = false;
         dt = frameStart = 0;
         canDebug = false;
@@ -104,8 +103,6 @@ Game::Game(const char *name){
         LuaInterface::Instance().Startup();
         #endif
 
-
-
         if (HasAudio){
             Mix_Volume(-1,   128.0/2.0);
             Mix_VolumeMusic( 128.0/2.0);
@@ -171,15 +168,13 @@ void Game::Update(){
         #ifndef DISABLE_LUAINTERFACE
         LuaInterface::Instance().Update(dt);
         #endif
-        if (!Halt)
-            stateStack.top()->Update(dt);
+        stateStack.top()->Update(dt);
         ScreenManager::GetInstance().Update(dt);
     }
 
 }
 void Game::Render(){
-    if (!Halt)
-        stateStack.top()->Render();
+    stateStack.top()->Render();
     InputManager::GetInstance().Render();
 }
 
@@ -259,7 +254,11 @@ void Game::Run(){
             #ifdef CYCLYC_DEBUG
             std::cout << "[\\Render]\n";
             #endif
+            float delay = SDL_GetTicks()-dt;
 
+            if ((1000/MAXFPS) - delay > 0){
+                SDL_Delay( (1000/MAXFPS) - delay );
+            }
 
         }
 };
