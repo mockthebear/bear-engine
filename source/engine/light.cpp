@@ -7,6 +7,7 @@
 #include "../performance/console.hpp"
 
 Light* Light::Slight = NULL;
+pthread_mutex_t Light::GCritical;
 
 Light::Light(){
     out = NULL;
@@ -19,10 +20,20 @@ Light::Light(){
     LightJobs = 0;
     MaxDarkness = 200;
 }
+Light* Light::Startup(){
+    pthread_mutex_init(&GCritical,NULL);
+    return GetInstance();
+}
 Light* Light::GetInstance(){
+    #ifndef DISABLE_THREADPOOL
+    pthread_mutex_lock(&GCritical);
+    #endif
     if (Slight == NULL){
         Slight = new Light();
     }
+    #ifndef DISABLE_THREADPOOL
+    pthread_mutex_unlock(&GCritical);
+    #endif
     return Slight;
 }
 
@@ -59,10 +70,10 @@ void Light::Gen(parameters *P,Job &j){
         pthread_mutex_lock(&Critical);
         #endif
         LightJobs--;
-
         if (LightJobs == 0){
-
+            #ifndef DISABLE_THREADPOOL
             pthread_mutex_unlock(&CanRender);
+            #endif
         }
         #ifndef DISABLE_THREADPOOL
         pthread_mutex_unlock(&Critical);
@@ -94,22 +105,13 @@ void Light::Reduce(parameters *P,Job &j){
         pthread_mutex_lock(&Critical);
         #endif
         LightJobs--;
-
-        std::stringstream S;
-
         if (LightJobs == 0){
-
-            std::stringstream Ss;
-
-
             int pthreads = ThreadPool::GetInstance().GetPthreads();
             for (int i=0;i<pthreads;i++){
                 Job j(JOB_GEN,i * (sizeY/(float)pthreads),(i+1) * (sizeY/(float)pthreads));
                 ThreadPool::GetInstance().AddJob_(j,true);
                 LightJobs++;
             }
-
-            ThreadPool::GetInstance().Unlock();
         }
         #ifndef DISABLE_THREADPOOL
         pthread_mutex_unlock(&Critical);
@@ -158,27 +160,19 @@ void Light::Shade(parameters *P,Job &j){
 
         }
     }
+
     if (onAutomatic){
         #ifndef DISABLE_THREADPOOL
         pthread_mutex_lock(&Critical);
         #endif
         LightJobs--;
-        //std::cout << "[shade]" <<LightJobs << "\n";
-        //std::stringstream S;
-        //S << "{S"<<LightJobs<<"}";
-        //THELASTBUGED = THELASTBUGED + S.str();
         if (LightJobs == 0){
-            //std::stringstream Ss;
-             //   Ss << "{Sdone}";
-              // THELASTBUGED = THELASTBUGED + Ss.str();
-            //std::cout << "Shade finished\n";
             int pthreads = ThreadPool::GetInstance().GetPthreads();
             for (int i=0;i<pthreads;i++){
                 Job j(JOB_REDUCE,i * (sizeY/(float)pthreads),(i+1) * (sizeY/(float)pthreads));
                 ThreadPool::GetInstance().AddJob_(j,true);
                 LightJobs++;
             }
-            ThreadPool::GetInstance().Unlock();
         }
         #ifndef DISABLE_THREADPOOL
         pthread_mutex_unlock(&Critical);
@@ -201,14 +195,19 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize){
 
     ShadeMap = new uint8_t*[sizeY];
     DataMap = new uint8_t*[sizeY];
+    pix = out->GetPixels();
     for (int y=0;y<sizeY;y++){
         ShadeMap[y] = new uint8_t[sizeX];
         DataMap[y] = new uint8_t[sizeX];
         for (int x=0;x<sizeX;x++){
             ShadeMap[y][x] = MaxDarkness;
             DataMap[y][x] = 0;
+            pix[y * (sizeX) + x] = RenderHelp::FormatRGBA(0,0,0,100);
         }
     }
+
+
+    out->UpdateTexture();
 
     maxAlloc=2;
     MapMap = new uint8_t**[2];
@@ -295,13 +294,19 @@ uint8_t **Light::GiveAnAdderess(bool clear){
 }
 
 void Light::WaitDone(){
-    float st = SDL_GetTicks();
-    while(pthread_mutex_trylock(&CanRender)){
-        if (SDL_GetTicks()-st > 1000){
-            pthread_mutex_unlock(&Critical);
-            break;
+    #ifndef DISABLE_THREADPOOL
+    if (onAutomatic){
+        float st = SDL_GetTicks();
+        while(pthread_mutex_trylock(&CanRender)){
+            if (SDL_GetTicks()-st > 1000){
+                pthread_mutex_unlock(&Critical);
+                break;
+            }
         }
+    }else{
+        ThreadPool::GetInstance().Lock();
     }
+    #endif
 }
 void Light::Update(float dt,LightStep step){
     if (step == LIGHT_BEGIN){
@@ -315,8 +320,6 @@ void Light::Update(float dt,LightStep step){
                 DataMap[y][x] = 0;
             }
         }
-
-        onAutomatic = false;
     }else if (step == LIGHT_SHADE){
         ThreadPool::GetInstance().Unlock();
     }else if (step == LIGHT_REDUCE){
@@ -331,9 +334,7 @@ void Light::Update(float dt,LightStep step){
 
     }else if(step == LIGHT_GEN){
         LightJobs = 0;
-        //
         ThreadPool::GetInstance().Lock();
-
         int pthreads = ThreadPool::GetInstance().GetPthreads();
         for (int i=0;i<pthreads;i++){
             Job j(JOB_GEN,i * (sizeY/(float)pthreads),(i+1) * (sizeY/(float)pthreads));
@@ -357,9 +358,6 @@ void Light::Update(float dt,LightStep step){
 }
 
 void Light::Render(Point pos){
-
-
-
     out->UpdateTexture();
     int extraX = ((int)(floor(Camera::pos.x))%blockSize);
     int extraY = ((int)(floor(Camera::pos.y))%blockSize);
@@ -373,6 +371,5 @@ void Light::Render(Point pos){
     dimensions2.h = size.y*scaleRatioH;
     dimensions2.w = size.x*scaleRatioW;
     SDL_RenderCopyEx(BearEngine->GetRenderer(),out->GetTexture(),NULL,&dimensions2,0,nullptr,SDL_FLIP_NONE);
-
 
 }

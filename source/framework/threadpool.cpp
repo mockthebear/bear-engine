@@ -31,7 +31,7 @@ void ThreadPool::sleep(float milliseconds) // cross-platform sleep function
 }
 ThreadPool::ThreadPool(int threads){
 
-
+    Light::Startup();
     #ifndef DISABLE_THREADPOOL
     UsePThreads=threads;
     thread_pool = new  pthread_t[UsePThreads];

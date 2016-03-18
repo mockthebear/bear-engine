@@ -16,6 +16,7 @@ class Light{
     public:
         Light();
         static Light* GetInstance();
+        static Light* Startup();
 
         bool StartLights(Point size,Point ExtraSize,uint16_t dotSize);
 
@@ -33,6 +34,9 @@ class Light{
         void Shade(parameters *P,Job &j);
         void Gen(parameters *P,Job &j);
         void WaitDone();
+        #ifndef DISABLE_THREADPOOL
+        static pthread_mutex_t GCritical;
+        #endif
     private:
         bool AutoFinished;
         uint8_t MaxDarkness;
