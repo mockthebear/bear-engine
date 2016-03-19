@@ -152,7 +152,11 @@ class GameFile{
             @return true if sucess
         */
         bool Seek(uint32_t pos);
+
+        int FindInt();
+
     private:
+
 
         char *m_cache;
         uint32_t m_size;

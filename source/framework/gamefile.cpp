@@ -128,9 +128,9 @@ uint8_t GameFile::Read8(){
         if (!IsOpen())
             return 0;
         m_filePos++;
-        uint8_t *byt=0;
-        SDL_RWread(m_filePointer,byt, 1, 1);
-        return (*byt);
+        uint8_t byt=0;
+        SDL_RWread(m_filePointer,&byt, 1, 1);
+        return (byt);
     }
 }
 
@@ -142,3 +142,33 @@ bool GameFile::Seek(uint32_t pos){
     m_filePos = pos;
     return SDL_RWseek(m_filePointer, pos, RW_SEEK_SET) == 0;
 }
+int GameFile::FindInt(){
+    int i =0;
+    char by = ReadByte();
+    while (by <= '0' || by >= '9'){
+        by = ReadByte();
+        if (Tell() > m_size){
+            std::cout << "CABO\n";
+            return -1;
+        }
+    }
+    i = by-'0';
+    std::cout << "a:" << i << "\n";
+    by = ReadByte();
+    while (by >= '0' && by <= '9'){
+        i *= 10;
+        i += by-'0';
+        by = ReadByte();
+        if (Tell() > m_size){
+            std::cout << "CABO\n";
+            return -1;
+        }
+
+    }
+    Seek(Tell()-1);
+    std::cout << "Ret:" << i << "\n";
+    return i;
+}
+
+
+
