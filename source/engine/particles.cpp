@@ -153,6 +153,17 @@ Particle::~Particle(){
 
 }
 
+void Particle::SetSprite(Sprite sp_){
+    sp = sp_;
+    HasSprite = true;
+    currentFrame=0;
+    Frame=sp.SetFrameCount();
+    currentDelay=sp.SetFrameTime();
+    Delay=delay;
+    textures = NULL;
+}
+
+
 void Particle::SetSprite(std::string name,int frames,float delay){
     sp = Sprite(name.c_str(),frames,delay);
     HasSprite = true;

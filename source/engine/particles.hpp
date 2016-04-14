@@ -83,6 +83,8 @@ class Particle: public GameObject{
             You can force an sprite to be set. Should be used on
             Particle::Particle(int x,int y)
         */
+        void SetSprite(Sprite sp);
+
         void SetSprite(std::string name,int frames,float delay);
         /**
             Set the particle to move in a line.
@@ -181,6 +183,7 @@ class Particle: public GameObject{
             Saved position from where it was created
         */
         Point createdPosition;
+
     private:
         /*
             Rotation stuff

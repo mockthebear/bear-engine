@@ -198,12 +198,20 @@ class Sprite{
         void SetFrameCount(int fc){
             frameCount=fc;
         };
+
+        int GetFrameCount(){
+            return frameCount;
+        };
         /**
             *Change the frame time
             @param ft The new frame time
         */
         void SetFrameTime(float ft){
             frameTime=ft;
+        };
+
+        void GetFrameTime(){
+            return frameTime;
         };
         /**
             *Change the frame amount

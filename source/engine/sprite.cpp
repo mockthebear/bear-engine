@@ -254,7 +254,7 @@ SDL_Texture* Sprite::Open(SDL_RWops* file,std::string name,bool force){
             assetTable[name] = texture;
             return texture;
         }else{
-            Console::GetInstance().AddText("Cannot load rwop sprite");
+            Console::GetInstance().AddText(utils::format("Cannot load rwop sprite [%s]",name.c_str()));
             return NULL;
         }
     }else{
