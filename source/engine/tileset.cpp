@@ -57,6 +57,17 @@ void BlockTileSet::Render(int index,int x,int y){
     }
 }
 
+void BlockTileSet::RawRender(int index,int x,int y){
+    if (tileset != NULL){
+        if (index <= columns*rows and index != -1){
+            int cx = index%columns;
+            int cy = index/columns;
+            tileset->SetClip(GetTileWidth()*cx,GetTileHeight()*cy,GetTileHeight(),GetTileWidth());
+            tileset->RawRender(x,y,0);
+        }
+    }
+}
+
 void BlockTileSet::Render2(int index,int x,int y,float cxe,float cye){
     if (tileset != NULL){
         if (index <= columns*rows and index != -1){
