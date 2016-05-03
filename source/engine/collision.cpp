@@ -1,4 +1,4 @@
-#include "collision.h"
+#include "collision.hpp"
 
 
 
@@ -22,6 +22,49 @@ int Collision::AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,Pool
         }
         return -1;
 
+}
+
+bool Collision::CheckCollision(Rect tempXY,GameObject* dis,PoolManager &pool,PoolGroupId gid,bool onlySolid){
+        for (auto &obj : pool.ForGroup(gid))
+        {
+        if (obj != dis && !obj->IsDead()){
+            if (!onlySolid ||obj->solid ){
+                if (Collision::IsColliding(obj->box,tempXY,0,0) ){
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+std::vector<GameObject*> Collision::GetCollidingObjects(GameObject* thisObject,PoolManager &pool,PoolGroupId gid,bool onlySolid){
+    std::vector<GameObject*> data;
+    for (auto &obj : pool.ForGroup(gid))
+        {
+        if (obj != thisObject && !obj->IsDead()){
+            if (!onlySolid || obj->solid ){
+                if (Collision::IsColliding(obj->box,thisObject->box,0,0) ){
+                    data.emplace_back(obj);
+                }
+            }
+        }
+    }
+    return data;
+}
+
+GameObject* Collision::GetCollidingObject(GameObject* thisObject,PoolManager &pool,PoolGroupId gid,bool onlySolid){
+    for (auto &obj : pool.ForGroup(gid))
+        {
+        if (obj != thisObject && !obj->IsDead()){
+            if (!onlySolid || obj->solid ){
+                if (Collision::IsColliding(obj->box,thisObject->box,0,0) ){
+                    return obj;
+                }
+            }
+        }
+    }
+    return nullptr;
 }
 
 
