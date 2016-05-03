@@ -152,12 +152,8 @@ void ThreadPool::Lock(){
         return;
     }
     Locked = true;
-    bool done = false;
-
-
     #ifndef DISABLE_THREADPOOL
     for (int e=0;e<UsePThreads;e++){
-        int counter = 0;
         pthread_mutex_lock(&runningM[e]);
     }
 
