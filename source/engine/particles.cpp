@@ -157,9 +157,9 @@ void Particle::SetSprite(Sprite sp_){
     sp = sp_;
     HasSprite = true;
     currentFrame=0;
-    Frame=sp.SetFrameCount();
-    currentDelay=sp.SetFrameTime();
-    Delay=delay;
+    Frame=sp.GetFrameCount();
+    currentDelay=sp.GetFrameTime();
+    Delay=sp.GetFrameTime();
     textures = NULL;
 }
 

@@ -84,6 +84,7 @@ Sprite::Sprite(SDL_RWops* file,std::string name,int fcount,float ftime){
     }
     SetFrame(0);
     sprFlip = SDL_FLIP_NONE;
+
 }
 
 Sprite::Sprite(const char *file,int fcount,float ftime){

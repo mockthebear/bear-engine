@@ -210,7 +210,7 @@ class Sprite{
             frameTime=ft;
         };
 
-        void GetFrameTime(){
+        int GetFrameTime(){
             return frameTime;
         };
         /**
