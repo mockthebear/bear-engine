@@ -6,6 +6,7 @@
  * @brief Enum to pressed status
  */
 enum InputState{
+    UNKNOW_STATE=-1,
     RELEASED=0,
     JUST_RELEASED,
     PRESSED,
