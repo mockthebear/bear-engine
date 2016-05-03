@@ -6,6 +6,7 @@
 #include <string>
 #include <stdlib.h>
 #include "../settings/definitions.hpp"
+#include "../framework/utils.hpp"
 #include SDL_LIB_HEADER
 
 
@@ -19,6 +20,10 @@ class UserFile{
         bool Open(std::string name);
         bool Close();
         uint32_t Write(std::string str);
+        template<typename... arg>uint32_t Printf(const char *s,const arg&... a){
+            std::string str = utils::format(s,a...);
+            return Write(str);
+        }
         uint32_t Write(char *str,int size);
         uint32_t Write8(char c);
         uint32_t WriteU8(uint8_t c);
