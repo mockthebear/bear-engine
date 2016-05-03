@@ -197,12 +197,12 @@ class Text{
             *Get the height of the text
             @return int
         */
-        float GetHeight(){return box.h*scaleY;};
+        float GetHeight(){return box.h*scaleY*(font ? 0.5f : 1.0f);};
         /**
             *Get the width of the text
             @return int
         */
-        float GetWidth(){return box.w*scaleX;};
+        float GetWidth(){return box.w*scaleX*(font ? 0.5f : 1.0f);};
         /**
             *When you edit the current text, a new texture is created
             *Dont work with custom fonts

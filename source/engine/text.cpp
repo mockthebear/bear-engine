@@ -24,13 +24,12 @@ CustomFont::CustomFont(std::string letterpositions){
         if (sscanf(j.c_str(),"<%[a-z./\\0-9 ]>:%s@",pngfile,data)){
             sp = new Sprite(pngfile);
             std::string letterData = data;
-            std::cout << content << " : [[[" << fp->GetSize()<<"]]]\n";
              bool find = true;
             int m=1;
             char letter[10];
             int xx=0,yy=0,hh=0,ww=0,padd=0,pddin=0,yoffset=0;
             while (find and m > 0){
-                if ( (sscanf(letterData.c_str(),"%[a-zA-Z0-9*+,.]=<%d,%d,%d,%d,%d,%d,%dx>",letter,&xx,&yy,&ww,&hh,&padd,&pddin,&yoffset))  ){
+                if ( (sscanf(letterData.c_str(),"%[a-zA-Z0-9*+,.-]=<%d,%d,%d,%d,%d,%d,%dx>",letter,&xx,&yy,&ww,&hh,&padd,&pddin,&yoffset))  ){
                     m = letterData.find(";");
                     if (m != -1){
                         Letters[(unsigned char)letter[0]] = std::unique_ptr<Letter>(new Letter(xx,yy,ww,hh,padd,pddin,yoffset));
@@ -139,6 +138,7 @@ Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string tex
     box.y = y;
     text = textp.c_str();
     bg = {0,0,0,0};
+    fontsize *= 2;
     size = fontsize;
     style = stylep;
     color = colot;
@@ -246,8 +246,8 @@ void Text::Render(int cameraX,int cameraY){
         double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
         dimensions2.x = box.x*scaleRatioW+cameraX*scaleRatioW+ ScreenManager::GetInstance().GetOffsetW();
         dimensions2.y = box.y*scaleRatioH+cameraY*scaleRatioH;
-        dimensions2.h = box.h*scaleRatioH*scaleY;
-        dimensions2.w = box.w*scaleRatioW*scaleY;
+        dimensions2.h = box.h*scaleRatioH*scaleY*0.5;
+        dimensions2.w = box.w*scaleRatioW*scaleY*0.5;
 
         if (!texture){
             RemakeTexture();
@@ -272,8 +272,8 @@ void Text::RenderRS(int cameraX,int cameraY){
         SDL_Rect dimensions2;
         dimensions2.x = box.x+cameraX;
         dimensions2.y = box.y+cameraY;
-        dimensions2.h = box.h;
-        dimensions2.w = box.w;
+        dimensions2.h = box.h*0.5;
+        dimensions2.w = box.w*0.5;
 
         if (!texture){
             RemakeTexture();
@@ -325,6 +325,7 @@ void Text::SetStyle(TextStyle syle){
 void Text::SetFontSize(int ftsz){
     if (!font)
         return;
+    ftsz = ftsz*2;
     std::string ftnm = fontfile;
     char buff[10];
     sprintf(buff,"%d",ftsz);
