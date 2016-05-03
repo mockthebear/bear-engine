@@ -34,7 +34,7 @@ class ResourceFile{
 
         /**
             Open an .burr file
-            @param dir Use like: "assets/map.burr"
+            @param dir Use like: "assets:map.burr"
             @return true or false
         */
         bool Open(std::string dir);
