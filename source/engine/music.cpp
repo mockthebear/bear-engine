@@ -1,6 +1,8 @@
 #include "music.hpp"
 #include "gamebase.hpp"
 #include "../framework/dirmanager.hpp"
+#include "../framework/resourcemanager.hpp"
+#include "../performance/console.hpp"
 
 
 std::unordered_map<std::string, Mix_Music*> Music::assetTable;
@@ -27,10 +29,30 @@ void Music::SetVolume(int vol){
     if (BearEngine->AudioWorking())
         Mix_VolumeMusic(vol);
 }
-
+void Music::Open(SDL_RWops* file,std::string name){
+    if (!ConfigManager::GetInstance().IsWorkingAudio())
+        return;
+    if (assetTable.find(name) == assetTable.end() ){
+        Mix_Music *aux_music = Mix_LoadMUS_RW(file, 1);
+        if (aux_music){
+            assetTable[name] = aux_music;
+            music = aux_music;
+        }else{
+            Console::GetInstance().AddText("Cannot load rwop sound");
+            music = nullptr;
+        }
+    }else{
+        std::unordered_map<std::string, Mix_Music*>::iterator it = assetTable.find(name);
+        music = (*it).second;
+    }
+}
 void Music::Open(const char *s){
     std::string stdnamee(s);
     file = stdnamee;
+    if (stdnamee.find(":")!=std::string::npos){
+        Open(ResourceManager::GetInstance().GetFile(stdnamee),stdnamee);
+        return;
+    }
     stdnamee = DirManager::AdjustAssetsPath(stdnamee);
     if (!working)
         return;

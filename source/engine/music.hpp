@@ -20,6 +20,7 @@ class Music{
         void Resume();
         static void Stop();
         void Open(const char *s);
+        void Open(SDL_RWops* file,std::string name);
         static bool Rewind();
         static void FadeOut(int ms);
         void FadeIn(int loop,int ms);
