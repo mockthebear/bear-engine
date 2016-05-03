@@ -8,7 +8,7 @@
 #include <functional>
 class SmartTexture{
     public:
-        SmartTexture(int x,int y,int w,int h);
+        SmartTexture(int x,int y,int w,int h,bool generatePixels=true);
         SmartTexture(SDL_Texture *tex,Uint32 *p,int xx,int yy,int hh,int ww):t(tex),pixels(p),h(hh),w(ww),x(xx),y(yy){};
         void CallLambda(std::function<void (Uint32 *, int, int)> F){ F(pixels,h,w);};
         ~SmartTexture();
