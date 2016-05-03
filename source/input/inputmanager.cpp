@@ -306,6 +306,9 @@ bool InputManager::KeyRelease(int key){
     return keyboard.keyState[key] == JUST_RELEASED;
 }
 
+InputState InputManager::GetKeyState(int key){
+    return keyboard.keyState[key];
+}
 bool InputManager::IsKeyDown(int key){
     return keyboard.keyState[key] == JUST_PRESSED or keyboard.keyState[key] == PRESSED;
 }

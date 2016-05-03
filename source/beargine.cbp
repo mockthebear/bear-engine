@@ -7,17 +7,17 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
+				<Option output="../game/SnakeScape" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../game/" />
 				<Option object_output="../obj/Debug/" />
-				<Option type="1" />
+				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
+				<Option output="../game/dogurai" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../game/" />
 				<Option object_output="../obj/Release/" />
 				<Option type="1" />
@@ -33,6 +33,23 @@
 					<Add option="-lSDL2_ttf -lSDL2_mixer -llua51 -pthread" />
 				</Linker>
 			</Target>
+			<Target title="unix release">
+				<Option output="../game/dogurai" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../game/" />
+				<Option object_output="../obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-std=c++0x" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-lSDL2main -lSDL2 -lSDL2_image" />
+					<Add option="-lSDL2_ttf -lSDL2_mixer -pthread" />
+				</Linker>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
@@ -40,7 +57,8 @@
 		<Unit filename="engine/behavior.hpp" />
 		<Unit filename="engine/camera.cpp" />
 		<Unit filename="engine/camera.hpp" />
-		<Unit filename="engine/collision.h" />
+		<Unit filename="engine/collision.cpp" />
+		<Unit filename="engine/collision.hpp" />
 		<Unit filename="engine/defaultbehavior.cpp" />
 		<Unit filename="engine/defaultbehavior.hpp" />
 		<Unit filename="engine/gamebase.cpp" />
@@ -101,17 +119,39 @@
 		<Unit filename="framework/userfile.hpp" />
 		<Unit filename="framework/utils.cpp" />
 		<Unit filename="framework/utils.hpp" />
-		<Unit filename="game/ball.cpp" />
-		<Unit filename="game/ball.hpp" />
-		<Unit filename="game/controlableobject.cpp" />
-		<Unit filename="game/controlableobject.hpp" />
+		<Unit filename="game/boss.cpp" />
+		<Unit filename="game/boss.hpp" />
+		<Unit filename="game/collisionblock.cpp" />
+		<Unit filename="game/collisionblock.hpp" />
+		<Unit filename="game/deadhalf.cpp" />
+		<Unit filename="game/deadhalf.hpp" />
+		<Unit filename="game/deathblock.cpp" />
+		<Unit filename="game/deathblock.hpp" />
 		<Unit filename="game/gamebehavior.cpp" />
 		<Unit filename="game/gamebehavior.hpp" />
+		<Unit filename="game/gamelevel.cpp" />
+		<Unit filename="game/gamelevel.hpp" />
+		<Unit filename="game/genericplayer.cpp" />
+		<Unit filename="game/genericplayer.hpp" />
+		<Unit filename="game/healthitem.cpp" />
+		<Unit filename="game/healthitem.hpp" />
+		<Unit filename="game/map.cpp" />
+		<Unit filename="game/map.hpp" />
+		<Unit filename="game/monster.cpp" />
+		<Unit filename="game/monster.hpp" />
+		<Unit filename="game/plataformblock.cpp" />
+		<Unit filename="game/plataformblock.hpp" />
+		<Unit filename="game/player.cpp" />
+		<Unit filename="game/player.hpp" />
+		<Unit filename="game/shuriken.cpp" />
+		<Unit filename="game/shuriken.hpp" />
 		<Unit filename="game/state.hpp" />
 		<Unit filename="game/title.cpp" />
 		<Unit filename="game/title.hpp" />
 		<Unit filename="input/accelerometer.cpp" />
 		<Unit filename="input/accelerometer.hpp" />
+		<Unit filename="input/beinput.cpp" />
+		<Unit filename="input/beinput.hpp" />
 		<Unit filename="input/inputdefinitions.hpp" />
 		<Unit filename="input/inputmanager.cpp" />
 		<Unit filename="input/inputmanager.hpp" />

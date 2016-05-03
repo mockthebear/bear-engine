@@ -73,6 +73,7 @@ bool Joystick::ButtonRelease(int key){
 bool Joystick::IsButtonDown(int key){
     return Buttons[key] == JUST_PRESSED or Buttons[key] == PRESSED;
 }
+
 bool Joystick::IsButtonUp(int key){
     return Buttons[key] == JUST_RELEASED or Buttons[key] == RELEASED;
 }

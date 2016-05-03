@@ -65,6 +65,7 @@ class InputManager{
             @param key Use SDLK_[name]. Like SDLK_w
             @return true or false
         */
+        InputState GetKeyState(int key);
         bool KeyPress(int key);
         /**
             @brief Return true at the moment of release

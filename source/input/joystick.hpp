@@ -156,7 +156,6 @@ class Joystick{
             @return true or false
         */
         bool IsButtonUp(int key);
-
         /**
             *Use to debug joystick. Not called by the engine.
             *When you call this function, some data about the joystick will be shown on screen
