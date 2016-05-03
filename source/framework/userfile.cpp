@@ -19,7 +19,7 @@ bool UserFile::Close(){
 bool UserFile::Open(std::string name){
     if (!fptr){
         fname = name;
-        fptr = fopen(UserFile::GetFilePath().c_str(),"wb");
+        fptr = fopen(UserFile::GetFilePath().c_str(),"w");
         if (!fptr){
             writePos = 0;
             fname = "";
@@ -52,31 +52,25 @@ uint32_t UserFile::WriteU8(uint8_t c){
 }
 uint32_t UserFile::WriteU16(uint16_t c){
     if (fptr){
-        fputc(c&255,fptr);
-        fputc((c >> 8)&255,fptr);
+        char msg[2];
+        *((uint16_t*)msg) = c;
+        Write(msg,2);
     }
     return 0;
 }
 uint32_t UserFile::WriteU32(uint32_t c){
     if (fptr){
-        fputc(c&255,fptr);
-        fputc((c >> 8)&255,fptr);
-        fputc((c >> 16)&255,fptr);
-        fputc((c >> 24)&255,fptr);
+        char msg[4];
+        *((uint32_t*)msg) = c;
+        Write(msg,4);
     }
     return 0;
 }
-
 uint32_t UserFile::WriteU64(uint64_t c){
     if (fptr){
-        fputc(c&255,fptr);
-        fputc((c >> 8)&255,fptr);
-        fputc((c >> 16)&255,fptr);
-        fputc((c >> 24)&255,fptr);
-        fputc((c >> 32)&255,fptr);
-        fputc((c >> 40)&255,fptr);
-        fputc((c >> 48)&255,fptr);
-        fputc((c >> 56)&255,fptr);
+        char msg[8];
+        *((uint64_t*)msg) = c;
+        Write(msg,8);
     }
     return 0;
 }
