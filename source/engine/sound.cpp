@@ -39,7 +39,7 @@ Mix_Chunk* Sound::Open(SDL_RWops* file,std::string name){
             assetTable[name] = aux_chunk;
             return aux_chunk;
         }else{
-            Console::GetInstance().AddText("Cannot load rwop sound");
+            Console::GetInstance().AddText(utils::format("Cannot load rwop sound [%s]",name));
             return NULL;
         }
     }else{
