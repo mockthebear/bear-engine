@@ -90,10 +90,12 @@ class Game{
         /**
             *Add an state to the state stack
         */
-        void AddState(DefinedState *s){
+        void AddState(DefinedState *s,int forcedId = -1){
             storedState = s;
             static int Ids = 0;
-            storedState->STATEID = Ids;
+            if (forcedId == -1){
+                storedState->STATEID = Ids++;
+            }
             Ids++;
         };
         /**
@@ -117,9 +119,7 @@ class Game{
             only run time
         */
         bool canDebug;
-        void HaltState(bool flag){Halt = flag;};
     private:
-        bool Halt;
         inline void CalculateDeltaTime(){dt = SDL_GetTicks();};
         void Update();
         void Render();

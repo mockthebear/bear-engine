@@ -256,8 +256,8 @@ void Game::Run(){
             #endif
             float delay = SDL_GetTicks()-dt;
 
-            if ((1000/MAXFPS) - delay > 0){
-                SDL_Delay( (1000/MAXFPS) - delay );
+            if ((1000.0f/ConfigManager::MaxFps) - delay > 0){
+                SDL_Delay( (1000.0f/ConfigManager::MaxFps) - delay );
             }
 
         }
