@@ -62,6 +62,7 @@ Sprite::Sprite(char *file,int fcount,float ftime){
         SetGrid(GetWidth()/frameCount,GetWidth()/frameCount);
     }
     SetFrame(0);
+    SetAlpha(255);
     sprFlip = SDL_FLIP_NONE;
 }
 
@@ -83,8 +84,8 @@ Sprite::Sprite(SDL_RWops* file,std::string name,int fcount,float ftime){
         SetGrid(GetWidth()/frameCount,GetWidth()/frameCount);
     }
     SetFrame(0);
+    SetAlpha(255);
     sprFlip = SDL_FLIP_NONE;
-
 }
 
 Sprite::Sprite(const char *file,int fcount,float ftime){
@@ -107,6 +108,7 @@ Sprite::Sprite(const char *file,int fcount,float ftime){
         SetGrid(GetWidth()/frameCount,GetWidth()/frameCount);
     }
     SetFrame(0);
+    SetAlpha(255);
     sprFlip = SDL_FLIP_NONE;
 }
 
@@ -278,6 +280,8 @@ void Sprite::SetClip(int x, int y,int w,int h){
     clipRect.w = w;
 
 }
+
+
 void Sprite::Render(PointInt pos,double angle){
     SDL_Rect dimensions2;
 
@@ -298,6 +302,16 @@ void Sprite::Render(int x,int y,double angle){
     dimensions2.y = y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH();
     dimensions2.h = clipRect.h*scaleRatioH*scaleY;
     dimensions2.w = clipRect.w*scaleRatioW*scaleX;
+    SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
+}
+
+
+void Sprite::RawRender(int x,int y,double angle){
+    SDL_Rect dimensions2;
+    dimensions2.x = x;
+    dimensions2.y = y;
+    dimensions2.h = clipRect.h;
+    dimensions2.w = clipRect.w;
     SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
 }
 

@@ -148,6 +148,7 @@ class Sprite{
             @param angle When you need rotate the sprite
         */
         void Render (int x,int y,double angle=0);
+        void RawRender(int x,int y,double angle);
 
         /**
             *The render function will render on the game at the position x,y.
