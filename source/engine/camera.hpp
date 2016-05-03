@@ -51,7 +51,7 @@ class Camera{
         /**
             Set the camera to follow one object
         */
-        static void Follow(GameObject *ob);
+        static void Follow(GameObject *ob,bool smooth = false);
         /**
             Disabled following
         */
@@ -102,6 +102,7 @@ class Camera{
     static GameObject *focus;
     static int Offset_x,Offset_y;
     static bool UseLimits;
+    static bool Smooth;
     static int OffsetEffect,OffsetUpdate;
     static float maxX,maxY,minX,minY,MouseRange;
 };

@@ -13,6 +13,7 @@ int         Camera::Offset_y = 0;
 int         Camera::OffsetUpdate;
 int         Camera::OffsetEffect;
 bool        Camera::UseLimits=false;
+bool        Camera::Smooth=false;
 float       Camera::maxX=0;
 float       Camera::maxY=0;
 float       Camera::minX=0;
@@ -47,15 +48,10 @@ PointInt Camera::AdjustPosition(Circle p,float xof,float yof){
     return PointInt(p.x-pos.x+xof,p.y-pos.y+yof);
 }
 
-void Camera::Follow(GameObject *ob){
+void Camera::Follow(GameObject *ob,bool smoothed){
     if (ob != NULL){
+        Smooth = smoothed;
         focus = ob;
-        pos.x = floor(focus->box.x+focus->box.w/2.0-pos.w/2.0)+Offset_x;
-        pos.y = floor(focus->box.y+focus->box.h/2.0-pos.h/2.0)+Offset_y;
-        EffectArea.x = pos.x-OffsetEffect;
-        EffectArea.y = pos.y-OffsetEffect;
-        UpdateArea.x = pos.x-OffsetUpdate;
-        UpdateArea.y = pos.y-OffsetUpdate;
     }else{
         Unfollow();
     }
@@ -95,8 +91,18 @@ void Camera::Update(float dt){
     if (focus != NULL){
         //focus = Penguins::player;
         //int x = focus->getX();e
-        pos.x = floor(focus->box.x+focus->box.w/2.0-pos.w/2.0);
-        pos.y = floor(focus->box.y+focus->box.h/2.0-pos.h/2.0);
+        Point toGo;
+        toGo.x = floor(focus->box.getXCenter());
+        toGo.y = floor(focus->box.getYCenter());
+        Point posCenter(pos.getXCenter(),pos.getYCenter());
+        if (Smooth && toGo.getDistance(posCenter) >= speed*dt ){
+            float angle = toGo.getDirection(posCenter);
+            pos.x += cos(angle)*dt*20;
+            pos.y += sin(angle)*dt*20;
+        }else{
+            pos.x = floor(focus->box.x+focus->box.w/2.0-pos.w/2.0);
+            pos.y = floor(focus->box.y+focus->box.h/2.0-pos.h/2.0);
+        }
         if (UseLimits){
             pos.x = std::max(minX,pos.x);
             pos.y = std::max(minY,pos.y);
@@ -112,7 +118,7 @@ void Camera::Update(float dt){
         pos.y += Offset_y;
 
     }else{
-        float sx,sy;
+        /*float sx,sy;
         Point mouse = InputManager::GetInstance().GetMouse();
         sx = sy = 0;
         if (InputManager::GetInstance().IsKeyDown(UP_ARROW_KEY) or mouse.y <= MouseRange){
@@ -138,7 +144,7 @@ void Camera::Update(float dt){
         EffectArea.x = pos.x-OffsetEffect/2.0;
         EffectArea.y = pos.y-OffsetEffect/2.0;
         UpdateArea.x = pos.x-OffsetUpdate/2.0;
-        UpdateArea.y = pos.y-OffsetUpdate/2.0;
+        UpdateArea.y = pos.y-OffsetUpdate/2.0;*/
 
     }
 }
