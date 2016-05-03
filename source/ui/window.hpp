@@ -11,7 +11,8 @@
 
 class Window : public UIBase{
     public:
-        Window(Rect dimensions);
+        Window();
+        Window(Rect dimensions,UIBase *owner=nullptr);
         ~Window();
         void Input();
 

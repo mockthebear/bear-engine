@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <functional>
+#include <unordered_map>
 #include "../engine/text.hpp"
 #include "../engine/sprite.hpp"
 
@@ -118,8 +119,9 @@ class UIBase{
 
         std::vector<std::unique_ptr<UIBase>> Components;
         UIStyle style;
-
+        uint8_t Color[4];
     protected:
+
         Point o_pos;
         bool hidden,close;
         static int g_ID;

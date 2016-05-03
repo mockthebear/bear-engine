@@ -6,6 +6,10 @@ UIBase::UIBase(){
     SetFocused(false);
     close = false;
     alpha = 255;
+    Color[0] = 100;
+    Color[1] = 100;
+    Color[2] = 110;
+    Color[3] = 255;
 }
 
 int UIBase::g_ID = 0;

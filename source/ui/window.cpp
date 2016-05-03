@@ -2,11 +2,15 @@
 #include "../engine/renderhelp.hpp"
 #include "../input/inputmanager.hpp"
 
-Window::Window(Rect dimensions):UIBase(){
+Window::Window():UIBase(){
     UI_REGISTER(Window);
-    o_pos = Point(dimensions.x,dimensions.y);
+}
+Window::Window(Rect dimensions,UIBase *owner):UIBase(){
+    UI_REGISTER(Window);
     box = dimensions;
-    mother = nullptr;
+    mother = owner;
+    box.x = dimensions.x + (owner ? owner->box.x : 0);
+    box.y = dimensions.y + (owner ? owner->box.y : 0);
     OnMousePress = [=](UIBase*w,int button,Point pos){
         SetFocused(true);
     };

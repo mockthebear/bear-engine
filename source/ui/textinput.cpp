@@ -53,7 +53,7 @@ void TextInput::Input(){
                     S << txt.GetText() << (char)key;
                 }
                 txt.SetText(S.str());
-            }else if(key >= 42 && key <= 59 or key == 32){
+            }else if( (key >= 42 && key <= 59) || key == 32){
                  S << txt.GetText() << (char)key;
                 txt.SetText(S.str());
             }
