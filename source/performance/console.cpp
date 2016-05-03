@@ -2,6 +2,10 @@
 #include "../engine/renderhelp.hpp"
 #include "../engine/gamebase.hpp"
 #include "../framework/dirmanager.hpp"
+#ifdef __ANDROID__
+#define APPNAME "SnakeScape"
+#include <android/log.h>
+#endif
 #include <iostream>
 #include <sstream>
 
@@ -59,6 +63,10 @@ bool Console::AddText(std::string str){
         if (logFile)
             myfile << str << "\n";
         std::cout << str<<"\n";
+
+        #ifdef __ANDROID__
+        __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s\n",str.c_str());
+        #endif
         if (m_lines <= counter){
             for (int i=0;i<m_lines;i++){
                 std::string str = " ";
@@ -76,6 +84,9 @@ bool Console::AddText(std::string str){
         std::cout << "[Console:Not started] "<<str<<"\n";
         if (logFile)
             myfile << "[Console:Not started] "<<str<<"\n";
+
+
+
     }
     return true;
 

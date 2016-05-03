@@ -1,9 +1,12 @@
 #include "luainterface.hpp"
+#include "luatools.hpp"
+#include "../performance/console.hpp"
 
 
 
 LuaInterface& LuaInterface::Instance(){
     static LuaInterface S;
+
     return S;
 }
 
@@ -16,6 +19,7 @@ LuaInterface& LuaInterface::Instance(){
 LuaInterface::LuaInterface(){
     parametersCount = 0;
     L = NULL;
+
 }
 
 LuaInterface::~LuaInterface(){
@@ -112,6 +116,16 @@ int thisIs(lua_State *L)
   return 1; // number of return values
 }
 
+int IsDead(lua_State *L)
+{
+    GameObject *t= (GameObject *)lua_touserdata(L,1);
+    if (!t){
+        return true;
+    }
+    lua_pushboolean(L,t->IsDead());
+  return 1; // number of return values
+}
+
 int getPointerY(lua_State *L)
 {
     GameObject *t= (GameObject *)lua_touserdata(L,1);
@@ -153,11 +167,13 @@ int RegisterScript(lua_State *L){
     return 0;
 }
 
+
 void LuaInterface::Startup(){
     L = luaL_newstate();
     if (L == NULL){
         std::cout << "Cannot start lua" << std::endl;
     }else{
+        Console::GetInstance().AddTextInfo("Lua started.");
         luaL_openlibs(L);
 
         Register("playSound",playSound);
@@ -174,9 +190,15 @@ void LuaInterface::Startup(){
         Register("isPlayer",isPlayer);
         Register("isCreature",isCreature);
         Register("thisIs",thisIs);
+        Register("IsDead",IsDead);
         Register("getMonsterCount",getMonsterCount);
+
+
+
+
         //
         RegisterGameObjectClass();
+        RegisterParticleClass();
         if ( luaL_loadfile(L, "lua/main.lua")==0 ) {
         // execute Lua program
             std::cout << "Calling main.lua" << std::endl;
@@ -351,7 +373,10 @@ int newFunction(lua_State *L)
 	lua_setmetatable(L, -1 - 1);*/
     return 0; // number of return values
 }
+
+
 int DeActivate(lua_State *L)
+
 {
 
     LuaObject* messagePtr = (LuaObject*)lua_touserdata(L, -1);
@@ -413,6 +438,139 @@ void LuaInterface::RegisterGameObjectClass(){
 }
 void LuaInterface::Register(std::string str,int (*F)(lua_State*)){
     lua_register(L, str.c_str(), F);
+}
+
+
+/**
+
+
+*/
+
+int newParticle(lua_State *L)
+{
+    std::cout << "criando\n";
+    float y = lua_tonumber(L,-1);
+    lua_pop(L, 1);
+    int x = lua_tonumber(L,-1);
+    lua_pop(L, 1);
+    std::cout << x << " : " << y << "\n";
+    Particle *p = BearEngine->GetCurrentState().ParticlePool->AddInstance(Particle(x,y));
+    if (!p){
+        return 0;
+    }
+    Particle **usr = static_cast<Particle**>(lua_newuserdata(L, sizeof(Particle)));
+    *usr = p;
+    luaL_getmetatable(L, "Particle");
+	lua_setmetatable(L, -1 - 1);
+    return 1; // number of return values
+}
+
+
+int ParticleSetSprite(lua_State *L)
+{
+
+    std::cout << lua_gettop(L) << "\n";
+    Particle** part = (Particle**)lua_touserdata(L, -lua_gettop(L));
+    float delay = lua_tonumber(L,-1);
+    lua_pop(L, 1);
+    int frames = lua_tonumber(L,-1);
+    lua_pop(L, 1);
+    std::string sprname = lua_tostring(L,-1);
+    lua_pop(L,lua_gettop(L));
+
+    if ((*part)){
+        (*part)->SetSprite(sprname,frames,delay);
+    }
+    return 0; // number of return values
+}
+
+
+int LAlphasAsDuration(lua_State *L){
+    Particle** part = (Particle**)lua_touserdata(L, -1);
+    if ((*part)){
+        (*part)->SetAlphaAsDuration();
+    }
+    return 0;
+}
+int LParticleMovementLine(lua_State *L)
+{
+    int mCount = lua_gettop(L);
+    if (mCount > 5 or mCount < 2){
+        Console::GetInstance().AddTextInfo("Error, function has too much methods");
+        return 0;
+    }
+    float ay = 0,ax=0;
+    if (mCount == 5){
+        ay = lua_tonumber(L,-1);
+        lua_pop(L, 1);
+    }
+    if (mCount >= 4){
+        ax = lua_tonumber(L,-1);
+        lua_pop(L, 1);
+    }
+
+
+    float sy = lua_tonumber(L,-1);
+    lua_pop(L, 1);
+    float sx = lua_tonumber(L,-1);
+    lua_pop(L,1);
+    Particle** part = (Particle**)lua_touserdata(L, -1);
+    if ((*part)){
+        (*part)->SetPatternMoveLine(Point(sx,sy),Point(ax,ay));
+    }
+    return 0; // number of return values
+}
+
+
+void LuaInterface::RegisterParticleClass(){
+    //LuaObject = {}
+	lua_newtable(L);
+	lua_pushvalue(L, -1);
+	lua_setglobal(L, "Particle");
+	int methods = lua_gettop(L);
+
+	// methodsTable = {}
+	lua_newtable(L);
+	int methodsTable = lua_gettop(L);
+
+    // className.__call = newFunction
+    lua_pushcfunction(L, newParticle);
+    lua_setfield(L, methodsTable, "__call");
+
+	// setmetatable(className, methodsTable)
+	lua_setmetatable(L, methods);
+
+	// className.metatable = {}
+	luaL_newmetatable(L, "Particle");
+	int metatable = lua_gettop(L);
+
+	// className.metatable.__metatable = className
+	lua_pushvalue(L, methods);
+	lua_setfield(L, metatable, "__metatable");
+
+	// className.metatable.__index = className
+	lua_pushvalue(L, methods);
+	lua_setfield(L, metatable, "__index");
+
+	lua_pop(L, 2);
+
+	lua_getglobal(L, "Particle");
+	lua_pushcfunction(L, ParticleSetSprite);
+	lua_setfield(L, -2, "setSprite");
+
+	lua_getglobal(L, "Particle");
+	lua_pushcfunction(L, LParticleMovementLine);
+	lua_setfield(L, -2, "setPatternMovementLine");
+
+    lua_getglobal(L, "Particle");
+	lua_pushcfunction(L, LAlphasAsDuration);
+	lua_setfield(L, -2, "setAlphaAsDuration");
+
+
+	lua_setfield(L, -2, "__gc");
+
+
+	lua_pop(L, 1);
 }
 
 

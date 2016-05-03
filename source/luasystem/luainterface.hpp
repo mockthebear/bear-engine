@@ -1,4 +1,5 @@
 #include "../settings/definitions.hpp"
+#include "luatools.hpp"
 #include <string>
 #ifndef DISABLE_LUAINTERFACE
 
@@ -19,6 +20,9 @@ class LuaInterface{
         ~LuaInterface();
         LuaInterface();
         void Startup();
+        template<typename Func>void FancyRegister(std::string str,Func f){
+            RandomRegister(L,str,f);
+        };
         void Register(std::string str,int (*F)(lua_State*));
         bool RunScript(std::string name);
         bool CallScript(std::string name);
@@ -40,35 +44,11 @@ class LuaInterface{
         std::vector<luaTimer> timers;
     private:
         void RegisterGameObjectClass();
+        void RegisterParticleClass();
 
 };
 
     #endif // LUAINTH
-#else
-//Dummy in case of not supporting lua
-class lua_State{
-	public:
-		lua_State(){};
-		int x;
-};
-class LuaInterface{
-    public:
-        ~LuaInterface(){};;
-        LuaInterface(){};
-        void Startup(){};
-        void Register(std::string str,int (*F)(lua_State*)){};
-        bool RunScript(std::string name){return false;};
-        bool CallScript(std::string name){return false;};
-        bool RunTimer(std::string name){return false;};
-        bool CallClear(){return false;};
-        bool LoadPrepare(std::string name){return false;};
-        bool LoadPrepareC(std::string name,std::string func){return false;};
-        bool Call(){return false;};
-        void Update(float dt){};
-        void InsertInt(int n){};
-        void InsertPointer(void *p){};
-        void InsertFloat(float n){};
-        static LuaInterface& Instance();
-};
+
 
 #endif

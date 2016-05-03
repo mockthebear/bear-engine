@@ -1,7 +1,7 @@
 #include "configmanager.hpp"
 #include "../engine/gamebase.hpp"
 
-
+int ConfigManager::MaxFps = MAXFPS;
 ConfigManager::ConfigManager(){
     m_screenSize.x=SCREEN_SIZE_W;
     m_screenSize.y=SCREEN_SIZE_H;

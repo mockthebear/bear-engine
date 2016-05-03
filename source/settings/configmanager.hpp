@@ -28,7 +28,7 @@ class ConfigManager{
 
         ResizeBehavior GetResizeAction(){return m_rbheavior;};
         void SetResizeAction(ResizeBehavior action){m_rbheavior=action;};
-
+        static int MaxFps;
         static ConfigManager& GetInstance();
         ConfigManager();
         ~ConfigManager();
