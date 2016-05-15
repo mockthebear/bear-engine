@@ -138,3 +138,77 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
         }
     return ret;
 }
+
+bool Collision::SoftWarpAway(GameObject* thisObject,GameObject* otherObject){
+    int direction = -1;
+    Point Center1 = thisObject->box.GetCenter();
+    Point Center2 = otherObject->box.GetCenter();
+    float angle = Center1.getDirection(Center2);
+    for (float dist=(otherObject->box.w+otherObject->box.h)/2;dist < otherObject->box.w*otherObject->box.w;dist++){
+        Rect aux = thisObject->box;
+        aux.x += sin(angle)*dist;
+        aux.y += cos(angle)*dist;
+        if  (not Collision::IsColliding(aux,otherObject->box)){
+            thisObject->box = aux;
+            return true;
+        }
+    }
+    /*for (auto &obj : pool.ForGroup(gid)){
+        if (obj != dis && !obj->IsDead()){
+            if ( obj->solid ){
+
+            }
+        }
+    }*/
+    return false;
+}
+
+bool Collision::WarpAway(Rect &obj1,Rect obj2){
+    int direction = -1;
+    /*
+        0 top left
+        1 top right
+        2 bottom right
+        3 bottom left
+    */
+    Point Center1 = obj1.GetCenter();
+    Point Center2 = obj2.GetCenter();
+    if (Center1.y > Center2.y){
+        //Means top
+        if (Center1.x < Center2.x){
+            direction = 0;
+        }else{
+            direction = 1;
+        }
+    }else{
+        //means Bottom
+        if (Center1.x < Center2.x){
+            direction = 3;
+        }else{
+            direction = 2;
+        }
+    }
+    std::cout << direction << "\n";
+    switch (direction){
+        case 0:{
+            obj1.x = obj2.x - obj1.w;
+            obj1.y = obj2.y - obj1.h;
+            break;
+        };
+        case 1:{
+            obj1.x = obj2.x - obj1.w;
+            obj1.y = obj2.y - obj1.h;
+            break;
+        };
+        case 2:{
+            obj1.x = obj2.x + obj2.w;
+            obj1.y = obj2.y + obj2.h;
+            break;
+        };
+        case 3:{
+            obj1.x = obj2.x - obj1.w;
+            obj1.y = obj2.y + obj2.h;
+            break;
+        };
+    }
+}
