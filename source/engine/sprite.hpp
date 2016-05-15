@@ -148,6 +148,13 @@ class Sprite{
             @param angle When you need rotate the sprite
         */
         void Render (int x,int y,double angle=0);
+        /**
+            *Work as the same of Render, but without any changing by the screen scale
+            *Only the transformations of this sprite
+            @param x The x position
+            @param y The y position
+            @param angle When you need rotate the sprite
+        */
         void RawRender(int x,int y,double angle);
 
         /**
@@ -165,6 +172,19 @@ class Sprite{
             @param dt The time between the frames
         */
         void Update(float dt);
+        /**
+            *Just reset the animation to the fame 0. As you can use an grid you can
+            *also reset the y axis by setting the parameter as true.
+        */
+
+        void ResetAnimation(bool changeYaxis=false){
+            over = false;
+            currentFrame.x = 0;
+            timeElapsed = 0;
+            if (changeYaxis)
+                currentFrame.y = 0;
+
+        }
         /**
             *You can force an frame.
             *As the class only changes the X axis, you can set the yFrame parameter
@@ -198,6 +218,7 @@ class Sprite{
         */
         void SetFrameCount(int fc){
             frameCount=fc;
+            over = false;
         };
 
         int GetFrameCount(){
@@ -209,8 +230,13 @@ class Sprite{
         */
         void SetFrameTime(float ft){
             frameTime=ft;
-        };
+            timeElapsed = 0;
 
+        };
+        /**
+            *Get the remeaining time to the next frame
+            @return the time left
+        */
         int GetFrameTime(){
             return frameTime;
         };

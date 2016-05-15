@@ -310,8 +310,8 @@ void Sprite::RawRender(int x,int y,double angle){
     SDL_Rect dimensions2;
     dimensions2.x = x;
     dimensions2.y = y;
-    dimensions2.h = clipRect.h;
-    dimensions2.w = clipRect.w;
+    dimensions2.h = clipRect.h*scaleX;
+    dimensions2.w = clipRect.w*scaleY;
     SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
 }
 
