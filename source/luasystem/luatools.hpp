@@ -22,7 +22,13 @@ template<typename T1> struct GenericLuaCaller{
 template<>
     struct GenericLuaCaller<int> {
      static int Call(lua_State *L){
-        int n = lua_tonumber(L,-1);
+        int n = 0;
+        if (lua_isnil(L,-1)){
+            Console::GetInstance().AddText(utils::format("[LuaBase][Warning]Argument %d is nil",lua_gettop(L)));
+            n = -1;
+        }else{
+            n = lua_tonumber(L,-1);
+        }
         lua_pop(L,1);
         return n;
     };
@@ -31,7 +37,13 @@ template<>
 template<>
     struct GenericLuaCaller<float> {
      static float Call(lua_State *L){
-        float n = lua_tonumber(L,-1);
+        float n = 0;
+        if (lua_isnil(L,-1)){
+            Console::GetInstance().AddText(utils::format("[LuaBase][Warning]Argument %d is nil",lua_gettop(L)));
+            n = -1;
+        }else{
+            n = lua_tonumber(L,-1);
+        }
         lua_pop(L,1);
         return n;
     };
@@ -39,7 +51,13 @@ template<>
 template<>
     struct GenericLuaCaller<std::string> {
      static std::string Call(lua_State *L){
-        std::string n = lua_tostring(L,-1);
+        std::string n;
+        if (lua_isnil(L,-1)){
+            Console::GetInstance().AddText(utils::format("[LuaBase][Warning]Argument %d is nil",lua_gettop(L)));
+            n = "nil";
+        }else{
+            n = lua_tostring(L,-1);
+        }
         lua_pop(L,1);
         return n;
     };
@@ -48,7 +66,13 @@ template<>
 template<>
     struct GenericLuaCaller<bool> {
      static bool Call(lua_State *L){
-        bool n = lua_toboolean(L,-1);
+        bool n = false;
+        if (lua_isnil(L,-1)){
+            Console::GetInstance().AddText(utils::format("[LuaBase][Warning]Argument %d is nil",lua_gettop(L)));
+            n = -1;
+        }else{
+            n = lua_toboolean(L,-1);
+        }
         lua_pop(L,1);
         return n;
     };
@@ -147,9 +171,28 @@ template<typename T1,typename ... Types> void RandomRegister(lua_State *L,std::s
     (*baseF) = &f;
     lua_pushcclosure(L, LuaCaller::Base,1);
     lua_setglobal(L, str.c_str());
-}
+};
 
-
+template<typename T1,typename ... Types> void LambdaRegister(lua_State *L,std::string str,std::function<T1(Types ... args)> func){
+    static LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
+        int argCount = sizeof...(Types);
+        if (argCount > lua_gettop(L2)){
+            Console::GetInstance().AddTextInfo(utils::format("Too few arguments on function %s. Expected %d got %d",str,lua_gettop(L2),argCount));
+        }
+        if (argCount < lua_gettop(L2)){
+            Console::GetInstance().AddTextInfo(utils::format("Too much arguments on function %s. Expected %d got %d",str,lua_gettop(L2),argCount));
+        }
+        std::tuple<Types ...> ArgumentList;
+        readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2);
+        T1 rData = expander<sizeof...(Types),T1>::expand(ArgumentList,L2,func);
+        GenericLuaReturner<T1>::Ret(rData,L2);
+        return 1;
+    };
+    LuaCFunctionLambda** baseF = static_cast<LuaCFunctionLambda**>(lua_newuserdata(L, sizeof(LuaCFunctionLambda) ));
+    (*baseF) = &f;
+    lua_pushcclosure(L, LuaCaller::Base,1);
+    lua_setglobal(L, str.c_str());
+};
 
 #endif // LUATOOLSBEH
 #endif // DISABLE_LUAINTERFACE

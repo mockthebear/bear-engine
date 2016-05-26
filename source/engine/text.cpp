@@ -138,7 +138,6 @@ Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string tex
     box.y = y;
     text = textp.c_str();
     bg = {0,0,0,0};
-    fontsize *= 2;
     size = fontsize;
     style = stylep;
     color = colot;
@@ -246,8 +245,8 @@ void Text::Render(int cameraX,int cameraY){
         double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
         dimensions2.x = box.x*scaleRatioW+cameraX*scaleRatioW+ ScreenManager::GetInstance().GetOffsetW();
         dimensions2.y = box.y*scaleRatioH+cameraY*scaleRatioH;
-        dimensions2.h = box.h*scaleRatioH*scaleY*0.5;
-        dimensions2.w = box.w*scaleRatioW*scaleY*0.5;
+        dimensions2.h = box.h*scaleRatioH*scaleY;
+        dimensions2.w = box.w*scaleRatioW*scaleY;
 
         if (!texture){
             RemakeTexture();
@@ -272,8 +271,8 @@ void Text::RenderRS(int cameraX,int cameraY){
         SDL_Rect dimensions2;
         dimensions2.x = box.x+cameraX;
         dimensions2.y = box.y+cameraY;
-        dimensions2.h = box.h*0.5;
-        dimensions2.w = box.w*0.5;
+        dimensions2.h = box.h;
+        dimensions2.w = box.w;
 
         if (!texture){
             RemakeTexture();
@@ -325,7 +324,6 @@ void Text::SetStyle(TextStyle syle){
 void Text::SetFontSize(int ftsz){
     if (!font)
         return;
-    ftsz = ftsz*2;
     std::string ftnm = fontfile;
     char buff[10];
     sprintf(buff,"%d",ftsz);

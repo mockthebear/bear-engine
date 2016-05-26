@@ -88,6 +88,7 @@ Game::Game(const char *name){
         SDLStarted = true;
 
         Console::GetInstance().Begin();
+        ConfigManager::GetInstance().DisplayArgs();
 
 
         skipRender = 1;

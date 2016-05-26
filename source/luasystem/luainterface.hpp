@@ -20,6 +20,11 @@ class LuaInterface{
         ~LuaInterface();
         LuaInterface();
         void Startup();
+        template<typename Func>void RegisterLambda(std::string str,std::function<Func> f){
+            LambdaRegister(L,str,f);
+        }
+
+
         template<typename Func>void FancyRegister(std::string str,Func f){
             RandomRegister(L,str,f);
         };

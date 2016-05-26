@@ -113,7 +113,7 @@ class GameObject{
             }
         @endcode
     */
-    virtual bool Is(int thing)=0;
+    virtual bool Is(int thing){return thing==GetHash_internal();};
     /**
         *You can use this to say "hey, you have been damaged"
         @param other the object who touched this one

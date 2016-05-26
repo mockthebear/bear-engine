@@ -130,6 +130,10 @@ void Sprite::SetGrid(int gx,int gy){
     grid.x = gx;
     gy = std::min(gy,GetHeight());
     grid.y = gy;
+    if (gx != 0){
+        SetFrameCount(GetWidth()/gx);
+    }
+
 }
 void Sprite::SetFrame(int xFrame,int yFrame){
     if (yFrame != -1)
@@ -310,8 +314,8 @@ void Sprite::RawRender(int x,int y,double angle){
     SDL_Rect dimensions2;
     dimensions2.x = x;
     dimensions2.y = y;
-    dimensions2.h = clipRect.h*scaleX;
-    dimensions2.w = clipRect.w*scaleY;
+    dimensions2.h = clipRect.h*scaleY;
+    dimensions2.w = clipRect.w*scaleX;
     SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
 }
 

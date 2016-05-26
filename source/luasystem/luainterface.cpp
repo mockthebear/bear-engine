@@ -79,17 +79,7 @@ int getPointerX(lua_State *L)
   return 1; // number of return values
 }
 
-int getMonsterCount(lua_State *L)
-{
-    int count = 0;
-    /*for (auto &it : *BearEngine->GetCurrentState().getCreatureArray()){
-        if (it->Is(OBJ_CREATURE) and it->Is(OBJ_MONSTER)){
-            count++;
-        }
-    }*/
-    lua_pushnumber(L,count);
-  return 1; // number of return values
-}
+
 int isPlayer(lua_State *L)
 {
     GameObject *t= (GameObject *)lua_touserdata(L,1);
@@ -191,10 +181,6 @@ void LuaInterface::Startup(){
         Register("isCreature",isCreature);
         Register("thisIs",thisIs);
         Register("IsDead",IsDead);
-        Register("getMonsterCount",getMonsterCount);
-
-
-
 
         //
         RegisterGameObjectClass();

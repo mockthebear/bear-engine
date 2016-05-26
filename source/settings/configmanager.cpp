@@ -1,5 +1,6 @@
 #include "configmanager.hpp"
 #include "../engine/gamebase.hpp"
+#include "../performance/console.hpp"
 
 int ConfigManager::MaxFps = MAXFPS;
 ConfigManager::ConfigManager(){
@@ -29,3 +30,19 @@ void ConfigManager::SetScreenSize(int w,int h){
     }
 };
 
+void ConfigManager::DisplayArgs(){
+    if (args.size() == 0){
+        Console::GetInstance().AddText("There are no args\n");
+    }else{
+        int counter = 0;
+        for (auto &it : args){
+            Console::GetInstance().AddText(utils::format("Argument [%d]: %s",counter,it.c_str()));
+            counter++;
+        }
+    }
+}
+void ConfigManager::RegisterArgs(int argc,char *argv[]){
+    for (int i=0;i<argc;i++){
+        args.emplace_back(std::string(argv[i]));
+    }
+}

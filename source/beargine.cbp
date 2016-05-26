@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../game/SnakeScape" prefix_auto="1" extension_auto="1" />
+				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../game/" />
 				<Option object_output="../obj/Debug/" />
 				<Option type="0" />
@@ -17,7 +17,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="../game/dogurai" prefix_auto="1" extension_auto="1" />
+				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../game/" />
 				<Option object_output="../obj/Release/" />
 				<Option type="1" />
@@ -34,9 +34,9 @@
 				</Linker>
 			</Target>
 			<Target title="unix release">
-				<Option output="../game/dogurai" prefix_auto="1" extension_auto="1" />
+				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../game/" />
-				<Option object_output="../obj/Release/" />
+				<Option object_output="../obj/Unix/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />

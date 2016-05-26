@@ -161,15 +161,14 @@ class GenericState{
             *GameObject::hasPerspective. The less the value, more on "bottom" it will be
         */
         std::map<int,std::vector<GameObject*>*> Map;
+
+        void RenderInstances();
         /**
             *Well, you dont need to use pools for the objects at all.
             *Here, there is an vector!
         */
         std::vector<std::unique_ptr<GameObject>> ObjectArray;
-        /**
-            *You may need show some windows. Here's a vector to Window components
-        */
-        std::vector<std::unique_ptr<UIBase>> GameWindows;
+
         /**
             *You dont want use the object array, and want use pools?\n
             *Dont know how to mess with our pool class SPP<T>?\n
@@ -184,7 +183,19 @@ class GenericState{
         int STATEID;
         bool gameStarted;
         bool requestDelete,requestQuit;
+
+        void UpdateWindowses(float dt);
+        void RenderWindowses();
+        void AddWindow(UIBase *b);
     protected:
+
+        /**
+            *You may need show some windows. Here's a vector to Window components
+        */
+
+        std::vector<std::unique_ptr<UIBase>> GameWindows;
+    private:
+        UIBase *storedUi;
 
 };
 #endif // STATEH

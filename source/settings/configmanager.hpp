@@ -4,6 +4,8 @@
 
 #include "definitions.hpp"
 #include "../framework/geometry.hpp"
+#include <vector>
+#include <string>
 
 enum ResizeBehavior{
     RESIZE_BEHAVIOR_NORESIZE,
@@ -32,11 +34,17 @@ class ConfigManager{
         static ConfigManager& GetInstance();
         ConfigManager();
         ~ConfigManager();
+
+        void RegisterArgs(int argc,char *argv[]);
+        void DisplayArgs();
+
         bool pause;
     private:
         ResizeBehavior m_rbheavior;
         bool hasAudio;
         PointInt m_screenSize;
+
+        std::vector<std::string> args;
 
 
 };

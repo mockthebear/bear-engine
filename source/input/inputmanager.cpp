@@ -139,7 +139,7 @@ void InputManager::Update(float dt){
     while (SDL_PollEvent(&event)) {
 
         if(event.type == SDL_WINDOWEVENT){
-            Console::GetInstance().AddTextInfo(utils::format("%d",(int)event.window.event));
+            //Console::GetInstance().AddTextInfo(utils::format("%d",(int)event.window.event));
             if(event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED){
                 ScreenManager::GetInstance().NotifyResized();
             }else if(event.window.event == SDL_WINDOWEVENT_HIDDEN){

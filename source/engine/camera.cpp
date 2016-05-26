@@ -83,6 +83,7 @@ void Camera::Initiate(Rect startingPos,int offsetEffect_, int offsetUpdate_){
     EffectArea.h = pos.h+ offsetEffect_*2.0f;
     UpdateArea.w = pos.w+ offsetUpdate_*2.0f;
     UpdateArea.h = pos.h+ offsetUpdate_*2.0f;
+    focus = nullptr;
 }
 
 
