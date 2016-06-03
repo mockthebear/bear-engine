@@ -28,7 +28,7 @@ bool RenderHelp::RendedTexture(SDL_Texture* texture,int x,int y,int w,int h,floa
     return SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,NULL,&rectangle,angle,&center,flip) == 0;
 }
 
-void RenderHelp::DrawSquareColorA(int x,int y,int w,int h,int r,int g,int b,int a,bool outline){
+void RenderHelp::DrawSquareColorA(int x,int y,int w,int h,int r,int g,int b,int a){
 
     SDL_SetRenderDrawColor(BearEngine->GetRenderer(), r, g,b, a);
     SDL_Rect rectangle;
@@ -38,11 +38,7 @@ void RenderHelp::DrawSquareColorA(int x,int y,int w,int h,int r,int g,int b,int 
     rectangle.y = ( y*scaleRatioH  )+ ScreenManager::GetInstance().GetOffsetH();
     rectangle.w = ( w*scaleRatioW  );
     rectangle.h = ( h*scaleRatioH  );
-    if (outline){
-        SDL_RenderDrawRect(BearEngine->GetRenderer(), &rectangle);
-    }else{
-        SDL_RenderFillRect(BearEngine->GetRenderer(), &rectangle);
-    }
+    SDL_RenderFillRect(BearEngine->GetRenderer(), &rectangle);
 
 }
 
@@ -70,7 +66,7 @@ void RenderHelp::DrawLineColorA(int x,int y,int w,int h,int r,int g,int b,int a)
 }
 
 SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h){
-    SDL_Texture *t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, w, h);
+    SDL_Texture *t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, w, h);
     Uint32 * pixels = new Uint32[w * h];
     DebugHelper::AssertAlloc(pixels,WHERE_ARG);
     SDL_SetTextureBlendMode( t, SDL_BLENDMODE_BLEND );
@@ -86,7 +82,7 @@ SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h){
 }
 
 SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h,std::function<Uint32 (Uint32 , int, int)> F){
-    SDL_Texture *t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, w, h);
+    SDL_Texture *t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, w, h);
     Uint32 * pixels = new Uint32[w * h];
     if (pixels == NULL){
         return NULL;
@@ -108,4 +104,13 @@ Uint32 RenderHelp::FormatRGBA(int r,int b,int g,int a){
     G = g << 16;
     B = b << 8;
     return R+G+B+a;
+}
+
+Uint32 RenderHelp::FormatARGB(int a,int r,int b,int g){
+
+    Uint32 R,G,B;
+    R = a << (24);
+    G = r << 16;
+    B = g << 8;
+    return R+G+B+b;
 }
