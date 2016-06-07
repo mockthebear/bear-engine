@@ -54,15 +54,9 @@ int Light::GetAround(unsigned char** map,int x,int y){
     return sqrt(n/k);
 }
 void Light::Gen(parameters *P,Job &j){
-    #ifndef DISABLE_THREADPOOL
-    pthread_mutex_lock(&Critical);
-    #endif
-    #ifndef DISABLE_THREADPOOL
-    pthread_mutex_unlock(&Critical);
-    #endif
     for (int y=j.from;y<j.to;y++){
         for (int x=0;x<sizeX;x++){
-            pix[y*sizeX + x ] = RenderHelp::FormatRGBA(0,0,0,GetAround(ShadeMap,x,y));
+            pix[y*sizeX + x ] = RenderHelp::FormatARGB(GetAround(ShadeMap,x,y),0,0,0);
         }
     }
      if (onAutomatic){
@@ -202,7 +196,7 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize){
         for (int x=0;x<sizeX;x++){
             ShadeMap[y][x] = MaxDarkness;
             DataMap[y][x] = 0;
-            pix[y * (sizeX) + x] = RenderHelp::FormatRGBA(0,0,0,100);
+            pix[y * (sizeX) + x] = RenderHelp::FormatARGB(100,0,0,0);
         }
     }
 

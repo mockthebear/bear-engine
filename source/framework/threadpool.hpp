@@ -4,6 +4,7 @@
 #include <stack>
 #ifndef DISABLE_THREADPOOL
 #include <pthread.h>
+#include <semaphore.h>
 #endif
 #include <functional>
 #include <time.h>
@@ -240,7 +241,7 @@ class ThreadPool{
         parameters  *Params;
         #ifndef DISABLE_THREADPOOL
         pthread_t *thread_pool;
-        pthread_mutex_t *mutexes,*runningM;
+        sem_t *mutexes,*runningM;
         pthread_mutex_t Critical;
         #endif
 

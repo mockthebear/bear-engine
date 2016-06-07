@@ -123,8 +123,7 @@ void Title::Update(float dt){
          ParticlePool->UpdateInstances(dt);
     };
     ThreadPool::GetInstance().AddLambdaJob(ff);
-    Light::GetInstance()->Update(dt,LIGHT_AUTO);
-    ThreadPool::GetInstance().Unlock();
+    Light::GetInstance()->Update(dt,LIGHT_SHADE);
 
     ParticlePool->PreRender(Map);
     Camera::Update(dt);
@@ -159,7 +158,7 @@ void Title::Render(){
     SDL_RenderClear( BearEngine->GetRenderer() );
 
     //Light::GetInstance()->Update(0,LIGHT_GEN);
-
+    Light::GetInstance()->Update(0,LIGHT_REDUCE);
     RenderHelp::DrawSquareColorA(0,0,800,600,255,255,255,255);
     bg->Render(0,0);
 
@@ -174,12 +173,14 @@ void Title::Render(){
 
     message->Render(400-message->GetWidth()/2,55+message->GetHeight());
 
+    Light::GetInstance()->Update(0,LIGHT_GEN);
+
     Console::GetInstance().Render();
     PointInt p = PointInt(sprpos.x,sprpos.y);
 
     test->Render(p);
 
-    Light::GetInstance()->WaitDone();
+    ThreadPool::GetInstance().Lock();
     Light::GetInstance()->Render();
 
 

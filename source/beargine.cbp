@@ -47,7 +47,7 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="-lSDL2main -lSDL2 -lSDL2_image" />
-					<Add option="-lSDL2_ttf -lSDL2_mixer -pthread" />
+					<Add option="-lSDL2_ttf -lSDL2_mixer -pthread -llua5.1" />
 				</Linker>
 			</Target>
 		</Build>

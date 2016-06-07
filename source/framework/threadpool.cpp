@@ -35,8 +35,8 @@ ThreadPool::ThreadPool(int threads){
     #ifndef DISABLE_THREADPOOL
     UsePThreads=threads;
     thread_pool = new  pthread_t[UsePThreads];
-    mutexes = new  pthread_mutex_t[UsePThreads];
-    runningM = new  pthread_mutex_t[UsePThreads];
+    mutexes = new  sem_t [UsePThreads];
+    runningM = new  sem_t [UsePThreads];
     Params = new  parameters[UsePThreads];
 
     started = false;
@@ -46,10 +46,11 @@ ThreadPool::ThreadPool(int threads){
         Params[i].me = (void*)this;
         Params[i].working = false;
         Params[i].Threads = UsePThreads;
-        pthread_mutex_init(&mutexes[i], NULL);
-        pthread_mutex_init(&runningM[i], NULL);
-        pthread_mutex_unlock(&mutexes[i]);
-        pthread_mutex_lock(&runningM[i]);
+        sem_init(&mutexes[i], 0,1);
+        sem_init(&runningM[i], 0,1);
+        sem_wait (&runningM[i]);
+        //pthread_mutex_unlock(&mutexes[i]);
+        //pthread_mutex_lock(&runningM[i]);
     }
     Locked = true;
     #else
@@ -154,7 +155,10 @@ void ThreadPool::Lock(){
     Locked = true;
     #ifndef DISABLE_THREADPOOL
     for (int e=0;e<UsePThreads;e++){
-        pthread_mutex_lock(&runningM[e]);
+        //int k;
+        //sem_getvalue(&runningM[e],&k);
+        //std::cout << "E: " << e << "->"<<k<<"\n";
+        sem_wait (&runningM[e]);
     }
 
     #endif
@@ -165,23 +169,7 @@ bool ThreadPool::TryLock(){
         return false;
     }
     #ifndef DISABLE_THREADPOOL
-    bool *flags = new bool[UsePThreads];
-    bool sucess = true;
-    for (int e=0;e<UsePThreads;e++){
-        if (pthread_mutex_trylock(&runningM[e])){
-            flags[e] = true;
-        }else{
-            flags[e] = false;
-            sucess = false;
-        }
-    }
-    if (!sucess){
-        for (int e=0;e<UsePThreads;e++){
-            if (flags[e])
-                pthread_mutex_unlock(&runningM[e]);
-        }
-        return false;
-    }
+
 
     //Locked = true;
     //bool done = false;
@@ -201,7 +189,7 @@ void ThreadPool::Unlock(){
     Locked = false;
     #ifndef DISABLE_THREADPOOL
     for (int e=0;e<UsePThreads;e++){
-        pthread_mutex_unlock(&mutexes[e]);
+        sem_post(&mutexes[e]);
     }
     #else
     ThreadPool::thread_pool_worker(&Params[0]);
@@ -235,7 +223,7 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
     while(true){
         //Call once
         #ifndef DISABLE_THREADPOOL
-        pthread_mutex_lock(&This->mutexes[P->id]);
+        sem_wait (&This->mutexes[P->id]);
         #endif
         P->working = true;
         Job todo;
@@ -265,7 +253,7 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
                     #ifndef DISABLE_THREADPOOL
                     pthread_mutex_lock(&This->Critical);
                     std::cout << "[ThreadPool]{Thread:"<< P->id << "} closing.\n";
-                    pthread_mutex_unlock(&This->runningM[P->id]);
+                    sem_post(&This->runningM[P->id]);
                     pthread_mutex_unlock(&This->Critical);
                     pthread_exit(NULL);
                     #endif // DISABLE_THREADPOOL
@@ -283,7 +271,7 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
             }
         }
         #ifndef DISABLE_THREADPOOL
-        pthread_mutex_unlock(&This->runningM[P->id]);
+        sem_post(&This->runningM[P->id]);
         #endif
     }
     return NULL;
