@@ -87,6 +87,29 @@ Game::Game(const char *name){
 
         SDLStarted = true;
 
+        SDL_version compiled;
+        SDL_version linked;
+        SDL_VERSION(&compiled);
+        SDL_GetVersion(&linked);
+        Console::GetInstance().AddText(utils::format("Compiled with SDL version %d.%d.%d",compiled.major, compiled.minor, compiled.patch));
+        Console::GetInstance().AddText(utils::format("Linked with SDL version %d.%d.%d.", linked.major, linked.minor, linked.patch));
+
+
+        const SDL_version *link_version=IMG_Linked_Version();
+        SDL_IMAGE_VERSION(&compiled);
+
+
+        Console::GetInstance().AddText(utils::format("SDL_Image compiled with %d.%d.%d",compiled.major, compiled.minor, compiled.patch));
+        Console::GetInstance().AddText(utils::format("SDL_Image Linked with %d.%d.%d.", link_version->major, link_version->minor, link_version->patch));
+
+
+        link_version=TTF_Linked_Version();
+        SDL_TTF_VERSION(&compiled);
+
+        Console::GetInstance().AddText(utils::format("SDL_TTF compiled with %d.%d.%d",compiled.major, compiled.minor, compiled.patch));
+        Console::GetInstance().AddText(utils::format("SDL_TTF Linked with %d.%d.%d.", link_version->major, link_version->minor, link_version->patch));
+
+
         Console::GetInstance().Begin();
         ConfigManager::GetInstance().DisplayArgs();
 
@@ -133,7 +156,10 @@ void Game::Close(){
     isClosing = true;
     GameBehavior::GetInstance().OnClose();
     Console::GetInstance().AddTextInfo("Closing engine assets");
-
+    #ifndef DISABLE_THREADPOOL
+    Console::GetInstance().AddTextInfo("Closing threads");
+    ThreadPool::GetInstance().KillThreads();
+    #endif
     ResourceManager::GetInstance().Erase("engine");
     Console::GetInstance().AddTextInfo("Closing screen");
     ScreenManager::GetInstance().TerminateScreen();
