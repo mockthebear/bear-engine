@@ -1,6 +1,8 @@
 #include "gamefile.hpp"
 #include "dirmanager.hpp"
 #include "resourcemanager.hpp"
+#include "../performance/console.hpp"
+#include "utils.hpp"
 #include <iostream>
 
 
@@ -45,7 +47,7 @@ bool GameFile::Open(std::string name,bool notify){
 
     if (m_filePointer == NULL){
         if (notify){
-            std::cout << "[GameFile::Open] Cannot locate " << name << "\n";
+            Console::GetInstance().AddText(utils::format("Cannot locate %s", name.c_str() ) );
         }
         return false;
     }
@@ -148,7 +150,6 @@ int GameFile::FindInt(){
     while (by <= '0' || by >= '9'){
         by = ReadByte();
         if (Tell() > m_size){
-            std::cout << "CABO\n";
             return -1;
         }
     }
@@ -160,13 +161,11 @@ int GameFile::FindInt(){
         i += by-'0';
         by = ReadByte();
         if (Tell() > m_size){
-            std::cout << "CABO\n";
             return -1;
         }
 
     }
     Seek(Tell()-1);
-    std::cout << "Ret:" << i << "\n";
     return i;
 }
 

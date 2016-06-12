@@ -77,12 +77,13 @@ Game::Game(const char *name){
 
         if (!ResourceManager::GetInstance().Load("engine/enginedata.burr","engine")){
             Console::GetInstance().AddTextInfo("engine/enginedata.burr missing!!!");
+            getchar();
+            exit(1);
             return;
         }
 
         if (!ResourceManager::GetInstance().Load("engine/ui.burr","ui")){
             Console::GetInstance().AddTextInfo("engine/ui.burr missing!!!");
-            return;
         }
 
         SDLStarted = true;

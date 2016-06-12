@@ -9,6 +9,7 @@
 //Base header
 #include "engine/gamebase.hpp"
 #include "framework/gamefile.hpp"
+#include "settings/configmanager.hpp"
 
 
 #ifdef __EMSCRIPTEN__
@@ -42,7 +43,7 @@ extern "C"
 
 int main (int argc, char** argv) {
 
-
+    ConfigManager::GetInstance().RegisterArgs(argc,argv);
     Game::GetInstance("Bear engine test");
     Game::GetInstance()->Begin();
     #ifdef __EMSCRIPTEN__
