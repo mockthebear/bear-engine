@@ -1,5 +1,9 @@
 #include "base.hpp"
 #include "../input/inputmanager.hpp"
+
+
+UIStyle UIStyle::BaseStyle = UIStyle();
+
 UIBase::UIBase(){
     mother = nullptr;
     Show();
@@ -10,6 +14,7 @@ UIBase::UIBase(){
     Color[1] = 100;
     Color[2] = 110;
     Color[3] = 255;
+    style = UIStyle::BaseStyle;
 }
 
 int UIBase::g_ID = 0;
@@ -52,6 +57,9 @@ void UIBase::NotifyChildrens(){
         }
     }
 }
+void UIBase::ClearChildrens(){
+    Components.clear();
+}
 void UIBase::Input(){
 
     int key = InputManager::GetInstance().GetMouseMousePressKey();
@@ -83,5 +91,7 @@ void UIBase::Refresh(){
 
 
 void UIBase::AddComponent(UIBase *ui){
+    ui->mother = this;
+    ui->NotifyChildrens();
     Components.emplace_back(ui);
 }

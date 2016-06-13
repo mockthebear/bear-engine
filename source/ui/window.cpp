@@ -14,9 +14,17 @@ Window::Window(Rect dimensions,UIBase *owner):UIBase(){
     OnMousePress = [=](UIBase*w,int button,Point pos){
         SetFocused(true);
     };
+    highlight = true;
+    OnUpdate =[=](UIBase*,float dt){
+
+    };
 }
 Window::~Window(){
 
+}
+void Window::Update(float dt){
+    UIBase::Update(dt);
+    OnUpdate(this,dt);
 }
 void Window::Input(){
     UIBase::Input();
@@ -32,7 +40,9 @@ void Window::Input(){
 
 
 void Window::Render(Point where){
-    RenderHelp::DrawSquareColorA(box.x,box.y,box.w,box.h,style.bg[0] + (focused ? 0 : -20),style.bg[1] + (focused ? 0 : -20),style.bg[2] + (focused ? 0 : -20),style.bg[3] + (focused ? 0 : -20));
+    RenderHelp::DrawSquareColorA(box.x,box.y,box.w,box.h,style.bg[0] ,style.bg[1] ,style.bg[2] ,style.bg[3] );
+
+    RenderHelp::DrawSquareColorA(box.x,box.y,box.w,box.h,style.fg[0] ,style.fg[1] ,style.fg[2] ,style.fg[3],true );
     where.x = box.x;
     where.y = box.y;
     UIBase::Render(where);

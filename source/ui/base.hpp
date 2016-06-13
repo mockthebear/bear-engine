@@ -42,6 +42,8 @@ class UIStyle{
         bool custom;
         std::string fontfile;
 
+    static UIStyle BaseStyle;
+
 };
 
 class UIBase{
@@ -49,17 +51,32 @@ class UIBase{
         UIBase();
         ~UIBase(){};
 
+
+
         virtual void Input();
 
         virtual void Render(Point where = Point());
         virtual void Update(float dt);
+        virtual void ClearChildrens();
         void SetFocused(bool t){focused=t;};
-        void SetAlpha(int t){alpha=t;};
+        void SetAlpha(int t){
+            alpha=t;
+            if (txt.IsWorking()){
+                txt.SetAlpha(alpha);
+            }
+        };
         void Close(){
             close = true;
         }
+        void SetPosition(Point p){
+            box.x = p.x + (mother ? mother->box.x : 0);
+            box.y = p.y + (mother ? mother->box.y : 0);
+        }
+
         bool SetText(std::string str){
             if (txt.IsWorking()){
+                txt.SetStyle(style.txtstyle);
+                txt.SetColor({style.fg[0],style.fg[1],style.fg[2]});
                 txt.SetText(str);
                 Refresh();
             }
@@ -119,6 +136,8 @@ class UIBase{
 
         std::vector<std::unique_ptr<UIBase>> Components;
         UIStyle style;
+
+
         uint8_t Color[4];
     protected:
 

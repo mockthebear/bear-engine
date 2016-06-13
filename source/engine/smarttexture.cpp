@@ -23,13 +23,13 @@ SmartTexture::~SmartTexture(){
 
 }
 void SmartTexture::Render(PointInt pos,float angle){
-    double scaleRatioW = floor(ScreenManager::GetInstance().GetScaleRatioW()*(w+0.0))/(w+0.0);
-    double scaleRatioH = floor(ScreenManager::GetInstance().GetScaleRatioH()*(h+0.0))/(h+0.0);
     SDL_Rect rr;
-    rr.x = round((double)(x+pos.x)*scaleRatioW);
-    rr.y = round((double)(y+pos.y)*scaleRatioH);
-    rr.h = round((double)(h)*scaleRatioH);
-    rr.w = round((double)(w)*scaleRatioW);
+    double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1
+    double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1
+    rr.x = pos.x*scaleRatioW + ScreenManager::GetInstance().GetOffsetW();
+    rr.y = pos.y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH();
+    rr.h = h*scaleRatioH;
+    rr.w = w*scaleRatioW;
     SDL_RenderCopyEx(BearEngine->GetRenderer(),t,NULL,&rr,angle,nullptr,SDL_FLIP_NONE);
 }
 

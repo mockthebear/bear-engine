@@ -27,8 +27,8 @@ bool RenderHelp::RendedTexture(SDL_Texture* texture,int x,int y,int w,int h,floa
     rectangle.h = ( h*scaleRatioH  );
     return SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,NULL,&rectangle,angle,&center,flip) == 0;
 }
-
-void RenderHelp::DrawSquareColorA(int x,int y,int w,int h,int r,int g,int b,int a){
+#include "SDL2/SDL.h"
+void RenderHelp::DrawSquareColorA(int x,int y,int w,int h,int r,int g,int b,int a,bool outline){
 
     SDL_SetRenderDrawColor(BearEngine->GetRenderer(), r, g,b, a);
     SDL_Rect rectangle;
@@ -38,7 +38,11 @@ void RenderHelp::DrawSquareColorA(int x,int y,int w,int h,int r,int g,int b,int 
     rectangle.y = ( y*scaleRatioH  )+ ScreenManager::GetInstance().GetOffsetH();
     rectangle.w = ( w*scaleRatioW  );
     rectangle.h = ( h*scaleRatioH  );
-    SDL_RenderFillRect(BearEngine->GetRenderer(), &rectangle);
+    if (!outline){
+        SDL_RenderFillRect(BearEngine->GetRenderer(), &rectangle);
+    }else{
+        SDL_RenderDrawRect (BearEngine->GetRenderer(), &rectangle);
+    }
 
 }
 

@@ -19,6 +19,7 @@ class SmartTexture{
         int getW(){return w;};
         int getH(){return h;};
         int FormatXY(int x,int y){return y*w + x; };
+        Uint32 &At(int x,int y){return pixels[y*w + x]; };
     private:
         SDL_Texture *t;
         Uint32 * pixels;

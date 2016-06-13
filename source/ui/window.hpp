@@ -11,12 +11,20 @@
 
 class Window : public UIBase{
     public:
-        Window();
+
         Window(Rect dimensions,UIBase *owner=nullptr);
+        Window();
         ~Window();
         void Input();
+        void SetHighlightEnabled(bool enabled){
+            highlight = enabled;
+        }
+        std::function<void(UIBase*,float dt)> OnUpdate;
+        void Update(float dt);
 
         void Render(Point where=Point());
+    private:
+        bool highlight;
 
 
 
