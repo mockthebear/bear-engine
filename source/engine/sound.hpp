@@ -1,4 +1,5 @@
 #include "../settings/definitions.hpp"
+#include SDL_LIB_HEADER
 #include SDL_MIXER_LIB_HEADER
 
 #ifndef SOUNDH_

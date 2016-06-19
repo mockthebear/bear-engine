@@ -155,9 +155,6 @@ void ThreadPool::Lock(){
     Locked = true;
     #ifndef DISABLE_THREADPOOL
     for (int e=0;e<UsePThreads;e++){
-        //int k;
-        //sem_getvalue(&runningM[e],&k);
-        //std::cout << "E: " << e << "->"<<k<<"\n";
         sem_wait (&runningM[e]);
     }
 

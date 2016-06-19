@@ -7,7 +7,9 @@
 #include "../performance/console.hpp"
 
 Light* Light::Slight = NULL;
+#ifndef DISABLE_THREADPOOL
 pthread_mutex_t Light::GCritical;
+#endif
 
 Light::Light(){
     out = NULL;
@@ -21,7 +23,9 @@ Light::Light(){
     MaxDarkness = 200;
 }
 Light* Light::Startup(){
+    #ifndef DISABLE_THREADPOOL
     pthread_mutex_init(&GCritical,NULL);
+    #endif // DISABLE_THREADPOOL
     return GetInstance();
 }
 Light* Light::GetInstance(){

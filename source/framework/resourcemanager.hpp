@@ -61,6 +61,10 @@ class ResourceManager{
         */
         SDL_RWops* GetFile(std::string assetAlias,std::string fileName);
         /**
+            *Get the raw data from an file
+        */
+        char* GetFileData(std::string assetAlias,std::string fileName);
+        /**
             *Get an file (inside the .burr), as SDL_RWops. Its created a new pointer. Should be destroyed.
             *Use the alias to say what packed file is
             *On most cases, you can use this, also work on Sprite class.
@@ -76,6 +80,7 @@ class ResourceManager{
             @return SDL_RWops* , NULL when fails
         */
         SDL_RWops* GetFile(std::string file);
+
         /**
             *Erase an asset
             @param assetAlias the alias

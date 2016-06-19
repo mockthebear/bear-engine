@@ -62,9 +62,6 @@ class Console{
         /**
             Add an empty line
         */
-        void SetConsoleName(std::string str){
-            keyword = str;
-        }
         bool AddText(){
             return AddText("");
         }
@@ -93,7 +90,6 @@ class Console{
 
 
     private:
-        bool m_startedUi;
         bool logFile,failFile;
         UserFile myfile;
         bool hasStarted;
@@ -101,7 +97,6 @@ class Console{
         int counter;
         int m_lines;
         Text **m_line;
-        std::string keyword;
 
 };
 #endif // BE_CONSOLE

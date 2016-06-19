@@ -1,8 +1,6 @@
 #include "gamefile.hpp"
 #include "dirmanager.hpp"
 #include "resourcemanager.hpp"
-#include "../performance/console.hpp"
-#include "utils.hpp"
 #include <iostream>
 
 
@@ -36,18 +34,20 @@ GameFile::~GameFile(){
 }
 
 bool GameFile::Open(std::string name,bool notify){
+    bool fromFile = false;
     if (name.find(":")!=std::string::npos){
         m_filePointer = ResourceManager::GetInstance().GetFile(name);
     }else{
+        fromFile = true;
         name = DirManager::AdjustAssetsPath(name);
         m_filePointer = SDL_RWFromFile(name.c_str(),"rb");
     }
-
-
-
     if (m_filePointer == NULL){
         if (notify){
-            Console::GetInstance().AddText(utils::format("Cannot locate %s", name.c_str() ) );
+            if (fromFile)
+                Console::GetInstance().AddTextInfo(utils::format("Cannot locate [%s] because %s",ftnm.c_str(),SDL_GetError()));
+            else
+                Console::GetInstance().AddTextInfo(utils::format("Cannot locate rw [%s]",ftnm.c_str()));
         }
         return false;
     }
@@ -150,6 +150,7 @@ int GameFile::FindInt(){
     while (by <= '0' || by >= '9'){
         by = ReadByte();
         if (Tell() > m_size){
+            std::cout << "CABO\n";
             return -1;
         }
     }
@@ -161,11 +162,13 @@ int GameFile::FindInt(){
         i += by-'0';
         by = ReadByte();
         if (Tell() > m_size){
+            std::cout << "CABO\n";
             return -1;
         }
 
     }
     Seek(Tell()-1);
+    std::cout << "Ret:" << i << "\n";
     return i;
 }
 

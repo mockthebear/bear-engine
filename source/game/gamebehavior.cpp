@@ -30,8 +30,11 @@ GameBehavior::~GameBehavior(){
 
 
 bool GameBehavior::OnLoad(){
-    Console::GetInstance().Begin();
-    ResourceManager::GetInstance().Load("data/packedFiles.burr","assets");
+    //Console::GetInstance().Begin();
+    if (!ResourceManager::GetInstance().Load("data/packedFiles.burr","assets")){
+        std::cout << "Fail\n";
+        getchar();
+    }
 
 
     PointInt P = ScreenManager::GetInstance().GetDisplaySize();

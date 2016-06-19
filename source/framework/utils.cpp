@@ -15,20 +15,42 @@ uint8_t  utils::GetU8 (char *str,int pos){
     return str[pos];
 }
 uint16_t utils::GetU16(char *str,int pos){
+    #ifndef __EMSCRIPTEN__
     uint16_t *addr = (uint16_t*)(str+pos);
     return (*addr);
+    #else
+    uint16_t r =  (GetU8(str,pos)) + (GetU8(str,pos+1) << 8);
+    return r;
+    #endif
 }
 uint32_t utils::GetU24(char *str,int pos){
+    #ifndef __EMSCRIPTEN__
     uint32_t *addr = (uint32_t*)(str+pos);
     return (*addr)&0xffffff;
+    #else
+    uint32_t r = (GetU8(str,pos) ) + (GetU8(str,pos+1) << 8) + (GetU8(str,pos+2) << 16);
+    return r;
+    #endif
 }
 uint32_t utils::GetU32(char *str,int pos){
+    #ifndef __EMSCRIPTEN__
     uint32_t *addr = (uint32_t*)(str+pos);
     return *addr;
+    #else
+    uint32_t r = (GetU8(str,pos) ) + (GetU8(str,pos+1) << 8) + (GetU8(str,pos+2) << 16) + (GetU8(str,pos+3) << 24);
+    return r;
+    #endif
+
 }
 uint64_t utils::GetU64(char *str,int pos){
+    #ifndef __EMSCRIPTEN__
     uint64_t *addr = (uint64_t*)(str+pos);
     return *addr;
+    #else
+    uint64_t r =  ((uint64_t)GetU8(str,pos) << 56) + ((uint64_t)GetU8(str,pos+1) << 48) +((uint64_t)GetU8(str,pos+2) << 40) +((uint64_t)GetU8(str,pos+3) << 32)
+    + (GetU8(str,pos+4) << 24) + (GetU8(str,pos+5) << 16) + (GetU8(str,pos+6) << 8) + (GetU8(str,pos+7));
+    return r;
+    #endif
 }
 
 uint8_t  utils::GetU8c (char *str,int &pos){

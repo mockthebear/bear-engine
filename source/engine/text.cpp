@@ -172,6 +172,7 @@ Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string tex
         if (font != NULL){
             assetTable[ftnm] = font;
         }else{
+            Console::GetInstance().AddTextInfo(utils::format("Could not load font [%s] because %s",ftnm.c_str(),SDL_GetError()));
             isWorking = false;
         }
     }
@@ -377,7 +378,7 @@ void Text::RemakeTexture(bool Destory){
         return;
     if (Game::GetInstance()->isClosing)
         return;
-    if (!font){
+    if (!font && texturespr){
         Point p =  texturespr->GetSizes(text);
         box.w = p.x;
         box.h = p.y;

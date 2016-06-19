@@ -1,4 +1,5 @@
 #include "resourcemanager.hpp"
+#include "dirmanager.hpp"
 #include <iostream>
 std::unordered_map<std::string, ResourceFile*> ResourceManager::resources;
 
@@ -20,6 +21,7 @@ bool ResourceManager::Load(std::string file,std::string alias){
         return false;
     ResourceFile *f = new ResourceFile();
     if (!f->Open(file)){
+        Console::GetInstance().AddTextInfo(utils::format("Cannot load file [%s]",ftnm.c_str()));
         delete f;
         return false;
     }
@@ -35,6 +37,15 @@ SDL_RWops* ResourceManager::GetFile(std::string file){
     return GetFile(alias,name);
 }
 
+char* ResourceManager::GetFileData(std::string assetAlias,std::string fileName){
+    if (!resources[assetAlias]){
+        if (!Load(assetAlias))
+            return NULL;
+    }
+    int size;
+    return resources[assetAlias]->GetFileStream(fileName,size);
+
+}
 SDL_RWops* ResourceManager::GetFile(std::string assetAlias,std::string fileName){
     if (!resources[assetAlias]){
         if (!Load(assetAlias))
