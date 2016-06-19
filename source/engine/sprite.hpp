@@ -8,6 +8,7 @@
 #include "../framework/geometry.hpp"
 
 #include <unordered_map>
+#include <map>
 #include <string>
 
 /**
@@ -17,7 +18,15 @@
  * Some sprites textures may be shared. Check Sprite::assetTable
  */
 
-
+class ColorReplacer{
+    public:
+        ColorReplacer();
+        void AddReplacer(uint32_t from,uint32_t to);
+        uint32_t Get(uint32_t color);
+    private:
+        std::map<uint32_t,bool> canReplace;
+        std::map<uint32_t,uint32_t> Replace;
+};
 
 class Sprite{
     public:
@@ -35,7 +44,7 @@ class Sprite{
             *in the class.
             @param texture An sdl texture
         */
-        Sprite(SDL_Texture* texture);
+        Sprite(SDL_Texture* texture,std::string name);
         /**
             *Create an sprite from an path to an file. The file should be SDL2_Image supported
             *You can set the frame count and frame time to an animation
@@ -44,7 +53,7 @@ class Sprite{
             @param fcount Frame count. <b>THE FRAME MOVES ON X ONLY<b>
             @param ftime The time between the frames
         */
-        Sprite(char *file,int fcount=1,float ftime = 1);
+        Sprite(char *file,int fcount=1,float ftime = 1,int repeat=1);
         /**
             *Create an sprite from an path to an file. The file should be SDL2_Image supported
             *You can set the frame count and frame time to an animation
@@ -53,7 +62,9 @@ class Sprite{
             @param fcount Frame count. <b>THE FRAME MOVES ON X ONLY<b>
             @param ftime The time between the frames
         */
-        Sprite(const char *file,int fcount=1,float ftime = 1);
+        Sprite(const char *file,int fcount=1,float ftime = 1,int repeat=1);
+
+        Sprite(const char *file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1);
         /**
             *Create an sprite from a rwops. Also delete the RWops
             *You also NEED to set an alias to use as hash.
@@ -63,7 +74,7 @@ class Sprite{
             @param fcount Frame count. <b>THE FRAME MOVES ON X ONLY<b>
             @param ftime The time between the frames
         */
-        Sprite(SDL_RWops* rw,std::string name,int fcount=1,float ftime = 1);
+        Sprite(SDL_RWops* rw,std::string name,int fcount=1,float ftime = 1,int repeat=1);
 
         /**
             *This function is static. You can call it any time
@@ -95,6 +106,8 @@ class Sprite{
             @endcode
         */
         static SDL_Texture* Preload(SDL_RWops* rw,std::string name);
+
+        static SDL_Texture *ColorReplace(std::string fileName,ColorReplacer &r,bool replaceOnAssets=true);
         /**
             *This dont destroy the texture!!!
         */
@@ -178,7 +191,7 @@ class Sprite{
         */
 
         void ResetAnimation(bool changeYaxis=false){
-            over = false;
+            over = 0;
             currentFrame.x = 0;
             timeElapsed = 0;
             if (changeYaxis)
@@ -268,8 +281,11 @@ class Sprite{
             *Actually return the amount of animation cycles it have made
             @return
         */
+        void SetRepeatTimes(int t){
+            repeat = t;
+        }
         int IsAnimationOver(){
-            return over;
+            return over >= repeat;
         };
         /**
             *Change the sprite scale. Its an local scale, not shared.
@@ -329,6 +345,7 @@ class Sprite{
         uint8_t OUTR,OUTB,OUTG;
         float scaleX,scaleY,timeElapsed,frameTime;
         int over;
+        int repeat;
         int frameCount;
         PointInt currentFrame;
         PointInt grid;

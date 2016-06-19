@@ -98,8 +98,8 @@ void Camera::Update(float dt){
         Point posCenter(pos.getXCenter(),pos.getYCenter());
         if (Smooth && toGo.getDistance(posCenter) >= speed*dt ){
             float angle = toGo.getDirection(posCenter);
-            pos.x += cos(angle)*dt*20;
-            pos.y += sin(angle)*dt*20;
+            pos.x += cos(angle)*dt*speed;
+            pos.y += sin(angle)*dt*speed;
         }else{
             pos.x = floor(focus->box.x+focus->box.w/2.0-pos.w/2.0);
             pos.y = floor(focus->box.y+focus->box.h/2.0-pos.h/2.0);

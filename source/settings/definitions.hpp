@@ -1,6 +1,8 @@
 ///Core Settings
 #define BearEngine Game::GetInstance()
 
+#define APPNAME "SnakeScape"
+
 #define __BEHAVIOR_FOLDER__ "../game/gamebehavior.hpp"
 
 #define STATE_FILE "../game/state.hpp"
@@ -58,9 +60,10 @@
 #define SDL_LIB_HEADER <SDL2/SDL.h>
 #define SDL_IMAGE_LIB_HEADER <SDL2/SDL_image.h>
 #define SDL_TTF_LIB_HEADER <SDL_ttf.h>
-#define SDL_MIXER_LIB_HEADER <SDL_mixer.h>
+#define SDL_MIXER_LIB_HEADER <SDL/SDL_mixer.h>
 #define LUA_INCLUDE <stdio.h>
 #define DISABLE_LUAINTERFACE
+#define DISABLE_THREADPOOL
 
 #elif _WIN32
 #define BEAR_SDL_CONST_INIT SDL_INIT_EVERYTHING

@@ -17,6 +17,7 @@
 #include "../framework/threadpool.hpp"
 #include "../framework/gamefile.hpp"
 #include "../framework/utils.hpp"
+#include "../framework/resourcemanager.hpp"
 
 
 
@@ -48,6 +49,9 @@ Title::Title(){
 
 
     message = new Text("engine:default.ttf",30,TEXT_SOLID,"Hello bear. FPS: ?", {10,50,255});
+
+    std::cout <<"Text is: ["<< ResourceManager::GetInstance().GetFileData("assets","jaaj.txt") << "]\n";
+
 
     Camera::Initiate(Rect(0,0,SCREEN_SIZE_H,SCREEN_SIZE_W),128,200);
     Camera::speed = 0;

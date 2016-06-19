@@ -196,7 +196,7 @@ void Game::Update(){
         #ifndef DISABLE_LUAINTERFACE
         LuaInterface::Instance().Update(dt);
         #endif
-        stateStack.top()->Update(dt);
+        stateStack.top()->Update(std::min(dt,ConfigManager::MinimumDT) );
         ScreenManager::GetInstance().Update(dt);
     }
 
@@ -244,7 +244,7 @@ void Game::Run(){
         std::cout << "[\\Update]\n";
         #endif
         if (!CanStop()){
-            if (InputManager::GetInstance().KeyPress(SDLK_F11)){
+            if (InputManager::GetInstance().KeyPress(SDLK_F3)){
                 static bool full = false;
                 if (!full)
                     SDL_SetWindowFullscreen(window, SDL_TRUE);
