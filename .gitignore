@@ -1,2 +1,7 @@
 doc/
 obj/
+*.data
+*.html
+*.mem
+*.apk
+*.js

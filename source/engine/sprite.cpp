@@ -277,7 +277,7 @@ SDL_Texture* Sprite::ColorReplace(std::string fileName,ColorReplacer &r,bool rep
     }
     if (surface){
         SDL_PixelFormat* ScreenPixelFormat = SDL_GetWindowSurface( Game::GetInstance()->GetWindow() )->format;
-        SDL_Surface* formated = SDL_ConvertSurface( surface, ScreenPixelFormat, NULL );
+        SDL_Surface* formated = SDL_ConvertSurface( surface, ScreenPixelFormat, 0 );
         if (formated){
             SDL_Texture *auxTexture = SDL_CreateTexture( Game::GetInstance()->GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, formated->w, formated->h );
             SmartTexture *finalSmart = new SmartTexture(0,0, formated->w, formated->h ,false);
@@ -321,7 +321,7 @@ SDL_Texture* Sprite::ColorReplace(std::string fileName,ColorReplacer &r,bool rep
                     }
                     assetTable[fileName] = ret;
                 }
-                //delete finalSmart;
+                delete finalSmart;
                 return ret;
 
             }
@@ -391,9 +391,20 @@ SDL_Texture* Sprite::Open(SDL_RWops* file,std::string name,bool force){
             return texture;
         }else{
             #ifdef __EMSCRIPTEN__
+            std::string newName = name;
+            char *c = (char*)newName.c_str();
+            for (int i=0;i<newName.size();i++){
+                if (c[i] == ':'){
+                    c[i] = '/';
+                    break;
+                }
+            }
             Console::GetInstance().AddText(utils::format("Loading of the sprite [%s] cannot be loaded using resource tweaks at emscripten",name.c_str()));
+            Console::GetInstance().AddText(utils::format("Trying instead to load [%s]",newName.c_str()));
+            return Open((char*)newName.c_str());
             #else
             Console::GetInstance().AddText(utils::format("Cannot load rwop sprite FAAAAIL [%s]",name.c_str()));
+            return nullptr;
             #endif // __EMSCRIPTEN__
 
         }

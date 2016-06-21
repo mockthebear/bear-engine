@@ -48,10 +48,10 @@ Title::Title(){
 
 
 
-    message = new Text("assets:arial.ttf",30,TEXT_SOLID,"Hello bear. FPS: ?", {10,50,255});
-    char *c = ResourceManager::GetInstance().GetFileData("assets","jaaj.txt");
+    message = new Text("data:arial.ttf",30,TEXT_SOLID,"Hello bear. FPS: ?", {10,50,255});
+    char *c = ResourceManager::GetInstance().GetFileData("data","jaaj.txt");
     std::cout <<"Text is: ["<< c << "]\n";
-    c = ResourceManager::GetInstance().GetFileData("assets","kotol.bin");
+    c = ResourceManager::GetInstance().GetFileData("data","kotol.bin");
     int s=0;
     std::cout <<"Value is: ["<< utils::GetU16c(c,s) << "]\n";
 
@@ -62,8 +62,8 @@ Title::Title(){
 
 
 
-    bg = new Sprite("assets:walla.jpg");
-    test = new Sprite("assets:raccoon.png");
+    bg = new Sprite("data:wall.jpg");
+    test = new Sprite("data:raccoon.png");
     sprpos = Point(400,400);
     sprpos2 = sprpos;
 

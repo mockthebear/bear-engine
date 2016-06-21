@@ -31,9 +31,8 @@ GameBehavior::~GameBehavior(){
 
 bool GameBehavior::OnLoad(){
     //Console::GetInstance().Begin();
-    if (!ResourceManager::GetInstance().Load("data/test.burr","assets")){
-        std::cout << "Fail\n";
-        getchar();
+    if (!ResourceManager::GetInstance().Load("data/test.burr","data")){
+        Console::GetInstance().AddText("Failed to load assets");
     }
 
 
