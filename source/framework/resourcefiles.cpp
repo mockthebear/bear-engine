@@ -1,6 +1,7 @@
 #include "resourcefiles.hpp"
 #include "gamefile.hpp"
 #include "utils.hpp"
+#include "../performance/console.hpp"
 #include <iostream>
 
 
@@ -86,6 +87,7 @@ SDL_RWops* ResourceFile::GetFile(std::string name){
 
 char *ResourceFile::GetFileStream(std::string name,int &size){
     if (!std::get<1>(m_fileData[name])){
+        Console::GetInstance().AddText(utils::format("Cannot get file stream from [%s]. Asset not in resource file.",name.c_str()));
         return NULL;
     }
     int offset = std::get<0>(m_fileData[name]);
@@ -100,6 +102,7 @@ char *ResourceFile::GetFileStream(std::string name,int &size){
 
 SDL_RWops* ResourceFile::GetFile(std::string name,int &size){
     if (!std::get<1>(m_fileData[name])){
+        Console::GetInstance().AddText(utils::format("Cannot get file rwop [%s]. Asset not in resource file.",name.c_str()));
         return NULL;
     }
 

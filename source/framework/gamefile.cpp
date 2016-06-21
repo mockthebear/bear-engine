@@ -1,6 +1,8 @@
 #include "gamefile.hpp"
 #include "dirmanager.hpp"
 #include "resourcemanager.hpp"
+#include "utils.hpp"
+#include "../performance/console.hpp"
 #include <iostream>
 
 
@@ -43,12 +45,12 @@ bool GameFile::Open(std::string name,bool notify){
         m_filePointer = SDL_RWFromFile(name.c_str(),"rb");
     }
     if (m_filePointer == NULL){
-        if (notify){
+
             if (fromFile)
-                Console::GetInstance().AddTextInfo(utils::format("Cannot locate [%s] because %s",ftnm.c_str(),SDL_GetError()));
+                Console::GetInstance().AddTextInfo(utils::format("Cannot locate [%s] because %s",name.c_str(),SDL_GetError()));
             else
-                Console::GetInstance().AddTextInfo(utils::format("Cannot locate rw [%s]",ftnm.c_str()));
-        }
+                Console::GetInstance().AddTextInfo(utils::format("Cannot locate rw [%s]",name.c_str()));
+
         return false;
     }
 

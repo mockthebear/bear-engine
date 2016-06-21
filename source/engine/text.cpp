@@ -3,6 +3,8 @@
 #include "../framework/gamefile.hpp"
 #include "../framework/dirmanager.hpp"
 #include "../framework/resourcemanager.hpp"
+#include "../framework/utils.hpp"
+#include "../performance/console.hpp"
 #include "gamebase.hpp"
 std::unordered_map<std::string, TTF_Font*> Text::assetTable;
 std::unordered_map<std::string, CustomFont*> Text::customTable;
@@ -30,7 +32,7 @@ CustomFont::CustomFont(std::string letterpositions){
             char letter[10];
             int xx=0,yy=0,hh=0,ww=0,padd=0,pddin=0,yoffset=0;
             while (find and m > 0){
-                if ( (sscanf(letterData.c_str(),"%[a-zA-Z0-9*+,.]=<%d,%d,%d,%d,%d,%d,%dx>",letter,&xx,&yy,&ww,&hh,&padd,&pddin,&yoffset))  ){
+                if ( (sscanf(letterData.c_str(),"%[a-zA-Z0-9*+,.-]=<%d,%d,%d,%d,%d,%d,%dx>",letter,&xx,&yy,&ww,&hh,&padd,&pddin,&yoffset))  ){
                     m = letterData.find(";");
                     if (m != -1){
                         Letters[(unsigned char)letter[0]] = std::unique_ptr<Letter>(new Letter(xx,yy,ww,hh,padd,pddin,yoffset));
@@ -173,6 +175,7 @@ Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string tex
         if (font != NULL){
             assetTable[ftnm] = font;
         }else{
+            Console::GetInstance().AddTextInfo(utils::format("Cannot load font [%s] because %s",ftnm.c_str(),SDL_GetError()));
             isWorking = false;
         }
     }

@@ -1,6 +1,8 @@
 #include "resourcemanager.hpp"
 #include "dirmanager.hpp"
 #include <iostream>
+#include "utils.hpp"
+#include "../performance/console.hpp"
 std::unordered_map<std::string, ResourceFile*> ResourceManager::resources;
 
 
@@ -21,7 +23,7 @@ bool ResourceManager::Load(std::string file,std::string alias){
         return false;
     ResourceFile *f = new ResourceFile();
     if (!f->Open(file)){
-        Console::GetInstance().AddTextInfo(utils::format("Cannot load file [%s]",ftnm.c_str()));
+        Console::GetInstance().AddTextInfo(utils::format("Cannot load file [%s]",file.c_str()));
         delete f;
         return false;
     }
@@ -39,8 +41,10 @@ SDL_RWops* ResourceManager::GetFile(std::string file){
 
 char* ResourceManager::GetFileData(std::string assetAlias,std::string fileName){
     if (!resources[assetAlias]){
-        if (!Load(assetAlias))
+        if (!Load(assetAlias)){
+            Console::GetInstance().AddTextInfo(utils::format("Cannot load file %s:%s",assetAlias.c_str(),fileName.c_str()));
             return NULL;
+        }
     }
     int size;
     return resources[assetAlias]->GetFileStream(fileName,size);
@@ -49,6 +53,7 @@ char* ResourceManager::GetFileData(std::string assetAlias,std::string fileName){
 SDL_RWops* ResourceManager::GetFile(std::string assetAlias,std::string fileName){
     if (!resources[assetAlias]){
         if (!Load(assetAlias))
+            Console::GetInstance().AddTextInfo(utils::format("Cannot load file %s:%s",assetAlias.c_str(),fileName.c_str()));
             return NULL;
     }
     return resources[assetAlias]->GetFile(fileName);

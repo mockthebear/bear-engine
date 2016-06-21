@@ -4,11 +4,6 @@
 
 
 
-LuaInterface& LuaInterface::Instance(){
-    static LuaInterface S;
-
-    return S;
-}
 
 #ifndef DISABLE_LUAINTERFACE
 #include "../engine/gamebase.hpp"
@@ -16,6 +11,12 @@ LuaInterface& LuaInterface::Instance(){
 #include "../engine/sound.hpp"
 #include "luaobject.hpp"
 
+
+LuaInterface& LuaInterface::Instance(){
+    static LuaInterface S;
+
+    return S;
+}
 LuaInterface::LuaInterface(){
     parametersCount = 0;
     L = NULL;

@@ -14,7 +14,7 @@ Ball::Ball(Point pos){
     box.h = 32;
     Created = true;
     speed.y = -0.1;
-    sp = Sprite("assets:ibg.png");
+    sp = Sprite("assets:raccoon.png");
 }
 Ball::~Ball(){
 

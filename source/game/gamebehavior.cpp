@@ -31,7 +31,7 @@ GameBehavior::~GameBehavior(){
 
 bool GameBehavior::OnLoad(){
     //Console::GetInstance().Begin();
-    if (!ResourceManager::GetInstance().Load("data/packedFiles.burr","assets")){
+    if (!ResourceManager::GetInstance().Load("data/test.burr","assets")){
         std::cout << "Fail\n";
         getchar();
     }

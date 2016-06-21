@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <stdlib.h>
+#include <stdio.h>
 
 
 namespace utils {
@@ -44,7 +45,7 @@ namespace utils {
         return ret;
 
     };
-
+    char GetByte (char *str,int pos=0);
     uint8_t  GetU8 (char *str,int pos = 0);
     uint16_t GetU16(char *str,int pos = 0);
     uint32_t GetU24(char *str,int pos = 0);

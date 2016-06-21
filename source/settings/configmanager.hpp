@@ -24,6 +24,7 @@ class ConfigManager{
         PointInt GetScreenSize(){return m_screenSize;};
 
         void SetScreenSize(int w,int h);
+        void SetWindowIcon(std::string icon);
 
         bool IsWorkingAudio(){return hasAudio;};
         void SetSound(bool var){hasAudio = var;};
@@ -31,6 +32,7 @@ class ConfigManager{
         ResizeBehavior GetResizeAction(){return m_rbheavior;};
         void SetResizeAction(ResizeBehavior action){m_rbheavior=action;};
         static int MaxFps;
+        static float MinimumDT;
         static ConfigManager& GetInstance();
         ConfigManager();
         ~ConfigManager();

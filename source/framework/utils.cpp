@@ -11,6 +11,9 @@ std::string utils::methodName(const std::string& prettyFunction){
 }
 
 
+char utils::GetByte (char *str,int pos){
+    return str[pos];
+}
 uint8_t  utils::GetU8 (char *str,int pos){
     return str[pos];
 }
@@ -47,8 +50,8 @@ uint64_t utils::GetU64(char *str,int pos){
     uint64_t *addr = (uint64_t*)(str+pos);
     return *addr;
     #else
-    uint64_t r =  ((uint64_t)GetU8(str,pos) << 56) + ((uint64_t)GetU8(str,pos+1) << 48) +((uint64_t)GetU8(str,pos+2) << 40) +((uint64_t)GetU8(str,pos+3) << 32)
-    + (GetU8(str,pos+4) << 24) + (GetU8(str,pos+5) << 16) + (GetU8(str,pos+6) << 8) + (GetU8(str,pos+7));
+    uint64_t r =  ((uint64_t)GetByte(str,pos) << 56) + ((uint64_t)GetByte(str,pos+1) << 48) +((uint64_t)GetByte(str,pos+2) << 40) +((uint64_t)GetByte(str,pos+3) << 32)
+    + (GetByte(str,pos+4) << 24) + (GetByte(str,pos+5) << 16) + (GetByte(str,pos+6) << 8) + (GetByte(str,pos+7));
     return r;
     #endif
 }

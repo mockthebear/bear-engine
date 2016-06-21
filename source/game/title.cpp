@@ -48,10 +48,12 @@ Title::Title(){
 
 
 
-    message = new Text("engine:default.ttf",30,TEXT_SOLID,"Hello bear. FPS: ?", {10,50,255});
-
-    std::cout <<"Text is: ["<< ResourceManager::GetInstance().GetFileData("assets","jaaj.txt") << "]\n";
-
+    message = new Text("assets:arial.ttf",30,TEXT_SOLID,"Hello bear. FPS: ?", {10,50,255});
+    char *c = ResourceManager::GetInstance().GetFileData("assets","jaaj.txt");
+    std::cout <<"Text is: ["<< c << "]\n";
+    c = ResourceManager::GetInstance().GetFileData("assets","kotol.bin");
+    int s=0;
+    std::cout <<"Value is: ["<< utils::GetU16c(c,s) << "]\n";
 
     Camera::Initiate(Rect(0,0,SCREEN_SIZE_H,SCREEN_SIZE_W),128,200);
     Camera::speed = 0;
@@ -60,8 +62,8 @@ Title::Title(){
 
 
 
-    bg = new Sprite("data/wall.jpg");
-    test = new Sprite("assets:ibg.png");
+    bg = new Sprite("assets:walla.jpg");
+    test = new Sprite("assets:raccoon.png");
     sprpos = Point(400,400);
     sprpos2 = sprpos;
 
@@ -179,7 +181,7 @@ void Title::Render(){
 
     Light::GetInstance()->Update(0,LIGHT_GEN);
 
-    Console::GetInstance().Render();
+    //Console::GetInstance().Render();
     PointInt p = PointInt(sprpos.x,sprpos.y);
 
     test->Render(p);
@@ -188,7 +190,7 @@ void Title::Render(){
     Light::GetInstance()->Render();
 
 
-    Console::GetInstance().Render(Point(0,0));
+    //Console::GetInstance().Render(Point(0,0));
 
 }
 
