@@ -8,8 +8,8 @@
 #include "smarttexture.hpp"
 #include "../framework/resourcemanager.hpp"
 
-std::unordered_map<std::string, SDL_Texture*> Sprite::assetTable;
 
+std::unordered_map<std::string, SDL_Texture*> Sprite::assetTable;
 
 ColorReplacer::ColorReplacer(){
 
@@ -194,6 +194,7 @@ void Sprite::SetGrid(int gx,int gy){
     }
 
 }
+
 void Sprite::SetFrame(int xFrame,int yFrame){
     if (yFrame != -1)
         currentFrame.y = yFrame;
@@ -222,9 +223,11 @@ void Sprite::Clear(){
     std::cout << ".\n";
 }
 
-SDL_Texture* Sprite::Preload(char *file){
+SDL_Texture* Sprite::Preload(char *file,bool adjustDir){
     std::string stdnamee(file);
-    stdnamee = ASSETS_FOLDER + stdnamee;
+    if (adjustDir){
+        stdnamee = DirManager::AdjustAssetsPath(stdnamee);
+    }
     if (assetTable.find(stdnamee) == assetTable.end()){
         SDL_Texture* texture = IMG_LoadTexture(BearEngine->GetRenderer(),stdnamee.c_str());
         if (texture != NULL){
@@ -387,8 +390,12 @@ SDL_Texture* Sprite::Open(SDL_RWops* file,std::string name,bool force){
             assetTable[name] = texture;
             return texture;
         }else{
-            Console::GetInstance().AddText(utils::format("Cannot load rwop sprite [%s]",name.c_str()));
-            return NULL;
+            #ifdef __EMSCRIPTEN__
+            Console::GetInstance().AddText(utils::format("Loading of the sprite [%s] cannot be loaded using resource tweaks at emscripten",name.c_str()));
+            #else
+            Console::GetInstance().AddText(utils::format("Cannot load rwop sprite FAAAAIL [%s]",name.c_str()));
+            #endif // __EMSCRIPTEN__
+
         }
     }else{
         std::unordered_map<std::string, SDL_Texture*>::iterator it = assetTable.find(name);

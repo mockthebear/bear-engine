@@ -92,7 +92,8 @@ class Sprite{
             *The name you pass will be the alias to the sprite
             @param file The path or the asset tweak asset:file
         */
-        static SDL_Texture* Preload(char *file);
+
+        static SDL_Texture* Preload(char *file,bool adjustDir=true);
         /**
             *Works like Sprite::Preload(char *file)
             *You have to pass an RWops and set an alias to work on Sprite::assetTable
