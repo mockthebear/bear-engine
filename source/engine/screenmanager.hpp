@@ -39,14 +39,18 @@ class ScreenManager{
             shaking = true;
         };
 
-
-        double GetScaleRatioH(){return m_scaleRatio.y;};
-        double GetScaleRatioW(){return m_scaleRatio.x;};
-        double GetOffsetW(){return m_offsetScreen.x+shake.x;};
-        double GetOffsetH(){return m_offsetScreen.y+shake.y;};
+        void RenderPresent();
+        SDL_Texture * GetDefaultRenderer(){return m_defaultScreen;};
+        void Render();
+        void PreRender();
+        double GetScaleRatioH(){return m_defaultScreen != nullptr ? 1 : m_scaleRatio.y;};
+        double GetScaleRatioW(){return m_defaultScreen != nullptr ? 1 : m_scaleRatio.x;};
+        double GetOffsetW(){return (m_defaultScreen != nullptr ? 0 : m_offsetScreen.x)+shake.x;};
+        double GetOffsetH(){return (m_defaultScreen != nullptr ? 0 : m_offsetScreen.y)+shake.y;};
         void ResizeToScale(int w,int h,ResizeAction behave);
         float GetFps(){return m_fps;};
     private:
+        SDL_Texture *m_defaultScreen;
         float m_fps;
         float m_frameDelay;
         int   m_frames;

@@ -160,8 +160,7 @@ void Title::Update(float dt){
 }
 
 void Title::Render(){
-    SDL_SetRenderDrawColor(BearEngine->GetRenderer(), 0,0,0, 0);
-    SDL_RenderClear( BearEngine->GetRenderer() );
+
 
     //Light::GetInstance()->Update(0,LIGHT_GEN);
     Light::GetInstance()->Update(0,LIGHT_REDUCE);

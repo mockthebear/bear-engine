@@ -16,6 +16,7 @@ ScreenManager::ScreenManager(){
     shaking = 0;
     shaking = false;
     m_fps = 0;
+    m_defaultScreen = nullptr;
     m_frames = 0;
     m_frameDelay = 11.0f;
     m_window = NULL;
@@ -61,11 +62,11 @@ SDL_Window* ScreenManager::StartScreen(std::string name){
     m_originalScreen = m_screen;
 
 
+
     m_window = SDL_CreateWindow( name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screen.x, m_screen.y, SDL_WINDOW_RESIZABLE); //SDL_WINDOW_RESIZABLE
     return m_window;
 }
 SDL_Renderer* ScreenManager::StartRenderer(){
-    //m_renderer = SDL_CreateRenderer( m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
     m_renderer = SDL_CreateRenderer( m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
     SDL_RendererInfo info;
     SDL_GetRendererInfo(m_renderer,&info);
@@ -75,7 +76,38 @@ SDL_Renderer* ScreenManager::StartRenderer(){
     if (m_renderer){
         SDL_SetRenderDrawBlendMode(m_renderer,SDL_BLENDMODE_BLEND);
     }
+    //m_defaultScreen = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET,m_originalScreen.x,m_originalScreen.y);
+
+
     return m_renderer;
+}
+
+void ScreenManager::RenderPresent(){
+    SDL_RenderPresent(m_renderer);
+}
+void ScreenManager::PreRender(){
+    if (m_defaultScreen){
+        SetRenderTarget(m_defaultScreen);
+        SDL_SetRenderDrawColor(m_renderer, 0,0,0, 0);
+        SDL_RenderClear( m_renderer );
+    }
+}
+#include "renderhelp.hpp"
+void ScreenManager::Render(){
+    if (m_defaultScreen)
+        SetRenderTarget(nullptr);
+    if (m_defaultScreen){
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
+        SDL_SetRenderDrawColor(m_renderer, 0,0,0, 0);
+        SDL_RenderClear( m_renderer );
+        SDL_Rect dimensions2;
+        dimensions2.x = m_offsetScreen.x;
+        dimensions2.y = m_offsetScreen.y;
+        dimensions2.h = m_originalScreen.y*m_scaleRatio.y;
+        dimensions2.w = m_originalScreen.x*m_scaleRatio.x;
+        SDL_RenderCopy(m_renderer,m_defaultScreen,nullptr,&dimensions2);
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+    }
 }
 
 void ScreenManager::NotifyResized(){
@@ -100,6 +132,7 @@ void ScreenManager::SetWindowSize(int w,int h){
 }
 
 void ScreenManager::Resize(int w,int h){
+
     SDL_SetWindowSize(m_window,w,h);
 }
 void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
@@ -110,13 +143,14 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
     m_scaleRatio.x =  ( (double)w / (double)m_originalScreen.x);
     m_scaleRatio.y =  ( (double)h / (double)m_originalScreen.y);
 
+    m_scaleRatio.x = round(m_scaleRatio.x*8.0)/8.0;
+    m_scaleRatio.y = round(m_scaleRatio.y*8.0)/8.0;
+
     m_scaleRatio.x = std::max(1.0f,m_scaleRatio.x);
     m_scaleRatio.y = std::max(1.0f,m_scaleRatio.y);
 
     m_trueScaleRatio = m_scaleRatio;
 
-    m_scaleRatio.x = round(m_scaleRatio.x*8.0)/8.0;
-    m_scaleRatio.y = round(m_scaleRatio.y*8.0)/8.0;
 
     if (behave == RESIZE_SCALE){
         m_scaleRatio.x = std::min(m_scaleRatio.x,m_scaleRatio.y);
@@ -134,8 +168,9 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
         }
         m_scaleRatio = LocalScale;
     }
+
     m_offsetScreen.x = m_originalScreen.x == w ? 0 : w/2 - (m_originalScreen.x/2)*m_scaleRatio.x;
-    std::cout << m_offsetScreen.x << " or size: " <<m_originalScreen.x << "ratio: " << m_scaleRatio.x << " to: " << w << "\n";
+    //std::cout << m_offsetScreen.x << " or size: " <<m_originalScreen.x << "ratio: " << m_scaleRatio.x << " to: " << w << "\n";
 }
 
 void ScreenManager::SetScreenName(std::string name){

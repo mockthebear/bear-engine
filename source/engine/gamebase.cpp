@@ -192,6 +192,7 @@ void Game::Update(){
 
     float dt = std::min(GetDeltaTime(),1.2f );
     InputManager::GetInstance().Update(dt);
+    ScreenManager::GetInstance().PreRender();
     if (!CanStop()){
         #ifndef DISABLE_LUAINTERFACE
         LuaInterface::Instance().Update(dt);
@@ -203,7 +204,9 @@ void Game::Update(){
 }
 void Game::Render(){
     stateStack.top()->Render();
+    ScreenManager::GetInstance().Render();
     InputManager::GetInstance().Render();
+    ScreenManager::GetInstance().RenderPresent();
 }
 
 
@@ -278,7 +281,7 @@ void Game::Run(){
             #endif
 
             Render();
-            SDL_RenderPresent(GetRenderer() );
+
             #ifdef CYCLYC_DEBUG
             std::cout << "[\\Render]\n";
             #endif
