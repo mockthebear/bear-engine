@@ -35,13 +35,13 @@ class BlockTileSet: public TileSet{
     public:
         BlockTileSet(int tileWidth,int tileHeight,char *file);
         ~BlockTileSet();
+        void RawRender(int index,int x,int y);
         void Render(int index,int x,int y);
         void Render2(int index,int x,int y,float,float);
         SDL_Texture *GetTexture();
         void Open(const char *f);
-        Sprite *tileset;
     private:
-
+        Sprite *tileset;
         int rows;
         int columns;
 

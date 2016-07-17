@@ -92,7 +92,7 @@ Sprite::Sprite(const char *file,ColorReplacer &r,bool replacer,int fcount,float 
     if (fcount == 1){
         SetGrid(GetWidth(),GetHeight());
     }else{
-        SetGrid(GetWidth()/frameCount,GetWidth()/frameCount);
+        SetGrid(GetWidth()/frameCount,GetHeight());
     }
     SetFrame(0);
     SetAlpha(255);
@@ -116,7 +116,7 @@ Sprite::Sprite(char *file,int fcount,float ftime,int rep){
     if (fcount == 1){
         SetGrid(GetWidth(),GetHeight());
     }else{
-        SetGrid(GetWidth()/frameCount,GetWidth()/frameCount);
+        SetGrid(GetWidth()/frameCount,GetHeight());
     }
     SetFrame(0);
     SetAlpha(255);
@@ -139,7 +139,7 @@ Sprite::Sprite(SDL_RWops* file,std::string name,int fcount,float ftime,int rep){
     if (fcount == 1){
         SetGrid(GetWidth(),GetHeight());
     }else{
-        SetGrid(GetWidth()/frameCount,GetWidth()/frameCount);
+        SetGrid(GetWidth()/frameCount,GetHeight());
     }
     SetFrame(0);
     SetAlpha(255);
@@ -164,7 +164,7 @@ Sprite::Sprite(const char *file,int fcount,float ftime,int rep){
     if (fcount == 1){
         SetGrid(GetWidth(),GetHeight());
     }else{
-        SetGrid(GetWidth()/frameCount,GetWidth()/frameCount);
+        SetGrid(GetWidth()/frameCount,GetHeight());
     }
     SetFrame(0);
     SetAlpha(255);
