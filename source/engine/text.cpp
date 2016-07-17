@@ -26,7 +26,6 @@ CustomFont::CustomFont(std::string letterpositions){
         if (sscanf(j.c_str(),"<%[a-z./\\0-9 ]>:%s@",pngfile,data)){
             sp = new Sprite(pngfile);
             std::string letterData = data;
-            std::cout << content << " : [[[" << fp->GetSize()<<"]]]\n";
              bool find = true;
             int m=1;
             char letter[10];
