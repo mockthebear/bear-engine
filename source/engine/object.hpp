@@ -172,7 +172,7 @@ class GameObject{
     /**
         This will say to the collision manager that this object is round
     */
-    bool round;
+    bool isround;
     /**
         *This will say to the collision manager that this object is solid.
         *When not solid will be ignored.

@@ -44,10 +44,59 @@ class Structure{
         uint16_t fileCount;
         std::vector<File_f> files;
 };
+
+int deCrypt(const char *dir){
+    FILE *fout = fopen(dir,"rb");
+    if (!fout){
+        std::cout << "cant open write "<<dir<<"\n";
+        return 1;
+    }
+    Structure data;
+
+    fread ( &data.fileCount, sizeof(uint16_t), 1,fout );
+    std::cout << "Files: " << data.fileCount << "\n";
+    int extraHeader = 2;
+    for (int i=0;i<data.fileCount;i++){
+        File_f f;
+        fread ( &f.size, sizeof(uint32_t), 1,fout );
+        extraHeader+=4;
+        fread ( &f.position, sizeof(uint32_t), 1,fout );
+        extraHeader+=4;
+        uint8_t fnameSize = 0;
+        fread ( &fnameSize, sizeof(uint8_t), 1,fout );
+        extraHeader+=1;
+        char *c = new char[fnameSize+1];
+        fread ( c, fnameSize, 1,fout );
+        extraHeader+=fnameSize;
+        f.data  = new char[f.size+1];
+        c[fnameSize] = '\0';
+        f.name = std::string(c);
+        data.files.emplace_back(f);
+        std::cout << "File: "<<f.name<<" ["<<f.size<<"]\n";
+    }
+    fseek(fout, 0L, SEEK_END);
+    int fsize = ftell(fout);
+    fseek(fout, 0L, SEEK_SET);
+    char* d=  new char[fsize];
+
+    fread ( d, fsize, 1,fout );
+
+    fclose(fout);
+    for (auto &it : data.files){
+        FILE *fp = fopen(it.name.c_str(),"wb");
+        fwrite ( &d[it.position+extraHeader], it.size, 1,fp );
+        std::cout << (it.position+extraHeader) << "\n";
+        fclose(fp);
+    }
+
+
+    return 1;
+}
+
 int main(int argc, char *argv[]){
     if (argc == 1){
         std::cout << "no input\n";
-        return 0;
+        return 1;
     }
     std::string path = ".";
     std::string outname = "a";
@@ -73,6 +122,13 @@ int main(int argc, char *argv[]){
                 return 1;
             }
             outname = argv[i];
+        }else if (param == "-d"){
+            i++;
+            if (i >= argc){
+                std::cout << "use -d like:\nmkburr -d file.burr\n";
+                return 1;
+            }
+            return deCrypt(argv[i]);
         }
     }
 

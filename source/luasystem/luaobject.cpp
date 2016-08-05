@@ -8,7 +8,7 @@ LuaObject::LuaObject(){
     ball        = Circle(0,0,1);
     rotation    = 0;
     Flags       = 0;
-    round       = false;
+    isround       = false;
     solid       = false;
     Depth       = 0;
     Active      = false;

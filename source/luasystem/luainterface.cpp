@@ -4,6 +4,11 @@
 
 
 
+LuaInterface& LuaInterface::Instance(){
+    static LuaInterface S;
+
+    return S;
+}
 
 #ifndef DISABLE_LUAINTERFACE
 #include "../engine/gamebase.hpp"
@@ -11,12 +16,6 @@
 #include "../engine/sound.hpp"
 #include "luaobject.hpp"
 
-
-LuaInterface& LuaInterface::Instance(){
-    static LuaInterface S;
-
-    return S;
-}
 LuaInterface::LuaInterface(){
     parametersCount = 0;
     L = NULL;
@@ -273,24 +272,63 @@ void LuaInterface::Update(float dt){
         }
     }
 }
+
+
 bool LuaInterface::CallScript(std::string name){
-
-
     if ( luaL_loadfile(L, name.c_str())==0 ) {
-        // execute Lua program
-            std::cout << "Calling main.lua" << std::endl;
-           if (lua_pcall(L, 0, LUA_MULTRET, 0) != 0){
-
-                std::cout << "Lua error: " << lua_tostring(L, -1) << std::endl;
-                lua_pop(L, 1); // remove error message
-            }
-        }else{
-             std::cout << "Lua error: " << lua_tostring(L, -1) << std::endl;
-             lua_pop(L, 1); // remove error message
+        if (lua_pcall(L, 0, LUA_MULTRET, 0) != 0){
+            std::cout << "Lua error: " << lua_tostring(L, -1) << std::endl;
+            lua_pop(L, 1);
+            return false;
         }
-    //std::cout << "The return value of the function was " << lua_tostring(L, -1) << std::endl;
+    }else{
+        std::cout << "Lua error: " << lua_tostring(L, -1) << std::endl;
+        lua_pop(L, 1);
+        return false;
+    }
     return true;
 }
+
+std::vector<LuaMember> LuaInterface::ListTableFields(std::string tableName){
+    std::vector<LuaMember> members;
+    if (tableName != ""){
+        if (!GetGlobal(tableName)){
+            return members;
+        }
+    }
+    if (not lua_istable(L,-1)){
+        LuaWarningMessageF("Requesting table. The type is %s.",LuaMember::GetType(L));
+        return members;
+    }
+    lua_pushnil(L);
+    while(lua_next(L, -2) != 0)
+    {
+        LuaMember l_member;
+        l_member.field = lua_tostring(L, -2);
+        l_member.type = LuaMember::GetType(L);
+        lua_pop(L, 1);
+        members.emplace_back(l_member);
+    }
+    return members;
+}
+
+bool LuaInterface::GetGlobal(std::string global){
+    lua_getglobal(L,global.c_str());
+    return !lua_isnil(L,-1);
+}
+
+bool LuaInterface::GetMember(std::string member){
+    lua_pushstring(L, member.c_str());
+    lua_gettable(L, -2);
+    return !lua_isnil(L,-1);
+}
+bool LuaInterface::GetMember(int num){
+    lua_pushnumber(L, num);
+    lua_gettable(L, -2);
+    return !lua_isnil(L,-1);
+}
+
+
 bool LuaInterface::RunTimer(std::string name){
 
     if (!HScript[name] or name == ""){

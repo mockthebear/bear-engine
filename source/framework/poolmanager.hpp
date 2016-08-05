@@ -30,6 +30,7 @@ typedef struct Holder_s{
     std::function<int(void)> Hash;
     std::function<void(std::map<int,std::vector<GameObject*>*>&)> PRender;
     std::function<void(float)> Update;
+    bool Drop;
     uint8_t Index;
 }Holder;
 
@@ -158,7 +159,7 @@ template<typename T> class GenericIterator{
 
 class PoolManager{
     public:
-        PoolManager();
+        PoolManager(bool insertUnregistered=false);
         /**
             @brief This wont delete the pools!
         */
@@ -166,7 +167,7 @@ class PoolManager{
         /**
             @brief Register an pool. Check on description for examples
             *
-            *When you register a pool on this manager, you should use:
+            *When you register a pool on this manager and NEED the pointer to the pool, you should use:
             @code
             SPP<MyObj>* LocalPool = new SPP<MyObj>(100);
             Pool.RegisterPool(POOL_CAST(LocalPool,MyObj ));
@@ -181,7 +182,23 @@ class PoolManager{
                               std::function<void(std::map<int,std::vector<GameObject*>*>&)> preRenderFunction,
                               std::function<void(float)> updateFunction,
                               std::function<GameObject*(GameObject*)> addFunction,
-                              std::function<int(void)> hashFuncion);
+                              std::function<int(void)> hashFuncion,bool DropPool=true);
+
+        /**
+            @brief Fast pool register
+            Unlike RegisterPool(lots of args...), this one you simply register and get the group id.
+            No need to worry about this pool anywhere else, the manager will manage it for you.
+            @code
+            Pool.Register<Player>(1);
+            Pool.Register<MyEnemy>(100);
+            Pool.Register<Particles>(800);
+            @endcode
+
+        */
+        template<typename T> int Register(int size){
+            SPP<T>* r_pool = new SPP<T>(size);
+            return RegisterPool(POOL_CAST(r_pool,T));
+        }
 
         /**
             *Get the maximum number of instances in the current generated local pool
@@ -201,6 +218,8 @@ class PoolManager{
             @param object Any object that have been its pool registered
             @return an pointer to this object <b>inside</b> the pool.
         */
+
+
         template<typename T> GameObject* AddInstance(T object){
             GameObject *added = NULL;
             for(int i = 0; i< Pools.size(); ++i){
@@ -286,7 +305,7 @@ class PoolManager{
             Used to be the iterator on c++11
         */
         GameObject **begin(){
-            return &contentList[0]; //Mudar, ele retyorna um **
+            return &contentList[0];
         }
         /**
             Used to be the iterator on c++11
@@ -304,6 +323,7 @@ class PoolManager{
             return Iterator;
         }
     private:
+        bool insertUnregistered;
         PoolId nextPoolGroup;
         void RemakeGroups();
         int LuaPool;
@@ -314,6 +334,7 @@ class PoolManager{
         int GroupsCount;
         std::vector<Holder> Pools;
         std::vector<PoolGroup> Groups;
+        std::vector<GameObject*> Unregistered;
 };
 
 

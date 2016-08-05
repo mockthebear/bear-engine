@@ -11,46 +11,99 @@
 
 typedef std::function<int(lua_State*)> LuaCFunctionLambda;
 
+class LuaMember{
+    public:
+        LuaMember(){
+            field = "nil";
+            type = "nil";
+        };
+        std::string field,type;
+        static std::string GetType(lua_State *L){
+            int tp = lua_type(L,-1);
+            std::string newstr = lua_typename(L, tp);
+            return newstr;
+        }
+};
 
 template<typename T1> struct GenericLuaCaller{
-     static T1 Call(lua_State *L){
-        //Error
+     static T1 Call(lua_State *L,bool pop=true){
         return -1;
+    };
+    static T1 Empty;
+};
+
+
+template<typename T1> struct GenericLuaType{
+     static bool Is(lua_State *L,int stack=-1){
+        return false;
     };
 };
 
 template<>
+    struct GenericLuaType<int>{
+        static bool Is(lua_State *L,int stack=-1){
+            return lua_isnumber(L,-1);
+        };
+};
+
+template<>
+    struct GenericLuaType<std::string>{
+        static bool Is(lua_State *L,int stack=-1){
+            return lua_isstring(L,-1);
+        };
+};
+
+template<>
+    struct GenericLuaType<float>{
+        static bool Is(lua_State *L,int stack=-1){
+            return lua_isnumber(L,-1);
+        };
+};
+
+template<>
+    struct GenericLuaType<bool>{
+        static bool Is(lua_State *L,int stack=-1){
+            return lua_isboolean(L,-1);
+        };
+};
+
+
+template<>
     struct GenericLuaCaller<int> {
-     static int Call(lua_State *L){
+     static int Call(lua_State *L,bool pop=true){
         int n = 0;
         if (lua_isnil(L,-1)){
-            Console::GetInstance().AddText(utils::format("[LuaBase][Warning]Argument %d is nil",lua_gettop(L)));
+            Console::GetInstance().AddText("[LuaBase][Warning]Argument %d is nil",lua_gettop(L));
             n = -1;
         }else{
             n = lua_tonumber(L,-1);
         }
-        lua_pop(L,1);
+        if (pop)
+            lua_pop(L,1);
         return n;
     };
+    static int Empty;
 };
 
 template<>
     struct GenericLuaCaller<float> {
-     static float Call(lua_State *L){
+     static float Call(lua_State *L,bool pop=true){
         float n = 0;
         if (lua_isnil(L,-1)){
-            Console::GetInstance().AddText(utils::format("[LuaBase][Warning]Argument %d is nil",lua_gettop(L)));
+            Console::GetInstance().AddText("[LuaBase][Warning]Argument %d is nil",lua_gettop(L));
             n = -1;
         }else{
             n = lua_tonumber(L,-1);
         }
-        lua_pop(L,1);
+        if (pop)
+            lua_pop(L,1);
         return n;
     };
+    static float Empty;
 };
 template<>
     struct GenericLuaCaller<std::string> {
-     static std::string Call(lua_State *L){
+     static std::string Call(lua_State *L,bool pop=true){
         std::string n;
         if (lua_isnil(L,-1)){
             Console::GetInstance().AddText(utils::format("[LuaBase][Warning]Argument %d is nil",lua_gettop(L)));
@@ -58,25 +111,32 @@ template<>
         }else{
             n = lua_tostring(L,-1);
         }
-        lua_pop(L,1);
+        if (pop)
+            lua_pop(L,1);
         return n;
     };
+    static std::string Empty;
 };
 
 template<>
     struct GenericLuaCaller<bool> {
-     static bool Call(lua_State *L){
+     static bool Call(lua_State *L,bool pop=true){
         bool n = false;
         if (lua_isnil(L,-1)){
-            Console::GetInstance().AddText(utils::format("[LuaBase][Warning]Argument %d is nil",lua_gettop(L)));
+            Console::GetInstance().AddText("[LuaBase][Warning]Argument %d is nil",lua_gettop(L));
             n = -1;
         }else{
             n = lua_toboolean(L,-1);
         }
-        lua_pop(L,1);
+        if (pop)
+            lua_pop(L,1);
         return n;
     };
+    static bool Empty;
 };
+
+
+
 
 template<typename T1> struct GenericLuaReturner{
      static void Ret(T1 vr,lua_State *L){

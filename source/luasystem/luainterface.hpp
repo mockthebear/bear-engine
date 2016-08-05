@@ -15,6 +15,7 @@ typedef struct{
     float T;
     std::string name;
 } luaTimer;
+
 class LuaInterface{
     public:
         ~LuaInterface();
@@ -28,6 +29,52 @@ class LuaInterface{
         template<typename Func>void FancyRegister(std::string str,Func f){
             RandomRegister(L,str,f);
         };
+
+        std::vector<LuaMember> ListTableFields(std::string tableGlobalName="");
+
+
+        template<typename Type> Type RequestValue(int stack=-1){
+            if(GenericLuaType<Type>::Is(L,stack)){
+                return GenericLuaCaller<Type>::Call(L,false);
+            }else{
+                std::cout << "Lua error. requested as string, but type not match.\n";
+                return GenericLuaCaller<Type>::Empty;
+            }
+        }
+        template<typename Type> Type RequestGlobalMember(std::string global,std::string member){
+            if (!GetGlobal(global)){
+                return GenericLuaCaller<Type>::Empty;
+            }
+            lua_pushstring(L, member.c_str());
+            lua_gettable(L, -2);
+
+            if (lua_isnil(L,-1)){
+                return GenericLuaCaller<Type>::Empty;
+            }
+
+            return RequestValue<Type>();
+
+        }
+        template<typename Type> Type RequestGlobalMember(std::string global,int member){
+            if (!GetGlobal(global)){
+                return GenericLuaCaller<Type>::Empty;
+            }
+            lua_pushnumber(L, member);
+            lua_gettable(L, -2);
+            if (lua_isnil(L,-1)){
+                return GenericLuaCaller<Type>::Empty;
+            }
+            return RequestValue<Type>();
+        }
+
+
+        void Pop(int size = 1){
+            lua_pop(L, size);
+        };
+        bool GetGlobal(std::string global);
+        bool GetMember(std::string member);
+        bool GetMember(int num);
+
         void Register(std::string str,int (*F)(lua_State*));
         bool RunScript(std::string name);
         bool CallScript(std::string name);

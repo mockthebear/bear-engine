@@ -1,17 +1,25 @@
 #include "poolmanager.hpp"
 #include "../luasystem/luaobject.hpp"
 
-PoolManager::PoolManager(){
-    indexCounter = 0;
+PoolManager::PoolManager(bool insertUnregistered){
+
     LuaPool = -1;
     contentList = new GameObject*[10];
     localMaximum = 0;
     GroupsCount = 0;
     nextPoolGroup = 255;
+    this->insertUnregistered = insertUnregistered;
+    indexCounter = insertUnregistered ? 1 : 0;
 }
 
 PoolManager::~PoolManager(){
-
+    delete contentList;
+    Console::GetInstance().AddTextInfo("Erasing pools.");
+    for(unsigned int i = 0; i< Pools.size(); ++i){
+        if (Pools[i].Drop)
+            Pools[i].Delete();
+    }
+    Console::GetInstance().AddTextInfo("Pools deleted.");
 }
 
 PoolId PoolManager::RegisterPool(std::function<int(void)> maxFuncion,
@@ -20,7 +28,7 @@ PoolId PoolManager::RegisterPool(std::function<int(void)> maxFuncion,
                               std::function<void(std::map<int,std::vector<GameObject*>*>&)> preRenderFunction,
                               std::function<void(float)> updateFunction,
                               std::function<GameObject*(GameObject*)> addFunction,
-                              std::function<int(void)> hashFuncion)
+                              std::function<int(void)> hashFuncion,bool DropPool)
 {
 
     Holder newHolder;
@@ -32,6 +40,7 @@ PoolId PoolManager::RegisterPool(std::function<int(void)> maxFuncion,
     newHolder.Add       = addFunction;
     newHolder.Hash      = hashFuncion;
     newHolder.Index     = indexCounter;
+    newHolder.Drop      = DropPool;
     Pools.emplace_back(newHolder);
     indexCounter++;
     GenerateInternalPool();
@@ -51,12 +60,16 @@ bool PoolManager::InternalAddInstance(GameObject *obj){
             return true;
         }
     }
+    if (insertUnregistered){
+        Unregistered.emplace_back(obj);
+        return true;
+    }
     GenerateInternalPool();
     return false;
 }
 
 void PoolManager::GenerateInternalPool(){
-    int localMaximum_aux = GetMaxInstancesOptimized();
+    int localMaximum_aux = GetMaxInstancesOptimized()+Unregistered.size();
     if (localMaximum_aux > localMaximum){
         delete contentList;
         contentList = new GameObject*[localMaximum_aux+1];
@@ -72,6 +85,14 @@ void PoolManager::GenerateInternalPool(){
             }
         }
     }
+    for(unsigned int i = 0; i< Unregistered.size(); ++i){
+        GameObject *obj = Unregistered[i];
+        if (obj != NULL && !obj->IsDead()){
+            contentList[count] = obj;
+            count++;
+        }
+    }
+
     RemakeGroups();
 }
 

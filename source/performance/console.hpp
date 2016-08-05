@@ -6,9 +6,15 @@
 #include <fstream>
 
 
-
 #define AddTextInfo(str) AddText("[%s] %s",utils::methodName(__PRETTY_FUNCTION__),std::string(str).c_str())
+#define AddTextInfoF(str,...) AddTextInfo(utils::format(std::string(str).c_str(),__VA_ARGS__))
 #define AddTextInfoLine(str) AddText("[%s %d] %s",utils::methodName(__PRETTY_FUNCTION__),__LINE__,std::string(str).c_str())
+#define AddTextInfoLineF(str,...) AddTextInfoLine(utils::format(std::string(str).c_str(),__VA_ARGS__))
+
+#ifndef DISABLE_LUAINTERFACE
+#define LuaWarningMessage(str) Console::GetInstance().AddText(utils::format("[Lua:Warning] %s"),str)
+#define LuaWarningMessageF(str,...) LuaWarningMessage(utils::format(str,__VA_ARGS__));
+#endif
 
 
 /**
@@ -58,6 +64,17 @@ class Console{
             Add an raw text line to the console
         */
         bool AddText(std::string str);
+        /**
+            Will be replaced by an macro
+        */
+        /*bool AddTextInfo(std::string str){return true;};
+        template<typename... arg> bool AddTextInfoF(std::string str,const arg&... a){return true;};
+        */
+        /**
+            Will be replaced by an macro
+        */
+        //bool AddTextInfoLine(std::string str){return true;};
+        //template<typename... arg> bool AddTextInfoLineF(std::string str,const arg&... a){return true;};
 
         /**
             Add an empty line
@@ -99,4 +116,6 @@ class Console{
         Text **m_line;
 
 };
+
+
 #endif // BE_CONSOLE
