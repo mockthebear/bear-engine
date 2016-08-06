@@ -34,7 +34,7 @@ class UIStyle{
             ncolors = 0;
 
             txtstyle = TEXT_SOLID;
-            fontfile = "ui:bit.ttf";
+            fontfile = "data/UnB-Office_Regular.ttf";
         };
         int fontSize,ncolors,extrax,extray;
         unsigned char fg[4],bg[4];

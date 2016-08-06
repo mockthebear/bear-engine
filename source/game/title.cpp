@@ -24,7 +24,7 @@
 #include "controlableobject.hpp"
 #include "ball.hpp"
 Title::Title(){
-
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
     ParticlePool = new SPP<Particle>(1000);
     requestQuit = requestDelete = false;
 
@@ -121,7 +121,12 @@ void Title::Update(float dt){
 
     if( InputManager::GetInstance().IsKeyDown(SDLK_RIGHT) )
         sprpos.x += 15.0*dt;
-
+    if( InputManager::GetInstance().MousePress(1) ){
+        Point p = InputManager::GetInstance().GetMouse();
+        Particle *a = (Particle*)ParticlePool->AddInstance(Particle(p.x,p.y,Sprite("data/sheet.png",4,10.0f),4,10.0f,500));
+        a->SetRotation(0.5);
+        a->SetScaling(0.1);
+    }
     Pool.Update(dt);
     Map.clear();
     Pool.PreRender(Map);

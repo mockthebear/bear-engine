@@ -28,6 +28,8 @@ Particle::Particle(){
     textures = NULL;
     Alpha = 255;
     follow = NULL;
+    Scale = 1;
+    Scaling = 0;
 
 }
 Particle::Particle(int x,int y){
@@ -53,6 +55,8 @@ Particle::Particle(int x,int y){
     PatternMove = MOVE_SET_NONE;
     Speed = Point(0,0);
     createdPosition = Point(x,y);
+    Scale = 1;
+    Scaling = 0;
 
 
 }
@@ -81,6 +85,8 @@ Particle::Particle(int x,int y,SmartTexture **vect,int amount,float fameDelay,in
     PatternMove = MOVE_SET_NONE;
     Speed = Point(0,0);
     createdPosition = Point(x,y);
+    Scale = 1;
+    Scaling = 0;
 }
 
 Particle::Particle(int x,int y,Text txt_,float duration){
@@ -103,6 +109,8 @@ Particle::Particle(int x,int y,Text txt_,float duration){
     Speed = Point(0,0);
     createdPosition = Point(x,y);
     AlphaDegen = 0;
+    Scale = 1;
+    Scaling = 0;
 }
 
 Particle::Particle(int x,int y,Sprite sp_,int frames,float delay,int rep){
@@ -125,6 +133,8 @@ Particle::Particle(int x,int y,Sprite sp_,int frames,float delay,int rep){
     PatternMove = MOVE_SET_NONE;
     Speed = Point(0,0);
     createdPosition = Point(x,y);
+    Scale = 1;
+    Scaling = 0;
 }
 
 Particle::Particle(GameObject *follow_,Point target,Sprite sp_,float duration){
@@ -146,6 +156,8 @@ Particle::Particle(GameObject *follow_,Point target,Sprite sp_,float duration){
     textures = NULL;
     PatternMove = MOVE_SET_NONE;
     Speed = Point(0,0);
+    Scale = 1;
+    Scaling = 0;
 
 }
 
@@ -194,6 +206,7 @@ void Particle::Update(float dt){
         Alpha -= AlphaDegen*dt;
         Alpha = std::max(0.0f,Alpha);
     }
+    Scale += Scaling*dt;
     if (!follow){
         rotation += Rotating*dt;
         if (PatternMove == MOVE_SET_CUSTOM){
@@ -231,6 +244,7 @@ void Particle::Render(){
 
     if(HasSprite){
         sp.SetAlpha(Alpha);
+        sp.SetScale(Point(Scale,Scale));
         if (follow != NULL){
             sp.SetClip(0,0,std::min(std::max(Distance,(float)sp.GetWidth() ),Distance ),sp.GetHeight() );
             //sp->SetClip(0,0,sp->GetHeight(),std::min(std::max(distance,(float)sp->GetWidth() ),distance ) );
@@ -244,6 +258,7 @@ void Particle::Render(){
         textures[currentFrame]->Render(Camera::AdjustPosition(box),rotation);
     }else if(txt.IsWorking()){
         txt.SetRotation(rotation);
+        //txt.SetScale(Point(Scale,Scale));
         txt.SetAlpha(Alpha);
         txt.Render(Camera::AdjustPosition(box));
     }

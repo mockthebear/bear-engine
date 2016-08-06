@@ -143,6 +143,11 @@ class Particle: public GameObject{
             The render function
         */
         void Render();
+
+        void SetScaling(float scale){Scaling = scale;};
+        void SetScale(float scale){Scale = scale;};
+
+
         /**
             The function used to know if is dead
         */
@@ -192,6 +197,8 @@ class Particle: public GameObject{
         /*
             Life/duration
         */
+        float Scaling;
+        float Scale;
         int repeat;
         float Alpha,AlphaDegen;
         /*

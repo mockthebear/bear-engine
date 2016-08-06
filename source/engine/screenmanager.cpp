@@ -97,7 +97,7 @@ void ScreenManager::Render(){
     if (m_defaultScreen)
         SetRenderTarget(nullptr);
     if (m_defaultScreen){
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
+        //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
         SDL_SetRenderDrawColor(m_renderer, 0,0,0, 0);
         SDL_RenderClear( m_renderer );
         SDL_Rect dimensions2;
@@ -106,7 +106,7 @@ void ScreenManager::Render(){
         dimensions2.h = m_originalScreen.y*m_scaleRatio.y;
         dimensions2.w = m_originalScreen.x*m_scaleRatio.x;
         SDL_RenderCopy(m_renderer,m_defaultScreen,nullptr,&dimensions2);
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+        //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
     }
 }
 

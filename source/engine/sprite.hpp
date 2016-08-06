@@ -302,6 +302,11 @@ class Sprite{
         void SetScaleY(float scale){
             scaleY=scale;
         };
+
+        void SetScale(Point scale){
+            scaleX=scale.x;
+            scaleY=scale.y;
+        };
         /**
             *You can cut some color channels and reblend the sprite
             *This changes the texture, so its <b>SHARED</b>
