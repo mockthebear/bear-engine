@@ -191,6 +191,12 @@ void Particle::SetPatternMoveLine(Point p,Point accel){
     PatternMove = MOVE_SET_LINE;
 }
 
+void Particle::SetPatternMoveLineFriction(Point p,Point accel){
+    Speed = p;
+    Acceleration = accel;
+    PatternMove = MOVE_SET_FRICTION;
+}
+
 void Particle::SetPatternMoveCircle(float speed,float angle,float radius){
     Acceleration.x = speed;
     Acceleration.y = angle;
@@ -213,6 +219,8 @@ void Particle::Update(float dt){
             customF(this,dt,internalFloat);
         }else if(PatternMove == MOVE_SET_LINE){
             MovementSet::Line(box,dt, Speed, Acceleration );
+        }else if(PatternMove == MOVE_SET_FRICTION){
+            MovementSet::Friction(box,dt, Speed, Acceleration );
         }else if(PatternMove == MOVE_SET_CIRCLE){
             MovementSet::Circle( box,dt, Acceleration.x,Acceleration.y,internalFloat,createdPosition );
         }
@@ -248,9 +256,9 @@ void Particle::Render(){
         if (follow != NULL){
             sp.SetClip(0,0,std::min(std::max(Distance,(float)sp.GetWidth() ),Distance ),sp.GetHeight() );
             //sp->SetClip(0,0,sp->GetHeight(),std::min(std::max(distance,(float)sp->GetWidth() ),distance ) );
-            sp.Render(box.x-Camera::pos.x- Distance/2,box.y-Camera::pos.y- sp.GetHeight()/2,rotation);
+            sp.Render(box.x-Camera::pos.x-Distance/2,box.y-Camera::pos.y- sp.GetHeight()/2,rotation);
         }else{
-            sp.Render(Camera::AdjustPosition(box),rotation);
+            sp.Render(box.x-Camera::pos.x-sp.GetHeight()/2,box.y-Camera::pos.y - sp.GetWidth()/2,rotation);
         }
     }else if(textures != NULL){
         if (currentFrame >= Frame)

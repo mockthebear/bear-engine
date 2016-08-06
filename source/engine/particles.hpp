@@ -17,6 +17,21 @@ namespace MovementSet{
         box.x = createdPosition.x + radius*cos(angle);
         box.y = createdPosition.y + radius*sin(angle);
     };
+    static inline void Friction( Rect &box,float dt, Point &speed, Point &Acceleration ){
+        Point aux = speed;
+        speed.x += Acceleration.x;
+        speed.y += Acceleration.y;
+        if ((aux.x/aux.x) != (speed.x/speed.x)){
+            Acceleration.x = 0;
+            speed.x = 0;
+        }
+        if ((aux.y/aux.y) != (speed.y/speed.y)){
+            Acceleration.y = 0;
+            speed.y = 0;
+        }
+        box.x += speed.x*dt;
+        box.y += speed.y*dt;
+    };
 };
 
 enum MovementPattern{
@@ -24,6 +39,7 @@ enum MovementPattern{
     MOVE_SET_LINE,
     MOVE_SET_CIRCLE,
     MOVE_SET_CUSTOM,
+    MOVE_SET_FRICTION,
 };
 /**
     @brief Particles, Non-Object animations, Effect Text, and others
@@ -112,6 +128,7 @@ class Particle: public GameObject{
             customF = customP;
             internalFloat = 0;
         };
+        void SetPatternMoveLineFriction(Point velocity,Point acceleration);
         /**
             Set rotation speed
         */
