@@ -251,7 +251,7 @@ class Sprite{
             *Get the remeaining time to the next frame
             @return the time left
         */
-        int GetFrameTime(){
+        float GetFrameTime(){
             return frameTime;
         };
         /**

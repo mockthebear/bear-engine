@@ -80,11 +80,8 @@ class Particle: public GameObject{
             @param delay of course is an animation, so you need the delay between the frames
             @param repeat the amount of times the animation will repeat
         */
-        Particle(int x,int y,Sprite sp,int frames,float delay,int repeat=0);
+        Particle(int x,int y,Sprite sp,float duration = 0,int repeat=0);
 
-
-
-        Particle(GameObject *follow,Point target,Sprite sp,float duration);
 
         /**
             *Empty constructor create an dead particle
@@ -99,9 +96,7 @@ class Particle: public GameObject{
             You can force an sprite to be set. Should be used on
             Particle::Particle(int x,int y)
         */
-        void SetSprite(Sprite sp);
-
-        void SetSprite(std::string name,int frames,float delay);
+        void SetSprite(Sprite sp,float duration=0,int repeat=0);
         /**
             Set the particle to move in a line.
             @param speed in x and y
@@ -232,7 +227,6 @@ class Particle: public GameObject{
         /*
             Shoot effect
         */
-        GameObject *follow;
         Point p2;
         float Distance;
         /*

@@ -27,7 +27,6 @@ Particle::Particle(){
     HasSprite = false;
     textures = NULL;
     Alpha = 255;
-    follow = NULL;
     Scale = 1;
     Scaling = 0;
 
@@ -51,7 +50,6 @@ Particle::Particle(int x,int y){
     AlphaDegen = 0;
 
     Depth = PARTICLE_DEPTH;
-    follow = NULL;
     PatternMove = MOVE_SET_NONE;
     Speed = Point(0,0);
     createdPosition = Point(x,y);
@@ -78,7 +76,7 @@ Particle::Particle(int x,int y,SmartTexture **vect,int amount,float fameDelay,in
 
     Alpha = 255;
     AlphaDegen = 0;
-    follow = NULL;
+
 
     Depth = PARTICLE_DEPTH;
 
@@ -101,7 +99,6 @@ Particle::Particle(int x,int y,Text txt_,float duration){
     Delay = duration;
     HasSprite = false;
     textures = NULL;
-    follow = NULL;
     txt = txt_;
     Alpha = 255;
     Depth = PARTICLE_DEPTH;
@@ -113,20 +110,17 @@ Particle::Particle(int x,int y,Text txt_,float duration){
     Scaling = 0;
 }
 
-Particle::Particle(int x,int y,Sprite sp_,int frames,float delay,int rep){
+Particle::Particle(int x,int y,Sprite sp_,float duration,int rep){
     OBJ_REGISTER(Particle);
     Rotating = rotation = 0;
     box.x = x;
     box.y = y;
     repeat = rep;
     currentFrame=0;
-    currentDelay=delay;
-    Frame = frames;
     AlphaDegen = 0;
-    Delay = delay;
-    HasSprite = true;
-    sp = sp_;
-    follow = NULL;
+
+    SetSprite(sp_);
+
     Alpha = 255;
     Depth = PARTICLE_DEPTH;
     textures = NULL;
@@ -137,54 +131,23 @@ Particle::Particle(int x,int y,Sprite sp_,int frames,float delay,int rep){
     Scaling = 0;
 }
 
-Particle::Particle(GameObject *follow_,Point target,Sprite sp_,float duration){
-    OBJ_REGISTER(Particle);
-    Rotating = rotation = 0;
-    AlphaDegen = 0;
-    p2 = target;
-    follow= follow_;
-    repeat = 0;
-    currentFrame=0;
-    currentDelay=duration;
-    Frame = 1;
-    Delay = duration;
-
-    HasSprite = true;
-    sp = sp_;
-    Alpha = 255;
-    Depth = PARTICLE_DEPTH;
-    textures = NULL;
-    PatternMove = MOVE_SET_NONE;
-    Speed = Point(0,0);
-    Scale = 1;
-    Scaling = 0;
-
-}
 
 Particle::~Particle(){
 
 }
 
-void Particle::SetSprite(Sprite sp_){
+
+
+void Particle::SetSprite(Sprite sp_,float duration,int repeat){
     sp = sp_;
     HasSprite = true;
-    currentFrame=0;
-    Frame=sp.GetFrameCount();
-    currentDelay=sp.GetFrameTime();
-    Delay=sp.GetFrameTime();
-    textures = NULL;
+    currentFrame    =   0;
+    Frame           =   sp.GetFrameCount();
+    currentDelay    =   std::max(sp_.GetFrameTime(),duration);
+    Delay           =   std::max(sp_.GetFrameTime(),duration);
+    textures        =   NULL;
 }
 
-
-void Particle::SetSprite(std::string name,int frames,float delay){
-    sp = Sprite(name.c_str(),frames,delay);
-    HasSprite = true;
-    currentFrame=0;
-    Frame=frames;
-    currentDelay=delay;
-    Delay=delay;
-    textures = NULL;
-}
 void Particle::SetPatternMoveLine(Point p,Point accel){
     Speed = p;
     Acceleration = accel;
@@ -213,32 +176,26 @@ void Particle::Update(float dt){
         Alpha = std::max(0.0f,Alpha);
     }
     Scale += Scaling*dt;
-    if (!follow){
-        rotation += Rotating*dt;
-        if (PatternMove == MOVE_SET_CUSTOM){
-            customF(this,dt,internalFloat);
-        }else if(PatternMove == MOVE_SET_LINE){
-            MovementSet::Line(box,dt, Speed, Acceleration );
-        }else if(PatternMove == MOVE_SET_FRICTION){
-            MovementSet::Friction(box,dt, Speed, Acceleration );
-        }else if(PatternMove == MOVE_SET_CIRCLE){
-            MovementSet::Circle( box,dt, Acceleration.x,Acceleration.y,internalFloat,createdPosition );
-        }
-    }else{
-        Point p = Point(follow->box.getXCenter()+8,follow->box.getYCenter()+8);
-        box.x = (p.x+p2.x)/2.0;
-        box.y = (p.y+p2.y)/2.0;
-        float angle = atan2(p.y-p2.y,p.x-p2.x);
-        Distance = p.getDistance(&p2);
-        angle = (angle > 0 ? angle : (2.0*PI + angle)) * 360.0 / (2.0*PI);
-        rotation = angle;
+    rotation += Rotating*dt;
+    if (PatternMove == MOVE_SET_CUSTOM){
+        customF(this,dt,internalFloat);
+    }else if(PatternMove == MOVE_SET_LINE){
+        MovementSet::Line(box,dt, Speed, Acceleration );
+    }else if(PatternMove == MOVE_SET_FRICTION){
+        MovementSet::Friction(box,dt, Speed, Acceleration );
+    }else if(PatternMove == MOVE_SET_CIRCLE){
+        MovementSet::Circle( box,dt, Acceleration.x,Acceleration.y,internalFloat,createdPosition );
     }
+
 
     currentDelay -= dt;
     if (currentDelay <= 0){
         currentDelay = Delay;
         currentFrame++;
-        if (currentFrame >= Frame and repeat > 0){
+    }
+    if (sp.IsAnimationOver() or currentFrame >= Frame){
+        if (repeat > 0){
+            sp.ResetAnimation();
             repeat--;
             currentFrame = 0;
         }
@@ -253,13 +210,8 @@ void Particle::Render(){
     if(HasSprite){
         sp.SetAlpha(Alpha);
         sp.SetScale(Point(Scale,Scale));
-        if (follow != NULL){
-            sp.SetClip(0,0,std::min(std::max(Distance,(float)sp.GetWidth() ),Distance ),sp.GetHeight() );
-            //sp->SetClip(0,0,sp->GetHeight(),std::min(std::max(distance,(float)sp->GetWidth() ),distance ) );
-            sp.Render(box.x-Camera::pos.x-Distance/2,box.y-Camera::pos.y- sp.GetHeight()/2,rotation);
-        }else{
-            sp.Render(box.x-Camera::pos.x-sp.GetHeight()/2,box.y-Camera::pos.y - sp.GetWidth()/2,rotation);
-        }
+        sp.SetCenter(Point(16,16));
+        sp.Render(box.x-Camera::pos.x,box.y-Camera::pos.y,rotation);
     }else if(textures != NULL){
         if (currentFrame >= Frame)
             return;

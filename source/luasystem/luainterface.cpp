@@ -494,18 +494,7 @@ int newParticle(lua_State *L)
 int ParticleSetSprite(lua_State *L)
 {
 
-    std::cout << lua_gettop(L) << "\n";
-    Particle** part = (Particle**)lua_touserdata(L, -lua_gettop(L));
-    float delay = lua_tonumber(L,-1);
-    lua_pop(L, 1);
-    int frames = lua_tonumber(L,-1);
-    lua_pop(L, 1);
-    std::string sprname = lua_tostring(L,-1);
-    lua_pop(L,lua_gettop(L));
 
-    if ((*part)){
-        (*part)->SetSprite(sprname,frames,delay);
-    }
     return 0; // number of return values
 }
 

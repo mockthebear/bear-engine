@@ -123,8 +123,8 @@ void Title::Update(float dt){
         sprpos.x += 15.0*dt;
     if( InputManager::GetInstance().MousePress(1) ){
         Point p = InputManager::GetInstance().GetMouse();
-        Particle *a = (Particle*)ParticlePool->AddInstance(Particle(p.x,p.y,Sprite("data/sheet.png",4,10.0f),4,10.0f,500));
-        a->SetRotation(0.5);
+        Particle *a = (Particle*)ParticlePool->AddInstance(Particle(p.x,p.y,Sprite("data/sheet.png",4,10.0f),0,2));
+        a->SetRotation(10.9);
         a->SetScaling(0.1);
     }
     Pool.Update(dt);
