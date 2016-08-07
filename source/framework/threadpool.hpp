@@ -13,6 +13,7 @@ typedef struct{
     int Threads;
     void *me;
     bool working;
+    bool mainThread;
 } parameters;
 
 enum JOBTYPE{
@@ -200,9 +201,12 @@ class ThreadPool{
             @endcode
         */
         void Unlock();
+        bool Help();
         /** @brief Dont do anything yet
 
         */
+
+
         void Update(float dt);
         /** @brief Get the amount of threads
 

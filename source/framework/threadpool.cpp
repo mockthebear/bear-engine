@@ -45,6 +45,7 @@ ThreadPool::ThreadPool(int threads){
         Params[i].id = i;
         Params[i].me = (void*)this;
         Params[i].working = false;
+        Params[i].mainThread = false;
         Params[i].Threads = UsePThreads;
         sem_init(&mutexes[i], 0,1);
         sem_init(&runningM[i], 0,1);
@@ -146,6 +147,28 @@ void ThreadPool::ClearJobs(){
     }
 }
 
+bool ThreadPool::Help(){
+    #ifndef DISABLE_THREADPOOL
+    pthread_mutex_lock(&Critical);
+    #endif
+    if (Jobs.empty()){
+        #ifndef DISABLE_THREADPOOL
+        pthread_mutex_unlock(&Critical);
+        #endif
+        return false;
+    }
+    #ifndef DISABLE_THREADPOOL
+    pthread_mutex_unlock(&Critical);
+    #endif
+    parameters Param;
+    Param.id = UsePThreads;
+    Param.me = (void*)this;
+    Param.working = true;
+    Param.mainThread = true;
+    Param.Threads = UsePThreads;
+    thread_pool_worker(&Param);
+    return true;
+};
 
 void ThreadPool::Lock(){
     if (!started){
@@ -220,7 +243,8 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
     while(true){
         //Call once
         #ifndef DISABLE_THREADPOOL
-        sem_wait (&This->mutexes[P->id]);
+        if (!P->mainThread)
+            sem_wait (&This->mutexes[P->id]);
         #endif
         P->working = true;
         Job todo;
@@ -236,6 +260,12 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
                 This->Jobs.pop();
             }else{
                 P->working = false;
+                if (P->mainThread){
+                    #ifndef DISABLE_THREADPOOL
+                    pthread_mutex_unlock(&This->Critical);
+                    #endif
+                    return nullptr;
+                }
             }
             #ifndef DISABLE_THREADPOOL
             pthread_mutex_unlock(&This->Critical);
@@ -250,9 +280,13 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
                     #ifndef DISABLE_THREADPOOL
                     pthread_mutex_lock(&This->Critical);
                     std::cout << "[ThreadPool]{Thread:"<< P->id << "} closing.\n";
-                    sem_post(&This->runningM[P->id]);
+                    if (!P->mainThread)
+                        sem_post(&This->runningM[P->id]);
                     pthread_mutex_unlock(&This->Critical);
-                    pthread_exit(NULL);
+                    if (!P->mainThread)
+                        pthread_exit(NULL);
+                    else
+                        return nullptr;
                     #endif // DISABLE_THREADPOOL
                 }else if (todo.Type == JOB_SHADE){
                     luz->Shade(P,todo);
@@ -268,7 +302,8 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
             }
         }
         #ifndef DISABLE_THREADPOOL
-        sem_post(&This->runningM[P->id]);
+        if (!P->mainThread)
+            sem_post(&This->runningM[P->id]);
         #endif
     }
     return NULL;

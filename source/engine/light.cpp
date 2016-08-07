@@ -180,7 +180,7 @@ void Light::Shade(parameters *P,Job &j){
 }
 
 
-bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize){
+bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float permissive,uint16_t maxDarkness){
     size = size_;
     ExtraSize = ExtraSize_;
     size.x += ExtraSize.x;
@@ -189,7 +189,8 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize){
     sizeX = (size.x )/dotSize;
     sizeY = (size.y )/dotSize;
     blockSize = dotSize;
-    out = new SmartTexture(0,0,sizeX,sizeY);
+    MaxDarkness = maxDarkness;
+    out = new SmartTexture(0,0,sizeX,sizeY,true,true);
 
     ShadeMap = new uint8_t*[sizeY];
     DataMap = new uint8_t*[sizeY];
@@ -223,7 +224,7 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize){
     CurrentAlloc = 0;
 
     MaxCycles = 90;
-    Permissive = 8.8;
+    Permissive = permissive;
     LightJobs = 0;
     return true;
 }

@@ -18,7 +18,7 @@ class Light{
         static Light* GetInstance();
         static Light* Startup();
 
-        bool StartLights(Point size,Point ExtraSize,uint16_t dotSize);
+        bool StartLights(Point size,Point ExtraSize,uint16_t dotSize,float permissive=8.8,uint16_t maxDarkness=200);
 
         void Update(float dt,LightStep step);
 
@@ -29,6 +29,9 @@ class Light{
 
         int GetBlockSize(){return blockSize;};
 
+        void SetLightRaysCount(int n){
+            MaxCycles = std::max(4,std::min(n,1000));
+        }
         void Reduce(parameters *P,Job &j);
         void Smooth(parameters *P,Job &j);
         void Shade(parameters *P,Job &j);
