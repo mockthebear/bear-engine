@@ -401,6 +401,7 @@ void Text::RemakeTexture(bool Destory){
     }
 
     if (surf){
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
         texture = SDL_CreateTextureFromSurface(BearEngine->GetRenderer(),surf);
         Uint32 format;
         int acess,w,h;
@@ -416,6 +417,7 @@ void Text::RemakeTexture(bool Destory){
         if (SDL_RenderCopy(BearEngine->GetRenderer(),texture,NULL,&dimensions2) < 0){
             std::cout << "[TXT:Render] Failed to render, SDL reason["<<SDL_GetError()<<"]:"<<"|"<<text.size()<<"{"<<text<<"}\n";
         }
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
         SDL_FreeSurface(surf);
     }else{
         std::cout << "[Text:RemakeTexture] Surface not loaded "<<SDL_GetError()<<"\n";

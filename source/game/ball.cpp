@@ -10,11 +10,13 @@ Ball::Ball(){
 Ball::Ball(Point pos){
     OBJ_REGISTER(Ball);
     box = pos;
-    box.w = 32;
-    box.h = 32;
+
+
     Created = true;
     speed.y = -0.1;
     sp = Sprite("data:raccoon.png");
+    box.w = sp.GetWidth();
+    box.h = sp.GetHeight();
 }
 Ball::~Ball(){
 
@@ -60,7 +62,7 @@ void Ball::Update(float dt){
     if (box.y > 602 - box.h){
         box.y = 600 - box.h;
     }
-    Light::GetInstance()->AddLightM(box.x+16,box.y+16,255);
+    Light::GetInstance()->AddLightM(box.x+box.w/2,box.y+box.h/2,255);
 
 }
 void Ball::NotifyCollision(GameObject *p){

@@ -24,7 +24,6 @@
 #include "controlableobject.hpp"
 #include "ball.hpp"
 Title::Title(){
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
     ParticlePool = new SPP<Particle>(1000);
     requestQuit = requestDelete = false;
 
@@ -67,7 +66,9 @@ Title::Title(){
     sprpos = Point(400,400);
     sprpos2 = sprpos;
 
-    Light::GetInstance()->StartLights( Point(800,600) ,Point(160,160) ,8);
+    Light::GetInstance()->StartLights( Point(800,600) ,Point(160,160) ,6,6.5,230);
+    Light::GetInstance()->SetLightRaysCount(128);
+
 
 
 }
@@ -121,12 +122,25 @@ void Title::Update(float dt){
 
     if( InputManager::GetInstance().IsKeyDown(SDLK_RIGHT) )
         sprpos.x += 15.0*dt;
+    Point p = InputManager::GetInstance().GetMouse();
     if( InputManager::GetInstance().MousePress(1) ){
-        Point p = InputManager::GetInstance().GetMouse();
-        Particle *a = (Particle*)ParticlePool->AddInstance(Particle(p.x,p.y,Sprite("data/sheet.png",4,10.0f),0,2));
-        a->SetRotation(10.9);
+
+        Sprite spp("data/sheet.png",4,10.0f,1,true);
+        Particle *a = (Particle*)ParticlePool->AddInstance(Particle(p.x,p.y,spp,0,20));
+        a->SetRotation(0.9);
         a->SetScaling(0.1);
     }
+
+    Light::GetInstance()->AddLightM(p.x,p.y,255);
+    Light::GetInstance()->AddBlockM(100,100,255);
+    Light::GetInstance()->AddBlockM(106,100,255);
+    Light::GetInstance()->AddBlockM(106,106,255);
+    Light::GetInstance()->AddBlockM(100,106,255);
+    Light::GetInstance()->AddBlockM(100,112,255);
+    Light::GetInstance()->AddBlockM(100,118,255);
+    Light::GetInstance()->AddBlockM(100,124,255);
+    Light::GetInstance()->AddBlockM(100,130,255);
+
     Pool.Update(dt);
     Map.clear();
     Pool.PreRender(Map);
@@ -135,6 +149,7 @@ void Title::Update(float dt){
     };
     ThreadPool::GetInstance().AddLambdaJob(ff);
     Light::GetInstance()->Update(dt,LIGHT_SHADE);
+
 
     ParticlePool->PreRender(Map);
     Camera::Update(dt);
@@ -166,9 +181,8 @@ void Title::Update(float dt){
 
 void Title::Render(){
 
-
-    //Light::GetInstance()->Update(0,LIGHT_GEN);
     Light::GetInstance()->Update(0,LIGHT_REDUCE);
+
     RenderHelp::DrawSquareColorA(0,0,800,600,255,255,255,255);
     bg->Render(0,0);
 
@@ -183,14 +197,18 @@ void Title::Render(){
 
     message->Render(400-message->GetWidth()/2,55+message->GetHeight());
 
+    ThreadPool::GetInstance().Help();
     Light::GetInstance()->Update(0,LIGHT_GEN);
+
 
     //Console::GetInstance().Render();
     PointInt p = PointInt(sprpos.x,sprpos.y);
 
     test->Render(p);
 
+    ThreadPool::GetInstance().Help();
     ThreadPool::GetInstance().Lock();
+
     Light::GetInstance()->Render();
 
 

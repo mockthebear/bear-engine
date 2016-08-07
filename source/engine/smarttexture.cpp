@@ -1,14 +1,19 @@
 #include "smarttexture.hpp"
 #include "gamebase.hpp"
 
-SmartTexture::SmartTexture(int xx,int yy,int ww,int hh,bool generatePixels){
+SmartTexture::SmartTexture(int xx,int yy,int ww,int hh,bool generatePixels,bool hasAliasing){
    h = hh;
    w = ww;
    pixels = nullptr;
+
+   if (hasAliasing)
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
    t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_ARGB8888,  SDL_TEXTUREACCESS_STATIC , ww, hh);
 
    pixels = new Uint32[w * h];
    SDL_SetTextureBlendMode( t, SDL_BLENDMODE_BLEND );
+   if (hasAliasing)
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
    x = xx;
    y = yy;
 }

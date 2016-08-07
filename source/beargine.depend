@@ -8464,7 +8464,7 @@
 	<map>
 	<iostream>
 
-1470515271 c:\users\mock\documents\github\bear-engine\source\settings\definitions.hpp
+1470543099 c:\users\mock\documents\github\bear-engine\source\settings\definitions.hpp
 
 1462246665 c:\users\mock\documents\github\bear-engine\source\input\inputmanager.hpp
 	"../settings/definitions.hpp"
@@ -8526,7 +8526,7 @@
 	<memory>
 	<iostream>
 
-1470516328 c:\users\mock\documents\github\bear-engine\source\engine\sprite.hpp
+1470525021 c:\users\mock\documents\github\bear-engine\source\engine\sprite.hpp
 	"../settings/definitions.hpp"
 	"../framework/geometry.hpp"
 	<unordered_map>
@@ -8635,7 +8635,7 @@
 	"smarttexture.hpp"
 	"text.hpp"
 
-1470374939 c:\users\mock\documents\github\bear-engine\source\engine\smarttexture.hpp
+1470525219 c:\users\mock\documents\github\bear-engine\source\engine\smarttexture.hpp
 	"../settings/definitions.hpp"
 	"../framework/geometry.hpp"
 	<stdint.h>
@@ -8647,7 +8647,7 @@
 	<functional>
 	<map>
 
-1470374892 source:c:\users\mock\documents\github\bear-engine\source\engine\light.cpp
+1470542040 source:c:\users\mock\documents\github\bear-engine\source\engine\light.cpp
 	"light.hpp"
 	"camera.hpp"
 	"screenmanager.hpp"
@@ -8656,12 +8656,12 @@
 	"renderhelp.hpp"
 	"../performance/console.hpp"
 
-1462246445 c:\users\mock\documents\github\bear-engine\source\engine\light.hpp
+1470542344 c:\users\mock\documents\github\bear-engine\source\engine\light.hpp
 	"smarttexture.hpp"
 	"../framework/threadpool.hpp"
 	<pthread.h>
 
-1470374980 c:\users\mock\documents\github\bear-engine\source\framework\threadpool.hpp
+1470542898 c:\users\mock\documents\github\bear-engine\source\framework\threadpool.hpp
 	"../settings/definitions.hpp"
 	<stack>
 	<pthread.h>
@@ -8748,7 +8748,7 @@
 
 1452710933 c:\users\mock\documents\github\bear-engine\source\engine\timer.hpp
 
-1470374937 source:c:\users\mock\documents\github\bear-engine\source\engine\smarttexture.cpp
+1470525234 source:c:\users\mock\documents\github\bear-engine\source\engine\smarttexture.cpp
 	"smarttexture.hpp"
 	"gamebase.hpp"
 
@@ -8759,7 +8759,7 @@
 	"smarttexture.hpp"
 	<map>
 
-1470374949 source:c:\users\mock\documents\github\bear-engine\source\engine\sprite.cpp
+1470525000 source:c:\users\mock\documents\github\bear-engine\source\engine\sprite.cpp
 	"sprite.hpp"
 	"gamebase.hpp"
 	<math.h>
@@ -8782,7 +8782,7 @@
 	<unordered_map>
 	<tuple>
 
-1470374958 source:c:\users\mock\documents\github\bear-engine\source\engine\text.cpp
+1470545363 source:c:\users\mock\documents\github\bear-engine\source\engine\text.cpp
 	"text.hpp"
 	"../settings/configmanager.hpp"
 	"../framework/gamefile.hpp"
@@ -8867,7 +8867,7 @@
 	"utils.hpp"
 	"../performance/console.hpp"
 
-1470374979 source:c:\users\mock\documents\github\bear-engine\source\framework\threadpool.cpp
+1470542947 source:c:\users\mock\documents\github\bear-engine\source\framework\threadpool.cpp
 	"../settings/definitions.hpp"
 	"threadpool.hpp"
 	"../engine/light.hpp"
@@ -8894,7 +8894,7 @@
 	"utils.hpp"
 	<math.h>
 
-1466568876 source:c:\users\mock\documents\github\bear-engine\source\game\ball.cpp
+1470545427 source:c:\users\mock\documents\github\bear-engine\source\game\ball.cpp
 	"ball.hpp"
 	"../input/inputmanager.hpp"
 	"../engine/camera.hpp"
@@ -8939,7 +8939,7 @@
 	<list>
 	"../framework/poolmanager.hpp"
 
-1470516612 source:c:\users\mock\documents\github\bear-engine\source\game\title.cpp
+1470545453 source:c:\users\mock\documents\github\bear-engine\source\game\title.cpp
 	"title.hpp"
 	<sstream>
 	<cmath>

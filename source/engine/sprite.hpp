@@ -44,7 +44,7 @@ class Sprite{
             *in the class.
             @param texture An sdl texture
         */
-        Sprite(SDL_Texture* texture,std::string name);
+        Sprite(SDL_Texture* texture,std::string name,bool hasAliasing=false);
         /**
             *Create an sprite from an path to an file. The file should be SDL2_Image supported
             *You can set the frame count and frame time to an animation
@@ -53,7 +53,7 @@ class Sprite{
             @param fcount Frame count. <b>THE FRAME MOVES ON X ONLY<b>
             @param ftime The time between the frames
         */
-        Sprite(char *file,int fcount=1,float ftime = 1,int repeat=1);
+        Sprite(char *file,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
         /**
             *Create an sprite from an path to an file. The file should be SDL2_Image supported
             *You can set the frame count and frame time to an animation
@@ -62,9 +62,9 @@ class Sprite{
             @param fcount Frame count. <b>THE FRAME MOVES ON X ONLY<b>
             @param ftime The time between the frames
         */
-        Sprite(const char *file,int fcount=1,float ftime = 1,int repeat=1);
+        Sprite(const char *file,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
 
-        Sprite(const char *file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1);
+        Sprite(const char *file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
         /**
             *Create an sprite from a rwops. Also delete the RWops
             *You also NEED to set an alias to use as hash.
@@ -74,7 +74,7 @@ class Sprite{
             @param fcount Frame count. <b>THE FRAME MOVES ON X ONLY<b>
             @param ftime The time between the frames
         */
-        Sprite(SDL_RWops* rw,std::string name,int fcount=1,float ftime = 1,int repeat=1);
+        Sprite(SDL_RWops* rw,std::string name,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
 
         /**
             *This function is static. You can call it any time
@@ -93,7 +93,7 @@ class Sprite{
             @param file The path or the asset tweak asset:file
         */
 
-        static SDL_Texture* Preload(char *file,bool adjustDir=true);
+        static SDL_Texture* Preload(char *file,bool adjustDir=true,bool HasAliasing=false);
         /**
             *Works like Sprite::Preload(char *file)
             *You have to pass an RWops and set an alias to work on Sprite::assetTable
@@ -106,9 +106,9 @@ class Sprite{
                             );
             @endcode
         */
-        static SDL_Texture* Preload(SDL_RWops* rw,std::string name);
+        static SDL_Texture* Preload(SDL_RWops* rw,std::string name,bool HasAliasing=false);
 
-        static SDL_Texture *ColorReplace(std::string fileName,ColorReplacer &r,bool replaceOnAssets=true);
+        static SDL_Texture *ColorReplace(std::string fileName,ColorReplacer &r,bool replaceOnAssets=true,bool HasAliasing=false);
         /**
             *This dont destroy the texture!!!
         */
@@ -134,7 +134,7 @@ class Sprite{
             @param reopen Default is false. When you call this, a new texture will be created and dont be added to the Sprite::assetTable
             @return An texture
         */
-        SDL_Texture* Open(SDL_RWops* rw,std::string name,bool reopen=false);
+        SDL_Texture* Open(SDL_RWops* rw,std::string name,bool reopen=false,bool HasAliasing=false);
         /**
             *Can be used when you create an sprite with empty constructor.
             @param file The path. Accept resource tweak.
@@ -142,7 +142,7 @@ class Sprite{
             @param reopen Default is false. When you call this, a new texture will be created and dont be added to the Sprite::assetTable
             @return An texture
         */
-        SDL_Texture* Open(char *file,bool reopen=false);
+        SDL_Texture* Open(char *file,bool reopen=false,bool HasAliasing=false);
         /**
             *Set clip on the sprite. Clipping stuff.
             *When call Sprite::Render, the rendered thing will be only the clipped area.
@@ -345,7 +345,9 @@ class Sprite{
         void SetFlip(SDL_RendererFlip f){
             sprFlip = f;
         }
+        bool aliasing;
     private:
+
         SDL_RendererFlip sprFlip;
         std::string fname;
         uint8_t OUTR,OUTB,OUTG;
