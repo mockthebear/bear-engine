@@ -19,6 +19,7 @@ class ControlableObject: public GameObject{
         bool isOnTop(){return false;};
         int hasPerspective(){return 0;};
     private:
+        float wobble;
         Sprite sp;
         bool isCreated;
         Point speed;

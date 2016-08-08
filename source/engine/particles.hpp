@@ -132,7 +132,7 @@ class Particle: public GameObject{
             Set the particle to decrease alpha in the same rate at the end of duration
         */
         void SetAlphaAsDuration(){
-            AlphaDegen = Alpha/(double)(Delay*(repeat+1));
+            AlphaDegen = Alpha/(double)( (Delay)*(repeat+1)*Frame);
         }
         /**
             Set the particle alpha to decrease at your own degen

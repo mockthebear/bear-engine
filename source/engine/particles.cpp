@@ -119,7 +119,7 @@ Particle::Particle(int x,int y,Sprite sp_,float duration,int rep){
     currentFrame=0;
     AlphaDegen = 0;
 
-    SetSprite(sp_);
+    SetSprite(sp_,duration,rep);
 
     Alpha = 255;
     Depth = PARTICLE_DEPTH;

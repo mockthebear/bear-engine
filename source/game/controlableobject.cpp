@@ -25,7 +25,8 @@ ControlableObject::ControlableObject(int x,int y){
     isCreated = true;
     solid=true;
     speed = Point(8-rand()%16,8-rand()%16);
-    sp = Sprite("data/bear.png");
+    sp = Sprite("data/bear.png",1,1,1,false);
+    wobble = 0;
 }
 
 ControlableObject::~ControlableObject(){
@@ -37,6 +38,7 @@ void ControlableObject::Update(float dt){
     Rect aux = box;
     aux.x += speed.x*dt;
     aux.y += speed.y*dt;
+    wobble += 0.01;
     if (aux.x <= 0 or aux.x >= 800 - box.w){
         speed.x *= -1;
         aux = box;
@@ -47,6 +49,12 @@ void ControlableObject::Update(float dt){
         aux = box;
         aux.y += speed.y*dt;
     }
+    float si = sin(wobble);
+    float co = cos(wobble);
+    si = si < 0 ? -si : si;
+    co = co < 0 ? -co : co;
+    sp.SetScale(Point(1 + si*0.2,1 + co*0.2));
+    sp.SetCenter(Point(sp.GetWidth()/2,sp.GetHeight()/2));
     box = aux;
     Light::GetInstance()->AddLightM(box.x+32,box.y+32,170);
 }
