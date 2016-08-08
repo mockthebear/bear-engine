@@ -148,14 +148,16 @@ void Title::Update(float dt){
     }
 
     Light::GetInstance()->AddLightM(p.x,p.y,255);
-    Light::GetInstance()->AddBlockM(100,100,255);
-    Light::GetInstance()->AddBlockM(106,100,255);
-    Light::GetInstance()->AddBlockM(106,106,255);
+    for (int i=0;i<15;i++){
+        Light::GetInstance()->AddBlockM(100 + i*6,100,255);
+    }
     Light::GetInstance()->AddBlockM(100,106,255);
     Light::GetInstance()->AddBlockM(100,112,255);
     Light::GetInstance()->AddBlockM(100,118,255);
-    Light::GetInstance()->AddBlockM(100,124,255);
-    Light::GetInstance()->AddBlockM(100,130,255);
+
+    Light::GetInstance()->AddBlockM(100 + 15*6,106,255);
+    Light::GetInstance()->AddBlockM(100 + 15*6,112,255);
+    Light::GetInstance()->AddBlockM(100 + 15*6,118,255);
 
     Pool.Update(dt);
     Map.clear();
@@ -210,7 +212,7 @@ void Title::Render(){
         delete it->second;
     }
 
-    RenderHelp::DrawSquareColorA(100,100,32,32,0,255,0,180);
+    //RenderHelp::DrawSquareColorA(100,100,32,32,0,255,0,180);
 
     message->Render(400-message->GetWidth()/2,55+message->GetHeight());
 
@@ -218,7 +220,7 @@ void Title::Render(){
     Light::GetInstance()->Update(0,LIGHT_GEN);
 
 
-    Console::GetInstance().Render();
+    //Console::GetInstance().Render();
     PointInt p = PointInt(sprpos.x,sprpos.y);
 
     test->Render(p);

@@ -38,7 +38,7 @@ void ControlableObject::Update(float dt){
     Rect aux = box;
     aux.x += speed.x*dt;
     aux.y += speed.y*dt;
-    wobble += 0.01;
+    wobble += 0.7f*dt;
     if (aux.x <= 0 or aux.x >= 800 - box.w){
         speed.x *= -1;
         aux = box;
