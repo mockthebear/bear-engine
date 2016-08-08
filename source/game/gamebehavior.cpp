@@ -5,6 +5,7 @@
 #include "../engine/gamebase.hpp"
 #include "../performance/console.hpp"
 #include "../framework/resourcemanager.hpp"
+#include "../framework/threadpool.hpp"
 
 
 #include <string>
@@ -44,6 +45,7 @@ bool GameBehavior::OnLoad(){
     Console::GetInstance().AddText(utils::format("There is %d joysticks",InputManager::GetInstance().GetJoystickCount()));
 
     Console::GetInstance().AddText("Starting state.");
+    ThreadPool::GetInstance().CreateThreads();
     Game::GetInstance()->AddState(new Title());
     return DefaultBehavior::GetInstance().OnLoad();
 }

@@ -26,9 +26,9 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++0x" />
+					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add option="-s" />
 					<Add option="-lMinGW32 -lSDL2main -lSDL2 -lSDL2_image" />
 					<Add option="-lSDL2_ttf -lSDL2_mixer -llua51 -pthread" />
 				</Linker>

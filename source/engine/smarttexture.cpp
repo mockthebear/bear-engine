@@ -25,8 +25,10 @@ void SmartTexture::UpdateTexture(){
 }
 SmartTexture::~SmartTexture(){
     delete []pixels;
+    SDL_DestroyTexture(t);
 
 }
+
 void SmartTexture::Render(PointInt pos,float angle){
     SDL_Rect rr;
     double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1

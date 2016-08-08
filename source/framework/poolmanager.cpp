@@ -13,7 +13,7 @@ PoolManager::PoolManager(bool insertUnregistered){
 }
 
 PoolManager::~PoolManager(){
-    delete contentList;
+    delete []contentList;
     Console::GetInstance().AddTextInfo("Erasing pools.");
     for(unsigned int i = 0; i< Pools.size(); ++i){
         if (Pools[i].Drop)
@@ -71,7 +71,7 @@ bool PoolManager::InternalAddInstance(GameObject *obj){
 void PoolManager::GenerateInternalPool(){
     int localMaximum_aux = GetMaxInstancesOptimized()+Unregistered.size();
     if (localMaximum_aux > localMaximum){
-        delete contentList;
+        delete []contentList;
         contentList = new GameObject*[localMaximum_aux+1];
     }
     localMaximum = localMaximum_aux;
@@ -137,7 +137,7 @@ void PoolManager::RemakeGroups(){
 
         }
         if (newMax > Groups[i].Max){
-            delete Groups[i].Objects;
+            delete []Groups[i].Objects;
             Groups[i].Objects = new GameObject*[newMax+1];
         }
         Groups[i].Max = newMax;

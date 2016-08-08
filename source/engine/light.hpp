@@ -17,7 +17,8 @@ class Light{
         Light();
         static Light* GetInstance();
         static Light* Startup();
-
+        bool IsStarted(){return out != nullptr;};
+        bool Shutdown();
         bool StartLights(Point size,Point ExtraSize,uint16_t dotSize,float permissive=8.8,uint16_t maxDarkness=200);
 
         void Update(float dt,LightStep step);

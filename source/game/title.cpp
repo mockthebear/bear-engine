@@ -24,15 +24,11 @@
 #include "controlableobject.hpp"
 #include "ball.hpp"
 Title::Title(){
-    ParticlePool = new SPP<Particle>(1000);
+    ParticlePool = new SPP<Particle>(6000);
     requestQuit = requestDelete = false;
 
-    SPP<ControlableObject>* ControlableObjectPool = new SPP<ControlableObject>(10);
-    PoolId co = Pool.RegisterPool(POOL_CAST(ControlableObjectPool,ControlableObject ));
-
-
-    SPP<Ball>* BallPool = new SPP<Ball>(10);
-    Pool.RegisterPool(POOL_CAST(BallPool,Ball ));
+    PoolId co = Pool.Register<ControlableObject>(10);
+    Pool.Register<Ball>(10);
 
     std::vector<PoolId> group;
     group.emplace_back(co);
@@ -41,8 +37,6 @@ Title::Title(){
 
 
     std::cout << Pool.GetMaxInstancesGroup(Group) << "\n";
-
-
 
 
 
@@ -66,8 +60,8 @@ Title::Title(){
     sprpos = Point(400,400);
     sprpos2 = sprpos;
 
-    Light::GetInstance()->StartLights( Point(800,600) ,Point(160,160) ,6,6.5,230);
-    Light::GetInstance()->SetLightRaysCount(128);
+
+
 
 
 
@@ -80,12 +74,13 @@ void Title::Begin(){
     Pool.AddInstance(ControlableObject(300,300));
     Pool.AddInstance(Ball(Point(200,400)));
     int distance = 48;
-    InputManager::GetInstance().CreateVirtualButton(SDLK_UP,PointInt(64,64),PointInt(200,500-distance),"Up");
+    /*InputManager::GetInstance().CreateVirtualButton(SDLK_UP,PointInt(64,64),PointInt(200,500-distance),"Up");
 
     InputManager::GetInstance().CreateVirtualButton(SDLK_LEFT,PointInt(64,64),PointInt(200-distance,500),"LFT");
     InputManager::GetInstance().CreateVirtualButton(SDLK_DOWN,PointInt(64,64),PointInt(200,500+distance),"Dwn");
     InputManager::GetInstance().CreateVirtualButton(SDLK_RIGHT,PointInt(64,64),PointInt(200+distance,500),"RGHT");
-    ThreadPool::GetInstance().CreateThreads();
+    */
+
 
     char *msg = SDL_GetPrefPath("tutorial","game");
     if (msg != NULL)
@@ -96,17 +91,31 @@ void Title::Begin(){
 
 
 
+
+    Light::GetInstance()->StartLights( Point(800,600) ,Point(160,160) ,6,6.5,90);
+    Light::GetInstance()->SetLightRaysCount(128);
+
 }
 
 Title::~Title(){
-    delete message;
+    delete ParticlePool;
     Pool.ErasePools();
+    delete message;
+    delete bg;
+    delete test;
+
+    Light::GetInstance()->Shutdown();
 
 }
 
 
 void Title::Update(float dt){
 
+    if( InputManager::GetInstance().IsKeyDown(SDLK_r) ){
+        requestDelete = true;
+        Game::GetInstance()->AddState(new Title());
+        return;
+    }
     ThreadPool::GetInstance().ClearJobs();
     Light::GetInstance()->Update(dt,LIGHT_BEGIN);
     Input();
@@ -120,15 +129,22 @@ void Title::Update(float dt){
     if( InputManager::GetInstance().IsKeyDown(SDLK_LEFT) )
         sprpos.x -= 15.0*dt;
 
+
+
     if( InputManager::GetInstance().IsKeyDown(SDLK_RIGHT) )
         sprpos.x += 15.0*dt;
     Point p = InputManager::GetInstance().GetMouse();
     if( InputManager::GetInstance().MousePress(1) ){
-
-        Sprite spp("data/sheet.png",4,10.0f,1,true);
-        Particle *a = (Particle*)ParticlePool->AddInstance(Particle(p.x,p.y,spp,0,20));
-        a->SetRotation(0.9);
-        a->SetScaling(0.1);
+        for (int i=0;i<100;i++){
+            float angle = Geometry::toRad(rand()%360);
+            Particle *a = (Particle*)ParticlePool->AddInstance(Particle(p.x-50 + rand()%100,p.y-50 + rand()%100,Sprite("data/spark.png",4,0.8f,1,true),0,8));
+            if (a){
+                a->SetPatternMoveLineFriction(Point(sin(angle)*10.0f,cos(angle)*10.0f),Point(-0.001,-0.001));
+                a->SetRotation(1.9);
+                a->SetScaling(0.1);
+                a->SetAlphaAsDuration();
+            }
+        }
     }
 
     Light::GetInstance()->AddLightM(p.x,p.y,255);
@@ -181,10 +197,11 @@ void Title::Update(float dt){
 
 void Title::Render(){
 
-    Light::GetInstance()->Update(0,LIGHT_REDUCE);
-
     RenderHelp::DrawSquareColorA(0,0,800,600,255,255,255,255);
     bg->Render(0,0);
+    Light::GetInstance()->Update(0,LIGHT_REDUCE);
+
+
 
     for (auto it=Map.begin(); it!=Map.end(); ++it){
         for (auto &k : *it->second){
@@ -201,7 +218,7 @@ void Title::Render(){
     Light::GetInstance()->Update(0,LIGHT_GEN);
 
 
-    //Console::GetInstance().Render();
+    Console::GetInstance().Render();
     PointInt p = PointInt(sprpos.x,sprpos.y);
 
     test->Render(p);
@@ -213,6 +230,7 @@ void Title::Render(){
 
 
     //Console::GetInstance().Render(Point(0,0));
+
 
 }
 

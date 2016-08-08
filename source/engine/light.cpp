@@ -21,6 +21,8 @@ Light::Light(){
     #endif
     LightJobs = 0;
     MaxDarkness = 200;
+    maxAlloc=2;
+    MapMap = nullptr;
 }
 Light* Light::Startup(){
     #ifndef DISABLE_THREADPOOL
@@ -179,8 +181,33 @@ void Light::Shade(parameters *P,Job &j){
     }
 }
 
-
+bool Light::Shutdown(){
+    if(not IsStarted()){
+        return false;
+    }
+    Console::GetInstance().AddTextInfo("Deleting light.");
+    delete out;
+    for (int y=0;y<sizeY;y++){
+        delete []ShadeMap[y];
+        delete []DataMap[y];
+    }
+    delete ShadeMap;
+    delete DataMap;
+    for (int i=0;i<maxAlloc;i++){
+        for (int y=0;y<sizeY;y++){
+            delete []MapMap[i][y];
+        }
+        delete []MapMap[i];
+    }
+    delete []MapMap;
+    MapMap = nullptr;
+    out = nullptr;
+    Console::GetInstance().AddTextInfo("Light deleted.");
+}
 bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float permissive,uint16_t maxDarkness){
+    if (out != nullptr){
+        Shutdown();
+    }
     size = size_;
     ExtraSize = ExtraSize_;
     size.x += ExtraSize.x;
@@ -191,7 +218,7 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float perm
     blockSize = dotSize;
     MaxDarkness = maxDarkness;
     out = new SmartTexture(0,0,sizeX,sizeY,true,true);
-
+    std::cout << "k\n";
     ShadeMap = new uint8_t*[sizeY];
     DataMap = new uint8_t*[sizeY];
     pix = out->GetPixels();
@@ -208,17 +235,20 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float perm
 
     out->UpdateTexture();
 
-    maxAlloc=2;
-    MapMap = new uint8_t**[2];
-    for (int i=0;i<2;i++){
-        MapMap[i] = new uint8_t*[sizeY];
-        for (int y=0;y<sizeY;y++){
-            MapMap[i][y] = new uint8_t[sizeX];
-            for (int x=0;x<sizeX;x++){
-                MapMap[i][y][x] = MaxDarkness;
+    if (MapMap == nullptr){
+        maxAlloc=2;
+        MapMap = new uint8_t**[2];
+        for (int i=0;i<2;i++){
+            MapMap[i] = new uint8_t*[sizeY];
+            for (int y=0;y<sizeY;y++){
+                MapMap[i][y] = new uint8_t[sizeX];
+                for (int x=0;x<sizeX;x++){
+                    MapMap[i][y][x] = MaxDarkness;
+                }
             }
         }
     }
+    std::cout << "ohm\n";
 
     LightPoints = 0;
     CurrentAlloc = 0;
@@ -226,16 +256,22 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float perm
     MaxCycles = 90;
     Permissive = permissive;
     LightJobs = 0;
+    std::cout << "kek\n";
     return true;
 }
 bool Light::IsInLimits(int x,int y){
+    if(not IsStarted()){
+        return false;
+    }
     if (x < 0 or x >= sizeX or y < 0 or y >= sizeY){
         return false;
     }
     return true;
 }
 void Light::AddBlockM(int x,int y,unsigned char strenght){
-
+        if(not IsStarted()){
+            return;
+        }
         x = ( (x-floor(((int)Camera::pos.x/blockSize)*blockSize) + ExtraSize.x/2 -blockSize)/blockSize );
         y = ( (y-floor(((int)Camera::pos.y/blockSize)*blockSize) + ExtraSize.y/2 -blockSize)/blockSize );
         if (IsInLimits(x,y) && DataMap[y][x] == 0){
@@ -244,6 +280,9 @@ void Light::AddBlockM(int x,int y,unsigned char strenght){
 
 }
 bool Light::AddLightM(int x, int y,uint8_t strenght){
+        if(not IsStarted()){
+            return false;
+        }
         x = ( (x-floor(((int)Camera::pos.x/blockSize)*blockSize) + ExtraSize.x/2 -blockSize)/blockSize );
         y = ( (y-floor(((int)Camera::pos.y/blockSize)*blockSize) + ExtraSize.y/2 -blockSize)/blockSize );
 
@@ -262,10 +301,14 @@ bool Light::AddLightM(int x, int y,uint8_t strenght){
 }
 
 uint8_t **Light::GiveAnAdderess(bool clear){
+    if(not IsStarted()){
+        return nullptr;
+    }
     uint8_t** VartoRet= MapMap[CurrentAlloc];
     CurrentAlloc++;
 
     if (CurrentAlloc >= maxAlloc){
+        std::cout << "New stuffzor\n";
         int addSize = 4;
         uint8_t *** MAux = new uint8_t **[maxAlloc + addSize];
         for (int i=0;i<maxAlloc;i++){
@@ -283,6 +326,7 @@ uint8_t **Light::GiveAnAdderess(bool clear){
             }
         }
         maxAlloc += addSize;
+        VartoRet= MapMap[CurrentAlloc-1];
     }
     for (int y=0;y<sizeY;y++){
         for (int x=0;x<sizeX;x++){
@@ -293,6 +337,9 @@ uint8_t **Light::GiveAnAdderess(bool clear){
 }
 
 void Light::WaitDone(){
+    if(not IsStarted()){
+        return;
+    }
     #ifndef DISABLE_THREADPOOL
     if (onAutomatic){
         float st = SDL_GetTicks();
@@ -308,6 +355,9 @@ void Light::WaitDone(){
     #endif
 }
 void Light::Update(float dt,LightStep step){
+    if(not IsStarted()){
+        return;
+    }
     if (step == LIGHT_BEGIN){
         LightPoints = 0;
         CurrentAlloc = 0;
@@ -357,6 +407,9 @@ void Light::Update(float dt,LightStep step){
 }
 
 void Light::Render(Point pos){
+    if(not IsStarted()){
+        return;
+    }
     out->UpdateTexture();
     int extraX = ((int)(floor(Camera::pos.x))%blockSize);
     int extraY = ((int)(floor(Camera::pos.y))%blockSize);
