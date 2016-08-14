@@ -119,14 +119,16 @@ void Title::Update(float dt){
     }
 
     Light::GetInstance()->AddLightM(p.x,p.y,255);
-    Light::GetInstance()->AddBlockM(100,100,255);
-    Light::GetInstance()->AddBlockM(106,100,255);
-    Light::GetInstance()->AddBlockM(106,106,255);
+    for (int i=0;i<15;i++){
+        Light::GetInstance()->AddBlockM(100 + i*6,100,255);
+    }
     Light::GetInstance()->AddBlockM(100,106,255);
     Light::GetInstance()->AddBlockM(100,112,255);
     Light::GetInstance()->AddBlockM(100,118,255);
-    Light::GetInstance()->AddBlockM(100,124,255);
-    Light::GetInstance()->AddBlockM(100,130,255);
+
+    Light::GetInstance()->AddBlockM(100 + 15*6,106,255);
+    Light::GetInstance()->AddBlockM(100 + 15*6,112,255);
+    Light::GetInstance()->AddBlockM(100 + 15*6,118,255);
 
     Pool.Update(dt);
     Map.clear();
@@ -178,7 +180,7 @@ void Title::Render(){
 
 
 
-    RenderHelp::DrawSquareColorA(100,100,32,32,0,255,0,180);
+    //RenderHelp::DrawSquareColorA(100,100,32,32,0,255,0,180);
 
     message.Render(300,300,TEXT_RENDER_CENTER);
 
@@ -187,7 +189,6 @@ void Title::Render(){
 
     if( InputManager::GetInstance().IsKeyDown(SDLK_TAB) )
         Console::GetInstance().Render();
-
 
     ThreadPool::GetInstance().Help();
     ThreadPool::GetInstance().Lock();

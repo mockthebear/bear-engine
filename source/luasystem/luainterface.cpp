@@ -126,10 +126,10 @@ int getPointerY(lua_State *L)
 
 int getPointerId(lua_State *L)
 {
-    GameObject *t= (GameObject *)lua_touserdata(L,1);
-    lua_pop(L,1);
-    lua_pushnumber(L,(int)t);
-  return 1; // number of return values
+    //uint32_t t= (uint32_t)lua_touserdata(L,1);
+    //lua_pop(L,1);
+    //lua_pushnumber(L,(int)t);
+  return 0; // number of return values
 }
 
 
@@ -249,7 +249,7 @@ bool LuaInterface::Call(){
             parametersCount = 0;
             return false;
     }else{
-        int ret = (int)lua_tostring(L, -1);
+        int ret = (int)lua_tonumber(L, -1);
         parametersCount = 0;
         lua_pop(L, 1);
         return ret > 0;

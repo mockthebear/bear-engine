@@ -9154,3 +9154,717 @@
 	"button.hpp"
 	<functional>
 
+1470667815 source:/home/mock/bear-engine/source/engine/camera.cpp
+	"camera.hpp"
+	"../input/inputmanager.hpp"
+	"../settings/configmanager.hpp"
+
+1470667815 /home/mock/bear-engine/source/engine/camera.hpp
+	"../framework/geometry.hpp"
+	"object.hpp"
+	"../settings/definitions.hpp"
+	<stdio.h>
+
+1470667815 /home/mock/bear-engine/source/framework/geometry.hpp
+	<math.h>
+	<stdio.h>
+
+1470667815 /home/mock/bear-engine/source/engine/object.hpp
+	"../framework/geometry.hpp"
+	"../framework/typechecker.hpp"
+	<string>
+	<typeinfo>
+	<iostream>
+
+1470667815 /home/mock/bear-engine/source/framework/typechecker.hpp
+	<map>
+	<iostream>
+
+1470667815 /home/mock/bear-engine/source/settings/definitions.hpp
+
+1470667815 /home/mock/bear-engine/source/input/inputmanager.hpp
+	"../settings/definitions.hpp"
+	"../framework/geometry.hpp"
+	<functional>
+	<map>
+	<queue>
+	"inputdefinitions.hpp"
+	"mouse.hpp"
+	"keyboard.hpp"
+	"touch.hpp"
+	"joystick.hpp"
+	"accelerometer.hpp"
+	"touchkeys.hpp"
+	"../input/inputmanager.hpp"
+
+1470667815 /home/mock/bear-engine/source/input/inputdefinitions.hpp
+
+1470667815 /home/mock/bear-engine/source/input/mouse.hpp
+	"../framework/geometry.hpp"
+	"inputdefinitions.hpp"
+	"../settings/definitions.hpp"
+
+1470667815 /home/mock/bear-engine/source/input/keyboard.hpp
+	<map>
+	"inputdefinitions.hpp"
+
+1470667815 /home/mock/bear-engine/source/input/touch.hpp
+	"inputdefinitions.hpp"
+	"../framework/geometry.hpp"
+
+1470667815 /home/mock/bear-engine/source/input/joystick.hpp
+	"inputdefinitions.hpp"
+	<unordered_map>
+	<string>
+	<functional>
+	"../settings/definitions.hpp"
+	"../framework/geometry.hpp"
+	"../input/inputmanager.hpp"
+
+1470667815 /home/mock/bear-engine/source/input/accelerometer.hpp
+	"joystick.hpp"
+
+1470667815 /home/mock/bear-engine/source/input/touchkeys.hpp
+	"../framework/geometry.hpp"
+	"../engine/text.hpp"
+	"keyboard.hpp"
+	"touch.hpp"
+	"mouse.hpp"
+	<string>
+
+1470667815 /home/mock/bear-engine/source/engine/text.hpp
+	"../framework/geometry.hpp"
+	"sprite.hpp"
+	"../settings/definitions.hpp"
+	<unordered_map>
+	<string>
+	<sstream>
+	<memory>
+	<iostream>
+
+1470667815 /home/mock/bear-engine/source/engine/sprite.hpp
+	"../settings/definitions.hpp"
+	"../framework/geometry.hpp"
+	<unordered_map>
+	<map>
+	<string>
+
+1470667815 /home/mock/bear-engine/source/settings/configmanager.hpp
+	"definitions.hpp"
+	"../framework/geometry.hpp"
+	<vector>
+	<string>
+
+1470667815 source:/home/mock/bear-engine/source/engine/collision.cpp
+	"collision.hpp"
+
+1470667815 /home/mock/bear-engine/source/engine/collision.hpp
+	<algorithm>
+	<math.h>
+	"object.hpp"
+	"../framework/poolmanager.hpp"
+	"../framework/geometry.hpp"
+
+1470667815 /home/mock/bear-engine/source/framework/poolmanager.hpp
+	"basepool.hpp"
+	<vector>
+	<functional>
+	<map>
+
+1470667815 /home/mock/bear-engine/source/framework/basepool.hpp
+	<map>
+	<vector>
+	<iostream>
+	"../engine/object.hpp"
+	"../engine/camera.hpp"
+	"../engine/particlecreator.hpp"
+
+1470667815 /home/mock/bear-engine/source/engine/particlecreator.hpp
+	"particles.hpp"
+	"smarttexture.hpp"
+	"text.hpp"
+
+1470667815 /home/mock/bear-engine/source/engine/particles.hpp
+	"object.hpp"
+	"sprite.hpp"
+	"smarttexture.hpp"
+	"text.hpp"
+
+1470667815 /home/mock/bear-engine/source/engine/smarttexture.hpp
+	"../settings/definitions.hpp"
+	"../framework/geometry.hpp"
+	<stdint.h>
+	<functional>
+
+1470667815 source:/home/mock/bear-engine/source/engine/defaultbehavior.cpp
+	"defaultbehavior.hpp"
+	"../settings/configmanager.hpp"
+	"screenmanager.hpp"
+	"camera.hpp"
+	"music.hpp"
+	"sound.hpp"
+	"gamebase.hpp"
+
+1470667815 /home/mock/bear-engine/source/engine/defaultbehavior.hpp
+	"behavior.hpp"
+
+1470667815 /home/mock/bear-engine/source/engine/behavior.hpp
+
+1470667815 /home/mock/bear-engine/source/engine/screenmanager.hpp
+	"../settings/definitions.hpp"
+	<string>
+	"../framework/geometry.hpp"
+
+1470667815 /home/mock/bear-engine/source/engine/music.hpp
+	"../settings/definitions.hpp"
+	<unordered_map>
+	<string>
+
+1470667815 /home/mock/bear-engine/source/engine/sound.hpp
+	"../settings/definitions.hpp"
+	"../settings/configmanager.hpp"
+	<unordered_map>
+	<string>
+
+1470667815 /home/mock/bear-engine/source/engine/gamebase.hpp
+	<cstdlib>
+	<iostream>
+	<memory>
+	<vector>
+	<list>
+	<stack>
+	<string.h>
+	<stdio.h>
+	<functional>
+	"../settings/definitions.hpp"
+	"../input/inputmanager.hpp"
+	"../settings/configmanager.hpp"
+	"screenmanager.hpp"
+	<android/asset_manager.h>
+	<android/asset_manager_jni.h>
+
+1470667815 source:/home/mock/bear-engine/source/engine/gamebase.cpp
+	<time.h>
+	"gamebase.hpp"
+	"../luasystem/luainterface.hpp"
+	"../framework/threadpool.hpp"
+	"../framework/debughelper.hpp"
+	"../framework/resourcemanager.hpp"
+	"../settings/definitions.hpp"
+	"../performance/console.hpp"
+	<emscripten.h>
+
+1470667815 /home/mock/bear-engine/source/luasystem/luainterface.hpp
+	"../settings/definitions.hpp"
+	"luatools.hpp"
+	<string>
+	<map>
+	<unordered_map>
+	<functional>
+	<vector>
+
+1470667815 /home/mock/bear-engine/source/luasystem/luatools.hpp
+	"../settings/definitions.hpp"
+	"../performance/console.hpp"
+	<iostream>
+
+1470667815 /home/mock/bear-engine/source/performance/console.hpp
+	"../engine/text.hpp"
+	"../framework/utils.hpp"
+	"../framework/userfile.hpp"
+	<fstream>
+
+1470667815 /home/mock/bear-engine/source/framework/utils.hpp
+	<string>
+	<vector>
+	<stdlib.h>
+	<stdio.h>
+
+1470667815 /home/mock/bear-engine/source/framework/userfile.hpp
+	<string>
+	<stdlib.h>
+	"../settings/definitions.hpp"
+	"../framework/utils.hpp"
+
+1470667815 /home/mock/bear-engine/source/framework/threadpool.hpp
+	"../settings/definitions.hpp"
+	<stack>
+	<pthread.h>
+	<semaphore.h>
+	<functional>
+	<time.h>
+
+1470667815 /home/mock/bear-engine/source/framework/debughelper.hpp
+	<string>
+	<stdlib.h>
+
+1470667815 /home/mock/bear-engine/source/framework/resourcemanager.hpp
+	"../settings/definitions.hpp"
+	<unordered_map>
+	"resourcefiles.hpp"
+
+1470667815 /home/mock/bear-engine/source/framework/resourcefiles.hpp
+	"../settings/definitions.hpp"
+	<string>
+	<vector>
+	<unordered_map>
+	<tuple>
+
+1470667815 source:/home/mock/bear-engine/source/engine/genericstate.cpp
+	"genericstate.hpp"
+
+1470667815 /home/mock/bear-engine/source/engine/genericstate.hpp
+	"object.hpp"
+	"../ui/base.hpp"
+	"../ui/window.hpp"
+	"../framework/basepool.hpp"
+	"../framework/poolmanager.hpp"
+	<cstdlib>
+	<iostream>
+	<memory>
+	<vector>
+	<list>
+
+1470667815 /home/mock/bear-engine/source/ui/base.hpp
+	<memory>
+	<vector>
+	<functional>
+	<unordered_map>
+	"../engine/text.hpp"
+	"../engine/sprite.hpp"
+
+1470667815 /home/mock/bear-engine/source/ui/window.hpp
+	<cstdlib>
+	<iostream>
+	<list>
+	<string>
+	"base.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/engine/light.cpp
+	"light.hpp"
+	"camera.hpp"
+	"screenmanager.hpp"
+	"gamebase.hpp"
+	"../framework/threadpool.hpp"
+	"renderhelp.hpp"
+	"../performance/console.hpp"
+
+1470667815 /home/mock/bear-engine/source/engine/light.hpp
+	"smarttexture.hpp"
+	"../framework/threadpool.hpp"
+	<pthread.h>
+
+1470667815 /home/mock/bear-engine/source/engine/renderhelp.hpp
+	"smarttexture.hpp"
+	"../framework/geometry.hpp"
+	<functional>
+
+1470667815 source:/home/mock/bear-engine/source/engine/music.cpp
+	"music.hpp"
+	"gamebase.hpp"
+	"../framework/dirmanager.hpp"
+	"../framework/resourcemanager.hpp"
+	"../performance/console.hpp"
+
+1470667815 /home/mock/bear-engine/source/framework/dirmanager.hpp
+	<string>
+
+1470667815 source:/home/mock/bear-engine/source/engine/particlecreator.cpp
+	"particlecreator.hpp"
+	"gamebase.hpp"
+	"text.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/engine/particles.cpp
+	"particles.hpp"
+	"camera.hpp"
+	"renderhelp.hpp"
+	<iostream>
+
+1470667815 source:/home/mock/bear-engine/source/engine/renderhelp.cpp
+	"renderhelp.hpp"
+	"../framework/debughelper.hpp"
+	<stdio.h>
+	"gamebase.hpp"
+	"SDL2/SDL.h"
+
+1470667815 source:/home/mock/bear-engine/source/engine/screenmanager.cpp
+	"screenmanager.hpp"
+	"../settings/configmanager.hpp"
+	"../performance/console.hpp"
+	"../framework/utils.hpp"
+	"camera.hpp"
+	<iostream>
+	<stdlib.h>
+	"renderhelp.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/engine/shooteffect.cpp
+	"shooteffect.hpp"
+	"../engine/renderhelp.hpp"
+	<math.h>
+	<iostream>
+
+1470667815 /home/mock/bear-engine/source/engine/shooteffect.hpp
+	"object.hpp"
+	"sprite.hpp"
+	"timer.hpp"
+	"camera.hpp"
+
+1470667815 /home/mock/bear-engine/source/engine/timer.hpp
+
+1470667815 source:/home/mock/bear-engine/source/engine/smarttexture.cpp
+	"smarttexture.hpp"
+	"gamebase.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/engine/smarttexturemanager.cpp
+	"smarttexturemanager.hpp"
+
+1470667815 /home/mock/bear-engine/source/engine/smarttexturemanager.hpp
+	"smarttexture.hpp"
+	<map>
+
+1470667815 source:/home/mock/bear-engine/source/engine/sound.cpp
+	"sound.hpp"
+	"../settings/definitions.hpp"
+	"../framework/resourcemanager.hpp"
+	"../framework/dirmanager.hpp"
+	"../performance/console.hpp"
+	<stdio.h>
+	<iostream>
+
+1470667815 source:/home/mock/bear-engine/source/engine/sprite.cpp
+	"sprite.hpp"
+	"gamebase.hpp"
+	<math.h>
+	"../framework/dirmanager.hpp"
+	"../performance/console.hpp"
+	"../framework/utils.hpp"
+	"renderhelp.hpp"
+	"smarttexture.hpp"
+	"../framework/resourcemanager.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/engine/text.cpp
+	"text.hpp"
+	"../settings/configmanager.hpp"
+	"../framework/gamefile.hpp"
+	"../framework/dirmanager.hpp"
+	"../framework/resourcemanager.hpp"
+	"../framework/utils.hpp"
+	"../performance/console.hpp"
+	"gamebase.hpp"
+
+1470667815 /home/mock/bear-engine/source/framework/gamefile.hpp
+	<string>
+	"../settings/definitions.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/engine/tilemap.cpp
+	"tilemap.hpp"
+	<stdio.h>
+
+1470667815 /home/mock/bear-engine/source/engine/tilemap.hpp
+	"tileset.hpp"
+
+1470667815 /home/mock/bear-engine/source/engine/tileset.hpp
+	"sprite.hpp"
+	<vector>
+
+1470667815 source:/home/mock/bear-engine/source/engine/tileset.cpp
+	"tileset.hpp"
+	<stdio.h>
+
+1470667815 source:/home/mock/bear-engine/source/engine/timer.cpp
+	"timer.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/framework/debughelper.cpp
+	"debughelper.hpp"
+	<iostream>
+	<stdio.h>
+
+1470667815 source:/home/mock/bear-engine/source/framework/dirmanager.cpp
+	"dirmanager.hpp"
+	<sstream>
+	"../settings/definitions.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/framework/gamefile.cpp
+	"gamefile.hpp"
+	"dirmanager.hpp"
+	"resourcemanager.hpp"
+	"utils.hpp"
+	"../performance/console.hpp"
+	<iostream>
+
+1470667815 source:/home/mock/bear-engine/source/framework/geometry.cpp
+	"geometry.hpp"
+	<math.h>
+
+1470667815 source:/home/mock/bear-engine/source/framework/poolmanager.cpp
+	"poolmanager.hpp"
+	"../luasystem/luaobject.hpp"
+
+1470667815 /home/mock/bear-engine/source/luasystem/luaobject.hpp
+	"../engine/object.hpp"
+	"luainterface.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/framework/resourcefiles.cpp
+	"resourcefiles.hpp"
+	"gamefile.hpp"
+	"utils.hpp"
+	"../performance/console.hpp"
+	<iostream>
+
+1470667815 source:/home/mock/bear-engine/source/framework/resourcemanager.cpp
+	"resourcemanager.hpp"
+	"dirmanager.hpp"
+	<iostream>
+	"utils.hpp"
+	"../performance/console.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/framework/threadpool.cpp
+	"../settings/definitions.hpp"
+	"threadpool.hpp"
+	"../engine/light.hpp"
+	"../framework/utils.hpp"
+	"../settings/configmanager.hpp"
+	"../performance/console.hpp"
+	"../engine/gamebase.hpp"
+	<math.h>
+	<stdlib.h>
+	<pthread.h>
+	<iostream>
+
+1470667815 source:/home/mock/bear-engine/source/framework/typechecker.cpp
+	"typechecker.hpp"
+	"../engine/object.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/framework/userfile.cpp
+	"userfile.hpp"
+	"dirmanager.hpp"
+	<stdio.h>
+	<stdlib.h>
+
+1470667815 source:/home/mock/bear-engine/source/framework/utils.cpp
+	"utils.hpp"
+	<math.h>
+
+1470667815 source:/home/mock/bear-engine/source/game/ball.cpp
+	"ball.hpp"
+	"../input/inputmanager.hpp"
+	"../engine/camera.hpp"
+	"../engine/light.hpp"
+
+1470667815 /home/mock/bear-engine/source/game/ball.hpp
+	"../engine/object.hpp"
+	"../engine/sprite.hpp"
+
+1470669529 source:/home/mock/bear-engine/source/game/controlableobject.cpp
+	"controlableobject.hpp"
+	"../engine/light.hpp"
+	"../engine/renderhelp.hpp"
+	"../engine/gamebase.hpp"
+
+1470667815 /home/mock/bear-engine/source/game/controlableobject.hpp
+	"../engine/object.hpp"
+	"../engine/sprite.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/game/gamebehavior.cpp
+	"gamebehavior.hpp"
+	"title.hpp"
+	"../engine/defaultbehavior.hpp"
+	"../engine/gamebase.hpp"
+	"../performance/console.hpp"
+	"../framework/resourcemanager.hpp"
+	"../framework/threadpool.hpp"
+	<string>
+
+1470667815 /home/mock/bear-engine/source/game/gamebehavior.hpp
+	"../engine/defaultbehavior.hpp"
+
+1470667815 /home/mock/bear-engine/source/game/title.hpp
+	"state.hpp"
+	"../performance/console.hpp"
+
+1470667815 /home/mock/bear-engine/source/game/state.hpp
+	"../engine/genericstate.hpp"
+	<cstdlib>
+	<iostream>
+	<memory>
+	<vector>
+	<list>
+	"../framework/poolmanager.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/game/title.cpp
+	"title.hpp"
+	<sstream>
+	<cmath>
+	"title.hpp"
+	"../engine/gamebase.hpp"
+	"../engine/particlecreator.hpp"
+	"../input/inputmanager.hpp"
+	"../framework/debughelper.hpp"
+	"../engine/renderhelp.hpp"
+	"../engine/smarttexture.hpp"
+	"../engine/smarttexturemanager.hpp"
+	"../engine/collision.h"
+	"../engine/light.hpp"
+	"../framework/threadpool.hpp"
+	"../framework/gamefile.hpp"
+	"../framework/utils.hpp"
+	"../framework/resourcemanager.hpp"
+	"controlableobject.hpp"
+	"ball.hpp"
+
+1470667815 /home/mock/bear-engine/source/engine/collision.h
+	<algorithm>
+	<math.h>
+	"object.hpp"
+	"../framework/poolmanager.hpp"
+	"../framework/geometry.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/input/accelerometer.cpp
+	"accelerometer.hpp"
+	"../engine/renderhelp.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/input/beinput.cpp
+	"beinput.hpp"
+	"inputmanager.hpp"
+
+1470667815 /home/mock/bear-engine/source/input/beinput.hpp
+	"inputdefinitions.hpp"
+	"joystick.hpp"
+	<map>
+	<vector>
+
+1470667815 source:/home/mock/bear-engine/source/input/inputmanager.cpp
+	"inputmanager.hpp"
+	"../engine/gamebase.hpp"
+	"../settings/configmanager.hpp"
+	"../engine/renderhelp.hpp"
+	"../performance/console.hpp"
+	"../settings/definitions.hpp"
+	<stdio.h>
+	<stdlib.h>
+	<iostream>
+
+1470667815 source:/home/mock/bear-engine/source/input/joystick.cpp
+	"joystick.hpp"
+	"../performance/console.hpp"
+	"../engine/renderhelp.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/input/keyboard.cpp
+	"keyboard.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/input/mouse.cpp
+	"mouse.hpp"
+	<iostream>
+
+1470667815 source:/home/mock/bear-engine/source/input/touch.cpp
+	"touch.hpp"
+	"../engine/renderhelp.hpp"
+	"../engine/screenmanager.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/input/touchkeys.cpp
+	"touchkeys.hpp"
+	"inputmanager.hpp"
+	"../engine/renderhelp.hpp"
+	<iostream>
+
+1470669361 source:/home/mock/bear-engine/source/luasystem/luainterface.cpp
+	"luainterface.hpp"
+	"luatools.hpp"
+	"../performance/console.hpp"
+	"../engine/gamebase.hpp"
+	<iostream>
+	"../engine/sound.hpp"
+	"luaobject.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/luasystem/luaobject.cpp
+	"../engine/renderhelp.hpp"
+	"../engine/gamebase.hpp"
+	"luaobject.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/main.cpp
+	<stdio.h>
+	<emscripten.h>
+	"engine/gamebase.hpp"
+	"framework/gamefile.hpp"
+	"settings/configmanager.hpp"
+	<android/asset_manager.h>
+	<android/asset_manager_jni.h>
+
+1470667815 source:/home/mock/bear-engine/source/performance/console.cpp
+	"console.hpp"
+	"../engine/renderhelp.hpp"
+	"../engine/gamebase.hpp"
+	"../framework/dirmanager.hpp"
+	<android/log.h>
+	<iostream>
+	<sstream>
+
+1470667815 source:/home/mock/bear-engine/source/settings/configmanager.cpp
+	"configmanager.hpp"
+	"../engine/gamebase.hpp"
+	"../framework/resourcemanager.hpp"
+	"../performance/console.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/ui/base.cpp
+	"base.hpp"
+	"../input/inputmanager.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/ui/button.cpp
+	"button.hpp"
+	"../engine/renderhelp.hpp"
+	"../input/inputmanager.hpp"
+
+1470667815 /home/mock/bear-engine/source/ui/button.hpp
+	"base.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/ui/checkbox.cpp
+	"checkbox.hpp"
+	"../engine/renderhelp.hpp"
+	"../input/inputmanager.hpp"
+
+1470667815 /home/mock/bear-engine/source/ui/checkbox.hpp
+	"base.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/ui/gettextwindow.cpp
+	"gettextwindow.hpp"
+	"../engine/renderhelp.hpp"
+
+1470667815 /home/mock/bear-engine/source/ui/gettextwindow.hpp
+	"base.hpp"
+	"window.hpp"
+	"label.hpp"
+	"textinput.hpp"
+	"button.hpp"
+	<functional>
+
+1470667815 /home/mock/bear-engine/source/ui/label.hpp
+	"base.hpp"
+
+1470667815 /home/mock/bear-engine/source/ui/textinput.hpp
+	"base.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/ui/label.cpp
+	"label.hpp"
+	"../engine/renderhelp.hpp"
+	"../input/inputmanager.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/ui/numberinput.cpp
+	"numberinput.hpp"
+	"../engine/renderhelp.hpp"
+	"../input/inputmanager.hpp"
+
+1470667815 /home/mock/bear-engine/source/ui/numberinput.hpp
+	"base.hpp"
+
+1470667815 source:/home/mock/bear-engine/source/ui/textinput.cpp
+	"textinput.hpp"
+	"../input/inputmanager.hpp"
+	"../engine/renderhelp.hpp"
+	<sstream>
+	<locale>
+
+1470667815 source:/home/mock/bear-engine/source/ui/window.cpp
+	"window.hpp"
+	"../engine/renderhelp.hpp"
+	"../input/inputmanager.hpp"
+
