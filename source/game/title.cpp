@@ -38,6 +38,8 @@ Title::Title():bg("data:wall.jpg"){
 
     std::cout << Pool.GetMaxInstancesGroup(Group) << "\n";
 
+    astar = PathFind(800,600);
+
 
 
 
@@ -105,7 +107,18 @@ void Title::Update(float dt){
 
 
     Point p = InputManager::GetInstance().GetMouse();
+    if( InputManager::GetInstance().MousePress(3) ){
+        astar.AddBlock(p.x,p.y);
+        staticBlock.emplace_back(Rect(p.x,p.y,16,16));
+
+    }
     if( InputManager::GetInstance().MousePress(1) ){
+        std::stack<Point> shown = astar.Find(PointInt(32,32),PointInt(p.x,p.y));
+        path.clear();
+        while (shown.size() > 0){
+            path.emplace_back(shown.top());
+            shown.pop();
+        }
         for (int i=0;i<100;i++){
             float angle = Geometry::toRad(rand()%360);
             Particle *a = (Particle*)ParticlePool->AddInstance(Particle(p.x-50 + rand()%100,p.y-50 + rand()%100,Sprite("data/spark.png",4,0.8f,1,true),0,8));
@@ -119,16 +132,17 @@ void Title::Update(float dt){
     }
 
     Light::GetInstance()->AddLightM(p.x,p.y,255);
-    for (int i=0;i<15;i++){
-        Light::GetInstance()->AddBlockM(100 + i*6,100,255);
+    for (auto &it : staticBlock){
+        Light::GetInstance()->AddBlock(it,255);
     }
-    Light::GetInstance()->AddBlockM(100,106,255);
+
+    /*Light::GetInstance()->AddBlockM(100,106,255);
     Light::GetInstance()->AddBlockM(100,112,255);
     Light::GetInstance()->AddBlockM(100,118,255);
 
     Light::GetInstance()->AddBlockM(100 + 15*6,106,255);
     Light::GetInstance()->AddBlockM(100 + 15*6,112,255);
-    Light::GetInstance()->AddBlockM(100 + 15*6,118,255);
+    Light::GetInstance()->AddBlockM(100 + 15*6,118,255);*/
 
     Pool.Update(dt);
     Map.clear();
@@ -196,6 +210,13 @@ void Title::Render(){
     Light::GetInstance()->Render();
 
     RenderWindowses();
+    if (path.size() > 0){
+        for (auto &it : path){
+            RenderHelp::DrawSquareColorA(it.x,it.y,16,16,0,255,0,180);
+        }
+
+    }
+    astar.Render();
 
 }
 

@@ -51,7 +51,7 @@ void Window::Render(Point where){
     where.x = box.x;
     where.y = box.y;
     UIBase::Render(where);
-    Point pos = Point(InputManager::GetInstance().GetMouseX(),InputManager::GetInstance().GetMouseY());
+    //Point pos = Point(InputManager::GetInstance().GetMouseX(),InputManager::GetInstance().GetMouseY());
     //RenderHelp::DrawSquareColorA(pos.x,pos.y,3,3,255,0,0,100);
 }
 /*

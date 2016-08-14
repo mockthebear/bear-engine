@@ -31,6 +31,17 @@ template <typename T=float> class GenericPoint{
             x = n[0];
             y = n[1];
         };
+        GenericPoint(const GenericPoint *p){
+            x = p->x;
+            y = p->y;
+        }
+        GenericPoint(const GenericPoint &p){
+            x = p.x;
+            y = p.y;
+        }
+
+
+
         /**
             Get the distance between two points
         */

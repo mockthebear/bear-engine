@@ -133,8 +133,8 @@ void Light::Shade(parameters *P,Job &j){
         int lsx=0,lsy=0;
         j.vect[y][x] = 0;
         for (float step=0;STR>0;step += 0.5){
-            int sx = sin(i * (360/(float)MaxCycles) * M_PI / 180.0)*step;
-            int sy = cos(i * (360/(float)MaxCycles) * M_PI / 180.0)*step;
+            int sx = sin(i * (360.0f/(float)MaxCycles) * M_PI / 180.0f)*step;
+            int sy = cos(i * (360.0f/(float)MaxCycles) * M_PI / 180.0f)*step;
             if (lsx == (int)sx and lsy == (int)sy){
                 STR -= Permissive;
                 continue;
@@ -145,9 +145,10 @@ void Light::Shade(parameters *P,Job &j){
                 if (DataMap[y+sy][x+sx]){
                     //Block
                     unsigned char Lum = MaxDarkness;
-                    STR -= STR* ( (float)DataMap[y+sy][x+sx] /255.0f);
+
                     Lum = std::max(0,  (Lum)-(int)(STR));
                     j.vect[y+sy][x+sx] = Lum;
+                    STR -= STR* ( (float)DataMap[y+sy][x+sx] /255.0f);
                 }else{
                     unsigned char Lum = MaxDarkness;
                     Lum = std::max(0,  (Lum)-(int)(STR));
@@ -203,6 +204,7 @@ bool Light::Shutdown(){
     MapMap = nullptr;
     out = nullptr;
     Console::GetInstance().AddTextInfo("Light deleted.");
+    return true;
 }
 bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float permissive,uint16_t maxDarkness){
     if (out != nullptr){
@@ -278,6 +280,23 @@ void Light::AddBlockM(int x,int y,unsigned char strenght){
             DataMap[y][x] = strenght;
         }
 
+}
+
+void Light::AddBlock(Rect r,uint8_t strenght){
+    if(not IsStarted()){
+        return;
+    }
+    int x = ( (r.x-floor(((int)Camera::pos.x/blockSize)*blockSize) + ExtraSize.x/2 -blockSize)/blockSize );
+    int y = ( (r.y-floor(((int)Camera::pos.y/blockSize)*blockSize) + ExtraSize.y/2 -blockSize)/blockSize );
+    r.w /= blockSize;
+    r.h /= blockSize;
+    for (int w = 0;w<r.w;w++){
+        for (int h = 0;h<r.h;h++){
+            if (IsInLimits(x+w,y+h) && DataMap[y+h][x+w] == 0){
+                DataMap[y+h][x+w] = strenght;
+            }
+        }
+    }
 }
 bool Light::AddLightM(int x, int y,uint8_t strenght){
         if(not IsStarted()){

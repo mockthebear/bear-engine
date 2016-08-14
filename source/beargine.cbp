@@ -74,6 +74,8 @@
 		<Unit filename="engine/particlecreator.hpp" />
 		<Unit filename="engine/particles.cpp" />
 		<Unit filename="engine/particles.hpp" />
+		<Unit filename="engine/pathfind.cpp" />
+		<Unit filename="engine/pathfind.hpp" />
 		<Unit filename="engine/renderhelp.cpp" />
 		<Unit filename="engine/renderhelp.hpp" />
 		<Unit filename="engine/screenmanager.cpp" />

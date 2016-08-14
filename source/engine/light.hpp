@@ -27,6 +27,7 @@ class Light{
 
         bool AddLightM(int,int,uint8_t);
         void AddBlockM(int,int,uint8_t);
+        void AddBlock(Rect,uint8_t);
 
         int GetBlockSize(){return blockSize;};
 

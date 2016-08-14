@@ -84,7 +84,7 @@ InputState BEInput::GetKeyStatus(InputMethod method){
             }
             break;
         }
-        case IM_MOUSE:
+        default:
             break;
 
     }
