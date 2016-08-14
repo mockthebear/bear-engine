@@ -13,11 +13,8 @@ class Title: public State{
         void Begin();
     private:
         float volume;
-        Sprite *bg;
-        Text *message;
-        Sprite *test;
-        Point sprpos;
-        Point sprpos2;
+        Sprite bg;
+        Text message;
         int Group;
 };
 #endif

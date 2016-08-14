@@ -236,12 +236,27 @@ void Text::Close(){
         texturespr = NULL;
     }
 }
-void Text::Render(int cameraX,int cameraY){
+void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
 
     if (!isWorking){
 
         return;
     }
+    if (renderStyle != 0){
+        if (renderStyle & TEXT_RENDER_TOPRIGHT){
+            cameraX -= GetWidth();
+        }
+        if (renderStyle & TEXT_RENDER_BOTTOMLEFT){
+            cameraY -= GetHeight();
+        }
+        if (renderStyle & TEXT_RENDER_CENTERHOR){
+            cameraX -= GetWidth()/2;
+        }
+        if (renderStyle & TEXT_RENDER_CENTERVER){
+            cameraY -= GetHeight()/2;
+        }
+    }
+
     if (font){
         SDL_Rect dimensions2;
         double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
@@ -267,9 +282,24 @@ void Text::Render(int cameraX,int cameraY){
         box.h = p.y;
     }
 }
-void Text::RenderRS(int cameraX,int cameraY){
+void Text::RenderRS(int cameraX,int cameraY,TextRenderStyle renderStyle){
     if (!isWorking)
         return;
+
+    if (renderStyle != 0){
+        if (renderStyle & TEXT_RENDER_TOPRIGHT){
+            cameraX -= GetWidth();
+        }
+        if (renderStyle & TEXT_RENDER_BOTTOMLEFT){
+            cameraY -= GetHeight();
+        }
+        if (renderStyle & TEXT_RENDER_CENTERHOR){
+            cameraX -= GetWidth()/2;
+        }
+        if (renderStyle & TEXT_RENDER_CENTERVER){
+            cameraY -= GetHeight()/2;
+        }
+    }
     if (font){
         SDL_Rect dimensions2;
         dimensions2.x = box.x+cameraX;

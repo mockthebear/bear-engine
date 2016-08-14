@@ -23,7 +23,7 @@
 
 #include "controlableobject.hpp"
 #include "ball.hpp"
-Title::Title(){
+Title::Title():bg("data:wall.jpg"){
     ParticlePool = new SPP<Particle>(6000);
     requestQuit = requestDelete = false;
 
@@ -41,7 +41,7 @@ Title::Title(){
 
 
 
-    message = new Text("data:arial.ttf",30,TEXT_SOLID,"Hello bear. FPS: ?", {10,50,255});
+    message = Text("data:arial.ttf",30,TEXT_SOLID,"Hello bear. FPS: ?", {10,50,255});
     char *c = ResourceManager::GetInstance().GetFileData("data","jaaj.txt");
     std::cout <<"Text is: ["<< c << "]\n";
     c = ResourceManager::GetInstance().GetFileData("data","kotol.bin");
@@ -53,12 +53,6 @@ Title::Title(){
 
     InputManager::GetInstance().SetTouchOffset(Point(8,0));
 
-
-
-    bg = new Sprite("data:wall.jpg");
-    test = new Sprite("data:raccoon.png");
-    sprpos = Point(400,400);
-    sprpos2 = sprpos;
 
 
 
@@ -73,13 +67,6 @@ void Title::Begin(){
     Pool.AddInstance(ControlableObject(100,100));
     Pool.AddInstance(ControlableObject(300,300));
     Pool.AddInstance(Ball(Point(200,400)));
-    int distance = 48;
-    /*InputManager::GetInstance().CreateVirtualButton(SDLK_UP,PointInt(64,64),PointInt(200,500-distance),"Up");
-
-    InputManager::GetInstance().CreateVirtualButton(SDLK_LEFT,PointInt(64,64),PointInt(200-distance,500),"LFT");
-    InputManager::GetInstance().CreateVirtualButton(SDLK_DOWN,PointInt(64,64),PointInt(200,500+distance),"Dwn");
-    InputManager::GetInstance().CreateVirtualButton(SDLK_RIGHT,PointInt(64,64),PointInt(200+distance,500),"RGHT");
-    */
 
 
     char *msg = SDL_GetPrefPath("tutorial","game");
@@ -100,10 +87,6 @@ void Title::Begin(){
 Title::~Title(){
     delete ParticlePool;
     Pool.ErasePools();
-    delete message;
-    delete bg;
-    delete test;
-
     Light::GetInstance()->Shutdown();
 
 }
@@ -120,19 +103,7 @@ void Title::Update(float dt){
     Light::GetInstance()->Update(dt,LIGHT_BEGIN);
     Input();
 
-    if( InputManager::GetInstance().IsKeyDown(SDLK_UP) )
-        sprpos.y -= 15.0*dt;
 
-    if( InputManager::GetInstance().IsKeyDown(SDLK_DOWN) )
-        sprpos.y += 15.0*dt;
-
-    if( InputManager::GetInstance().IsKeyDown(SDLK_LEFT) )
-        sprpos.x -= 15.0*dt;
-
-
-
-    if( InputManager::GetInstance().IsKeyDown(SDLK_RIGHT) )
-        sprpos.x += 15.0*dt;
     Point p = InputManager::GetInstance().GetMouse();
     if( InputManager::GetInstance().MousePress(1) ){
         for (int i=0;i<100;i++){
@@ -172,7 +143,7 @@ void Title::Update(float dt){
     std::stringstream Msg;
     Msg << "Hello bear. FPS: " << ScreenManager::GetInstance().GetFps();
 
-    message->SetText(Msg.str());
+    message.SetText(Msg.str());
 
 
     for (int i=0;i<Pool.GetMaxInstancesGroup(Group);i++){
@@ -198,39 +169,32 @@ void Title::Update(float dt){
 void Title::Render(){
 
     RenderHelp::DrawSquareColorA(0,0,800,600,255,255,255,255);
-    bg->Render(0,0);
+    bg.Render(0,0);
     Light::GetInstance()->Update(0,LIGHT_REDUCE);
 
 
 
-    for (auto it=Map.begin(); it!=Map.end(); ++it){
-        for (auto &k : *it->second){
-            k->Render();
-        }
-        delete it->second;
-    }
+    RenderInstances();
+
+
 
     RenderHelp::DrawSquareColorA(100,100,32,32,0,255,0,180);
 
-    message->Render(400-message->GetWidth()/2,55+message->GetHeight());
+    message.Render(300,300,TEXT_RENDER_CENTER);
 
     ThreadPool::GetInstance().Help();
     Light::GetInstance()->Update(0,LIGHT_GEN);
 
+    if( InputManager::GetInstance().IsKeyDown(SDLK_TAB) )
+        Console::GetInstance().Render();
 
-    Console::GetInstance().Render();
-    PointInt p = PointInt(sprpos.x,sprpos.y);
-
-    test->Render(p);
 
     ThreadPool::GetInstance().Help();
     ThreadPool::GetInstance().Lock();
 
     Light::GetInstance()->Render();
 
-
-    //Console::GetInstance().Render(Point(0,0));
-
+    RenderWindowses();
 
 }
 

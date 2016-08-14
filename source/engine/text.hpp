@@ -18,6 +18,16 @@ enum TextStyle{
     TEXT_BLENDED
 };
 
+enum TextRenderStyle{
+    TEXT_RENDER_TOPLEFT     = 0b0000,
+    TEXT_RENDER_TOPRIGHT    = 0b0001,
+    TEXT_RENDER_BOTTOMLEFT  = 0b0010,
+    TEXT_RENDER_BOTTOMRIGHT = 0b0011,
+    TEXT_RENDER_CENTERHOR   = 0b0100,
+    TEXT_RENDER_CENTERVER   = 0b1000,
+    TEXT_RENDER_CENTER      = 0b1100,
+};
+
 /**
  * @brief Class used to save some information about an letter in the class CustomFont
  *
@@ -159,12 +169,12 @@ class Text{
             *Here you render the text at a given position
             *This possition is added to the offset on constructor
         */
-        void Render(int X = 0, int Y = 0);
+        void Render(int X = 0, int Y = 0,TextRenderStyle renderStyle = TEXT_RENDER_TOPLEFT);
         /**
             Render without any scaling or screen adjustment
         */
-        void RenderRS(int X = 0, int Y = 0);
-        void inline Render(PointInt p){Render(p.x,p.y);};
+        void RenderRS(int X = 0, int Y = 0,TextRenderStyle renderStyle = TEXT_RENDER_TOPLEFT);
+        void inline Render(PointInt p,TextRenderStyle renderStyle = TEXT_RENDER_TOPLEFT){Render(p.x,p.y,renderStyle);};
         /**
             *When you edit the current text, a new texture is created
             *Unless you're using custom fonts, then just an std::string will be changed
