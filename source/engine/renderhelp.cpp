@@ -2,6 +2,7 @@
 #include "../framework/debughelper.hpp"
 #include <stdio.h>
 #include "gamebase.hpp"
+#include SDL_LIB_HEADER
 
 void RenderHelp::DrawSquareColorUnscaled(int x,int y,int w,int h,int r,int g,int b,int a){
     SDL_SetRenderDrawColor(BearEngine->GetRenderer(), r, g,b, a);
@@ -27,7 +28,7 @@ bool RenderHelp::RendedTexture(SDL_Texture* texture,int x,int y,int w,int h,floa
     rectangle.h = ( h*scaleRatioH  );
     return SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,NULL,&rectangle,angle,&center,flip) == 0;
 }
-#include "SDL2/SDL.h"
+
 void RenderHelp::DrawSquareColorA(int x,int y,int w,int h,int r,int g,int b,int a,bool outline){
 
     SDL_SetRenderDrawColor(BearEngine->GetRenderer(), r, g,b, a);

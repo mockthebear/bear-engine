@@ -164,6 +164,7 @@ void Game::Close(){
     ResourceManager::GetInstance().Erase("engine");
     Console::GetInstance().AddTextInfo("Closing screen");
     ScreenManager::GetInstance().TerminateScreen();
+
     if (HasAudio)
         Console::GetInstance().AddTextInfo("Closing audio");
     if (HasAudio)
@@ -178,7 +179,9 @@ void Game::Close(){
 
     Console::GetInstance().AddTextInfo("Quit game");
     Console::GetInstance().CloseOutput();
-
+    #ifdef __ANDROID__
+    exit(0);
+    #endif
     SDL_Quit();
 }
 

@@ -4,11 +4,10 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := main
 
-SDL_PATH := ../SDL2
+SDL_PATH := ../SDL2-2.0.4
 
-
-LOCAL_CPPFLAGS := -std=c++0x -D__GXX_EXPERIMENTAL_CXX0X__ -fpermissive -fno-rtti
-LOCAL_CFLAGS := -D__GXX_EXPERIMENTAL_CXX0X__ -fpermissive -fno-rtti
+LOCAL_CPPFLAGS := -std=c++11 -D__GXX_EXPERIMENTAL_CXX0X__ -fpermissive -fno-rtti
+LOCAL_CFLAGS := -D__GXX_EXPERIMENTAL_CXX0X__ -fno-rtti
 LOCAL_CPP_FEATURES := rtti exceptions
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/$(SDL_PATH)/include $(LOCAL_PATH)/../lua
@@ -20,11 +19,8 @@ LOCAL_SHARED_LIBRARIES := SDL2 SDL2_image SDL2_ttf SDL2_mixer liblua
 
 LOCAL_LDLIBS := -lGLESv1_CM -lGLESv2 -llog -fpermissive -landroid
 
-
-
-
-
 include $(BUILD_SHARED_LIBRARY)
+
 ]]
 require("ex")
 

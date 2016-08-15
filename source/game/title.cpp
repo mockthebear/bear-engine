@@ -201,7 +201,7 @@ void Title::Render(){
     ThreadPool::GetInstance().Help();
     Light::GetInstance()->Update(0,LIGHT_GEN);
 
-    if( InputManager::GetInstance().IsKeyDown(SDLK_TAB) )
+    //if( InputManager::GetInstance().IsKeyDown(SDLK_TAB) )
         Console::GetInstance().Render();
 
     ThreadPool::GetInstance().Help();

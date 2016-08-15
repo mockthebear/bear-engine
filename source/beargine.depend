@@ -9880,3 +9880,731 @@
 	"pathfind.hpp"
 	"renderhelp.hpp"
 
+1470374880 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\camera.cpp
+	"camera.hpp"
+	"../input/inputmanager.hpp"
+	"../settings/configmanager.hpp"
+
+1462246278 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\camera.hpp
+	"../framework/geometry.hpp"
+	"object.hpp"
+	"../settings/definitions.hpp"
+	<stdio.h>
+
+1471196681 c:\users\mock\documents\github\sdl2-2.0.4\source\framework\geometry.hpp
+	<math.h>
+	<stdio.h>
+
+1470374507 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\object.hpp
+	"../framework/geometry.hpp"
+	"../framework/typechecker.hpp"
+	<string>
+	<typeinfo>
+	<iostream>
+
+1471213179 c:\users\mock\documents\github\sdl2-2.0.4\source\framework\typechecker.hpp
+	<map>
+	<iostream>
+	<string>
+
+1470543099 c:\users\mock\documents\github\sdl2-2.0.4\source\settings\definitions.hpp
+
+1462246665 c:\users\mock\documents\github\sdl2-2.0.4\source\input\inputmanager.hpp
+	"../settings/definitions.hpp"
+	"../framework/geometry.hpp"
+	<functional>
+	<map>
+	<queue>
+	"inputdefinitions.hpp"
+	"mouse.hpp"
+	"keyboard.hpp"
+	"touch.hpp"
+	"joystick.hpp"
+	"accelerometer.hpp"
+	"touchkeys.hpp"
+	"../input/inputmanager.hpp"
+
+1462246649 c:\users\mock\documents\github\sdl2-2.0.4\source\input\inputdefinitions.hpp
+
+1456854361 c:\users\mock\documents\github\sdl2-2.0.4\source\input\mouse.hpp
+	"../framework/geometry.hpp"
+	"inputdefinitions.hpp"
+	"../settings/definitions.hpp"
+
+1456851670 c:\users\mock\documents\github\sdl2-2.0.4\source\input\keyboard.hpp
+	<map>
+	"inputdefinitions.hpp"
+
+1457635752 c:\users\mock\documents\github\sdl2-2.0.4\source\input\touch.hpp
+	"inputdefinitions.hpp"
+	"../framework/geometry.hpp"
+
+1471214367 c:\users\mock\documents\github\sdl2-2.0.4\source\input\joystick.hpp
+	<unordered_map>
+	<string>
+	<functional>
+	"../settings/definitions.hpp"
+	"../framework/geometry.hpp"
+	"inputdefinitions.hpp"
+	"../input/inputmanager.hpp"
+
+1454443422 c:\users\mock\documents\github\sdl2-2.0.4\source\input\accelerometer.hpp
+	"joystick.hpp"
+
+1454186610 c:\users\mock\documents\github\sdl2-2.0.4\source\input\touchkeys.hpp
+	"../framework/geometry.hpp"
+	"../engine/text.hpp"
+	"keyboard.hpp"
+	"touch.hpp"
+	"mouse.hpp"
+	<string>
+
+1471153698 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\text.hpp
+	"../framework/geometry.hpp"
+	"sprite.hpp"
+	"../settings/definitions.hpp"
+	<unordered_map>
+	<string>
+	<sstream>
+	<memory>
+	<iostream>
+
+1470525021 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\sprite.hpp
+	"../settings/definitions.hpp"
+	"../framework/geometry.hpp"
+	<unordered_map>
+	<map>
+	<string>
+
+1470515269 c:\users\mock\documents\github\sdl2-2.0.4\source\settings\configmanager.hpp
+	"definitions.hpp"
+	"../framework/geometry.hpp"
+	<vector>
+	<string>
+
+1470374885 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\collision.cpp
+	"collision.hpp"
+
+1464228739 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\collision.hpp
+	<algorithm>
+	<math.h>
+	"object.hpp"
+	"../framework/poolmanager.hpp"
+	"../framework/geometry.hpp"
+
+1470192262 c:\users\mock\documents\github\sdl2-2.0.4\source\framework\poolmanager.hpp
+	"basepool.hpp"
+	<vector>
+	<functional>
+	<map>
+
+1456005549 c:\users\mock\documents\github\sdl2-2.0.4\source\framework\basepool.hpp
+	<map>
+	<vector>
+	<iostream>
+	"../engine/object.hpp"
+	"../engine/camera.hpp"
+	"../engine/particlecreator.hpp"
+
+1452741924 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\particlecreator.hpp
+	"particles.hpp"
+	"smarttexture.hpp"
+	"text.hpp"
+
+1470633684 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\particles.hpp
+	"object.hpp"
+	"sprite.hpp"
+	"smarttexture.hpp"
+	"text.hpp"
+
+1470632045 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\smarttexture.hpp
+	"../settings/definitions.hpp"
+	"../framework/geometry.hpp"
+	<stdint.h>
+	<functional>
+
+1456848124 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\defaultbehavior.cpp
+	"defaultbehavior.hpp"
+	"../settings/configmanager.hpp"
+	"screenmanager.hpp"
+	"camera.hpp"
+	"music.hpp"
+	"sound.hpp"
+	"gamebase.hpp"
+
+1452626783 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\defaultbehavior.hpp
+	"behavior.hpp"
+
+1452627969 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\behavior.hpp
+
+1470374933 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\screenmanager.hpp
+	"../settings/definitions.hpp"
+	<string>
+	"../framework/geometry.hpp"
+
+1462246455 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\music.hpp
+	"../settings/definitions.hpp"
+	<unordered_map>
+	<string>
+
+1470374945 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\sound.hpp
+	"../settings/definitions.hpp"
+	"../settings/configmanager.hpp"
+	<unordered_map>
+	<string>
+
+1458359668 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\gamebase.hpp
+	<cstdlib>
+	<iostream>
+	<memory>
+	<vector>
+	<list>
+	<stack>
+	<string.h>
+	<stdio.h>
+	<functional>
+	"../settings/definitions.hpp"
+	"../input/inputmanager.hpp"
+	"../settings/configmanager.hpp"
+	"screenmanager.hpp"
+	<android/asset_manager.h>
+	<android/asset_manager_jni.h>
+
+1470514960 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\gamebase.cpp
+	<time.h>
+	"gamebase.hpp"
+	"../luasystem/luainterface.hpp"
+	"../framework/threadpool.hpp"
+	"../framework/debughelper.hpp"
+	"../framework/resourcemanager.hpp"
+	"../settings/definitions.hpp"
+	"../performance/console.hpp"
+	<emscripten.h>
+
+1470193804 c:\users\mock\documents\github\sdl2-2.0.4\source\luasystem\luainterface.hpp
+	"../settings/definitions.hpp"
+	"luatools.hpp"
+	<string>
+	<map>
+	<unordered_map>
+	<functional>
+	<vector>
+
+1469538911 c:\users\mock\documents\github\sdl2-2.0.4\source\luasystem\luatools.hpp
+	"../settings/definitions.hpp"
+	"../performance/console.hpp"
+	<iostream>
+
+1469539054 c:\users\mock\documents\github\sdl2-2.0.4\source\performance\console.hpp
+	"../engine/text.hpp"
+	"../framework/utils.hpp"
+	"../framework/userfile.hpp"
+	<fstream>
+
+1470374988 c:\users\mock\documents\github\sdl2-2.0.4\source\framework\utils.hpp
+	<string>
+	<vector>
+	<stdlib.h>
+	<stdio.h>
+
+1462246638 c:\users\mock\documents\github\sdl2-2.0.4\source\framework\userfile.hpp
+	<string>
+	<stdlib.h>
+	"../settings/definitions.hpp"
+	"../framework/utils.hpp"
+
+1470542898 c:\users\mock\documents\github\sdl2-2.0.4\source\framework\threadpool.hpp
+	"../settings/definitions.hpp"
+	<stack>
+	<pthread.h>
+	<semaphore.h>
+	<functional>
+	<time.h>
+
+1452645572 c:\users\mock\documents\github\sdl2-2.0.4\source\framework\debughelper.hpp
+	<string>
+	<stdlib.h>
+
+1470374975 c:\users\mock\documents\github\sdl2-2.0.4\source\framework\resourcemanager.hpp
+	"../settings/definitions.hpp"
+	<unordered_map>
+	"resourcefiles.hpp"
+
+1462246621 c:\users\mock\documents\github\sdl2-2.0.4\source\framework\resourcefiles.hpp
+	"../settings/definitions.hpp"
+	<string>
+	<vector>
+	<unordered_map>
+	<tuple>
+
+1464054593 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\genericstate.cpp
+	"genericstate.hpp"
+
+1464054576 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\genericstate.hpp
+	"object.hpp"
+	"../ui/base.hpp"
+	"../ui/window.hpp"
+	"../framework/basepool.hpp"
+	"../framework/poolmanager.hpp"
+	<cstdlib>
+	<iostream>
+	<memory>
+	<vector>
+	<list>
+
+1469167445 c:\users\mock\documents\github\sdl2-2.0.4\source\ui\base.hpp
+	<memory>
+	<vector>
+	<functional>
+	<unordered_map>
+	"../engine/text.hpp"
+	"../engine/sprite.hpp"
+
+1463846465 c:\users\mock\documents\github\sdl2-2.0.4\source\ui\window.hpp
+	<cstdlib>
+	<iostream>
+	<list>
+	<string>
+	"base.hpp"
+
+1471200813 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\light.cpp
+	"light.hpp"
+	"camera.hpp"
+	"screenmanager.hpp"
+	"gamebase.hpp"
+	"../framework/threadpool.hpp"
+	"renderhelp.hpp"
+	"../performance/console.hpp"
+
+1471200209 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\light.hpp
+	"smarttexture.hpp"
+	"../framework/threadpool.hpp"
+	<pthread.h>
+
+1465854164 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\renderhelp.hpp
+	"smarttexture.hpp"
+	"../framework/geometry.hpp"
+	<functional>
+
+1465700375 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\music.cpp
+	"music.hpp"
+	"gamebase.hpp"
+	"../framework/dirmanager.hpp"
+	"../framework/resourcemanager.hpp"
+	"../performance/console.hpp"
+
+1455987360 c:\users\mock\documents\github\sdl2-2.0.4\source\framework\dirmanager.hpp
+	<string>
+
+1470516296 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\particlecreator.cpp
+	"particlecreator.hpp"
+	"gamebase.hpp"
+	"text.hpp"
+
+1470633697 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\particles.cpp
+	"particles.hpp"
+	"camera.hpp"
+	"renderhelp.hpp"
+	<iostream>
+
+1471200070 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\pathfind.cpp
+	"pathfind.hpp"
+	"renderhelp.hpp"
+
+1471199878 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\pathfind.hpp
+	"../framework/geometry.hpp"
+	"object.hpp"
+	<queue>
+	<stack>
+
+1471215277 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\renderhelp.cpp
+	"renderhelp.hpp"
+	"../framework/debughelper.hpp"
+	<stdio.h>
+	"gamebase.hpp"
+
+1452623013 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\shooteffect.cpp
+	"shooteffect.hpp"
+	"../engine/renderhelp.hpp"
+	<math.h>
+	<iostream>
+
+1449599316 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\shooteffect.hpp
+	"object.hpp"
+	"sprite.hpp"
+	"timer.hpp"
+	"camera.hpp"
+
+1452710933 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\timer.hpp
+
+1470631967 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\smarttexture.cpp
+	"smarttexture.hpp"
+	"gamebase.hpp"
+
+1446749916 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\smarttexturemanager.cpp
+	"smarttexturemanager.hpp"
+
+1446749898 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\smarttexturemanager.hpp
+	"smarttexture.hpp"
+	<map>
+
+1471216753 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\screenmanager.cpp
+	"screenmanager.hpp"
+	"../settings/configmanager.hpp"
+	"../performance/console.hpp"
+	"../framework/utils.hpp"
+	"camera.hpp"
+	<iostream>
+	<stdlib.h>
+	"renderhelp.hpp"
+
+1462246486 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\sound.cpp
+	"sound.hpp"
+	"../settings/definitions.hpp"
+	"../framework/resourcemanager.hpp"
+	"../framework/dirmanager.hpp"
+	"../performance/console.hpp"
+	<stdio.h>
+	<iostream>
+
+1470525000 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\sprite.cpp
+	"sprite.hpp"
+	"gamebase.hpp"
+	<math.h>
+	"../framework/dirmanager.hpp"
+	"../performance/console.hpp"
+	"../framework/utils.hpp"
+	"renderhelp.hpp"
+	"smarttexture.hpp"
+	"../framework/resourcemanager.hpp"
+
+1471153698 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\text.cpp
+	"text.hpp"
+	"../settings/configmanager.hpp"
+	"../framework/gamefile.hpp"
+	"../framework/dirmanager.hpp"
+	"../framework/resourcemanager.hpp"
+	"../framework/utils.hpp"
+	"../performance/console.hpp"
+	"gamebase.hpp"
+
+1457469855 c:\users\mock\documents\github\sdl2-2.0.4\source\framework\gamefile.hpp
+	<string>
+	"../settings/definitions.hpp"
+
+1435376668 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\tilemap.cpp
+	"tilemap.hpp"
+	<stdio.h>
+
+1396632993 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\tilemap.hpp
+	"tileset.hpp"
+
+1458006160 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\tileset.hpp
+	"sprite.hpp"
+	<vector>
+
+1458006231 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\tileset.cpp
+	"tileset.hpp"
+	<stdio.h>
+
+1452740997 source:c:\users\mock\documents\github\sdl2-2.0.4\source\engine\timer.cpp
+	"timer.hpp"
+
+1436214387 source:c:\users\mock\documents\github\sdl2-2.0.4\source\framework\debughelper.cpp
+	"debughelper.hpp"
+	<iostream>
+	<stdio.h>
+
+1456601735 source:c:\users\mock\documents\github\sdl2-2.0.4\source\framework\dirmanager.cpp
+	"dirmanager.hpp"
+	<sstream>
+	"../settings/definitions.hpp"
+
+1470374964 source:c:\users\mock\documents\github\sdl2-2.0.4\source\framework\gamefile.cpp
+	"gamefile.hpp"
+	"dirmanager.hpp"
+	"resourcemanager.hpp"
+	"utils.hpp"
+	"../performance/console.hpp"
+	<iostream>
+
+1454049410 source:c:\users\mock\documents\github\sdl2-2.0.4\source\framework\geometry.cpp
+	"geometry.hpp"
+	<math.h>
+
+1470631250 source:c:\users\mock\documents\github\sdl2-2.0.4\source\framework\poolmanager.cpp
+	"poolmanager.hpp"
+	"../luasystem/luaobject.hpp"
+
+1448246381 c:\users\mock\documents\github\sdl2-2.0.4\source\luasystem\luaobject.hpp
+	"../engine/object.hpp"
+	"luainterface.hpp"
+
+1470374970 source:c:\users\mock\documents\github\sdl2-2.0.4\source\framework\resourcefiles.cpp
+	"resourcefiles.hpp"
+	"gamefile.hpp"
+	"utils.hpp"
+	"../performance/console.hpp"
+	<iostream>
+
+1470374974 source:c:\users\mock\documents\github\sdl2-2.0.4\source\framework\resourcemanager.cpp
+	"resourcemanager.hpp"
+	"dirmanager.hpp"
+	<iostream>
+	"utils.hpp"
+	"../performance/console.hpp"
+
+1470542947 source:c:\users\mock\documents\github\sdl2-2.0.4\source\framework\threadpool.cpp
+	"../settings/definitions.hpp"
+	"threadpool.hpp"
+	"../engine/light.hpp"
+	"../framework/utils.hpp"
+	"../settings/configmanager.hpp"
+	"../performance/console.hpp"
+	"../engine/gamebase.hpp"
+	<math.h>
+	<stdlib.h>
+	<pthread.h>
+	<iostream>
+
+1449927966 source:c:\users\mock\documents\github\sdl2-2.0.4\source\framework\typechecker.cpp
+	"typechecker.hpp"
+	"../engine/object.hpp"
+
+1462246637 source:c:\users\mock\documents\github\sdl2-2.0.4\source\framework\userfile.cpp
+	"userfile.hpp"
+	"dirmanager.hpp"
+	<stdio.h>
+	<stdlib.h>
+
+1470374985 source:c:\users\mock\documents\github\sdl2-2.0.4\source\framework\utils.cpp
+	"utils.hpp"
+	<math.h>
+
+1470545427 source:c:\users\mock\documents\github\sdl2-2.0.4\source\game\ball.cpp
+	"ball.hpp"
+	"../input/inputmanager.hpp"
+	"../engine/camera.hpp"
+	"../engine/light.hpp"
+
+1454441010 c:\users\mock\documents\github\sdl2-2.0.4\source\game\ball.hpp
+	"../engine/object.hpp"
+	"../engine/sprite.hpp"
+
+1471153703 source:c:\users\mock\documents\github\sdl2-2.0.4\source\game\controlableobject.cpp
+	"controlableobject.hpp"
+	"../engine/light.hpp"
+	"../engine/renderhelp.hpp"
+	"../engine/gamebase.hpp"
+
+1470598637 c:\users\mock\documents\github\sdl2-2.0.4\source\game\controlableobject.hpp
+	"../engine/object.hpp"
+	"../engine/sprite.hpp"
+
+1470632624 source:c:\users\mock\documents\github\sdl2-2.0.4\source\game\gamebehavior.cpp
+	"gamebehavior.hpp"
+	"title.hpp"
+	"../engine/defaultbehavior.hpp"
+	"../engine/gamebase.hpp"
+	"../performance/console.hpp"
+	"../framework/resourcemanager.hpp"
+	"../framework/threadpool.hpp"
+	<string>
+
+1452624604 c:\users\mock\documents\github\sdl2-2.0.4\source\game\gamebehavior.hpp
+	"../engine/defaultbehavior.hpp"
+
+1471200504 c:\users\mock\documents\github\sdl2-2.0.4\source\game\title.hpp
+	"state.hpp"
+	<stack>
+	"../performance/console.hpp"
+	"../engine/pathfind.hpp"
+
+1450667256 c:\users\mock\documents\github\sdl2-2.0.4\source\game\state.hpp
+	"../engine/genericstate.hpp"
+	<cstdlib>
+	<iostream>
+	<memory>
+	<vector>
+	<list>
+	"../framework/poolmanager.hpp"
+
+1471200766 source:c:\users\mock\documents\github\sdl2-2.0.4\source\game\title.cpp
+	"title.hpp"
+	<sstream>
+	<cmath>
+	"title.hpp"
+	"../engine/gamebase.hpp"
+	"../engine/particlecreator.hpp"
+	"../input/inputmanager.hpp"
+	"../framework/debughelper.hpp"
+	"../engine/renderhelp.hpp"
+	"../engine/smarttexture.hpp"
+	"../engine/smarttexturemanager.hpp"
+	"../engine/collision.h"
+	"../engine/light.hpp"
+	"../framework/threadpool.hpp"
+	"../framework/gamefile.hpp"
+	"../framework/utils.hpp"
+	"../framework/resourcemanager.hpp"
+	"controlableobject.hpp"
+	"ball.hpp"
+
+1456604612 c:\users\mock\documents\github\sdl2-2.0.4\source\engine\collision.h
+	<algorithm>
+	<math.h>
+	"object.hpp"
+	"../framework/poolmanager.hpp"
+	"../framework/geometry.hpp"
+
+1454443638 source:c:\users\mock\documents\github\sdl2-2.0.4\source\input\accelerometer.cpp
+	"accelerometer.hpp"
+	"../engine/renderhelp.hpp"
+
+1471199555 source:c:\users\mock\documents\github\sdl2-2.0.4\source\input\beinput.cpp
+	"beinput.hpp"
+	"inputmanager.hpp"
+
+1461103291 c:\users\mock\documents\github\sdl2-2.0.4\source\input\beinput.hpp
+	"inputdefinitions.hpp"
+	"joystick.hpp"
+	<map>
+	<vector>
+
+1463804888 source:c:\users\mock\documents\github\sdl2-2.0.4\source\input\inputmanager.cpp
+	"inputmanager.hpp"
+	"../engine/gamebase.hpp"
+	"../settings/configmanager.hpp"
+	"../engine/renderhelp.hpp"
+	"../performance/console.hpp"
+	"../settings/definitions.hpp"
+	<stdio.h>
+	<stdlib.h>
+	<iostream>
+
+1462246667 source:c:\users\mock\documents\github\sdl2-2.0.4\source\input\joystick.cpp
+	"joystick.hpp"
+	"../performance/console.hpp"
+	"../engine/renderhelp.hpp"
+
+1456851682 source:c:\users\mock\documents\github\sdl2-2.0.4\source\input\keyboard.cpp
+	"keyboard.hpp"
+
+1456854381 source:c:\users\mock\documents\github\sdl2-2.0.4\source\input\mouse.cpp
+	"mouse.hpp"
+	<iostream>
+
+1457635806 source:c:\users\mock\documents\github\sdl2-2.0.4\source\input\touch.cpp
+	"touch.hpp"
+	"../engine/renderhelp.hpp"
+	"../engine/screenmanager.hpp"
+
+1456868332 source:c:\users\mock\documents\github\sdl2-2.0.4\source\input\touchkeys.cpp
+	"touchkeys.hpp"
+	"inputmanager.hpp"
+	"../engine/renderhelp.hpp"
+	<iostream>
+
+1471153703 source:c:\users\mock\documents\github\sdl2-2.0.4\source\luasystem\luainterface.cpp
+	"luainterface.hpp"
+	"luatools.hpp"
+	"../performance/console.hpp"
+	"../engine/gamebase.hpp"
+	<iostream>
+	"../engine/sound.hpp"
+	"luaobject.hpp"
+
+1470374491 source:c:\users\mock\documents\github\sdl2-2.0.4\source\luasystem\luaobject.cpp
+	"../engine/renderhelp.hpp"
+	"../engine/gamebase.hpp"
+	"luaobject.hpp"
+
+1471216502 source:c:\users\mock\documents\github\sdl2-2.0.4\source\main.cpp
+	<stdio.h>
+	<emscripten.h>
+	"engine/gamebase.hpp"
+	"framework/gamefile.hpp"
+	"settings/configmanager.hpp"
+	<android/asset_manager.h>
+	<android/asset_manager_jni.h>
+
+1457020339 source:c:\users\mock\documents\github\sdl2-2.0.4\source\performance\console.cpp
+	"console.hpp"
+	"../engine/renderhelp.hpp"
+	"../engine/gamebase.hpp"
+	"../framework/dirmanager.hpp"
+	<android/log.h>
+	<iostream>
+	<sstream>
+
+1435197738 source:c:\users\mock\documents\github\sdl2-2.0.4\source\resource.rc
+
+1470515262 source:c:\users\mock\documents\github\sdl2-2.0.4\source\settings\configmanager.cpp
+	"configmanager.hpp"
+	"../engine/gamebase.hpp"
+	"../framework/resourcemanager.hpp"
+	"../performance/console.hpp"
+
+1469085135 source:c:\users\mock\documents\github\sdl2-2.0.4\source\ui\base.cpp
+	"base.hpp"
+	"../input/inputmanager.hpp"
+
+1457476507 source:c:\users\mock\documents\github\sdl2-2.0.4\source\ui\button.cpp
+	"button.hpp"
+	"../engine/renderhelp.hpp"
+	"../input/inputmanager.hpp"
+
+1456854442 c:\users\mock\documents\github\sdl2-2.0.4\source\ui\button.hpp
+	"base.hpp"
+
+1456945347 source:c:\users\mock\documents\github\sdl2-2.0.4\source\ui\checkbox.cpp
+	"checkbox.hpp"
+	"../engine/renderhelp.hpp"
+	"../input/inputmanager.hpp"
+
+1456867128 c:\users\mock\documents\github\sdl2-2.0.4\source\ui\checkbox.hpp
+	"base.hpp"
+
+1457473048 source:c:\users\mock\documents\github\sdl2-2.0.4\source\ui\gettextwindow.cpp
+	"gettextwindow.hpp"
+	"../engine/renderhelp.hpp"
+
+1457472626 c:\users\mock\documents\github\sdl2-2.0.4\source\ui\gettextwindow.hpp
+	"base.hpp"
+	"window.hpp"
+	"label.hpp"
+	"textinput.hpp"
+	"button.hpp"
+	<functional>
+
+1463847199 c:\users\mock\documents\github\sdl2-2.0.4\source\ui\label.hpp
+	"base.hpp"
+
+1456861182 c:\users\mock\documents\github\sdl2-2.0.4\source\ui\textinput.hpp
+	"base.hpp"
+
+1456945335 source:c:\users\mock\documents\github\sdl2-2.0.4\source\ui\label.cpp
+	"label.hpp"
+	"../engine/renderhelp.hpp"
+	"../input/inputmanager.hpp"
+
+1456945362 source:c:\users\mock\documents\github\sdl2-2.0.4\source\ui\numberinput.cpp
+	"numberinput.hpp"
+	"../engine/renderhelp.hpp"
+	"../input/inputmanager.hpp"
+
+1456865179 c:\users\mock\documents\github\sdl2-2.0.4\source\ui\numberinput.hpp
+	"base.hpp"
+
+1456963902 source:c:\users\mock\documents\github\sdl2-2.0.4\source\ui\textinput.cpp
+	"textinput.hpp"
+	"../input/inputmanager.hpp"
+	"../engine/renderhelp.hpp"
+	<sstream>
+	<locale>
+
+1471199566 source:c:\users\mock\documents\github\sdl2-2.0.4\source\ui\window.cpp
+	"window.hpp"
+	"../engine/renderhelp.hpp"
+	"../input/inputmanager.hpp"
+

@@ -3,6 +3,7 @@
 
 #include <map>
 #include <iostream>
+#include <string>
 
 #define TYPEOF(var) typeid(var).hash_code()
 

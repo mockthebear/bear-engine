@@ -54,6 +54,7 @@ int main (int argc, char** argv) {
         }
     #endif
     Game::GetInstance()->Close();
+    exit(0);
     return 0;
 
 }

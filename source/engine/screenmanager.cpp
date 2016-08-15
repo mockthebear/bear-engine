@@ -2,6 +2,7 @@
 #include "../settings/configmanager.hpp"
 #include "../performance/console.hpp"
 #include "../framework/utils.hpp"
+#include "renderhelp.hpp"
 #include __BEHAVIOR_FOLDER__
 #include "camera.hpp"
 #include <iostream>
@@ -88,11 +89,11 @@ void ScreenManager::RenderPresent(){
 void ScreenManager::PreRender(){
     if (m_defaultScreen){
         SetRenderTarget(m_defaultScreen);
-        SDL_SetRenderDrawColor(m_renderer, 0,0,0, 0);
-        SDL_RenderClear( m_renderer );
     }
+    SDL_SetRenderDrawColor(m_renderer, 0,0,0, 0);
+    SDL_RenderClear( m_renderer );
 }
-#include "renderhelp.hpp"
+
 void ScreenManager::Render(){
     if (m_defaultScreen)
         SetRenderTarget(nullptr);

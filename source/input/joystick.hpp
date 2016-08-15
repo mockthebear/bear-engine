@@ -1,12 +1,12 @@
-#ifndef JOYSTICKEH
-#define JOYSTICKEH
+#pragma once
 
-#include "inputdefinitions.hpp"
+
 #include <unordered_map>
 #include <string>
 #include <functional>
 #include "../settings/definitions.hpp"
 #include "../framework/geometry.hpp"
+#include "inputdefinitions.hpp"
 #include SDL_LIB_HEADER
 /**
  * @brief This class manages the joystick
@@ -243,4 +243,4 @@ class Joystick{
 
 
 };
-#endif // JOYSTICKEH
+
