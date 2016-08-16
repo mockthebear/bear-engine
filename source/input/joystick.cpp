@@ -29,6 +29,7 @@ Joystick::Joystick(int index){
             Axis[i] = 0;
     }
 }
+
 Joystick::~Joystick(){
     delete Axis;
     delete Balls;
@@ -40,7 +41,9 @@ void Joystick::Close(){
     }
 }
 
-void Joystick::Render(int x,int y){
+void Joystick::Render(int id){
+    int x = (id%3)*300;
+    int y = (id/3)*400;
     RenderHelp::DrawSquareColorA(x,y+100,400.0f,m_axes*32,189,227,138,100);
     for (int i=0;i<m_axes;i++)
         RenderHelp::DrawSquareColorA(x+200,y+100 + i*32,(Axis[i]/32767.0f)*200.0f,16,255,i&1 ? 255 : 0,i&2 ? 255 : 0,100);

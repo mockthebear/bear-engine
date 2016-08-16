@@ -8460,9 +8460,10 @@
 	<typeinfo>
 	<iostream>
 
-1452548101 c:\users\mock\documents\github\bear-engine\source\framework\typechecker.hpp
+1471213179 c:\users\mock\documents\github\bear-engine\source\framework\typechecker.hpp
 	<map>
 	<iostream>
+	<string>
 
 1470543099 c:\users\mock\documents\github\bear-engine\source\settings\definitions.hpp
 
@@ -8496,13 +8497,13 @@
 	"inputdefinitions.hpp"
 	"../framework/geometry.hpp"
 
-1462246668 c:\users\mock\documents\github\bear-engine\source\input\joystick.hpp
-	"inputdefinitions.hpp"
+1471311716 c:\users\mock\documents\github\bear-engine\source\input\joystick.hpp
 	<unordered_map>
 	<string>
 	<functional>
 	"../settings/definitions.hpp"
 	"../framework/geometry.hpp"
+	"inputdefinitions.hpp"
 	"../input/inputmanager.hpp"
 
 1454443422 c:\users\mock\documents\github\bear-engine\source\input\accelerometer.hpp
@@ -8647,7 +8648,7 @@
 	<functional>
 	<map>
 
-1471200640 source:c:\users\mock\documents\github\bear-engine\source\engine\light.cpp
+1471200813 source:c:\users\mock\documents\github\bear-engine\source\engine\light.cpp
 	"light.hpp"
 	"camera.hpp"
 	"screenmanager.hpp"
@@ -8713,26 +8714,25 @@
 	"renderhelp.hpp"
 	<iostream>
 
-1465854246 source:c:\users\mock\documents\github\bear-engine\source\engine\renderhelp.cpp
+1471215277 source:c:\users\mock\documents\github\bear-engine\source\engine\renderhelp.cpp
 	"renderhelp.hpp"
 	"../framework/debughelper.hpp"
 	<stdio.h>
 	"gamebase.hpp"
-	"SDL2/SDL.h"
 
 1452645572 c:\users\mock\documents\github\bear-engine\source\framework\debughelper.hpp
 	<string>
 	<stdlib.h>
 
-1470376241 source:c:\users\mock\documents\github\bear-engine\source\engine\screenmanager.cpp
+1471218171 source:c:\users\mock\documents\github\bear-engine\source\engine\screenmanager.cpp
 	"screenmanager.hpp"
 	"../settings/configmanager.hpp"
 	"../performance/console.hpp"
 	"../framework/utils.hpp"
+	"renderhelp.hpp"
 	"camera.hpp"
 	<iostream>
 	<stdlib.h>
-	"renderhelp.hpp"
 
 1452623013 source:c:\users\mock\documents\github\bear-engine\source\engine\shooteffect.cpp
 	"shooteffect.hpp"
@@ -8942,7 +8942,7 @@
 	<list>
 	"../framework/poolmanager.hpp"
 
-1471200766 source:c:\users\mock\documents\github\bear-engine\source\game\title.cpp
+1471218638 source:c:\users\mock\documents\github\bear-engine\source\game\title.cpp
 	"title.hpp"
 	<sstream>
 	<cmath>
@@ -9022,7 +9022,7 @@
 	"../engine/gamebase.hpp"
 	"luaobject.hpp"
 
-1465699345 source:c:\users\mock\documents\github\bear-engine\source\main.cpp
+1471216502 source:c:\users\mock\documents\github\bear-engine\source\main.cpp
 	<stdio.h>
 	<emscripten.h>
 	"engine/gamebase.hpp"
@@ -9099,7 +9099,7 @@
 	"../engine/renderhelp.hpp"
 	"../input/inputmanager.hpp"
 
-1470514960 source:c:\users\mock\documents\github\bear-engine\source\engine\gamebase.cpp
+1471218120 source:c:\users\mock\documents\github\bear-engine\source\engine\gamebase.cpp
 	<time.h>
 	"gamebase.hpp"
 	"../luasystem/luainterface.hpp"

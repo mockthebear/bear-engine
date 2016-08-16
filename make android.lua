@@ -42,12 +42,18 @@ function printDir(dir,sub,str)
 	return str;
 end
 local data = printDir("source/");
-print(data)
 
-local FILE = io.open("android-project/jni/src/Android.mk","w")
-androidmk = androidmk:gsub("@@@@",data);
-FILE:write(androidmk)
+local FILE = io.open("android-project/jni/src/Android.mk","r")
+STR = FILE:read(-1)
 FILE:close()
+androidmk = androidmk:gsub("@@@@",data);
+if STR ~= androidmk then
+	print("File remake")
+	local FILE = io.open("android-project/jni/src/Android.mk","w")
+
+	FILE:write(androidmk)
+	FILE:close()
+end
 
 local ret = os.execute("step1.bat")
 if ret == 0 then

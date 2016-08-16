@@ -162,7 +162,7 @@ class Joystick{
             @param x position in x
             @param y position in y
         */
-        void Render(int x=100,int y=100);
+        void Render(int id);
 
         /**
             *Joysticks can have more than one axis. This function return the value from the given axis
@@ -213,6 +213,7 @@ class Joystick{
         */
         int GetHatsCount(){return m_hats;};
 
+        std::string GetName(){return m_name;};
     private:
         /* Buttons */
         std::unordered_map<int, InputState> Buttons;

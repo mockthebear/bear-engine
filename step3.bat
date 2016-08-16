@@ -1,2 +1,2 @@
 cd android-project
-mv bin/SDLActivity-debug.apk ..\
+move bin\SDLActivity-debug.apk ..

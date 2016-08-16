@@ -30,12 +30,13 @@ InputManager::InputManager(){
         for (int i=0;i<NumJoysticks;i++){
             Joystick *joy = new Joystick(i);
             Joysticks[joy->GetInstanceId()] = joy;
-            if (AccelerometerJoystick == -1){
+            if ( (joy->GetName() == "Android Accelerometer" || (joy->GetButtonCount() == 0 && joy->GetAxisCount() == 3 && joy->GetHatsCount() == 0) ) && AccelerometerJoystick == -1){
                 AccelerometerJoystick = i;
                 #ifdef __ANDROID__
                 toAccelerometer = joy;
                 #endif
             }
+            Console::GetInstance().AddText( "Joystick %d [%s] has %d B, %d A, %d H",i,joy->GetName().c_str(),joy->GetButtonCount(),joy->GetAxisCount(),joy->GetHatsCount());
         }
     }
 
@@ -93,10 +94,10 @@ void InputManager::Render(){
     for ( auto &it : TKeys ){
         it.Render();
     }
-    /*for ( auto &it : Joysticks ){
+    for ( auto &it : Joysticks ){
         if (it.second != NULL)
-            it.second->Render();
-    }*/
+            it.second->Render(it.first);
+    }
 }
 
 void InputManager::Vibrate(uint32_t milis){
