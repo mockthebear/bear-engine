@@ -8497,7 +8497,7 @@
 	"inputdefinitions.hpp"
 	"../framework/geometry.hpp"
 
-1471311716 c:\users\mock\documents\github\bear-engine\source\input\joystick.hpp
+1471312313 c:\users\mock\documents\github\bear-engine\source\input\joystick.hpp
 	<unordered_map>
 	<string>
 	<functional>
@@ -8570,7 +8570,7 @@
 	<unordered_map>
 	<string>
 
-1458359668 c:\users\mock\documents\github\bear-engine\source\engine\gamebase.hpp
+1471660031 c:\users\mock\documents\github\bear-engine\source\engine\gamebase.hpp
 	<cstdlib>
 	<iostream>
 	<memory>
@@ -8602,7 +8602,7 @@
 	<vector>
 	<list>
 
-1469167445 c:\users\mock\documents\github\bear-engine\source\ui\base.hpp
+1471923418 c:\users\mock\documents\github\bear-engine\source\ui\base.hpp
 	<memory>
 	<vector>
 	<functional>
@@ -8867,7 +8867,7 @@
 	"utils.hpp"
 	"../performance/console.hpp"
 
-1470542947 source:c:\users\mock\documents\github\bear-engine\source\framework\threadpool.cpp
+1471622924 source:c:\users\mock\documents\github\bear-engine\source\framework\threadpool.cpp
 	"../settings/definitions.hpp"
 	"threadpool.hpp"
 	"../engine/light.hpp"
@@ -8879,6 +8879,7 @@
 	<stdlib.h>
 	<pthread.h>
 	<iostream>
+	<pthread.h>
 
 1449927966 source:c:\users\mock\documents\github\bear-engine\source\framework\typechecker.cpp
 	"typechecker.hpp"
@@ -8942,7 +8943,7 @@
 	<list>
 	"../framework/poolmanager.hpp"
 
-1471218638 source:c:\users\mock\documents\github\bear-engine\source\game\title.cpp
+1471623546 source:c:\users\mock\documents\github\bear-engine\source\game\title.cpp
 	"title.hpp"
 	<sstream>
 	<cmath>
@@ -8974,7 +8975,7 @@
 	"accelerometer.hpp"
 	"../engine/renderhelp.hpp"
 
-1463804888 source:c:\users\mock\documents\github\bear-engine\source\input\inputmanager.cpp
+1471313017 source:c:\users\mock\documents\github\bear-engine\source\input\inputmanager.cpp
 	"inputmanager.hpp"
 	"../engine/gamebase.hpp"
 	"../settings/configmanager.hpp"
@@ -8985,7 +8986,7 @@
 	<stdlib.h>
 	<iostream>
 
-1462246667 source:c:\users\mock\documents\github\bear-engine\source\input\joystick.cpp
+1471312320 source:c:\users\mock\documents\github\bear-engine\source\input\joystick.cpp
 	"joystick.hpp"
 	"../performance/console.hpp"
 	"../engine/renderhelp.hpp"
@@ -9099,7 +9100,7 @@
 	"../engine/renderhelp.hpp"
 	"../input/inputmanager.hpp"
 
-1471218120 source:c:\users\mock\documents\github\bear-engine\source\engine\gamebase.cpp
+1471623918 source:c:\users\mock\documents\github\bear-engine\source\engine\gamebase.cpp
 	<time.h>
 	"gamebase.hpp"
 	"../luasystem/luainterface.hpp"

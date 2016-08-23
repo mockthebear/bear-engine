@@ -15,6 +15,7 @@ UIBase::UIBase(){
     Color[2] = 110;
     Color[3] = 255;
     style = UIStyle::BaseStyle;
+    MouseInside = false;
 }
 
 int UIBase::g_ID = 0;
@@ -65,12 +66,27 @@ void UIBase::Input(){
     int key = InputManager::GetInstance().GetMouseMousePressKey();
 
     Point mpos = Point(InputManager::GetInstance().GetMouseX(),InputManager::GetInstance().GetMouseY());
-    if (key != 0 && OnMousePress && IsInside(mpos.x,mpos.y)){
-        OnMousePress(this,key,mpos);
-    }
-    key = InputManager::GetInstance().GetMouseMouseReleaseKey();
-    if (key != 0 && OnMouseRelease && IsInside(mpos.x,mpos.y)){
-        OnMouseRelease(this,key,mpos);
+    if (IsInside(mpos.x,mpos.y)){
+        if (key != 0 && OnMousePress){
+            OnMousePress(this,key,mpos);
+        }
+        key = InputManager::GetInstance().GetMouseMouseReleaseKey();
+        if (key != 0 && OnMouseRelease){
+            OnMouseRelease(this,key,mpos);
+        }
+        if (!MouseInside){
+            if (OnMouseEnter){
+                OnMouseEnter(this,mpos);
+            }
+            MouseInside = true;
+        }
+    }else{
+        if (MouseInside){
+            if (OnMouseLeave){
+                OnMouseLeave(this,mpos);
+            }
+            MouseInside = false;
+        }
     }
 
     key = InputManager::GetInstance().IsAnyKeyPressed();

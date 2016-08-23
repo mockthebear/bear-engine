@@ -127,6 +127,8 @@ class UIBase{
 
         virtual void NotifyChildrens();
 
+        std::function<void(UIBase*,Point)> OnMouseEnter;
+        std::function<void(UIBase*,Point)> OnMouseLeave;
         std::function<void(UIBase*,int,Point)> OnMousePress;
         std::function<void(UIBase*,int,Point)> OnMouseRelease;
         std::function<void(UIBase*,int)> OnKeyPress;
@@ -142,7 +144,7 @@ class UIBase{
     protected:
 
         Point o_pos;
-        bool hidden,close;
+        bool hidden,close,MouseInside;
         static int g_ID;
         int ID,alpha;
         bool focused;
