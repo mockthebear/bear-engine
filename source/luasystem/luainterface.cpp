@@ -386,7 +386,7 @@ bool LuaInterface::RunScript(std::string name){
 int newFunction(lua_State *L)
 {
     /*LuaObject obj;
-    GameObject *created = BearEngine->GetCurrentState().Pool.AddInstance(obj);
+    GameObject *created = Game::GetCurrentState().Pool.AddInstance(obj);
     if (created != NULL)
         ((LuaObject*)created)->Start();
     else
@@ -479,7 +479,7 @@ int newParticle(lua_State *L)
     int x = lua_tonumber(L,-1);
     lua_pop(L, 1);
     std::cout << x << " : " << y << "\n";
-    Particle *p = BearEngine->GetCurrentState().ParticlePool->AddInstance(Particle(x,y));
+    Particle *p = Game::GetCurrentState().ParticlePool->AddInstance(Particle(x,y));
     if (!p){
         return 0;
     }

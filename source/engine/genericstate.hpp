@@ -6,6 +6,7 @@
 #include "../ui/window.hpp"
 #include "../framework/basepool.hpp"
 #include "../framework/poolmanager.hpp"
+#include "assetmanager.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -176,10 +177,9 @@ class GenericState{
         */
         PoolManager Pool;
         /**
-            *You dont want use the object array, and want use pools?\n
-            *Dont know how to mess with our pool class SPP<T>?\n
-            *Try using our PoolManager =]\n
+            *Asset manager
         */
+        AssetMannager Assets;
         int STATEID;
         bool gameStarted;
         bool requestDelete,requestQuit;

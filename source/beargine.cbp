@@ -54,6 +54,8 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="engine/assetmanager.cpp" />
+		<Unit filename="engine/assetmanager.hpp" />
 		<Unit filename="engine/behavior.hpp" />
 		<Unit filename="engine/camera.cpp" />
 		<Unit filename="engine/camera.hpp" />

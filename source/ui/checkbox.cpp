@@ -1,5 +1,6 @@
 #include "checkbox.hpp"
 #include "../engine/renderhelp.hpp"
+#include "../engine/assetmanager.hpp"
 #include "../input/inputmanager.hpp"
 
 Checkbox::Checkbox(Point pos,bool *check,std::string str,UIBase *owner):UIBase(){
@@ -8,7 +9,7 @@ Checkbox::Checkbox(Point pos,bool *check,std::string str,UIBase *owner):UIBase()
     mother = owner;
     box.x = pos.x + (owner ? owner->box.x : 0);
     box.y = pos.y + (owner ? owner->box.y : 0);
-    SetSprite(Sprite("ui:checkbox.png"));
+    SetSprite(UIAssetManager::GetInstance().make<Sprite>("ui:checkbox.png"));
     checked = check;
     SetCheck( (*check) );
 

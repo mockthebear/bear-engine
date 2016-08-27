@@ -89,6 +89,7 @@ bool PathFind::AddBlock(int bx,int by,bool block){
     pf_pos.x /= cellSize;
     pf_pos.y /= cellSize;
     m_map[pf_pos.x][pf_pos.y] = block;
+    return true;
 }
 std::stack<Point> PathFind::Find(PointInt A,PointInt B){
     pf_start = PointInt( floor( A.x - (int)A.x%(int)cellSize ), floor( A.y - (int)A.y%(int)cellSize ));

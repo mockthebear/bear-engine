@@ -23,7 +23,7 @@
 
 #include "controlableobject.hpp"
 #include "ball.hpp"
-Title::Title():bg("data:wall.jpg"){
+Title::Title(){
     ParticlePool = new SPP<Particle>(6000);
     requestQuit = requestDelete = false;
 
@@ -35,12 +35,9 @@ Title::Title():bg("data:wall.jpg"){
 
     Group = Pool.CreatePoolGroup(group);
 
-
-    std::cout << Pool.GetMaxInstancesGroup(Group) << "\n";
-
     astar = PathFind(800,600);
 
-
+    bg = Assets.make<Sprite>("data:wall.jpg");
 
 
     message = Text("data:arial.ttf",30,TEXT_SOLID,"Hello bear. FPS: ?", {10,50,255});
@@ -66,9 +63,11 @@ Title::Title():bg("data:wall.jpg"){
 
 void Title::Begin(){
     Pool.AddInstance(ControlableObject(200,200));
+
     Pool.AddInstance(ControlableObject(100,100));
     Pool.AddInstance(ControlableObject(300,300));
     Pool.AddInstance(Ball(Point(200,400)));
+
 
 
     char *msg = SDL_GetPrefPath("tutorial","game");
@@ -89,6 +88,7 @@ void Title::Begin(){
 Title::~Title(){
     delete ParticlePool;
     Pool.ErasePools();
+    Assets.erase();
     Light::GetInstance()->Shutdown();
 
 }
@@ -96,7 +96,7 @@ Title::~Title(){
 
 void Title::Update(float dt){
 
-    if( InputManager::GetInstance().IsKeyDown(SDLK_r) ){
+    if( InputManager::GetInstance().KeyPress(SDLK_r) ){
         requestDelete = true;
         Game::GetInstance()->AddState(new Title());
         return;

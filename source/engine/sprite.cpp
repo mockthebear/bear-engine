@@ -9,7 +9,6 @@
 #include "../framework/resourcemanager.hpp"
 
 
-std::unordered_map<std::string, SDL_Texture*> Sprite::assetTable;
 
 ColorReplacer::ColorReplacer(){
 
@@ -28,11 +27,11 @@ uint32_t ColorReplacer::Get(uint32_t color){
 
 
 Sprite::Sprite(){
+    ManagerId = 0;
     dimensions.w = dimensions.h = dimensions.x = dimensions.y = 0;
     scaleX = scaleY = 1;
     currentFrame = PointInt(0,0);
     frameCount = 1;
-    texture = NULL;
     repeat = 1;
     hasCenter = false;
     aliasing = false;
@@ -46,20 +45,20 @@ Sprite::Sprite(){
 
 }
 
-Sprite::Sprite(SDL_Texture* texture_,std::string name,bool hasAliasing):Sprite(){
-    texture = texture_;
+Sprite::Sprite(TexturePtr texture_,std::string name,bool hasAliasing):Sprite(){
+    textureShred = texture_;
     fname = name;
     Uint32 format;
     int acess;
-    if (texture != NULL){
-        if (SDL_QueryTexture(texture, &format,&acess,&dimensions.w,&dimensions.h) < 0){
-            texture = NULL;
+    if (textureShred.get()){
+        if (SDL_QueryTexture(*textureShred.get(), &format,&acess,&dimensions.w,&dimensions.h) < 0){
+
         }
         SetClip(0,0,dimensions.w,dimensions.h);
     }
-    if (name != "" and !assetTable[name]){
+    /*if (name != "" and !assetTable[name]){
         assetTable[name] = texture_;
-    }
+    }*/
 
 
     SetGrid(GetWidth()/frameCount,GetWidth()/frameCount);
@@ -67,7 +66,7 @@ Sprite::Sprite(SDL_Texture* texture_,std::string name,bool hasAliasing):Sprite()
 }
 
 Sprite::Sprite(const char *file,ColorReplacer &r,bool replacer,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
-    frameCount = fcount;
+    /*frameCount = fcount;
     repeat = rep;
     frameTime = ftime;
     fname = file;
@@ -82,13 +81,15 @@ Sprite::Sprite(const char *file,ColorReplacer &r,bool replacer,int fcount,float 
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
     SetAlpha(255);
+        TODO
+    */
 }
 
 Sprite::Sprite(char *file,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
     repeat = rep;
     frameTime = ftime;
     fname = file;
-    Open(file,false,hasAliasing);
+    Open(file,hasAliasing);
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
     SetAlpha(255);
@@ -99,7 +100,7 @@ Sprite::Sprite(SDL_RWops* file,std::string name,int fcount,float ftime,int rep,b
     repeat = rep;
     frameTime = ftime;
     fname = name;
-    Open(file,name,false,hasAliasing);
+    Open(file,name,hasAliasing);
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
     SetAlpha(255);
@@ -111,7 +112,7 @@ Sprite::Sprite(const char *file,int fcount,float ftime,int rep,bool hasAliasing)
     fname = file;
     frameTime = ftime;
     repeat = rep;
-    Open((char *)file,false,hasAliasing);
+    Open((char *)file,hasAliasing);
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
     SetAlpha(255);
@@ -154,76 +155,59 @@ void Sprite::SetFrame(int xFrame,int yFrame){
 Sprite::~Sprite(){}
 
 SDL_Texture* Sprite::CopyTexture(){
-    if (fname != ""){
+    /*if (fname != ""){
         return NULL;
     }
-    return Open((char*)fname.c_str(),true);
+    return Open((char*)fname.c_str(),);*/
+    return nullptr;
 }
 
-void Sprite::Clear(){
-    std::cout << "[Sprite::Clear] Cleaning..";
-    for (auto &it : assetTable){
-        SDL_DestroyTexture( it.second );
-    }
-    assetTable.clear();
-    std::cout << ".\n";
-}
 
 SDL_Texture* Sprite::Preload(char *file,bool adjustDir,bool HasAliasing){
     std::string stdnamee(file);
     if (adjustDir){
         stdnamee = DirManager::AdjustAssetsPath(stdnamee);
     }
-
-    if (assetTable.find(stdnamee) == assetTable.end()){
-        if (HasAliasing)
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-        SDL_Texture* texture = IMG_LoadTexture(BearEngine->GetRenderer(),stdnamee.c_str());
-        if (texture != NULL){
-            Uint32 format;
-            int acess;
-            SDL_Rect dimensions;
-            SDL_QueryTexture(texture, &format,&acess,&dimensions.w,&dimensions.h);
-            assetTable[stdnamee] = texture;
-            return texture;
-        }else{
-           Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s]",stdnamee.c_str()));
-        }
+    if (stdnamee.find(":")!=std::string::npos){
+        return Sprite::Preload(ResourceManager::GetInstance().GetFile(stdnamee),stdnamee,HasAliasing);
+    }
+    if (HasAliasing)
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
+    SDL_Texture* texture = IMG_LoadTexture(BearEngine->GetRenderer(),stdnamee.c_str());
+    if (texture != NULL){
         if (HasAliasing)
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+        return texture;
+    }else{
+        Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s]",stdnamee.c_str()));
     }
-    return NULL;
+    if (HasAliasing)
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+    return nullptr;
 }
 
 SDL_Texture* Sprite::Preload(SDL_RWops* rw,std::string name,bool HasAliasing){
-    if (assetTable.find(name) == assetTable.end()){
-        if (HasAliasing)
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-        SDL_Texture* texture = NULL;
-        SDL_Surface *aux_surface = IMG_Load_RW(rw, 1);
-        if (aux_surface){
-            texture =  SDL_CreateTextureFromSurface(BearEngine->GetRenderer(),aux_surface);
-            SDL_FreeSurface(aux_surface);
-        }
-        if (texture != NULL){
-            Uint32 format;
-            int acess;
-            SDL_Rect dimensions;
-            SDL_QueryTexture(texture, &format,&acess,&dimensions.w,&dimensions.h);
-            assetTable[name] = texture;
-            if (HasAliasing)
-                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
-            return texture;
-        }else{
-           Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s]",name.c_str()));
-        }
+    if (HasAliasing)
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
+    SDL_Texture* texture = NULL;
+    SDL_Surface *aux_surface = IMG_Load_RW(rw, 1);
+    if (aux_surface){
+        texture =  SDL_CreateTextureFromSurface(BearEngine->GetRenderer(),aux_surface);
+        SDL_FreeSurface(aux_surface);
+    }
+    if (texture != NULL){
         if (HasAliasing)
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+        return texture;
+     }else{
+        Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s]",name.c_str()));
     }
+    if (HasAliasing)
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
 
     return NULL;
 }
-SDL_Texture* Sprite::ColorReplace(std::string fileName,ColorReplacer &r,bool replaceOnAssets,bool HasAliasing){
+SDL_Texture* Sprite::Preload(std::string fileName,ColorReplacer &r,bool HasAliasing){
     if (fileName == ""){
         return nullptr;
     }
@@ -275,122 +259,66 @@ SDL_Texture* Sprite::ColorReplace(std::string fileName,ColorReplacer &r,bool rep
                 SDL_DestroyTexture( auxTexture );
 
                 SDL_Texture *ret = finalSmart->GetTexture();
-                if (replaceOnAssets){
-                    if (assetTable[fileName]){
-                        SDL_DestroyTexture(assetTable[fileName]);
-                    }
-                    assetTable[fileName] = ret;
-                }
                 if (HasAliasing)
                     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
                 delete finalSmart;
                 return ret;
-
             }
         }
-
     }
     if (HasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
     return nullptr;
 }
 
+void Sprite::Query(TexturePtr ptr){
+    SDL_Texture **texturee = ptr.get();
+    if (texturee != NULL and (*texturee)){
+        Uint32 format;
+        int acess;
+        SDL_QueryTexture((*texturee), &format,&acess,&dimensions.w,&dimensions.h);
+        SetClip(0,0,dimensions.w,dimensions.h);
+    }
+}
 
-
-SDL_Texture* Sprite::Open(char *file,bool force,bool HasAliasing){
+bool Sprite::Open(char *file,bool HasAliasing){
     scaleX = scaleY = 1;
     std::string stdnamee(file);
     if (stdnamee.find(":")!=std::string::npos){
-        return Open(ResourceManager::GetInstance().GetFile(stdnamee),stdnamee,force,HasAliasing);
+        return Open(ResourceManager::GetInstance().GetFile(stdnamee),stdnamee,HasAliasing);
     }
-
     stdnamee = DirManager::AdjustAssetsPath(stdnamee);
-    if (assetTable.find(stdnamee) == assetTable.end() or force){
-        if (HasAliasing)
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-        texture = IMG_LoadTexture(BearEngine->GetRenderer(),stdnamee.c_str());
-        if (texture != NULL){
-            Uint32 format;
-            int acess;
-            SDL_QueryTexture(texture, &format,&acess,&dimensions.w,&dimensions.h);
-
-            SetClip(0,0,dimensions.w,dimensions.h);
-            assetTable[stdnamee] = texture;
-            if (HasAliasing)
-                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
-            return texture;
-        }else{
-           Console::GetInstance().AddTextInfo(utils::format("Cannot load sprite [%s]",stdnamee.c_str()));
-           if (HasAliasing)
-                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
-           return NULL;
-        }
-    }else{
-        std::unordered_map<std::string, SDL_Texture*>::iterator it = assetTable.find(stdnamee);
-        texture = (*it).second;
-        if (texture){
-            Uint32 format;
-            int acess;
-            SDL_QueryTexture(texture, &format,&acess,&dimensions.w,&dimensions.h);
-            SetClip(0,0,dimensions.w,dimensions.h);
-        }
-        return texture;
+    textureShred = GlobalAssetManager::GetInstance().makeTexture(stdnamee,HasAliasing);
+    if (textureShred and textureShred.get() and *textureShred.get()){
+        Query(textureShred);
+        return true;
     }
-
-
+    return false;
 }
 
-SDL_Texture* Sprite::Open(SDL_RWops* file,std::string name,bool force,bool HasAliasing){
+bool Sprite::Open(SDL_RWops* file,std::string name,bool HasAliasing){
     scaleX = scaleY = 1;
-    if (assetTable.find(name) == assetTable.end() or force){
-        SDL_Surface *aux_surface = IMG_Load_RW(file, 1);
-        texture = NULL;
-        if (HasAliasing)
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-        if (aux_surface){
-            texture =  SDL_CreateTextureFromSurface(BearEngine->GetRenderer(),aux_surface);
-            SDL_FreeSurface(aux_surface);
-        }
-        if (texture != NULL){
-            Uint32 format;
-            int acess;
-            SDL_QueryTexture(texture, &format,&acess,&dimensions.w,&dimensions.h);
-            SetClip(0,0,dimensions.w,dimensions.h);
-            assetTable[name] = texture;
-            if (HasAliasing)
-                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
-            return texture;
-        }else{
-            #ifdef __EMSCRIPTEN__
-            std::string newName = name;
-            char *c = (char*)newName.c_str();
-            for (int i=0;i<newName.size();i++){
-                if (c[i] == ':'){
-                    c[i] = '/';
-                    break;
-                }
-            }
-            Console::GetInstance().AddText(utils::format("Loading of the sprite [%s] cannot be loaded using resource tweaks at emscripten",name.c_str()));
-            Console::GetInstance().AddText(utils::format("Trying instead to load [%s]",newName.c_str()));
-            return Open((char*)newName.c_str());
-            #else
-            if (HasAliasing)
-                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
-            Console::GetInstance().AddText(utils::format("Cannot load rwop sprite FAAAAIL [%s]",name.c_str()));
-            return nullptr;
-            #endif // __EMSCRIPTEN__
-
-        }
+    textureShred = GlobalAssetManager::GetInstance().makeTexture(file,name,HasAliasing);
+    if (textureShred and textureShred.get() and *textureShred.get()){
+        Query(textureShred);
+        return true;
     }else{
-        std::unordered_map<std::string, SDL_Texture*>::iterator it = assetTable.find(name);
-        texture = (*it).second;
-        if (texture){
-            Uint32 format;
-            int acess;
-            SDL_QueryTexture(texture, &format,&acess,&dimensions.w,&dimensions.h);
-            SetClip(0,0,dimensions.w,dimensions.h);
+        #ifdef __EMSCRIPTEN__
+        std::string newName = name;
+        char *c = (char*)newName.c_str();
+        for (int i=0;i<newName.size();i++){
+            if (c[i] == ':'){
+                c[i] = '/';
+                break;
+            }
         }
-        return texture;
+        Console::GetInstance().AddText(utils::format("Loading of the sprite [%s] cannot be loaded using resource tweaks at emscripten",name.c_str()));
+        Console::GetInstance().AddText(utils::format("Trying instead to load [%s]",newName.c_str()));
+        return Open((char*)newName.c_str());
+        #else
+        Console::GetInstance().AddText(utils::format("Cannot load rwop sprite FAAAAIL [%s]",name.c_str()));
+        return nullptr;
+        #endif // __EMSCRIPTEN__
     }
 }
 
@@ -406,13 +334,15 @@ void Sprite::SetClip(int x, int y,int w,int h){
 void Sprite::Render(PointInt pos,double angle){
     SDL_Rect dimensions2;
 
+
     double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1
     double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1
     dimensions2.x = pos.x*scaleRatioW + ScreenManager::GetInstance().GetOffsetW();
     dimensions2.y = pos.y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH();
     dimensions2.h = clipRect.h*scaleRatioH*scaleY;
     dimensions2.w = clipRect.w*scaleRatioW*scaleX;
-    SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
+    SDL_RenderCopyEx(BearEngine->GetRenderer(),*textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip);
+
 }
 void Sprite::Render(int x,int y,double angle){
     SDL_Rect dimensions2;
@@ -423,7 +353,7 @@ void Sprite::Render(int x,int y,double angle){
     dimensions2.y = y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH();
     dimensions2.h = clipRect.h*scaleRatioH*scaleY;
     dimensions2.w = clipRect.w*scaleRatioW*scaleX;
-    SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
+    SDL_RenderCopyEx(BearEngine->GetRenderer(),*textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
 }
 
 
@@ -433,7 +363,7 @@ void Sprite::RawRender(int x,int y,double angle){
     dimensions2.y = y;
     dimensions2.h = clipRect.h*scaleY;
     dimensions2.w = clipRect.w*scaleX;
-    SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
+    SDL_RenderCopyEx(BearEngine->GetRenderer(),*textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
 }
 
 int Sprite::GetWidth(){

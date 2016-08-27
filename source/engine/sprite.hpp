@@ -11,6 +11,9 @@
 #include <map>
 #include <string>
 
+#include <memory>
+typedef std::shared_ptr<SDL_Texture*> TexturePtr;
+
 /**
  * @brief Sprite class plus animation
  *
@@ -27,7 +30,7 @@ class ColorReplacer{
         std::map<uint32_t,bool> canReplace;
         std::map<uint32_t,uint32_t> Replace;
 };
-
+class AssetMannager;
 class Sprite{
     public:
 
@@ -44,7 +47,7 @@ class Sprite{
             *in the class.
             @param texture An sdl texture
         */
-        Sprite(SDL_Texture* texture,std::string name,bool hasAliasing=false);
+        Sprite(TexturePtr texture,std::string name,bool hasAliasing=false);
         /**
             *Create an sprite from an path to an file. The file should be SDL2_Image supported
             *You can set the frame count and frame time to an animation
@@ -108,25 +111,11 @@ class Sprite{
         */
         static SDL_Texture* Preload(SDL_RWops* rw,std::string name,bool HasAliasing=false);
 
-        static SDL_Texture *ColorReplace(std::string fileName,ColorReplacer &r,bool replaceOnAssets=true,bool HasAliasing=false);
+        static SDL_Texture *Preload(std::string fileName,ColorReplacer &r,bool HasAliasing=false);
         /**
             *This dont destroy the texture!!!
         */
         ~Sprite();
-        /**
-            *Its an map to hold all the Textures loaded. Use Sprite::Clear to erase.
-        */
-        static std::unordered_map<std::string, SDL_Texture*> assetTable;
-        /**
-            *This function is static. You can call it any time
-            *Delete all the SDL_Texture loaded in the game
-            *When you do this, even the textures that are being used will be deleted
-            *Use with care.
-            *Good to mention that some sprites may be shared.
-        */
-        static void Clear();
-
-
         /**
             *Can be used when you create an sprite with empty constructor.
             @param rw The rwops
@@ -134,7 +123,7 @@ class Sprite{
             @param reopen Default is false. When you call this, a new texture will be created and dont be added to the Sprite::assetTable
             @return An texture
         */
-        SDL_Texture* Open(SDL_RWops* rw,std::string name,bool reopen=false,bool HasAliasing=false);
+       bool Open(SDL_RWops* rw,std::string name,bool HasAliasing=false);
         /**
             *Can be used when you create an sprite with empty constructor.
             @param file The path. Accept resource tweak.
@@ -142,7 +131,7 @@ class Sprite{
             @param reopen Default is false. When you call this, a new texture will be created and dont be added to the Sprite::assetTable
             @return An texture
         */
-        SDL_Texture* Open(char *file,bool reopen=false,bool HasAliasing=false);
+        bool Open(char *file,bool HasAliasing=false);
         /**
             *Set clip on the sprite. Clipping stuff.
             *When call Sprite::Render, the rendered thing will be only the clipped area.
@@ -259,14 +248,14 @@ class Sprite{
             @return true if the sprite is loaded
         */
         bool IsLoaded(){
-            return texture != NULL;
+            return textureShred.get() != nullptr and (*textureShred.get()) != nullptr;
         };
         /**
             *Get the texture. Note that texture can be an shared one
             @return true if the texture
         */
         SDL_Texture* GetSDLTexture(){
-            return texture;
+            return (*textureShred.get());
         };
         /**
             *Used to change the center of rotation
@@ -319,7 +308,7 @@ class Sprite{
             OUTR = Red;
             OUTB = Blue;
             OUTG = Green;
-            SDL_SetTextureColorMod(texture,OUTR,OUTB,OUTG);
+            SDL_SetTextureColorMod((*textureShred.get()),OUTR,OUTB,OUTG);
         };
         /**
             *Changed the sprite alpha
@@ -328,7 +317,7 @@ class Sprite{
             @param alpha [0-255] The default is 255 of all sprites;
         */
         void SetAlpha(int alpha){
-            SDL_SetTextureAlphaMod(texture,alpha);
+            SDL_SetTextureAlphaMod((*textureShred.get()),alpha);
         };
         /**
             *Duplicate the texture
@@ -346,8 +335,12 @@ class Sprite{
             sprFlip = f;
         }
         bool aliasing;
-    private:
 
+        void Query(TexturePtr ptr);
+    private:
+        TexturePtr textureShred;
+        void SetAssetManager(uint32_t id){ManagerId = id;};
+        friend class AssetMannager;
         SDL_RendererFlip sprFlip;
         std::string fname;
         uint8_t OUTR,OUTB,OUTG;
@@ -357,11 +350,12 @@ class Sprite{
         int frameCount;
         PointInt currentFrame;
         PointInt grid;
-        SDL_Texture* texture;
         SDL_Rect dimensions;
         SDL_Rect clipRect;
         SDL_Point center;
         bool hasCenter;
+
+        uint32_t ManagerId;
 };
 
 #endif

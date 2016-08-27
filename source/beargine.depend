@@ -8527,12 +8527,13 @@
 	<memory>
 	<iostream>
 
-1470525021 c:\users\mock\documents\github\bear-engine\source\engine\sprite.hpp
+1472308489 c:\users\mock\documents\github\bear-engine\source\engine\sprite.hpp
 	"../settings/definitions.hpp"
 	"../framework/geometry.hpp"
 	<unordered_map>
 	<map>
 	<string>
+	<memory>
 
 1470515269 c:\users\mock\documents\github\bear-engine\source\settings\configmanager.hpp
 	"definitions.hpp"
@@ -8540,7 +8541,7 @@
 	<vector>
 	<string>
 
-1456848124 source:c:\users\mock\documents\github\bear-engine\source\engine\defaultbehavior.cpp
+1472308514 source:c:\users\mock\documents\github\bear-engine\source\engine\defaultbehavior.cpp
 	"defaultbehavior.hpp"
 	"../settings/configmanager.hpp"
 	"screenmanager.hpp"
@@ -8564,13 +8565,14 @@
 	<unordered_map>
 	<string>
 
-1470374945 c:\users\mock\documents\github\bear-engine\source\engine\sound.hpp
+1472309734 c:\users\mock\documents\github\bear-engine\source\engine\sound.hpp
 	"../settings/definitions.hpp"
 	"../settings/configmanager.hpp"
 	<unordered_map>
 	<string>
+	<memory>
 
-1471660031 c:\users\mock\documents\github\bear-engine\source\engine\gamebase.hpp
+1472310554 c:\users\mock\documents\github\bear-engine\source\engine\gamebase.hpp
 	<cstdlib>
 	<iostream>
 	<memory>
@@ -8590,12 +8592,13 @@
 1464054593 source:c:\users\mock\documents\github\bear-engine\source\engine\genericstate.cpp
 	"genericstate.hpp"
 
-1464054576 c:\users\mock\documents\github\bear-engine\source\engine\genericstate.hpp
+1472250862 c:\users\mock\documents\github\bear-engine\source\engine\genericstate.hpp
 	"object.hpp"
 	"../ui/base.hpp"
 	"../ui/window.hpp"
 	"../framework/basepool.hpp"
 	"../framework/poolmanager.hpp"
+	"assetmanager.hpp"
 	<cstdlib>
 	<iostream>
 	<memory>
@@ -8648,7 +8651,7 @@
 	<functional>
 	<map>
 
-1471200813 source:c:\users\mock\documents\github\bear-engine\source\engine\light.cpp
+1472269662 source:c:\users\mock\documents\github\bear-engine\source\engine\light.cpp
 	"light.hpp"
 	"camera.hpp"
 	"screenmanager.hpp"
@@ -8703,7 +8706,7 @@
 1455987360 c:\users\mock\documents\github\bear-engine\source\framework\dirmanager.hpp
 	<string>
 
-1470516296 source:c:\users\mock\documents\github\bear-engine\source\engine\particlecreator.cpp
+1472310632 source:c:\users\mock\documents\github\bear-engine\source\engine\particlecreator.cpp
 	"particlecreator.hpp"
 	"gamebase.hpp"
 	"text.hpp"
@@ -8759,7 +8762,7 @@
 	"smarttexture.hpp"
 	<map>
 
-1470525000 source:c:\users\mock\documents\github\bear-engine\source\engine\sprite.cpp
+1472310780 source:c:\users\mock\documents\github\bear-engine\source\engine\sprite.cpp
 	"sprite.hpp"
 	"gamebase.hpp"
 	<math.h>
@@ -8867,7 +8870,7 @@
 	"utils.hpp"
 	"../performance/console.hpp"
 
-1471622924 source:c:\users\mock\documents\github\bear-engine\source\framework\threadpool.cpp
+1471660033 source:c:\users\mock\documents\github\bear-engine\source\framework\threadpool.cpp
 	"../settings/definitions.hpp"
 	"threadpool.hpp"
 	"../engine/light.hpp"
@@ -8879,7 +8882,6 @@
 	<stdlib.h>
 	<pthread.h>
 	<iostream>
-	<pthread.h>
 
 1449927966 source:c:\users\mock\documents\github\bear-engine\source\framework\typechecker.cpp
 	"typechecker.hpp"
@@ -8895,17 +8897,18 @@
 	"utils.hpp"
 	<math.h>
 
-1470545427 source:c:\users\mock\documents\github\bear-engine\source\game\ball.cpp
+1472310633 source:c:\users\mock\documents\github\bear-engine\source\game\ball.cpp
 	"ball.hpp"
 	"../input/inputmanager.hpp"
 	"../engine/camera.hpp"
 	"../engine/light.hpp"
+	"../engine/gamebase.hpp"
 
 1454441010 c:\users\mock\documents\github\bear-engine\source\game\ball.hpp
 	"../engine/object.hpp"
 	"../engine/sprite.hpp"
 
-1471153703 source:c:\users\mock\documents\github\bear-engine\source\game\controlableobject.cpp
+1472310941 source:c:\users\mock\documents\github\bear-engine\source\game\controlableobject.cpp
 	"controlableobject.hpp"
 	"../engine/light.hpp"
 	"../engine/renderhelp.hpp"
@@ -8915,7 +8918,7 @@
 	"../engine/object.hpp"
 	"../engine/sprite.hpp"
 
-1470632624 source:c:\users\mock\documents\github\bear-engine\source\game\gamebehavior.cpp
+1472310935 source:c:\users\mock\documents\github\bear-engine\source\game\gamebehavior.cpp
 	"gamebehavior.hpp"
 	"title.hpp"
 	"../engine/defaultbehavior.hpp"
@@ -8943,7 +8946,7 @@
 	<list>
 	"../framework/poolmanager.hpp"
 
-1471623546 source:c:\users\mock\documents\github\bear-engine\source\game\title.cpp
+1472310941 source:c:\users\mock\documents\github\bear-engine\source\game\title.cpp
 	"title.hpp"
 	<sstream>
 	<cmath>
@@ -9009,7 +9012,7 @@
 	"../engine/renderhelp.hpp"
 	<iostream>
 
-1471153703 source:c:\users\mock\documents\github\bear-engine\source\luasystem\luainterface.cpp
+1472310630 source:c:\users\mock\documents\github\bear-engine\source\luasystem\luainterface.cpp
 	"luainterface.hpp"
 	"luatools.hpp"
 	"../performance/console.hpp"
@@ -9049,7 +9052,7 @@
 	"../framework/resourcemanager.hpp"
 	"../performance/console.hpp"
 
-1469085135 source:c:\users\mock\documents\github\bear-engine\source\ui\base.cpp
+1471923391 source:c:\users\mock\documents\github\bear-engine\source\ui\base.cpp
 	"base.hpp"
 	"../input/inputmanager.hpp"
 
@@ -9061,9 +9064,10 @@
 1456854442 c:\users\mock\documents\github\bear-engine\source\ui\button.hpp
 	"base.hpp"
 
-1456945347 source:c:\users\mock\documents\github\bear-engine\source\ui\checkbox.cpp
+1472310509 source:c:\users\mock\documents\github\bear-engine\source\ui\checkbox.cpp
 	"checkbox.hpp"
 	"../engine/renderhelp.hpp"
+	"../engine/assetmanager.hpp"
 	"../input/inputmanager.hpp"
 
 1456867128 c:\users\mock\documents\github\bear-engine\source\ui\checkbox.hpp
@@ -9100,7 +9104,7 @@
 	"../engine/renderhelp.hpp"
 	"../input/inputmanager.hpp"
 
-1471623918 source:c:\users\mock\documents\github\bear-engine\source\engine\gamebase.cpp
+1472310582 source:c:\users\mock\documents\github\bear-engine\source\engine\gamebase.cpp
 	<time.h>
 	"gamebase.hpp"
 	"../luasystem/luainterface.hpp"
@@ -9111,12 +9115,13 @@
 	"../performance/console.hpp"
 	<emscripten.h>
 
-1462246486 source:c:\users\mock\documents\github\bear-engine\source\engine\sound.cpp
+1472309947 source:c:\users\mock\documents\github\bear-engine\source\engine\sound.cpp
 	"sound.hpp"
 	"../settings/definitions.hpp"
 	"../framework/resourcemanager.hpp"
 	"../framework/dirmanager.hpp"
 	"../performance/console.hpp"
+	"assetmanager.hpp"
 	<stdio.h>
 	<iostream>
 
@@ -9877,7 +9882,7 @@
 	<queue>
 	<stack>
 
-1471200070 source:c:\users\mock\documents\github\bear-engine\source\engine\pathfind.cpp
+1472310778 source:c:\users\mock\documents\github\bear-engine\source\engine\pathfind.cpp
 	"pathfind.hpp"
 	"renderhelp.hpp"
 
@@ -10608,4 +10613,17 @@
 	"window.hpp"
 	"../engine/renderhelp.hpp"
 	"../input/inputmanager.hpp"
+
+1472311047 source:c:\users\mock\documents\github\bear-engine\source\engine\assetmanager.cpp
+	"assetmanager.hpp"
+	"../performance/console.hpp"
+	<iostream>
+
+1472310322 c:\users\mock\documents\github\bear-engine\source\engine\assetmanager.hpp
+	<memory>
+	<unordered_map>
+	"sprite.hpp"
+	"sound.hpp"
+	"../performance/console.hpp"
+	<iostream>
 

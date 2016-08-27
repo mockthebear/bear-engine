@@ -73,7 +73,7 @@ class Game{
             *Get the current state
             @return GenericState
         */
-        DefinedState &GetCurrentState();
+        static DefinedState &GetCurrentState();
         /**
             * Used on constructor
         */

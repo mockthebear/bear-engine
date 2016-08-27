@@ -297,5 +297,6 @@ void Game::Run(){
         }
 };
 DefinedState &Game::GetCurrentState(){
-    return (*stateStack.top());
+    Game *g = GetInstance();
+    return (*g->stateStack.top());
 }

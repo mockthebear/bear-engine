@@ -2,7 +2,7 @@
 #include "../input/inputmanager.hpp"
 #include "../engine/camera.hpp"
 #include "../engine/light.hpp"
-
+#include "../engine/gamebase.hpp"
 Ball::Ball(){
     OBJ_REGISTER(Ball);
     Created = false;
@@ -14,7 +14,7 @@ Ball::Ball(Point pos){
 
     Created = true;
     speed.y = -0.1;
-    sp = Sprite("data:raccoon.png");
+    sp = Game::GetCurrentState().Assets.make<Sprite>("data:raccoon.png",true);
     box.w = sp.GetWidth();
     box.h = sp.GetHeight();
 }

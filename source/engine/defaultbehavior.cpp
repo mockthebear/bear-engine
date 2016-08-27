@@ -27,9 +27,7 @@ bool DefaultBehavior::OnLoad(){
 
 void DefaultBehavior::OnClose(){
     Text::Clear();
-    Sprite::Clear();
     Music::Clear();
-    Sound::Clear();
 }
 
 bool DefaultBehavior::OnResize(int newW,int newH){

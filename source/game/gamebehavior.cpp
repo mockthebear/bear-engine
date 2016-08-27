@@ -42,7 +42,7 @@ bool GameBehavior::OnLoad(){
 
     Console::GetInstance().AddText(utils::format("Started with display %d x %d",(int)P.x,(int)P.y));
     Console::GetInstance().AddText(utils::format("Started with screen %d x %d",(int)P2.x,(int)P2.y));
-    Console::GetInstance().AddText(utils::format("There is %d joysticks",InputManager::GetInstance().GetJoystickCount()));
+    Console::GetInstance().AddText(utils::format("There are %d joysticks",InputManager::GetInstance().GetJoystickCount()));
 
     Console::GetInstance().AddText("Starting state.");
     ThreadPool::GetInstance().CreateThreads();

@@ -25,7 +25,7 @@ ControlableObject::ControlableObject(int x,int y){
     isCreated = true;
     solid=true;
     speed = Point(8-rand()%16,8-rand()%16);
-    sp = Sprite("data/bear.png",1,1,1,false);
+    sp = Game::GetCurrentState().Assets.make<Sprite>("data/bear.png",false);
     wobble = 0;
 }
 

@@ -220,7 +220,6 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float perm
     blockSize = dotSize;
     MaxDarkness = maxDarkness;
     out = new SmartTexture(0,0,sizeX,sizeY,true,true);
-    std::cout << "k\n";
     ShadeMap = new uint8_t*[sizeY];
     DataMap = new uint8_t*[sizeY];
     pix = out->GetPixels();
@@ -250,15 +249,12 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float perm
             }
         }
     }
-    std::cout << "ohm\n";
-
     LightPoints = 0;
     CurrentAlloc = 0;
 
     MaxCycles = 90;
     Permissive = permissive;
     LightJobs = 0;
-    std::cout << "kek\n";
     return true;
 }
 bool Light::IsInLimits(int x,int y){
@@ -327,7 +323,6 @@ uint8_t **Light::GiveAnAdderess(bool clear){
     CurrentAlloc++;
 
     if (CurrentAlloc >= maxAlloc){
-        std::cout << "New stuffzor\n";
         int addSize = 4;
         uint8_t *** MAux = new uint8_t **[maxAlloc + addSize];
         for (int i=0;i<maxAlloc;i++){
