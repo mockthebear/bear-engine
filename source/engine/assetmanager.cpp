@@ -39,7 +39,10 @@ TexturePtr AssetMannager::resource(std::string str,bool hasAntiAliasign){
 
 TexturePtr AssetMannager::makeTexture(std::string str,bool hasAntiAliasign) {
     if (not spriteMap[str]){
-        SDL_Texture* c =Sprite::Preload((char*)str.c_str(),hasAntiAliasign);
+        SDL_Texture* c =Sprite::Preload((char*)str.c_str(),true,hasAntiAliasign);
+        if (not c){
+            return TexturePtr();
+        }
         spriteMap[str] = std::make_shared<SDL_Texture*>(c);
         Console::GetInstance().AddTextInfoF("Made texture for [%s] in  manager %d",str,id);
         return spriteMap[str];

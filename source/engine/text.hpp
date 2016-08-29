@@ -125,10 +125,7 @@ class CustomFont{
 
 class Text{
     public:
-        /**
-            *Empty constructor is almost empty
-        */
-        Text(){text="";texture=NULL;isWorking=false;};
+
         /**
             *Create an text from an .ttf file or .otf
             @param fontfile the path for the font
@@ -158,8 +155,13 @@ class Text{
         */
         Text(std::string customfontfile, std::string text,int x=0,int y=0);
         /**
+            *Empty constructor is almost empty
+        */
+        Text(){text="";texture=NULL;isWorking=false;};
+        /**
             *Here it just delete the texture.
         */
+
         ~Text();
         /**
             *Close everything from the text manually for future reuse

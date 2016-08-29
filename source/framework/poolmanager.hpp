@@ -34,7 +34,7 @@ typedef struct Holder_s{
     uint8_t Index;
 }Holder;
 
-typedef uint8_t PoolId;
+typedef int16_t PoolId;
 typedef int PoolGroupId;
 /**
     @brief Internal class used by PoolManager

@@ -29,7 +29,7 @@ class AssetMannager{
         }
 
         template<typename ...Args> SoundPtr gen(Sound s,std::string str,Args ...args){
-            return 10.0f;
+            return makeSound(str,args...);
         }
 
         template<class T,typename ...Args> T make(Args ...args){

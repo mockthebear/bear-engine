@@ -165,11 +165,11 @@ SDL_Texture* Sprite::CopyTexture(){
 
 SDL_Texture* Sprite::Preload(char *file,bool adjustDir,bool HasAliasing){
     std::string stdnamee(file);
-    if (adjustDir){
-        stdnamee = DirManager::AdjustAssetsPath(stdnamee);
-    }
     if (stdnamee.find(":")!=std::string::npos){
         return Sprite::Preload(ResourceManager::GetInstance().GetFile(stdnamee),stdnamee,HasAliasing);
+    }
+    if (adjustDir){
+        stdnamee = DirManager::AdjustAssetsPath(stdnamee);
     }
     if (HasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
@@ -179,7 +179,7 @@ SDL_Texture* Sprite::Preload(char *file,bool adjustDir,bool HasAliasing){
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
         return texture;
     }else{
-        Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s]",stdnamee.c_str()));
+        Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",stdnamee.c_str(),SDL_GetError()));
     }
     if (HasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
@@ -200,7 +200,22 @@ SDL_Texture* Sprite::Preload(SDL_RWops* rw,std::string name,bool HasAliasing){
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
         return texture;
      }else{
-        Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s]",name.c_str()));
+        Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",name.c_str(),SDL_GetError()));
+        #ifdef __EMSCRIPTEN__
+        Console::GetInstance().AddTextInfo("Resourcefiles aren't suported by emscripten. Trying instead loading.");
+        std::string newName = name;
+        char *c = (char*)newName.c_str();
+        for (int i=0;i<newName.size();i++){
+            if (c[i] == ':'){
+                c[i] = '/';
+                break;
+            }
+        }
+        Console::GetInstance().AddText(utils::format("Trying instead to load [%s]",newName.c_str()));
+        return Preload((char*)newName.c_str(),true,HasAliasing);
+        #endif // __EMSCRIPTEN__
+
+
     }
     if (HasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
@@ -211,6 +226,7 @@ SDL_Texture* Sprite::Preload(std::string fileName,ColorReplacer &r,bool HasAlias
     if (fileName == ""){
         return nullptr;
     }
+    fileName = DirManager::AdjustAssetsPath(fileName);
     SDL_Surface *surface = nullptr;
     if (fileName.find(":")!=std::string::npos){
         surface = IMG_Load_RW(ResourceManager::GetInstance().GetFile(fileName),1);
@@ -263,6 +279,8 @@ SDL_Texture* Sprite::Preload(std::string fileName,ColorReplacer &r,bool HasAlias
                     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
                 delete finalSmart;
                 return ret;
+            }else{
+                Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",fileName.c_str(),SDL_GetError()));
             }
         }
     }
@@ -287,7 +305,6 @@ bool Sprite::Open(char *file,bool HasAliasing){
     if (stdnamee.find(":")!=std::string::npos){
         return Open(ResourceManager::GetInstance().GetFile(stdnamee),stdnamee,HasAliasing);
     }
-    stdnamee = DirManager::AdjustAssetsPath(stdnamee);
     textureShred = GlobalAssetManager::GetInstance().makeTexture(stdnamee,HasAliasing);
     if (textureShred and textureShred.get() and *textureShred.get()){
         Query(textureShred);

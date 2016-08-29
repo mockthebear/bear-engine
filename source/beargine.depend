@@ -8517,7 +8517,7 @@
 	"mouse.hpp"
 	<string>
 
-1471153698 c:\users\mock\documents\github\bear-engine\source\engine\text.hpp
+1472316405 c:\users\mock\documents\github\bear-engine\source\engine\text.hpp
 	"../framework/geometry.hpp"
 	"sprite.hpp"
 	"../settings/definitions.hpp"
@@ -8645,7 +8645,7 @@
 	<stdint.h>
 	<functional>
 
-1470192262 c:\users\mock\documents\github\bear-engine\source\framework\poolmanager.hpp
+1472422228 c:\users\mock\documents\github\bear-engine\source\framework\poolmanager.hpp
 	"basepool.hpp"
 	<vector>
 	<functional>
@@ -8696,7 +8696,7 @@
 	"../settings/definitions.hpp"
 	"../framework/utils.hpp"
 
-1465700375 source:c:\users\mock\documents\github\bear-engine\source\engine\music.cpp
+1472400766 source:c:\users\mock\documents\github\bear-engine\source\engine\music.cpp
 	"music.hpp"
 	"gamebase.hpp"
 	"../framework/dirmanager.hpp"
@@ -8967,7 +8967,7 @@
 	"controlableobject.hpp"
 	"ball.hpp"
 
-1456604612 c:\users\mock\documents\github\bear-engine\source\engine\collision.h
+1472320817 c:\users\mock\documents\github\bear-engine\source\engine\collision.h
 	<algorithm>
 	<math.h>
 	"object.hpp"
@@ -9012,7 +9012,7 @@
 	"../engine/renderhelp.hpp"
 	<iostream>
 
-1472310630 source:c:\users\mock\documents\github\bear-engine\source\luasystem\luainterface.cpp
+1472400949 source:c:\users\mock\documents\github\bear-engine\source\luasystem\luainterface.cpp
 	"luainterface.hpp"
 	"luatools.hpp"
 	"../performance/console.hpp"
@@ -9128,7 +9128,7 @@
 1470374885 source:c:\users\mock\documents\github\bear-engine\source\engine\collision.cpp
 	"collision.hpp"
 
-1464228739 c:\users\mock\documents\github\bear-engine\source\engine\collision.hpp
+1472320853 c:\users\mock\documents\github\bear-engine\source\engine\collision.hpp
 	<algorithm>
 	<math.h>
 	"object.hpp"
@@ -10614,12 +10614,12 @@
 	"../engine/renderhelp.hpp"
 	"../input/inputmanager.hpp"
 
-1472311047 source:c:\users\mock\documents\github\bear-engine\source\engine\assetmanager.cpp
+1472422136 source:c:\users\mock\documents\github\bear-engine\source\engine\assetmanager.cpp
 	"assetmanager.hpp"
 	"../performance/console.hpp"
 	<iostream>
 
-1472310322 c:\users\mock\documents\github\bear-engine\source\engine\assetmanager.hpp
+1472400693 c:\users\mock\documents\github\bear-engine\source\engine\assetmanager.hpp
 	<memory>
 	<unordered_map>
 	"sprite.hpp"
