@@ -138,6 +138,11 @@ class GameFile{
             return *t;
         }
         /**
+            Get one line per time
+        */
+        bool GetLine(std::string &line);
+
+        /**
             * Get file size
             @return an number
         */

@@ -1,8 +1,8 @@
 #include "gamefile.hpp"
 #include "dirmanager.hpp"
 #include "resourcemanager.hpp"
-#include "utils.hpp"
 #include "../performance/console.hpp"
+#include "utils.hpp"
 #include <iostream>
 
 
@@ -36,21 +36,19 @@ GameFile::~GameFile(){
 }
 
 bool GameFile::Open(std::string name,bool notify){
-    bool fromFile = false;
     if (name.find(":")!=std::string::npos){
         m_filePointer = ResourceManager::GetInstance().GetFile(name);
     }else{
-        fromFile = true;
         name = DirManager::AdjustAssetsPath(name);
         m_filePointer = SDL_RWFromFile(name.c_str(),"rb");
     }
+
+
+
     if (m_filePointer == NULL){
-
-            if (fromFile)
-                Console::GetInstance().AddTextInfo(utils::format("Cannot locate [%s] because %s",name.c_str(),SDL_GetError()));
-            else
-                Console::GetInstance().AddTextInfo(utils::format("Cannot locate rw [%s]",name.c_str()));
-
+        if (notify){
+            Console::GetInstance().AddText(utils::format("Cannot locate %s", name.c_str() ) );
+        }
         return false;
     }
 
@@ -138,6 +136,30 @@ uint8_t GameFile::Read8(){
     }
 }
 
+bool GameFile::GetLine(std::string &line){
+    if (!IsOpen())
+        return false;
+    if (m_filePos > m_size)
+        return false;
+    std::string buffer = "";
+    bool finished = false;
+    while (!finished){
+        if (m_filePos > m_size)
+            return false;
+        char c = ReadByte();
+        if ((int)c == 13){
+            continue;
+        }
+        if (c == '\n'){
+            finished = true;
+            line = buffer;
+            return true;
+        }else{
+            buffer +=  c;
+        }
+    }
+    return false;
+}
 bool GameFile::Seek(uint32_t pos){
     if (!IsOpen())
         return false;
@@ -152,7 +174,6 @@ int GameFile::FindInt(){
     while (by <= '0' || by >= '9'){
         by = ReadByte();
         if (Tell() > m_size){
-            std::cout << "CABO\n";
             return -1;
         }
     }
@@ -164,13 +185,11 @@ int GameFile::FindInt(){
         i += by-'0';
         by = ReadByte();
         if (Tell() > m_size){
-            std::cout << "CABO\n";
             return -1;
         }
 
     }
     Seek(Tell()-1);
-    std::cout << "Ret:" << i << "\n";
     return i;
 }
 
