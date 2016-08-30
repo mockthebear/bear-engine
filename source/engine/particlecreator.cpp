@@ -25,7 +25,7 @@ Particle* ParticleCreator::CreateAnimatedText(int x,int y,float mx,float my,Text
 
 
 Particle* ParticleCreator::CreateAnimatedSprite(int x,int y,float mx,float my,std::string spritePath,int amount,float delay,int repeat){
-    Sprite sp = Sprite(spritePath.c_str(),amount,delay);
+    Sprite sp = Game::GetCurrentState().Assets.make<Sprite>(spritePath,amount,delay);
     Particle *p = Game::GetCurrentState().ParticlePool->AddInstance(Particle(x,y,sp,repeat));
     if (p != NULL){
        p->SetPatternMoveLine(Point(mx,my),Point(0,0));

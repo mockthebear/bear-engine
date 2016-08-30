@@ -35,7 +35,6 @@ Sprite::Sprite(){
     repeat = 1;
     hasCenter = false;
     aliasing = false;
-    aliasing = false;
     fname = "";
     over = 0;
     OUTR = OUTB = OUTG = 255;
@@ -45,44 +44,53 @@ Sprite::Sprite(){
 
 }
 
-Sprite::Sprite(TexturePtr texture_,std::string name,bool hasAliasing):Sprite(){
+Sprite::Sprite(TexturePtr texture_,std::string name,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
     textureShred = texture_;
+     frameCount = fcount;
+    repeat = rep;
+    frameTime = ftime;
     fname = name;
     Uint32 format;
     int acess;
+    aliasing = hasAliasing;
     if (textureShred.get()){
-        if (SDL_QueryTexture(*textureShred.get(), &format,&acess,&dimensions.w,&dimensions.h) < 0){
+        if (SDL_QueryTexture(textureShred.get(), &format,&acess,&dimensions.w,&dimensions.h) < 0){
 
         }
         SetClip(0,0,dimensions.w,dimensions.h);
     }
-    /*if (name != "" and !assetTable[name]){
-        assetTable[name] = texture_;
-    }*/
-
-
-    SetGrid(GetWidth()/frameCount,GetWidth()/frameCount);
+    SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
 }
 
+Sprite::Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
+    frameCount = fcount;
+    repeat = rep;
+    frameTime = ftime;
+    fname = name;
+    aliasing = hasAliasing;
+    textureShred = texture_;
+    Query(textureShred);
+    SetGrid(GetWidth()/frameCount,GetHeight());
+    SetFrame(0);
+    SetAlpha(255);
+}
+
 Sprite::Sprite(const char *file,ColorReplacer &r,bool replacer,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
-    /*frameCount = fcount;
+    frameCount = fcount;
     repeat = rep;
     frameTime = ftime;
     fname = file;
-    texture = ColorReplace(std::string(file),r,replacer);
-    if (texture){
-        Uint32 format;
-        int acess;
-        SDL_QueryTexture(texture, &format,&acess,&dimensions.w,&dimensions.h);
-        scaleX = scaleY = 1;
-        SetClip(0,0,dimensions.w,dimensions.h);
+    aliasing = hasAliasing;
+    scaleX = scaleY = 1;
+    textureShred = GlobalAssetManager::GetInstance().makeTexture(false,file,r,hasAliasing);
+    if (textureShred.get()){
+        Query(textureShred);
     }
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
     SetAlpha(255);
-        TODO
-    */
+
 }
 
 Sprite::Sprite(char *file,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
@@ -290,11 +298,11 @@ SDL_Texture* Sprite::Preload(std::string fileName,ColorReplacer &r,bool HasAlias
 }
 
 void Sprite::Query(TexturePtr ptr){
-    SDL_Texture **texturee = ptr.get();
-    if (texturee != NULL and (*texturee)){
+    SDL_Texture *texturee = ptr.get();
+    if (texturee != NULL){
         Uint32 format;
         int acess;
-        SDL_QueryTexture((*texturee), &format,&acess,&dimensions.w,&dimensions.h);
+        SDL_QueryTexture((texturee), &format,&acess,&dimensions.w,&dimensions.h);
         SetClip(0,0,dimensions.w,dimensions.h);
     }
 }
@@ -305,8 +313,8 @@ bool Sprite::Open(char *file,bool HasAliasing){
     if (stdnamee.find(":")!=std::string::npos){
         return Open(ResourceManager::GetInstance().GetFile(stdnamee),stdnamee,HasAliasing);
     }
-    textureShred = GlobalAssetManager::GetInstance().makeTexture(stdnamee,HasAliasing);
-    if (textureShred and textureShred.get() and *textureShred.get()){
+    textureShred = GlobalAssetManager::GetInstance().makeTexture(false,stdnamee,HasAliasing);
+    if (textureShred.get()){
         Query(textureShred);
         return true;
     }
@@ -315,8 +323,8 @@ bool Sprite::Open(char *file,bool HasAliasing){
 
 bool Sprite::Open(SDL_RWops* file,std::string name,bool HasAliasing){
     scaleX = scaleY = 1;
-    textureShred = GlobalAssetManager::GetInstance().makeTexture(file,name,HasAliasing);
-    if (textureShred and textureShred.get() and *textureShred.get()){
+    textureShred = GlobalAssetManager::GetInstance().makeTexture(false,file,name,HasAliasing);
+    if (textureShred.get()){
         Query(textureShred);
         return true;
     }else{
@@ -358,7 +366,7 @@ void Sprite::Render(PointInt pos,double angle){
     dimensions2.y = pos.y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH();
     dimensions2.h = clipRect.h*scaleRatioH*scaleY;
     dimensions2.w = clipRect.w*scaleRatioW*scaleX;
-    SDL_RenderCopyEx(BearEngine->GetRenderer(),*textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip);
+    SDL_RenderCopyEx(BearEngine->GetRenderer(),textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip);
 
 }
 void Sprite::Render(int x,int y,double angle){
@@ -370,7 +378,7 @@ void Sprite::Render(int x,int y,double angle){
     dimensions2.y = y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH();
     dimensions2.h = clipRect.h*scaleRatioH*scaleY;
     dimensions2.w = clipRect.w*scaleRatioW*scaleX;
-    SDL_RenderCopyEx(BearEngine->GetRenderer(),*textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
+    SDL_RenderCopyEx(BearEngine->GetRenderer(),textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
 }
 
 
@@ -380,7 +388,7 @@ void Sprite::RawRender(int x,int y,double angle){
     dimensions2.y = y;
     dimensions2.h = clipRect.h*scaleY;
     dimensions2.w = clipRect.w*scaleX;
-    SDL_RenderCopyEx(BearEngine->GetRenderer(),*textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
+    SDL_RenderCopyEx(BearEngine->GetRenderer(),textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
 }
 
 int Sprite::GetWidth(){

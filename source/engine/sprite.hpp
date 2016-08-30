@@ -6,13 +6,14 @@
 #define SPRITEHA
 
 #include "../framework/geometry.hpp"
+#include "../framework/chainptr.hpp"
 
 #include <unordered_map>
 #include <map>
 #include <string>
 
 #include <memory>
-typedef std::shared_ptr<SDL_Texture*> TexturePtr;
+typedef chain_ptr<SDL_Texture> TexturePtr;
 
 /**
  * @brief Sprite class plus animation
@@ -47,7 +48,7 @@ class Sprite{
             *in the class.
             @param texture An sdl texture
         */
-        Sprite(TexturePtr texture,std::string name,bool hasAliasing=false);
+        Sprite(TexturePtr texture,std::string name,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
         /**
             *Create an sprite from an path to an file. The file should be SDL2_Image supported
             *You can set the frame count and frame time to an animation
@@ -68,6 +69,7 @@ class Sprite{
         Sprite(const char *file,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
 
         Sprite(const char *file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
+        Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
         /**
             *Create an sprite from a rwops. Also delete the RWops
             *You also NEED to set an alias to use as hash.
@@ -248,14 +250,14 @@ class Sprite{
             @return true if the sprite is loaded
         */
         bool IsLoaded(){
-            return textureShred.get() != nullptr and (*textureShred.get()) != nullptr;
+            return textureShred.get() != nullptr ;
         };
         /**
             *Get the texture. Note that texture can be an shared one
             @return true if the texture
         */
         SDL_Texture* GetSDLTexture(){
-            return (*textureShred.get());
+            return (textureShred.get());
         };
         /**
             *Used to change the center of rotation
@@ -308,7 +310,7 @@ class Sprite{
             OUTR = Red;
             OUTB = Blue;
             OUTG = Green;
-            SDL_SetTextureColorMod((*textureShred.get()),OUTR,OUTB,OUTG);
+            SDL_SetTextureColorMod((textureShred.get()),OUTR,OUTB,OUTG);
         };
         /**
             *Changed the sprite alpha
@@ -317,7 +319,7 @@ class Sprite{
             @param alpha [0-255] The default is 255 of all sprites;
         */
         void SetAlpha(int alpha){
-            SDL_SetTextureAlphaMod((*textureShred.get()),alpha);
+            SDL_SetTextureAlphaMod((textureShred.get()),alpha);
         };
         /**
             *Duplicate the texture

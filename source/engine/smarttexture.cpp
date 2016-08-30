@@ -1,19 +1,19 @@
 #include "smarttexture.hpp"
 #include "gamebase.hpp"
 
-SmartTexture::SmartTexture(int xx,int yy,int ww,int hh,bool generatePixels,bool hasAliasing){
+SmartTexture::SmartTexture(int xx,int yy,int ww,int hh,bool del,bool hasAliasing){
    h = hh;
    w = ww;
+   deleteTexture = del;
    pixels = nullptr;
 
    if (hasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-   t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_ARGB8888,  SDL_TEXTUREACCESS_STATIC , ww, hh);
-
-   pixels = new Uint32[w * h];
-   SDL_SetTextureBlendMode( t, SDL_BLENDMODE_BLEND );
+   t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, ww, hh);
    if (hasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+   pixels = new Uint32[w * h];
+   SDL_SetTextureBlendMode( t, SDL_BLENDMODE_BLEND );
    x = xx;
    y = yy;
 }
@@ -21,14 +21,15 @@ SmartTexture::SmartTexture(int xx,int yy,int ww,int hh,bool generatePixels,bool 
 
 
 void SmartTexture::UpdateTexture(){
-   SDL_UpdateTexture(t, NULL, pixels, w * sizeof(Uint32));
+    SDL_UpdateTexture(t, NULL, pixels, w * sizeof(Uint32));
+
 }
 SmartTexture::~SmartTexture(){
     delete []pixels;
-    SDL_DestroyTexture(t);
-
+    if (deleteTexture){
+        SDL_DestroyTexture( t );
+    }
 }
-
 void SmartTexture::Render(PointInt pos,float angle){
     SDL_Rect rr;
     double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1

@@ -136,6 +136,28 @@ uint8_t GameFile::Read8(){
     }
 }
 
+int GameFile::GetNumber(bool ignoreUntilFind){
+    int ret = 0;
+    bool found = false;
+    while (true){
+        if (m_filePos > m_size)
+            return -1;
+        char c = ReadByte();
+        if (c >= '0' and c <= '9'){
+            ret *= 10;
+            ret += c-'0';
+            found = true;
+        }else{
+            if (ignoreUntilFind){
+                if (!found)
+                    continue;
+            }
+            break;
+        }
+    }
+    return ret;
+}
+
 bool GameFile::GetLine(std::string &line){
     if (!IsOpen())
         return false;

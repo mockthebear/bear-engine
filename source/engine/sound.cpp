@@ -36,11 +36,11 @@ Sound::Sound(const char *s):Sound(){
 bool Sound::Open(const char *str){
     std::string stdnamee(str);
     if (stdnamee.find(":")!=std::string::npos){
-        music = GlobalAssetManager::GetInstance().makeSound(ResourceManager::GetInstance().GetFile(stdnamee),str);
+        music = GlobalAssetManager::GetInstance().makeSound(false,ResourceManager::GetInstance().GetFile(stdnamee),str);
     }else{
-        music = GlobalAssetManager::GetInstance().makeSound(str);
+        music = GlobalAssetManager::GetInstance().makeSound(false,str);
     }
-    if (music and music.get() and *music.get()){
+    if (music.get()){
         return true;
     }
     return false;
@@ -53,7 +53,7 @@ Mix_Chunk* Sound::Preload(SDL_RWops* file,std::string name){
     if (aux_chunk){
         return aux_chunk;
     }else{
-        Console::GetInstance().AddText(utils::format("Cannot load rwop sound [%s]",name));
+        Console::GetInstance().AddText(utils::format("Cannot load rwop sound [%s] because: %s",name,SDL_GetError()));
         return NULL;
     }
 }
@@ -81,12 +81,12 @@ int Sound::PlayOnce(const char *s){
     std::string stdnamee(s);
     SoundPtr snd;
     if (stdnamee.find(":")!=std::string::npos){
-        snd = GlobalAssetManager::GetInstance().makeSound(ResourceManager::GetInstance().GetFile(stdnamee),stdnamee);
+        snd = GlobalAssetManager::GetInstance().makeSound(false,ResourceManager::GetInstance().GetFile(stdnamee),stdnamee);
     }else{
-        snd = GlobalAssetManager::GetInstance().makeSound(s);
+        snd = GlobalAssetManager::GetInstance().makeSound(false,s);
     }
-    if (snd and snd.get() and *snd.get()){
-        return Mix_PlayChannel(-1,*snd.get(), 0);
+    if (snd.get()){
+        return Mix_PlayChannel(-1,snd.get(), 0);
     }
     return -1;
 }
@@ -116,7 +116,7 @@ void Sound::SetPosition(int vol){
 void Sound::Play(int times){
     if (!working)
         return;
-    channel = Mix_PlayChannel(-1,(*music.get()), times);
+    channel = Mix_PlayChannel(-1,(music.get()), times);
 }
 
 void Sound::Resume(){
@@ -177,6 +177,6 @@ void Sound::FadeOut(float ms){
 
 
 bool Sound::IsOpen(){
-    return music and music.get() and (*music.get());
+    return music.get();
 }
 

@@ -33,7 +33,7 @@ void Music::Open(SDL_RWops* file,std::string name){
     if (!ConfigManager::GetInstance().IsWorkingAudio())
         return;
     if (assetTable.find(name) == assetTable.end() ){
-        Mix_Music *aux_music = nullptr;
+        Mix_Music *aux_music = Mix_LoadMUS_RW(file, 1);
         if (aux_music){
             assetTable[name] = aux_music;
             music = aux_music;

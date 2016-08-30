@@ -5,6 +5,7 @@
 #ifndef SOUNDH_
 #define SOUNDH_
 #include "../settings/configmanager.hpp"
+#include "../framework/chainptr.hpp"
 #include <unordered_map>
 #include <string>
 #include <memory>
@@ -12,7 +13,7 @@
     @brief Basic sound class [Not 100% ready] TODO: Port to openAl
 */
 
-typedef std::shared_ptr<Mix_Chunk*> SoundPtr;
+typedef chain_ptr<Mix_Chunk> SoundPtr;
 
 
 class Sound{

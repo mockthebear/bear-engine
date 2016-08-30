@@ -141,7 +141,11 @@ class GameFile{
             Get one line per time
         */
         bool GetLine(std::string &line);
-
+        /**
+            Return the number
+            @param ignoreUntilFind When set to true, it will read all the file from the current point until find any number.
+        */
+        int GetNumber(bool ignoreUntilFind=false);
         /**
             * Get file size
             @return an number
