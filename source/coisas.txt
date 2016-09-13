@@ -1,0 +1,338 @@
+engine\text.hpp|160|uninitMemberVar : style : Member variable 'Text::angle' is not initialized in the constructor.|
+engine\text.hpp|160|uninitMemberVar : style : Member variable 'Text::style' is not initialized in the constructor.|
+engine\text.hpp|160|uninitMemberVar : style : Member variable 'Text::size' is not initialized in the constructor.|
+engine\text.hpp|160|uninitMemberVar : style : Member variable 'Text::scaleY' is not initialized in the constructor.|
+engine\text.hpp|160|uninitMemberVar : style : Member variable 'Text::scaleX' is not initialized in the constructor.|
+engine\text.hpp|160|uninitMemberVar : style : Member variable 'Text::alpha' is not initialized in the constructor.|
+engine\text.hpp|160|uninitMemberVar : style : Member variable 'Text::font' is not initialized in the constructor.|
+engine\text.hpp|160|uninitMemberVar : style : Member variable 'Text::texturespr' is not initialized in the constructor.|
+engine\text.hpp|160|useInitializationList : style : When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don't explicitly write them to the initialization list. You could avoid assigning 'text' a value by passing the value to the constructor in the initialization list.|
+engine\object.hpp|73|noConstructor : style : The class 'GameObject' does not have a constructor although it has private member variables. Member variables of builtin types are left uninitialized when the class is instantiated. That may cause bugs or undefined behavior.|
+engine\collision.cpp|19|cstyleCast : style : C-style pointer casting|
+engine\particles.hpp|24|duplicateExpression : style : Finding the same expression on both sides of an operator is suspicious and might indicate a cut and paste or logic error. Please examine this code carefully to determine if it is correct.|
+engine\particles.hpp|28|duplicateExpression : style : Finding the same expression on both sides of an operator is suspicious and might indicate a cut and paste or logic error. Please examine this code carefully to determine if it is correct.|
+engine\smarttexture.hpp|12|uninitMemberVar : style : Member variable 'SmartTexture::deleteTexture' is not initialized in the constructor.|
+framework\basepool.hpp|22|noCopyConstructor : style : 'class SPP<T>' does not have a copy constructor which is recommended since the class contains a pointer to allocated memory.|
+engine\gamebase.cpp|82|duplicateBreak : style : Consecutive return, break, continue, goto or throw statements are unnecessary. The second statement can never be executed, and so should be removed.|
+engine\gamebase.cpp|221|duplicateBreak : style : Consecutive return, break, continue, goto or throw statements are unnecessary. The second statement can never be executed, and so should be removed.|
+framework\threadpool.hpp|43|uninitMemberVar : style : Member variable 'Job::min' is not initialized in the constructor.|
+framework\threadpool.hpp|43|uninitMemberVar : style : Member variable 'Job::max' is not initialized in the constructor.|
+framework\threadpool.hpp|43|uninitMemberVar : style : Member variable 'Job::vect' is not initialized in the constructor.|
+framework\threadpool.hpp|43|uninitMemberVar : style : Member variable 'Job::from' is not initialized in the constructor.|
+framework\threadpool.hpp|43|uninitMemberVar : style : Member variable 'Job::to' is not initialized in the constructor.|
+framework\threadpool.hpp|43|uninitMemberVar : style : Member variable 'Job::me' is not initialized in the constructor.|
+framework\threadpool.hpp|43|uninitMemberVar : style : Member variable 'Job::tsize' is not initialized in the constructor.|
+framework\threadpool.hpp|44|uninitMemberVar : style : Member variable 'Job::Parameter' is not initialized in the constructor.|
+framework\threadpool.hpp|44|uninitMemberVar : style : Member variable 'Job::min' is not initialized in the constructor.|
+framework\threadpool.hpp|44|uninitMemberVar : style : Member variable 'Job::max' is not initialized in the constructor.|
+framework\threadpool.hpp|44|uninitMemberVar : style : Member variable 'Job::vect' is not initialized in the constructor.|
+framework\threadpool.hpp|44|uninitMemberVar : style : Member variable 'Job::from' is not initialized in the constructor.|
+framework\threadpool.hpp|44|uninitMemberVar : style : Member variable 'Job::to' is not initialized in the constructor.|
+framework\threadpool.hpp|44|uninitMemberVar : style : Member variable 'Job::me' is not initialized in the constructor.|
+framework\threadpool.hpp|44|uninitMemberVar : style : Member variable 'Job::tsize' is not initialized in the constructor.|
+framework\threadpool.hpp|45|uninitMemberVar : style : Member variable 'Job::min' is not initialized in the constructor.|
+framework\threadpool.hpp|45|uninitMemberVar : style : Member variable 'Job::max' is not initialized in the constructor.|
+framework\threadpool.hpp|45|uninitMemberVar : style : Member variable 'Job::vect' is not initialized in the constructor.|
+framework\threadpool.hpp|45|uninitMemberVar : style : Member variable 'Job::from' is not initialized in the constructor.|
+framework\threadpool.hpp|45|uninitMemberVar : style : Member variable 'Job::to' is not initialized in the constructor.|
+framework\threadpool.hpp|45|uninitMemberVar : style : Member variable 'Job::me' is not initialized in the constructor.|
+framework\threadpool.hpp|45|uninitMemberVar : style : Member variable 'Job::tsize' is not initialized in the constructor.|
+framework\threadpool.hpp|46|uninitMemberVar : style : Member variable 'Job::vect' is not initialized in the constructor.|
+framework\threadpool.hpp|46|uninitMemberVar : style : Member variable 'Job::from' is not initialized in the constructor.|
+framework\threadpool.hpp|46|uninitMemberVar : style : Member variable 'Job::to' is not initialized in the constructor.|
+framework\threadpool.hpp|46|uninitMemberVar : style : Member variable 'Job::me' is not initialized in the constructor.|
+framework\threadpool.hpp|46|uninitMemberVar : style : Member variable 'Job::tsize' is not initialized in the constructor.|
+framework\threadpool.hpp|54|uninitMemberVar : style : Member variable 'Job::Parameter' is not initialized in the constructor.|
+framework\threadpool.hpp|54|uninitMemberVar : style : Member variable 'Job::min' is not initialized in the constructor.|
+framework\threadpool.hpp|54|uninitMemberVar : style : Member variable 'Job::max' is not initialized in the constructor.|
+framework\threadpool.hpp|54|uninitMemberVar : style : Member variable 'Job::vect' is not initialized in the constructor.|
+framework\threadpool.hpp|54|uninitMemberVar : style : Member variable 'Job::me' is not initialized in the constructor.|
+framework\threadpool.hpp|54|uninitMemberVar : style : Member variable 'Job::tsize' is not initialized in the constructor.|
+framework\threadpool.hpp|55|uninitMemberVar : style : Member variable 'Job::Parameter' is not initialized in the constructor.|
+framework\threadpool.hpp|55|uninitMemberVar : style : Member variable 'Job::min' is not initialized in the constructor.|
+framework\threadpool.hpp|55|uninitMemberVar : style : Member variable 'Job::max' is not initialized in the constructor.|
+framework\threadpool.hpp|125|uninitMemberVar : style : Member variable 'ThreadPool::Locked' is not initialized in the constructor.|
+framework\threadpool.hpp|125|uninitMemberVar : style : Member variable 'ThreadPool::fastJobs' is not initialized in the constructor.|
+framework\threadpool.hpp|125|uninitMemberVar : style : Member variable 'ThreadPool::UsePThreads' is not initialized in the constructor.|
+framework\threadpool.hpp|125|uninitMemberVar : style : Member variable 'ThreadPool::Params' is not initialized in the constructor.|
+framework\threadpool.hpp|125|uninitMemberVar : style : Member variable 'ThreadPool::thread_pool' is not initialized in the constructor.|
+framework\threadpool.hpp|125|uninitMemberVar : style : Member variable 'ThreadPool::mutexes' is not initialized in the constructor.|
+framework\threadpool.hpp|125|uninitMemberVar : style : Member variable 'ThreadPool::runningM' is not initialized in the constructor.|
+luasystem\luatools.hpp|17|useInitializationList : style : When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don't explicitly write them to the initialization list. You could avoid assigning 'field' a value by passing the value to the constructor in the initialization list.|
+luasystem\luatools.hpp|18|useInitializationList : style : When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don't explicitly write them to the initialization list. You could avoid assigning 'type' a value by passing the value to the constructor in the initialization list.|
+framework\threadpool.hpp|45|useInitializationList : style : When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don't explicitly write them to the initialization list. You could avoid assigning 'lambda' a value by passing the value to the constructor in the initialization list.|
+framework\threadpool.hpp|48|useInitializationList : style : When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don't explicitly write them to the initialization list. You could avoid assigning 'lambda' a value by passing the value to the constructor in the initialization list.|
+ui\base.hpp|26|uninitMemberVar : style : Member variable 'UIStyle::custom' is not initialized in the constructor.|
+engine\genericstate.cpp|3|uninitMemberVar : style : Member variable 'GenericState::ParticlePool' is not initialized in the constructor.|
+engine\genericstate.cpp|3|uninitMemberVar : style : Member variable 'GenericState::STATEID' is not initialized in the constructor.|
+engine\genericstate.cpp|3|uninitMemberVar : style : Member variable 'GenericState::gameStarted' is not initialized in the constructor.|
+ui\base.hpp|37|useInitializationList : style : When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don't explicitly write them to the initialization list. You could avoid assigning 'fontfile' a value by passing the value to the constructor in the initialization list.|
+framework\basepool.hpp|22|noCopyConstructor : style : 'class SPP<Particle>' does not have a copy constructor which is recommended since the class contains a pointer to allocated memory.|
+engine\light.cpp|89|variableScope : style : The scope of the variable 'K' can be reduced. Warning: Be careful when fixing this message, especially when there are inner loops. Here is an example where cppcheck will write that the scope for 'i' can be reduced:void f(int x){    int i = 0;    if (x) {        // it's safe to move 'int i = 0;' here        for (int n = 0; n < 10; ++n) {            // it is possible but not safe to move 'int i = 0;' here            do_something(&i);        }    }}When you see this message it is alway|
+engine\light.cpp|14|uninitMemberVar : style : Member variable 'Light::AutoFinished' is not initialized in the constructor.|
+engine\light.cpp|14|uninitMemberVar : style : Member variable 'Light::ShadeMap' is not initialized in the constructor.|
+engine\light.cpp|14|uninitMemberVar : style : Member variable 'Light::DataMap' is not initialized in the constructor.|
+engine\light.cpp|14|uninitMemberVar : style : Member variable 'Light::sizeX' is not initialized in the constructor.|
+engine\light.cpp|14|uninitMemberVar : style : Member variable 'Light::sizeY' is not initialized in the constructor.|
+engine\light.cpp|14|uninitMemberVar : style : Member variable 'Light::blockSize' is not initialized in the constructor.|
+engine\light.cpp|14|uninitMemberVar : style : Member variable 'Light::MaxCycles' is not initialized in the constructor.|
+engine\light.cpp|14|uninitMemberVar : style : Member variable 'Light::Permissive' is not initialized in the constructor.|
+engine\light.cpp|14|uninitMemberVar : style : Member variable 'Light::CurrentAlloc' is not initialized in the constructor.|
+engine\light.cpp|14|uninitMemberVar : style : Member variable 'Light::LightPoints' is not initialized in the constructor.|
+engine\light.cpp|14|uninitMemberVar : style : Member variable 'Light::pix' is not initialized in the constructor.|
+engine\light.cpp|14|uninitMemberVar : style : Member variable 'Light::onAutomatic' is not initialized in the constructor.|
+engine\light.cpp|14|uninitMemberVar : style : Member variable 'Light::doneAuto' is not initialized in the constructor.|
+engine\music.cpp|11|uninitMemberVar : style : Member variable 'Music::isPlaying' is not initialized in the constructor.|
+engine\music.cpp|16|uninitMemberVar : style : Member variable 'Music::isPlaying' is not initialized in the constructor.|
+engine\music.cpp|20|uninitMemberVar : style : Member variable 'Music::isPlaying' is not initialized in the constructor.|
+engine\particles.cpp|34|uninitMemberVar : style : Member variable 'Particle::Distance' is not initialized in the constructor.|
+engine\particles.cpp|34|uninitMemberVar : style : Member variable 'Particle::internalFloat' is not initialized in the constructor.|
+engine\particles.cpp|90|uninitMemberVar : style : Member variable 'Particle::Distance' is not initialized in the constructor.|
+engine\particles.cpp|90|uninitMemberVar : style : Member variable 'Particle::internalFloat' is not initialized in the constructor.|
+engine\particles.cpp|8|uninitMemberVar : style : Member variable 'Particle::Distance' is not initialized in the constructor.|
+engine\particles.cpp|8|uninitMemberVar : style : Member variable 'Particle::internalFloat' is not initialized in the constructor.|
+engine\pathfind.hpp|26|uninitMemberVar : style : Member variable 'PFNode::level' is not initialized in the constructor.|
+engine\pathfind.cpp|11|uninitMemberVar : style : Member variable 'PathFind::directions' is not initialized in the constructor.|
+engine\pathfind.cpp|11|uninitMemberVar : style : Member variable 'PathFind::cellSize' is not initialized in the constructor.|
+engine\pathfind.cpp|11|uninitMemberVar : style : Member variable 'PathFind::dx' is not initialized in the constructor.|
+engine\pathfind.cpp|11|uninitMemberVar : style : Member variable 'PathFind::dy' is not initialized in the constructor.|
+engine\pathfind.cpp|11|uninitMemberVar : style : Member variable 'PathFind::pqi' is not initialized in the constructor.|
+engine\pathfind.cpp|11|uninitMemberVar : style : Member variable 'PathFind::i' is not initialized in the constructor.|
+engine\pathfind.cpp|11|uninitMemberVar : style : Member variable 'PathFind::j' is not initialized in the constructor.|
+engine\pathfind.cpp|11|uninitMemberVar : style : Member variable 'PathFind::x' is not initialized in the constructor.|
+engine\pathfind.cpp|11|uninitMemberVar : style : Member variable 'PathFind::y' is not initialized in the constructor.|
+engine\pathfind.cpp|11|uninitMemberVar : style : Member variable 'PathFind::xdx' is not initialized in the constructor.|
+engine\pathfind.cpp|11|uninitMemberVar : style : Member variable 'PathFind::ydy' is not initialized in the constructor.|
+engine\screenmanager.cpp|13|uninitMemberVar : style : Member variable 'ScreenManager::ShakingTick_original' is not initialized in the constructor.|
+engine\screenmanager.cpp|13|uninitMemberVar : style : Member variable 'ScreenManager::ShakingTick' is not initialized in the constructor.|
+engine\screenmanager.cpp|13|uninitMemberVar : style : Member variable 'ScreenManager::m_renderer' is not initialized in the constructor.|
+engine\screenmanager.cpp|14|useInitializationList : style : When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don't explicitly write them to the initialization list. You could avoid assigning 'm_scaleRatio' a value by passing the value to the constructor in the initialization list.|
+engine\shooteffect.cpp|9|useInitializationList : style : When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don't explicitly write them to the initialization list. You could avoid assigning 'p2' a value by passing the value to the constructor in the initialization list.|
+engine\sound.cpp|13|useInitializationList : style : When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don't explicitly write them to the initialization list. You could avoid assigning 'music' a value by passing the value to the constructor in the initialization list.|
+engine\sound.cpp|19|useInitializationList : style : When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don't explicitly write them to the initialization list. You could avoid assigning 'music' a value by passing the value to the constructor in the initialization list.|
+engine\sound.cpp|29|useInitializationList : style : When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don't explicitly write them to the initialization list. You could avoid assigning 'music' a value by passing the value to the constructor in the initialization list.|
+engine\sprite.cpp|270|unusedVariable : style : Unused variable: replacer|
+engine\sprite.cpp|33|useInitializationList : style : When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don't explicitly write them to the initialization list. You could avoid assigning 'currentFrame' a value by passing the value to the constructor in the initialization list.|
+engine\text.cpp|206|unreadVariable : style : Variable 'ftnm' is assigned a value that is never used.|
+engine\text.cpp|12|uninitMemberVar : style : Member variable 'CustomFont::oldAlpha' is not initialized in the constructor.|
+engine\text.cpp|195|uninitMemberVar : style : Member variable 'Text::style' is not initialized in the constructor.|
+engine\text.cpp|195|uninitMemberVar : style : Member variable 'Text::size' is not initialized in the constructor.|
+engine\text.cpp|141|useInitializationList : style : When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don't explicitly write them to the initialization list. You could avoid assigning 'text' a value by passing the value to the constructor in the initialization list.|
+engine\text.cpp|203|useInitializationList : style : When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don't explicitly write them to the initialization list. You could avoid assigning 'text' a value by passing the value to the constructor in the initialization list.|
+engine\text.hpp|90|noCopyConstructor : style : 'class CustomFont' does not have a copy constructor which is recommended since the class contains a pointer to allocated memory.|
+engine\text.cpp|26|invalidscanf : style : scanf without field width limits can crash with huge input data. Add a field width specifier to fix this problem:    %s => %20sSample program that can crash:#include <stdio.h>int main(){    char c[5];    scanf("%s", c);    return 0;}To make it crash, type in more than 5 characters.|
+engine\text.cpp|34|invalidscanf : style : scanf without field width limits can crash with huge input data. Add a field width specifier to fix this problem:    %s => %20sSample program that can crash:#include <stdio.h>int main(){    char c[5];    scanf("%s", c);    return 0;}To make it crash, type in more than 5 characters.|
+framework\basepool.hpp|22|noCopyConstructor : style : 'class SPP' does not have a copy constructor which is recommended since the class contains a pointer to allocated memory.|
+framework\poolmanager.cpp|103|unusedVariable : style : Unused variable: ListPools|
+framework\poolmanager.hpp|332|unusedPrivateFunction : style : Unused private function: 'PoolManager::InternalAddInstance'|
+framework\poolmanager.hpp|160|noCopyConstructor : style : 'class PoolManager' does not have a copy constructor which is recommended since the class contains a pointer to allocated memory.|
+framework\poolmanager.hpp|48|unusedStructMember : style : struct or union member 'PoolGroup_::Id' is never used.|
+framework\resourcefiles.cpp|50|mismatchAllocDealloc : error : Mismatching allocation and deallocation: name|
+framework\threadpool.cpp|240|cstyleCast : style : C-style pointer casting|
+framework\threadpool.cpp|32|uninitMemberVar : style : Member variable 'ThreadPool::fastJobs' is not initialized in the constructor.|
+framework\threadpool.hpp|120|noCopyConstructor : style : 'class ThreadPool' does not have a copy constructor which is recommended since the class contains a pointer to allocated memory.|
+framework\threadpool.cpp|32|uninitMemberVar : style : Member variable 'ThreadPool::Locked' is not initialized in the constructor.|
+game\controlableobject.cpp|9|uninitMemberVar : style : Member variable 'ControlableObject::wobble' is not initialized in the constructor.|
+game\state.hpp|17|uninitMemberVar : style : Member variable 'State::PlayerSpeed' is not initialized in the constructor.|
+game\state.hpp|17|uninitMemberVar : style : Member variable 'State::currentLevel' is not initialized in the constructor.|
+engine\genericstate.hpp|178|duplInheritedMember : style : The class 'State' defines member variable with name 'Pool' also defined in its parent class 'GenericState'.|
+game\title.cpp|124|cstyleCast : style : C-style pointer casting|
+game\title.cpp|26|uninitMemberVar : style : Member variable 'Title::volume' is not initialized in the constructor.|
+game\title.cpp|118|stlSize : style : Checking for 'shown' emptiness might be inefficient. Using shown.empty() instead of shown.size() can be faster. shown.size() can take linear time but shown.empty() is guaranteed to take constant time.|
+input\joystick.cpp|6|uninitMemberVar : style : Member variable 'Joystick::Axis' is not initialized in the constructor.|
+input\joystick.cpp|6|uninitMemberVar : style : Member variable 'Joystick::HasCallButton' is not initialized in the constructor.|
+input\joystick.cpp|6|uninitMemberVar : style : Member variable 'Joystick::HasCallAxis' is not initialized in the constructor.|
+input\joystick.cpp|6|uninitMemberVar : style : Member variable 'Joystick::HasCallBall' is not initialized in the constructor.|
+input\joystick.cpp|6|uninitMemberVar : style : Member variable 'Joystick::Balls' is not initialized in the constructor.|
+input\joystick.cpp|6|uninitMemberVar : style : Member variable 'Joystick::HasCallHat' is not initialized in the constructor.|
+input\joystick.cpp|6|uninitMemberVar : style : Member variable 'Joystick::Hats' is not initialized in the constructor.|
+input\joystick.cpp|6|uninitMemberVar : style : Member variable 'Joystick::m_id' is not initialized in the constructor.|
+input\joystick.cpp|6|uninitMemberVar : style : Member variable 'Joystick::m_axes' is not initialized in the constructor.|
+input\joystick.cpp|6|uninitMemberVar : style : Member variable 'Joystick::m_buttons' is not initialized in the constructor.|
+input\joystick.cpp|6|uninitMemberVar : style : Member variable 'Joystick::m_balls' is not initialized in the constructor.|
+input\joystick.cpp|6|uninitMemberVar : style : Member variable 'Joystick::m_hats' is not initialized in the constructor.|
+input\joystick.cpp|6|uninitMemberVar : style : Member variable 'Joystick::m_haptic' is not initialized in the constructor.|
+input\joystick.cpp|6|uninitMemberVar : style : Member variable 'Joystick::anyKeyPressed' is not initialized in the constructor.|
+input\joystick.cpp|10|uninitMemberVar : style : Member variable 'Joystick::m_haptic' is not initialized in the constructor.|
+input\joystick.hpp|34|noCopyConstructor : style : 'class Joystick' does not have a copy constructor which is recommended since the class contains a pointer to allocated memory.|
+input\joystick.cpp|34|mismatchAllocDealloc : error : Mismatching allocation and deallocation: Joystick::Axis|
+input\joystick.cpp|35|mismatchAllocDealloc : error : Mismatching allocation and deallocation: Joystick::Balls|
+input\mouse.cpp|5|uninitMemberVar : style : Member variable 'Mouse::mouseState' is not initialized in the constructor.|
+input\touch.cpp|5|uninitMemberVar : style : Member variable 'Finger::m_ressure' is not initialized in the constructor.|
+input\touch.cpp|5|uninitMemberVar : style : Member variable 'Finger::tapping' is not initialized in the constructor.|
+input\touch.cpp|5|uninitMemberVar : style : Member variable 'Finger::tapDelay' is not initialized in the constructor.|
+input\touch.cpp|33|uninitMemberVar : style : Member variable 'Touch::m_hasTap' is not initialized in the constructor.|
+input\touch.cpp|33|uninitMemberVar : style : Member variable 'Touch::m_lastFinger' is not initialized in the constructor.|
+input\touch.cpp|35|useInitializationList : style : When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don't explicitly write them to the initialization list. You could avoid assigning 'm_offset' a value by passing the value to the constructor in the initialization list.|
+input\touchkeys.cpp|6|uninitMemberVar : style : Member variable 'TouchKeys::t' is not initialized in the constructor.|
+input\touchkeys.cpp|6|uninitMemberVar : style : Member variable 'TouchKeys::Touched' is not initialized in the constructor.|
+input\touchkeys.hpp|9|noCopyConstructor : style : 'class TouchKeys' does not have a copy constructor which is recommended since the class contains a pointer to allocated memory.|
+input\touchkeys.hpp|16|unsafeClassCanLeak : style : The class 'TouchKeys' is unsafe, wrong usage can cause memory/resource leaks for 'TouchKeys::t'. This can for instance be fixed by adding proper cleanup in the destructor.|
+luasystem\luainterface.cpp|55|cstyleCast : style : C-style pointer casting|
+luasystem\luainterface.cpp|67|cstyleCast : style : C-style pointer casting|
+luasystem\luainterface.cpp|78|cstyleCast : style : C-style pointer casting|
+luasystem\luainterface.cpp|87|cstyleCast : style : C-style pointer casting|
+luasystem\luainterface.cpp|95|cstyleCast : style : C-style pointer casting|
+luasystem\luainterface.cpp|103|cstyleCast : style : C-style pointer casting|
+luasystem\luainterface.cpp|113|cstyleCast : style : C-style pointer casting|
+luasystem\luainterface.cpp|123|cstyleCast : style : C-style pointer casting|
+luasystem\luainterface.cpp|409|cstyleCast : style : C-style pointer casting|
+luasystem\luainterface.cpp|21|uninitMemberVar : style : Member variable 'LuaInterface::Parameter_int' is not initialized in the constructor.|
+luasystem\luainterface.hpp|15|unusedStructMember : style : struct or union member 'luaTimer::T' is never used.|
+performance\console.cpp|19|uninitMemberVar : style : Member variable 'Console::m_line' is not initialized in the constructor.|
+settings\configmanager.cpp|8|uninitMemberVar : style : Member variable 'ConfigManager::hasAudio' is not initialized in the constructor.|
+ui\base.cpp|7|uninitMemberVar : style : Member variable 'UIBase::ID' is not initialized in the constructor.|
+ui\base.cpp|7|uninitMemberVar : style : Member variable 'UIBase::hash' is not initialized in the constructor.|
+ui\button.cpp|5|uninitMemberVar : style : Member variable 'Button::hover' is not initialized in the constructor.|
+ui\button.cpp|5|uninitMemberVar : style : Member variable 'Button::press' is not initialized in the constructor.|
+ui\window.cpp|5|uninitMemberVar : style : Member variable 'Window::highlight' is not initialized in the constructor.|
+input\joystick.cpp|137|unusedFunction : style : The function 'AddAxisCallBack' is never used.|
+input\joystick.cpp|144|unusedFunction : style : The function 'AddBallCallBack' is never used.|
+input\joystick.cpp|130|unusedFunction : style : The function 'AddButtonCallBack' is never used.|
+input\joystick.cpp|123|unusedFunction : style : The function 'AddHatCallBack' is never used.|
+framework\threadpool.cpp|135|unusedFunction : style : The function 'AddParallelFor' is never used.|
+engine\sprite.cpp|16|unusedFunction : style : The function 'AddReplacer' is never used.|
+engine\genericstate.cpp|34|unusedFunction : style : The function 'AddWindow' is never used.|
+engine\collision.cpp|5|unusedFunction : style : The function 'AdjustCollision' is never used.|
+engine\collision.cpp|76|unusedFunction : style : The function 'AdjustCollisionIndependent' is never used.|
+engine\smarttexture.hpp|22|unusedFunction : style : The function 'At' is never used.|
+input\joystick.cpp|70|unusedFunction : style : The function 'ButtonPress' is never used.|
+input\joystick.cpp|73|unusedFunction : style : The function 'ButtonRelease' is never used.|
+luasystem\luainterface.cpp|358|unusedFunction : style : The function 'CallClear' is never used.|
+engine\smarttexture.hpp|13|unusedFunction : style : The function 'CallLambda' is never used.|
+luasystem\luainterface.cpp|279|unusedFunction : style : The function 'CallScript' is never used.|
+engine\collision.cpp|31|unusedFunction : style : The function 'CheckCollision' is never used.|
+input\joystick.cpp|152|unusedFunction : style : The function 'ClearAllCallBacks' is never used.|
+ui\base.cpp|61|unusedFunction : style : The function 'ClearChildrens' is never used.|
+engine\sprite.cpp|165|unusedFunction : style : The function 'CopyTexture' is never used.|
+engine\particlecreator.cpp|27|unusedFunction : style : The function 'CreateAnimatedSprite' is never used.|
+engine\particlecreator.cpp|16|unusedFunction : style : The function 'CreateAnimatedText' is never used.|
+engine\particlecreator.cpp|6|unusedFunction : style : The function 'CreateCustomParticle' is never used.|
+input\inputmanager.cpp|270|unusedFunction : style : The function 'CreateVirtualButton' is never used.|
+engine\timer.hpp|55|unusedFunction : style : The function 'Disable' is never used.|
+engine\renderhelp.cpp|62|unusedFunction : style : The function 'DrawLineColorA' is never used.|
+engine\renderhelp.cpp|7|unusedFunction : style : The function 'DrawSquareColorUnscaled' is never used.|
+engine\timer.hpp|59|unusedFunction : style : The function 'Enable' is never used.|
+engine\music.cpp|89|unusedFunction : style : The function 'FadeIn' is never used.|
+engine\music.cpp|84|unusedFunction : style : The function 'FadeOut' is never used.|
+framework\gamefile.cpp|193|unusedFunction : style : The function 'FindInt' is never used.|
+input\inputmanager.hpp|206|unusedFunction : style : The function 'FingerPress' is never used.|
+engine\smarttexture.hpp|21|unusedFunction : style : The function 'FormatXY' is never used.|
+engine\renderhelp.cpp|73|unusedFunction : style : The function 'GeneratePatternTexture' is never used.|
+input\inputmanager.hpp|267|unusedFunction : style : The function 'GetAccelerometerX' is never used.|
+input\inputmanager.hpp|268|unusedFunction : style : The function 'GetAccelerometerY' is never used.|
+input\inputmanager.hpp|269|unusedFunction : style : The function 'GetAccelerometerZ' is never used.|
+input\joystick.hpp|181|unusedFunction : style : The function 'GetBall' is never used.|
+input\joystick.hpp|209|unusedFunction : style : The function 'GetBallCount' is never used.|
+engine\light.hpp|32|unusedFunction : style : The function 'GetBlockSize' is never used.|
+framework\gamefile.hpp|88|unusedFunction : style : The function 'GetCache_Unsafe' is never used.|
+engine\collision.cpp|60|unusedFunction : style : The function 'GetCollidingObject' is never used.|
+engine\collision.cpp|45|unusedFunction : style : The function 'GetCollidingObjects' is never used.|
+engine\screenmanager.hpp|43|unusedFunction : style : The function 'GetDefaultRenderer' is never used.|
+framework\resourcefiles.cpp|67|unusedFunction : style : The function 'GetFileCount' is never used.|
+engine\music.hpp|36|unusedFunction : style : The function 'GetFileName' is never used.|
+framework\resourcefiles.cpp|113|unusedFunction : style : The function 'GetFileSize' is never used.|
+engine\sprite.cpp|401|unusedFunction : style : The function 'GetFrameHeight' is never used.|
+engine\sprite.cpp|405|unusedFunction : style : The function 'GetFrameWidth' is never used.|
+engine\screenmanager.hpp|23|unusedFunction : style : The function 'GetGameSize' is never used.|
+ui\base.hpp|92|unusedFunction : style : The function 'GetID' is never used.|
+framework\poolmanager.cpp|192|unusedFunction : style : The function 'GetInstanceGlobal' is never used.|
+framework\gamefile.cpp|161|unusedFunction : style : The function 'GetLine' is never used.|
+framework\poolmanager.hpp|236|unusedFunction : style : The function 'GetLuaPool' is never used.|
+framework\poolmanager.cpp|181|unusedFunction : style : The function 'GetMaxInstancesGlobal' is never used.|
+luasystem\luainterface.cpp|322|unusedFunction : style : The function 'GetMember' is never used.|
+framework\geometry.hpp|180|unusedFunction : style : The function 'GetPos' is never used.|
+ui\base.hpp|120|unusedFunction : style : The function 'GetTextObject' is never used.|
+input\inputmanager.hpp|230|unusedFunction : style : The function 'GetTouchTrueX' is never used.|
+input\inputmanager.hpp|236|unusedFunction : style : The function 'GetTouchTrueY' is never used.|
+framework\utils.cpp|69|unusedFunction : style : The function 'GetU24c' is never used.|
+framework\utils.cpp|79|unusedFunction : style : The function 'GetU64c' is never used.|
+settings\configmanager.hpp|20|unusedFunction : style : The function 'GetUIscale' is never used.|
+input\inputmanager.hpp|171|unusedFunction : style : The function 'GetWheelX' is never used.|
+input\inputmanager.hpp|176|unusedFunction : style : The function 'GetWheelY' is never used.|
+input\accelerometer.cpp|60|unusedFunction : style : The function 'GetX' is never used.|
+input\accelerometer.cpp|66|unusedFunction : style : The function 'GetY' is never used.|
+input\accelerometer.cpp|72|unusedFunction : style : The function 'GetZ' is never used.|
+input\inputmanager.hpp|266|unusedFunction : style : The function 'HasAccelerometerEnabled' is never used.|
+engine\timer.cpp|43|unusedFunction : style : The function 'HasFinished' is never used.|
+ui\base.hpp|114|unusedFunction : style : The function 'Hide' is never used.|
+luasystem\luainterface.cpp|211|unusedFunction : style : The function 'InsertFloat' is never used.|
+luasystem\luainterface.cpp|206|unusedFunction : style : The function 'InsertInt' is never used.|
+luasystem\luainterface.cpp|215|unusedFunction : style : The function 'InsertPointer' is never used.|
+framework\poolmanager.cpp|56|unusedFunction : style : The function 'InternalAddInstance' is never used.|
+input\joystick.cpp|80|unusedFunction : style : The function 'IsButtonUp' is never used.|
+framework\threadpool.cpp|220|unusedFunction : style : The function 'IsDone' is never used.|
+engine\timer.hpp|63|unusedFunction : style : The function 'IsEnabled' is never used.|
+input\inputmanager.hpp|212|unusedFunction : style : The function 'IsFingerPressed' is never used.|
+framework\utils.hpp|70|unusedFunction : style : The function 'IsInPosOk' is never used.|
+engine\particles.hpp|175|unusedFunction : style : The function 'IsInScreen' is never used.|
+input\beinput.cpp|43|unusedFunction : style : The function 'IsKeyUp' is never used.|
+framework\threadpool.hpp|175|unusedFunction : style : The function 'IsLocked' is never used.|
+engine\gamebase.hpp|116|unusedFunction : style : The function 'IsSDLStarted' is never used.|
+framework\resourcefiles.cpp|70|unusedFunction : style : The function 'ListFiles' is never used.|
+luasystem\luainterface.cpp|219|unusedFunction : style : The function 'LoadPrepare' is never used.|
+luasystem\luainterface.cpp|233|unusedFunction : style : The function 'LoadPrepareC' is never used.|
+engine\camera.cpp|23|unusedFunction : style : The function 'LockLimits' is never used.|
+engine\particles.hpp|170|unusedFunction : style : The function 'NotifyDamage' is never used.|
+engine\music.cpp|137|unusedFunction : style : The function 'Pause' is never used.|
+engine\sound.cpp|156|unusedFunction : style : The function 'PauseAll' is never used.|
+engine\music.cpp|116|unusedFunction : style : The function 'Play' is never used.|
+luasystem\luainterface.hpp|71|unusedFunction : style : The function 'Pop' is never used.|
+engine\sprite.hpp|309|unusedFunction : style : The function 'ReBlend' is never used.|
+framework\gamefile.hpp|119|unusedFunction : style : The function 'Read16' is never used.|
+framework\gamefile.hpp|131|unusedFunction : style : The function 'Read32' is never used.|
+input\beinput.cpp|27|unusedFunction : style : The function 'RegisterInput' is never used.|
+engine\tileset.cpp|70|unusedFunction : style : The function 'Render2' is never used.|
+engine\timer.cpp|35|unusedFunction : style : The function 'Restart' is never used.|
+engine\music.cpp|142|unusedFunction : style : The function 'Resume' is never used.|
+engine\sound.cpp|161|unusedFunction : style : The function 'ResumeAll' is never used.|
+engine\music.cpp|95|unusedFunction : style : The function 'Rewind' is never used.|
+luasystem\luainterface.cpp|370|unusedFunction : style : The function 'RunScript' is never used.|
+engine\screenmanager.hpp|35|unusedFunction : style : The function 'ScreenShake' is never used.|
+engine\timer.cpp|31|unusedFunction : style : The function 'SetDuration' is never used.|
+input\accelerometer.cpp|27|unusedFunction : style : The function 'SetFilterFactor' is never used.|
+engine\sprite.hpp|336|unusedFunction : style : The function 'SetFlip' is never used.|
+engine\text.cpp|357|unusedFunction : style : The function 'SetFontSize' is never used.|
+engine\sprite.hpp|236|unusedFunction : style : The function 'SetFrameTime' is never used.|
+ui\window.hpp|19|unusedFunction : style : The function 'SetHighlightEnabled' is never used.|
+framework\poolmanager.hpp|303|unusedFunction : style : The function 'SetIteratorPoolId' is never used.|
+engine\camera.hpp|62|unusedFunction : style : The function 'SetOffsetFollow' is never used.|
+engine\particles.cpp|163|unusedFunction : style : The function 'SetPatternMoveCircle' is never used.|
+engine\particles.hpp|121|unusedFunction : style : The function 'SetPatternMoveCustom' is never used.|
+engine\sound.cpp|105|unusedFunction : style : The function 'SetPosition' is never used.|
+engine\sprite.hpp|276|unusedFunction : style : The function 'SetRepeatTimes' is never used.|
+settings\configmanager.hpp|33|unusedFunction : style : The function 'SetResizeAction' is never used.|
+engine\screenmanager.cpp|177|unusedFunction : style : The function 'SetScreenName' is never used.|
+engine\tilemap.cpp|46|unusedFunction : style : The function 'SetTileSet' is never used.|
+engine\music.cpp|24|unusedFunction : style : The function 'SetVolume' is never used.|
+settings\configmanager.cpp|18|unusedFunction : style : The function 'SetWindowIcon' is never used.|
+engine\screenmanager.cpp|124|unusedFunction : style : The function 'SetWindowSize' is never used.|
+engine\collision.cpp|163|unusedFunction : style : The function 'SoftWarpAway' is never used.|
+luasystem\luaobject.cpp|22|unusedFunction : style : The function 'Start' is never used.|
+engine\sound.cpp|151|unusedFunction : style : The function 'StopAll' is never used.|
+framework\geometry.cpp|35|unusedFunction : style : The function 'Sum' is never used.|
+framework\threadpool.cpp|186|unusedFunction : style : The function 'TryLock' is never used.|
+engine\camera.hpp|70|unusedFunction : style : The function 'UnlockLimits' is never used.|
+framework\basepool.hpp|170|unusedFunction : style : The function 'UpdateInstancesForced' is never used.|
+engine\genericstate.cpp|9|unusedFunction : style : The function 'UpdateWindowses' is never used.|
+engine\light.cpp|353|unusedFunction : style : The function 'WaitDone' is never used.|
+engine\collision.cpp|186|unusedFunction : style : The function 'WarpAway' is never used.|
+framework\userfile.cpp|53|unusedFunction : style : The function 'WriteU16' is never used.|
+framework\userfile.cpp|60|unusedFunction : style : The function 'WriteU32' is never used.|
+framework\userfile.cpp|70|unusedFunction : style : The function 'WriteU64' is never used.|
+framework\userfile.cpp|45|unusedFunction : style : The function 'WriteU8' is never used.|
+engine\smarttexture.hpp|20|unusedFunction : style : The function 'getH' is never used.|
+engine\smarttexture.hpp|47|unusedFunction : style : The function 'getHeight' is never used.|
+engine\smarttexture.hpp|51|unusedFunction : style : The function 'getPitch' is never used.|
+engine\smarttexture.cpp|177|unusedFunction : style : The function 'getPixel32' is never used.|
+engine\smarttexture.hpp|50|unusedFunction : style : The function 'getPixels' is never used.|
+engine\smarttexture.hpp|19|unusedFunction : style : The function 'getW' is never used.|
+engine\smarttexture.hpp|46|unusedFunction : style : The function 'getWidth' is never used.|
+game\controlableobject.hpp|19|unusedFunction : style : The function 'isOnTop' is never used.|
+engine\smarttexture.cpp|156|unusedFunction : style : The function 'lockTexture' is never used.|
+engine\smarttexture.cpp|132|unusedFunction : style : The function 'setAlpha' is never used.|
+engine\smarttexture.cpp|128|unusedFunction : style : The function 'setBlendMode' is never used.|
+engine\smarttexture.cpp|124|unusedFunction : style : The function 'setColor' is never used.|
+framework\threadpool.cpp|26|unusedFunction : style : The function 'sleep' is never used.|
+framework\geometry.hpp|220|unusedFunction : style : The function 'toDeg' is never used.|
+engine\smarttexture.cpp|165|unusedFunction : style : The function 'unlockTexture' is never used.|

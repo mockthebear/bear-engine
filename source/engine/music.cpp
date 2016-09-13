@@ -13,15 +13,11 @@ Music::Music(){
     working = BearEngine->AudioWorking();
 }
 
-Music::Music(char *s){
-    music = NULL;
-    working = BearEngine->AudioWorking();
+Music::Music(char *s):Music(){
     Open((const char*)s);
 }
 
-Music::Music(const char *s){
-    music = NULL;
-    working = BearEngine->AudioWorking();
+Music::Music(const char *s):Music(){
     Open(s);
 }
 
@@ -33,6 +29,19 @@ void Music::Open(SDL_RWops* file,std::string name){
     if (!ConfigManager::GetInstance().IsWorkingAudio())
         return;
     if (assetTable.find(name) == assetTable.end() ){
+        #ifdef __EMSCRIPTEN__
+        Console::GetInstance().AddTextInfo("Emscripten still uses mixer 1.0. Mix_LoadMUS_RW not suported.");
+        std::string newName = name;
+        char *c = (char*)newName.c_str();
+        for (int i=0;i<newName.size();i++){
+            if (c[i] == ':'){
+                c[i] = '/';
+                break;
+            }
+        }
+        Console::GetInstance().AddText(utils::format("Trying instead to load [%s]",newName.c_str()));
+        Open(newName.c_str());
+        #else
         Mix_Music *aux_music = Mix_LoadMUS_RW(file, 1);
         if (aux_music){
             assetTable[name] = aux_music;
@@ -41,6 +50,7 @@ void Music::Open(SDL_RWops* file,std::string name){
             Console::GetInstance().AddTextInfo(utils::format("Cannot load rwop music named %s",name) );
             music = nullptr;
         }
+        #endif
     }else{
         std::unordered_map<std::string, Mix_Music*>::iterator it = assetTable.find(name);
         music = (*it).second;

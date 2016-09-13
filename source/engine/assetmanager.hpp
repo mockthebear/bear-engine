@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include "sprite.hpp"
 #include "sound.hpp"
+#include "music.hpp"
 #include "../performance/console.hpp"
 #include <iostream>
 
@@ -17,7 +18,10 @@ class AssetMannager{
 
 
 
-        TexturePtr makeTexture(bool forced,std::string str,int fcount=1,float ftime=0,int rep=1,bool hasAliasing=false);
+        TexturePtr makeTexture(bool forced,std::string str,bool hasAliasing=false){
+            return makeTexture(forced,str,1,0,1, hasAliasing);
+        };
+        TexturePtr makeTexture(bool forced,std::string str,int fcount,float ftime=0,int rep=1,bool hasAliasing=false);
         TexturePtr makeTexture(bool forced,SDL_RWops* rw,std::string str,bool hasAntiAliasign=false);
         TexturePtr makeTexture(bool forced,std::string fileName,ColorReplacer &r,bool HasAliasing=false);
 
@@ -59,12 +63,13 @@ class AssetMannager{
         }
 
     private:
-
+        bool setOutput;
         static uint32_t ManagerId;
         uint32_t id;
 
         std::unordered_map<std::string, TexturePtr> spriteMap;
         std::unordered_map<std::string, SoundPtr> soundMap;
+        std::unordered_map<std::string, MusicPtr> musicMap;
 
 
         static std::map<uint32_t,AssetMannager*> AssetMannagerMap;

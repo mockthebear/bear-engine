@@ -20,6 +20,11 @@ template <typename T> class chain_ptr{
             myHolder = addr;
         };
 
+        void destroy(){
+            delete myHolder[0];
+            delete myHolder;
+        }
+
         static chain_ptr<T> make(T *TrueData){
             T ***LocalHolder = new T**[1];
             T **MainlyHolder = new T*[1];

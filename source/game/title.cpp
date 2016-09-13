@@ -5,6 +5,7 @@
 #include "title.hpp"
 
 
+#include "../engine/bear.hpp"
 #include "../engine/gamebase.hpp"
 #include "../engine/particlecreator.hpp"
 #include "../input/inputmanager.hpp"
@@ -64,8 +65,8 @@ Title::Title(){
 void Title::Begin(){
     Pool.AddInstance(ControlableObject(200,200));
 
-    Pool.AddInstance(ControlableObject(100,100));
-    Pool.AddInstance(ControlableObject(300,300));
+    //Pool.AddInstance(ControlableObject(100,100));
+    //Pool.AddInstance(ControlableObject(300,300));
     Pool.AddInstance(Ball(Point(200,400)));
 
 
@@ -100,6 +101,14 @@ void Title::Update(float dt){
         requestDelete = true;
         Game::GetInstance()->AddState(new Title());
         return;
+    }
+
+    if( InputManager::GetInstance().KeyPress(SDLK_SPACE) ){
+        GameFile f("teste.txt");
+        bear::out << "[" << f.ReadWord() << "]\n";
+        bear::out << "[" << f.ReadUntil('\r') << "]\n";
+        bear::out << "[" << f.GetNumber(true) << "]\n";
+        f.Close();
     }
     ThreadPool::GetInstance().ClearJobs();
     Light::GetInstance()->Update(dt,LIGHT_BEGIN);

@@ -157,6 +157,27 @@ int GameFile::GetNumber(bool ignoreUntilFind){
     }
     return ret;
 }
+std::string GameFile::ReadWord(int n,char separator){
+    std::string buffer = "";
+    buffer = ReadUntil(separator);
+    while (n > 0){
+        n--;
+        buffer += separator;
+        buffer += ReadUntil(separator);
+    }
+    return buffer;
+}
+std::string GameFile::ReadUntil(char rd){
+    std::string buffer = "";
+    while (m_filePos < m_size){
+        char c = ReadByte();
+        if (c == rd){
+            return buffer;
+        }
+        buffer += c;
+    }
+    return buffer;
+}
 
 bool GameFile::GetLine(std::string &line){
     if (!IsOpen())

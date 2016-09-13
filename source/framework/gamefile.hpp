@@ -141,6 +141,10 @@ class GameFile{
             Get one line per time
         */
         bool GetLine(std::string &line);
+
+        std::string ReadUntil(char c);
+        std::string ReadWord(int count=0,char separator=' ');
+
         /**
             Return the number
             @param ignoreUntilFind When set to true, it will read all the file from the current point until find any number.

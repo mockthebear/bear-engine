@@ -1,6 +1,7 @@
 #ifndef MUSICH
 #define MUSICH
 #include "../settings/definitions.hpp"
+#include "../framework/chainptr.hpp"
 #include SDL_LIB_HEADER
 #include SDL_MIXER_LIB_HEADER
 
@@ -9,6 +10,9 @@
 /**
     @brief Basic music class [Not 100% ready] TODO: Port to openAl may be removed
 */
+
+typedef chain_ptr<Mix_Music> MusicPtr;
+
 class Music{
     public:
         Music();

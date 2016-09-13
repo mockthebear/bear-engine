@@ -157,7 +157,18 @@ class Text{
         /**
             *Empty constructor is almost empty
         */
-        Text(){text="";texture=NULL;isWorking=false;};
+        Text(){
+            text="";
+            texture=NULL;
+            isWorking=false;
+            angle=0;
+            style=TEXT_SOLID;
+            size = 1;
+            scaleX = scaleY = 1.0f;
+            alpha = 255;
+            font = nullptr;
+            texturespr = nullptr;
+        };
         /**
             *Here it just delete the texture.
         */

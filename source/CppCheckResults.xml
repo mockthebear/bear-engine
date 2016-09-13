@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<results>
+    <error file="engine\text.hpp" line="160" id="uninitMemberVar" severity="style" msg="Member variable &apos;Text::angle&apos; is not initialized in the constructor." />
+    <error file="engine\text.hpp" line="160" id="uninitMemberVar" severity="style" msg="Member variable &apos;Text::style&apos; is not initialized in the constructor." />
+    <error file="engine\text.hpp" line="160" id="uninitMemberVar" severity="style" msg="Member variable &apos;Text::size&apos; is not initialized in the constructor." />
+    <error file="engine\text.hpp" line="160" id="uninitMemberVar" severity="style" msg="Member variable &apos;Text::scaleY&apos; is not initialized in the constructor." />
+    <error file="engine\text.hpp" line="160" id="uninitMemberVar" severity="style" msg="Member variable &apos;Text::scaleX&apos; is not initialized in the constructor." />
+    <error file="engine\text.hpp" line="160" id="uninitMemberVar" severity="style" msg="Member variable &apos;Text::alpha&apos; is not initialized in the constructor." />
+    <error file="engine\text.hpp" line="160" id="uninitMemberVar" severity="style" msg="Member variable &apos;Text::font&apos; is not initialized in the constructor." />
+    <error file="engine\text.hpp" line="160" id="uninitMemberVar" severity="style" msg="Member variable &apos;Text::texturespr&apos; is not initialized in the constructor." />
+    <error file="engine\text.hpp" line="160" id="useInitializationList" severity="style" msg="When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don&apos;t explicitly write them to the initialization list. You could avoid assigning &apos;text&apos; a value by passing the value to the constructor in the initialization list." />
+    <error file="engine\object.hpp" line="73" id="noConstructor" severity="style" msg="The class &apos;GameObject&apos; does not have a constructor although it has private member variables. Member variables of builtin types are left uninitialized when the class is instantiated. That may cause bugs or undefined behavior." />
+    <error file="engine\collision.cpp" line="19" id="cstyleCast" severity="style" msg="C-style pointer casting" />
+    <error file="engine\particles.hpp" line="24" id="duplicateExpression" severity="style" msg="Finding the same expression on both sides of an operator is suspicious and might indicate a cut and paste or logic error. Please examine this code carefully to determine if it is correct." />
+    <error file="engine\particles.hpp" line="28" id="duplicateExpression" severity="style" msg="Finding the same expression on both sides of an operator is suspicious and might indicate a cut and paste or logic error. Please examine this code carefully to determine if it is correct." />
+    <error file="engine\smarttexture.hpp" line="12" id="uninitMemberVar" severity="style" msg="Member variable &apos;SmartTexture::deleteTexture&apos; is not initialized in the constructor." />
+    <error file="framework\basepool.hpp" line="22" id="noCopyConstructor" severity="style" msg="&apos;class SPP&lt;T&gt;&apos; does not have a copy constructor which is recommended since the class contains a pointer to allocated memory." />
+    <error file="engine\gamebase.cpp" line="82" id="duplicateBreak" severity="style" msg="Consecutive return, break, continue, goto or throw statements are unnecessary. The second statement can never be executed, and so should be removed." />
+    <error file="engine\gamebase.cpp" line="221" id="duplicateBreak" severity="style" msg="Consecutive return, break, continue, goto or throw statements are unnecessary. The second statement can never be executed, and so should be removed." />
+    <error file="framework\threadpool.hpp" line="43" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::min&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="43" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::max&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="43" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::vect&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="43" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::from&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="43" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::to&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="43" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::me&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="43" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::tsize&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="44" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::Parameter&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="44" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::min&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="44" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::max&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="44" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::vect&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="44" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::from&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="44" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::to&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="44" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::me&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="44" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::tsize&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="45" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::min&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="45" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::max&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="45" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::vect&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="45" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::from&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="45" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::to&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="45" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::me&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="45" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::tsize&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="46" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::vect&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="46" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::from&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="46" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::to&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="46" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::me&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="46" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::tsize&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="54" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::Parameter&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="54" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::min&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="54" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::max&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="54" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::vect&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="54" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::me&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="54" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::tsize&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="55" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::Parameter&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="55" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::min&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="55" id="uninitMemberVar" severity="style" msg="Member variable &apos;Job::max&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="125" id="uninitMemberVar" severity="style" msg="Member variable &apos;ThreadPool::Locked&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="125" id="uninitMemberVar" severity="style" msg="Member variable &apos;ThreadPool::fastJobs&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="125" id="uninitMemberVar" severity="style" msg="Member variable &apos;ThreadPool::UsePThreads&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="125" id="uninitMemberVar" severity="style" msg="Member variable &apos;ThreadPool::Params&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="125" id="uninitMemberVar" severity="style" msg="Member variable &apos;ThreadPool::thread_pool&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="125" id="uninitMemberVar" severity="style" msg="Member variable &apos;ThreadPool::mutexes&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="125" id="uninitMemberVar" severity="style" msg="Member variable &apos;ThreadPool::runningM&apos; is not initialized in the constructor." />
+    <error file="luasystem\luatools.hpp" line="17" id="useInitializationList" severity="style" msg="When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don&apos;t explicitly write them to the initialization list. You could avoid assigning &apos;field&apos; a value by passing the value to the constructor in the initialization list." />
+    <error file="luasystem\luatools.hpp" line="18" id="useInitializationList" severity="style" msg="When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don&apos;t explicitly write them to the initialization list. You could avoid assigning &apos;type&apos; a value by passing the value to the constructor in the initialization list." />
+    <error file="framework\threadpool.hpp" line="45" id="useInitializationList" severity="style" msg="When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don&apos;t explicitly write them to the initialization list. You could avoid assigning &apos;lambda&apos; a value by passing the value to the constructor in the initialization list." />
+    <error file="framework\threadpool.hpp" line="48" id="useInitializationList" severity="style" msg="When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don&apos;t explicitly write them to the initialization list. You could avoid assigning &apos;lambda&apos; a value by passing the value to the constructor in the initialization list." />
+    <error file="ui\base.hpp" line="26" id="uninitMemberVar" severity="style" msg="Member variable &apos;UIStyle::custom&apos; is not initialized in the constructor." />
+    <error file="engine\genericstate.cpp" line="3" id="uninitMemberVar" severity="style" msg="Member variable &apos;GenericState::ParticlePool&apos; is not initialized in the constructor." />
+    <error file="engine\genericstate.cpp" line="3" id="uninitMemberVar" severity="style" msg="Member variable &apos;GenericState::STATEID&apos; is not initialized in the constructor." />
+    <error file="engine\genericstate.cpp" line="3" id="uninitMemberVar" severity="style" msg="Member variable &apos;GenericState::gameStarted&apos; is not initialized in the constructor." />
+    <error file="ui\base.hpp" line="37" id="useInitializationList" severity="style" msg="When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don&apos;t explicitly write them to the initialization list. You could avoid assigning &apos;fontfile&apos; a value by passing the value to the constructor in the initialization list." />
+    <error file="framework\basepool.hpp" line="22" id="noCopyConstructor" severity="style" msg="&apos;class SPP&lt;Particle&gt;&apos; does not have a copy constructor which is recommended since the class contains a pointer to allocated memory." />
+    <error file="engine\light.cpp" line="89" id="variableScope" severity="style" msg="The scope of the variable &apos;K&apos; can be reduced. Warning: Be careful when fixing this message, especially when there are inner loops. Here is an example where cppcheck will write that the scope for &apos;i&apos; can be reduced:void f(int x){    int i = 0;    if (x) {        // it&apos;s safe to move &apos;int i = 0;&apos; here        for (int n = 0; n &lt; 10; ++n) {            // it is possible but not safe to move &apos;int i = 0;&apos; here            do_something(&amp;i);        }    }}When you see this message it is always safe to reduce the variable scope 1 level." />
+    <error file="engine\light.cpp" line="14" id="uninitMemberVar" severity="style" msg="Member variable &apos;Light::AutoFinished&apos; is not initialized in the constructor." />
+    <error file="engine\light.cpp" line="14" id="uninitMemberVar" severity="style" msg="Member variable &apos;Light::ShadeMap&apos; is not initialized in the constructor." />
+    <error file="engine\light.cpp" line="14" id="uninitMemberVar" severity="style" msg="Member variable &apos;Light::DataMap&apos; is not initialized in the constructor." />
+    <error file="engine\light.cpp" line="14" id="uninitMemberVar" severity="style" msg="Member variable &apos;Light::sizeX&apos; is not initialized in the constructor." />
+    <error file="engine\light.cpp" line="14" id="uninitMemberVar" severity="style" msg="Member variable &apos;Light::sizeY&apos; is not initialized in the constructor." />
+    <error file="engine\light.cpp" line="14" id="uninitMemberVar" severity="style" msg="Member variable &apos;Light::blockSize&apos; is not initialized in the constructor." />
+    <error file="engine\light.cpp" line="14" id="uninitMemberVar" severity="style" msg="Member variable &apos;Light::MaxCycles&apos; is not initialized in the constructor." />
+    <error file="engine\light.cpp" line="14" id="uninitMemberVar" severity="style" msg="Member variable &apos;Light::Permissive&apos; is not initialized in the constructor." />
+    <error file="engine\light.cpp" line="14" id="uninitMemberVar" severity="style" msg="Member variable &apos;Light::CurrentAlloc&apos; is not initialized in the constructor." />
+    <error file="engine\light.cpp" line="14" id="uninitMemberVar" severity="style" msg="Member variable &apos;Light::LightPoints&apos; is not initialized in the constructor." />
+    <error file="engine\light.cpp" line="14" id="uninitMemberVar" severity="style" msg="Member variable &apos;Light::pix&apos; is not initialized in the constructor." />
+    <error file="engine\light.cpp" line="14" id="uninitMemberVar" severity="style" msg="Member variable &apos;Light::onAutomatic&apos; is not initialized in the constructor." />
+    <error file="engine\light.cpp" line="14" id="uninitMemberVar" severity="style" msg="Member variable &apos;Light::doneAuto&apos; is not initialized in the constructor." />
+    <error file="engine\music.cpp" line="11" id="uninitMemberVar" severity="style" msg="Member variable &apos;Music::isPlaying&apos; is not initialized in the constructor." />
+    <error file="engine\music.cpp" line="16" id="uninitMemberVar" severity="style" msg="Member variable &apos;Music::isPlaying&apos; is not initialized in the constructor." />
+    <error file="engine\music.cpp" line="20" id="uninitMemberVar" severity="style" msg="Member variable &apos;Music::isPlaying&apos; is not initialized in the constructor." />
+    <error file="engine\particles.cpp" line="34" id="uninitMemberVar" severity="style" msg="Member variable &apos;Particle::Distance&apos; is not initialized in the constructor." />
+    <error file="engine\particles.cpp" line="34" id="uninitMemberVar" severity="style" msg="Member variable &apos;Particle::internalFloat&apos; is not initialized in the constructor." />
+    <error file="engine\particles.cpp" line="90" id="uninitMemberVar" severity="style" msg="Member variable &apos;Particle::Distance&apos; is not initialized in the constructor." />
+    <error file="engine\particles.cpp" line="90" id="uninitMemberVar" severity="style" msg="Member variable &apos;Particle::internalFloat&apos; is not initialized in the constructor." />
+    <error file="engine\particles.cpp" line="8" id="uninitMemberVar" severity="style" msg="Member variable &apos;Particle::Distance&apos; is not initialized in the constructor." />
+    <error file="engine\particles.cpp" line="8" id="uninitMemberVar" severity="style" msg="Member variable &apos;Particle::internalFloat&apos; is not initialized in the constructor." />
+    <error file="engine\pathfind.hpp" line="26" id="uninitMemberVar" severity="style" msg="Member variable &apos;PFNode::level&apos; is not initialized in the constructor." />
+    <error file="engine\pathfind.cpp" line="11" id="uninitMemberVar" severity="style" msg="Member variable &apos;PathFind::directions&apos; is not initialized in the constructor." />
+    <error file="engine\pathfind.cpp" line="11" id="uninitMemberVar" severity="style" msg="Member variable &apos;PathFind::cellSize&apos; is not initialized in the constructor." />
+    <error file="engine\pathfind.cpp" line="11" id="uninitMemberVar" severity="style" msg="Member variable &apos;PathFind::dx&apos; is not initialized in the constructor." />
+    <error file="engine\pathfind.cpp" line="11" id="uninitMemberVar" severity="style" msg="Member variable &apos;PathFind::dy&apos; is not initialized in the constructor." />
+    <error file="engine\pathfind.cpp" line="11" id="uninitMemberVar" severity="style" msg="Member variable &apos;PathFind::pqi&apos; is not initialized in the constructor." />
+    <error file="engine\pathfind.cpp" line="11" id="uninitMemberVar" severity="style" msg="Member variable &apos;PathFind::i&apos; is not initialized in the constructor." />
+    <error file="engine\pathfind.cpp" line="11" id="uninitMemberVar" severity="style" msg="Member variable &apos;PathFind::j&apos; is not initialized in the constructor." />
+    <error file="engine\pathfind.cpp" line="11" id="uninitMemberVar" severity="style" msg="Member variable &apos;PathFind::x&apos; is not initialized in the constructor." />
+    <error file="engine\pathfind.cpp" line="11" id="uninitMemberVar" severity="style" msg="Member variable &apos;PathFind::y&apos; is not initialized in the constructor." />
+    <error file="engine\pathfind.cpp" line="11" id="uninitMemberVar" severity="style" msg="Member variable &apos;PathFind::xdx&apos; is not initialized in the constructor." />
+    <error file="engine\pathfind.cpp" line="11" id="uninitMemberVar" severity="style" msg="Member variable &apos;PathFind::ydy&apos; is not initialized in the constructor." />
+    <error file="engine\screenmanager.cpp" line="13" id="uninitMemberVar" severity="style" msg="Member variable &apos;ScreenManager::ShakingTick_original&apos; is not initialized in the constructor." />
+    <error file="engine\screenmanager.cpp" line="13" id="uninitMemberVar" severity="style" msg="Member variable &apos;ScreenManager::ShakingTick&apos; is not initialized in the constructor." />
+    <error file="engine\screenmanager.cpp" line="13" id="uninitMemberVar" severity="style" msg="Member variable &apos;ScreenManager::m_renderer&apos; is not initialized in the constructor." />
+    <error file="engine\screenmanager.cpp" line="14" id="useInitializationList" severity="style" msg="When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don&apos;t explicitly write them to the initialization list. You could avoid assigning &apos;m_scaleRatio&apos; a value by passing the value to the constructor in the initialization list." />
+    <error file="engine\shooteffect.cpp" line="9" id="useInitializationList" severity="style" msg="When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don&apos;t explicitly write them to the initialization list. You could avoid assigning &apos;p2&apos; a value by passing the value to the constructor in the initialization list." />
+    <error file="engine\sound.cpp" line="13" id="useInitializationList" severity="style" msg="When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don&apos;t explicitly write them to the initialization list. You could avoid assigning &apos;music&apos; a value by passing the value to the constructor in the initialization list." />
+    <error file="engine\sound.cpp" line="19" id="useInitializationList" severity="style" msg="When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don&apos;t explicitly write them to the initialization list. You could avoid assigning &apos;music&apos; a value by passing the value to the constructor in the initialization list." />
+    <error file="engine\sound.cpp" line="29" id="useInitializationList" severity="style" msg="When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don&apos;t explicitly write them to the initialization list. You could avoid assigning &apos;music&apos; a value by passing the value to the constructor in the initialization list." />
+    <error file="engine\sprite.cpp" line="270" id="unusedVariable" severity="style" msg="Unused variable: replacer" />
+    <error file="engine\sprite.cpp" line="33" id="useInitializationList" severity="style" msg="When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don&apos;t explicitly write them to the initialization list. You could avoid assigning &apos;currentFrame&apos; a value by passing the value to the constructor in the initialization list." />
+    <error file="engine\text.cpp" line="206" id="unreadVariable" severity="style" msg="Variable &apos;ftnm&apos; is assigned a value that is never used." />
+    <error file="engine\text.cpp" line="12" id="uninitMemberVar" severity="style" msg="Member variable &apos;CustomFont::oldAlpha&apos; is not initialized in the constructor." />
+    <error file="engine\text.cpp" line="195" id="uninitMemberVar" severity="style" msg="Member variable &apos;Text::style&apos; is not initialized in the constructor." />
+    <error file="engine\text.cpp" line="195" id="uninitMemberVar" severity="style" msg="Member variable &apos;Text::size&apos; is not initialized in the constructor." />
+    <error file="engine\text.cpp" line="141" id="useInitializationList" severity="style" msg="When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don&apos;t explicitly write them to the initialization list. You could avoid assigning &apos;text&apos; a value by passing the value to the constructor in the initialization list." />
+    <error file="engine\text.cpp" line="203" id="useInitializationList" severity="style" msg="When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don&apos;t explicitly write them to the initialization list. You could avoid assigning &apos;text&apos; a value by passing the value to the constructor in the initialization list." />
+    <error file="engine\text.hpp" line="90" id="noCopyConstructor" severity="style" msg="&apos;class CustomFont&apos; does not have a copy constructor which is recommended since the class contains a pointer to allocated memory." />
+    <error file="engine\text.cpp" line="26" id="invalidscanf" severity="style" msg='scanf without field width limits can crash with huge input data. Add a field width specifier to fix this problem:    %s =&gt; %20sSample program that can crash:#include &lt;stdio.h&gt;int main(){    char c[5];    scanf(&quot;%s&quot;, c);    return 0;}To make it crash, type in more than 5 characters.' />
+    <error file="engine\text.cpp" line="34" id="invalidscanf" severity="style" msg='scanf without field width limits can crash with huge input data. Add a field width specifier to fix this problem:    %s =&gt; %20sSample program that can crash:#include &lt;stdio.h&gt;int main(){    char c[5];    scanf(&quot;%s&quot;, c);    return 0;}To make it crash, type in more than 5 characters.' />
+    <error file="framework\basepool.hpp" line="22" id="noCopyConstructor" severity="style" msg="&apos;class SPP&apos; does not have a copy constructor which is recommended since the class contains a pointer to allocated memory." />
+    <error file="framework\poolmanager.cpp" line="103" id="unusedVariable" severity="style" msg="Unused variable: ListPools" />
+    <error file="framework\poolmanager.hpp" line="332" id="unusedPrivateFunction" severity="style" msg="Unused private function: &apos;PoolManager::InternalAddInstance&apos;" />
+    <error file="framework\poolmanager.hpp" line="160" id="noCopyConstructor" severity="style" msg="&apos;class PoolManager&apos; does not have a copy constructor which is recommended since the class contains a pointer to allocated memory." />
+    <error file="framework\poolmanager.hpp" line="48" id="unusedStructMember" severity="style" msg="struct or union member &apos;PoolGroup_::Id&apos; is never used." />
+    <error file="framework\resourcefiles.cpp" line="50" id="mismatchAllocDealloc" severity="error" msg="Mismatching allocation and deallocation: name" />
+    <error file="framework\threadpool.cpp" line="240" id="cstyleCast" severity="style" msg="C-style pointer casting" />
+    <error file="framework\threadpool.cpp" line="32" id="uninitMemberVar" severity="style" msg="Member variable &apos;ThreadPool::fastJobs&apos; is not initialized in the constructor." />
+    <error file="framework\threadpool.hpp" line="120" id="noCopyConstructor" severity="style" msg="&apos;class ThreadPool&apos; does not have a copy constructor which is recommended since the class contains a pointer to allocated memory." />
+    <error file="framework\threadpool.cpp" line="32" id="uninitMemberVar" severity="style" msg="Member variable &apos;ThreadPool::Locked&apos; is not initialized in the constructor." />
+    <error file="game\controlableobject.cpp" line="9" id="uninitMemberVar" severity="style" msg="Member variable &apos;ControlableObject::wobble&apos; is not initialized in the constructor." />
+    <error file="game\state.hpp" line="17" id="uninitMemberVar" severity="style" msg="Member variable &apos;State::PlayerSpeed&apos; is not initialized in the constructor." />
+    <error file="game\state.hpp" line="17" id="uninitMemberVar" severity="style" msg="Member variable &apos;State::currentLevel&apos; is not initialized in the constructor." />
+    <error file="engine\genericstate.hpp" line="178" id="duplInheritedMember" severity="style" msg="The class &apos;State&apos; defines member variable with name &apos;Pool&apos; also defined in its parent class &apos;GenericState&apos;." />
+    <error file="game\title.cpp" line="124" id="cstyleCast" severity="style" msg="C-style pointer casting" />
+    <error file="game\title.cpp" line="26" id="uninitMemberVar" severity="style" msg="Member variable &apos;Title::volume&apos; is not initialized in the constructor." />
+    <error file="game\title.cpp" line="118" id="stlSize" severity="style" msg="Checking for &apos;shown&apos; emptiness might be inefficient. Using shown.empty() instead of shown.size() can be faster. shown.size() can take linear time but shown.empty() is guaranteed to take constant time." />
+    <error file="input\joystick.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;Joystick::Axis&apos; is not initialized in the constructor." />
+    <error file="input\joystick.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;Joystick::HasCallButton&apos; is not initialized in the constructor." />
+    <error file="input\joystick.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;Joystick::HasCallAxis&apos; is not initialized in the constructor." />
+    <error file="input\joystick.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;Joystick::HasCallBall&apos; is not initialized in the constructor." />
+    <error file="input\joystick.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;Joystick::Balls&apos; is not initialized in the constructor." />
+    <error file="input\joystick.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;Joystick::HasCallHat&apos; is not initialized in the constructor." />
+    <error file="input\joystick.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;Joystick::Hats&apos; is not initialized in the constructor." />
+    <error file="input\joystick.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;Joystick::m_id&apos; is not initialized in the constructor." />
+    <error file="input\joystick.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;Joystick::m_axes&apos; is not initialized in the constructor." />
+    <error file="input\joystick.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;Joystick::m_buttons&apos; is not initialized in the constructor." />
+    <error file="input\joystick.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;Joystick::m_balls&apos; is not initialized in the constructor." />
+    <error file="input\joystick.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;Joystick::m_hats&apos; is not initialized in the constructor." />
+    <error file="input\joystick.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;Joystick::m_haptic&apos; is not initialized in the constructor." />
+    <error file="input\joystick.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;Joystick::anyKeyPressed&apos; is not initialized in the constructor." />
+    <error file="input\joystick.cpp" line="10" id="uninitMemberVar" severity="style" msg="Member variable &apos;Joystick::m_haptic&apos; is not initialized in the constructor." />
+    <error file="input\joystick.hpp" line="34" id="noCopyConstructor" severity="style" msg="&apos;class Joystick&apos; does not have a copy constructor which is recommended since the class contains a pointer to allocated memory." />
+    <error file="input\joystick.cpp" line="34" id="mismatchAllocDealloc" severity="error" msg="Mismatching allocation and deallocation: Joystick::Axis" />
+    <error file="input\joystick.cpp" line="35" id="mismatchAllocDealloc" severity="error" msg="Mismatching allocation and deallocation: Joystick::Balls" />
+    <error file="input\mouse.cpp" line="5" id="uninitMemberVar" severity="style" msg="Member variable &apos;Mouse::mouseState&apos; is not initialized in the constructor." />
+    <error file="input\touch.cpp" line="5" id="uninitMemberVar" severity="style" msg="Member variable &apos;Finger::m_ressure&apos; is not initialized in the constructor." />
+    <error file="input\touch.cpp" line="5" id="uninitMemberVar" severity="style" msg="Member variable &apos;Finger::tapping&apos; is not initialized in the constructor." />
+    <error file="input\touch.cpp" line="5" id="uninitMemberVar" severity="style" msg="Member variable &apos;Finger::tapDelay&apos; is not initialized in the constructor." />
+    <error file="input\touch.cpp" line="33" id="uninitMemberVar" severity="style" msg="Member variable &apos;Touch::m_hasTap&apos; is not initialized in the constructor." />
+    <error file="input\touch.cpp" line="33" id="uninitMemberVar" severity="style" msg="Member variable &apos;Touch::m_lastFinger&apos; is not initialized in the constructor." />
+    <error file="input\touch.cpp" line="35" id="useInitializationList" severity="style" msg="When an object of a class is created, the constructors of all member variables are called consecutively in the order the variables are declared, even if you don&apos;t explicitly write them to the initialization list. You could avoid assigning &apos;m_offset&apos; a value by passing the value to the constructor in the initialization list." />
+    <error file="input\touchkeys.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;TouchKeys::t&apos; is not initialized in the constructor." />
+    <error file="input\touchkeys.cpp" line="6" id="uninitMemberVar" severity="style" msg="Member variable &apos;TouchKeys::Touched&apos; is not initialized in the constructor." />
+    <error file="input\touchkeys.hpp" line="9" id="noCopyConstructor" severity="style" msg="&apos;class TouchKeys&apos; does not have a copy constructor which is recommended since the class contains a pointer to allocated memory." />
+    <error file="input\touchkeys.hpp" line="16" id="unsafeClassCanLeak" severity="style" msg="The class &apos;TouchKeys&apos; is unsafe, wrong usage can cause memory/resource leaks for &apos;TouchKeys::t&apos;. This can for instance be fixed by adding proper cleanup in the destructor." />
+    <error file="luasystem\luainterface.cpp" line="55" id="cstyleCast" severity="style" msg="C-style pointer casting" />
+    <error file="luasystem\luainterface.cpp" line="67" id="cstyleCast" severity="style" msg="C-style pointer casting" />
+    <error file="luasystem\luainterface.cpp" line="78" id="cstyleCast" severity="style" msg="C-style pointer casting" />
+    <error file="luasystem\luainterface.cpp" line="87" id="cstyleCast" severity="style" msg="C-style pointer casting" />
+    <error file="luasystem\luainterface.cpp" line="95" id="cstyleCast" severity="style" msg="C-style pointer casting" />
+    <error file="luasystem\luainterface.cpp" line="103" id="cstyleCast" severity="style" msg="C-style pointer casting" />
+    <error file="luasystem\luainterface.cpp" line="113" id="cstyleCast" severity="style" msg="C-style pointer casting" />
+    <error file="luasystem\luainterface.cpp" line="123" id="cstyleCast" severity="style" msg="C-style pointer casting" />
+    <error file="luasystem\luainterface.cpp" line="409" id="cstyleCast" severity="style" msg="C-style pointer casting" />
+    <error file="luasystem\luainterface.cpp" line="21" id="uninitMemberVar" severity="style" msg="Member variable &apos;LuaInterface::Parameter_int&apos; is not initialized in the constructor." />
+    <error file="luasystem\luainterface.hpp" line="15" id="unusedStructMember" severity="style" msg="struct or union member &apos;luaTimer::T&apos; is never used." />
+    <error file="performance\console.cpp" line="19" id="uninitMemberVar" severity="style" msg="Member variable &apos;Console::m_line&apos; is not initialized in the constructor." />
+    <error file="settings\configmanager.cpp" line="8" id="uninitMemberVar" severity="style" msg="Member variable &apos;ConfigManager::hasAudio&apos; is not initialized in the constructor." />
+    <error file="ui\base.cpp" line="7" id="uninitMemberVar" severity="style" msg="Member variable &apos;UIBase::ID&apos; is not initialized in the constructor." />
+    <error file="ui\base.cpp" line="7" id="uninitMemberVar" severity="style" msg="Member variable &apos;UIBase::hash&apos; is not initialized in the constructor." />
+    <error file="ui\button.cpp" line="5" id="uninitMemberVar" severity="style" msg="Member variable &apos;Button::hover&apos; is not initialized in the constructor." />
+    <error file="ui\button.cpp" line="5" id="uninitMemberVar" severity="style" msg="Member variable &apos;Button::press&apos; is not initialized in the constructor." />
+    <error file="ui\window.cpp" line="5" id="uninitMemberVar" severity="style" msg="Member variable &apos;Window::highlight&apos; is not initialized in the constructor." />
+    <error file="input\joystick.cpp" line="137" id="unusedFunction" severity="style" msg="The function &apos;AddAxisCallBack&apos; is never used." />
+    <error file="input\joystick.cpp" line="144" id="unusedFunction" severity="style" msg="The function &apos;AddBallCallBack&apos; is never used." />
+    <error file="input\joystick.cpp" line="130" id="unusedFunction" severity="style" msg="The function &apos;AddButtonCallBack&apos; is never used." />
+    <error file="input\joystick.cpp" line="123" id="unusedFunction" severity="style" msg="The function &apos;AddHatCallBack&apos; is never used." />
+    <error file="framework\threadpool.cpp" line="135" id="unusedFunction" severity="style" msg="The function &apos;AddParallelFor&apos; is never used." />
+    <error file="engine\sprite.cpp" line="16" id="unusedFunction" severity="style" msg="The function &apos;AddReplacer&apos; is never used." />
+    <error file="engine\genericstate.cpp" line="34" id="unusedFunction" severity="style" msg="The function &apos;AddWindow&apos; is never used." />
+    <error file="engine\collision.cpp" line="5" id="unusedFunction" severity="style" msg="The function &apos;AdjustCollision&apos; is never used." />
+    <error file="engine\collision.cpp" line="76" id="unusedFunction" severity="style" msg="The function &apos;AdjustCollisionIndependent&apos; is never used." />
+    <error file="engine\smarttexture.hpp" line="22" id="unusedFunction" severity="style" msg="The function &apos;At&apos; is never used." />
+    <error file="input\joystick.cpp" line="70" id="unusedFunction" severity="style" msg="The function &apos;ButtonPress&apos; is never used." />
+    <error file="input\joystick.cpp" line="73" id="unusedFunction" severity="style" msg="The function &apos;ButtonRelease&apos; is never used." />
+    <error file="luasystem\luainterface.cpp" line="358" id="unusedFunction" severity="style" msg="The function &apos;CallClear&apos; is never used." />
+    <error file="engine\smarttexture.hpp" line="13" id="unusedFunction" severity="style" msg="The function &apos;CallLambda&apos; is never used." />
+    <error file="luasystem\luainterface.cpp" line="279" id="unusedFunction" severity="style" msg="The function &apos;CallScript&apos; is never used." />
+    <error file="engine\collision.cpp" line="31" id="unusedFunction" severity="style" msg="The function &apos;CheckCollision&apos; is never used." />
+    <error file="input\joystick.cpp" line="152" id="unusedFunction" severity="style" msg="The function &apos;ClearAllCallBacks&apos; is never used." />
+    <error file="ui\base.cpp" line="61" id="unusedFunction" severity="style" msg="The function &apos;ClearChildrens&apos; is never used." />
+    <error file="engine\sprite.cpp" line="165" id="unusedFunction" severity="style" msg="The function &apos;CopyTexture&apos; is never used." />
+    <error file="engine\particlecreator.cpp" line="27" id="unusedFunction" severity="style" msg="The function &apos;CreateAnimatedSprite&apos; is never used." />
+    <error file="engine\particlecreator.cpp" line="16" id="unusedFunction" severity="style" msg="The function &apos;CreateAnimatedText&apos; is never used." />
+    <error file="engine\particlecreator.cpp" line="6" id="unusedFunction" severity="style" msg="The function &apos;CreateCustomParticle&apos; is never used." />
+    <error file="input\inputmanager.cpp" line="270" id="unusedFunction" severity="style" msg="The function &apos;CreateVirtualButton&apos; is never used." />
+    <error file="engine\timer.hpp" line="55" id="unusedFunction" severity="style" msg="The function &apos;Disable&apos; is never used." />
+    <error file="engine\renderhelp.cpp" line="62" id="unusedFunction" severity="style" msg="The function &apos;DrawLineColorA&apos; is never used." />
+    <error file="engine\renderhelp.cpp" line="7" id="unusedFunction" severity="style" msg="The function &apos;DrawSquareColorUnscaled&apos; is never used." />
+    <error file="engine\timer.hpp" line="59" id="unusedFunction" severity="style" msg="The function &apos;Enable&apos; is never used." />
+    <error file="engine\music.cpp" line="89" id="unusedFunction" severity="style" msg="The function &apos;FadeIn&apos; is never used." />
+    <error file="engine\music.cpp" line="84" id="unusedFunction" severity="style" msg="The function &apos;FadeOut&apos; is never used." />
+    <error file="framework\gamefile.cpp" line="193" id="unusedFunction" severity="style" msg="The function &apos;FindInt&apos; is never used." />
+    <error file="input\inputmanager.hpp" line="206" id="unusedFunction" severity="style" msg="The function &apos;FingerPress&apos; is never used." />
+    <error file="engine\smarttexture.hpp" line="21" id="unusedFunction" severity="style" msg="The function &apos;FormatXY&apos; is never used." />
+    <error file="engine\renderhelp.cpp" line="73" id="unusedFunction" severity="style" msg="The function &apos;GeneratePatternTexture&apos; is never used." />
+    <error file="input\inputmanager.hpp" line="267" id="unusedFunction" severity="style" msg="The function &apos;GetAccelerometerX&apos; is never used." />
+    <error file="input\inputmanager.hpp" line="268" id="unusedFunction" severity="style" msg="The function &apos;GetAccelerometerY&apos; is never used." />
+    <error file="input\inputmanager.hpp" line="269" id="unusedFunction" severity="style" msg="The function &apos;GetAccelerometerZ&apos; is never used." />
+    <error file="input\joystick.hpp" line="181" id="unusedFunction" severity="style" msg="The function &apos;GetBall&apos; is never used." />
+    <error file="input\joystick.hpp" line="209" id="unusedFunction" severity="style" msg="The function &apos;GetBallCount&apos; is never used." />
+    <error file="engine\light.hpp" line="32" id="unusedFunction" severity="style" msg="The function &apos;GetBlockSize&apos; is never used." />
+    <error file="framework\gamefile.hpp" line="88" id="unusedFunction" severity="style" msg="The function &apos;GetCache_Unsafe&apos; is never used." />
+    <error file="engine\collision.cpp" line="60" id="unusedFunction" severity="style" msg="The function &apos;GetCollidingObject&apos; is never used." />
+    <error file="engine\collision.cpp" line="45" id="unusedFunction" severity="style" msg="The function &apos;GetCollidingObjects&apos; is never used." />
+    <error file="engine\screenmanager.hpp" line="43" id="unusedFunction" severity="style" msg="The function &apos;GetDefaultRenderer&apos; is never used." />
+    <error file="framework\resourcefiles.cpp" line="67" id="unusedFunction" severity="style" msg="The function &apos;GetFileCount&apos; is never used." />
+    <error file="engine\music.hpp" line="36" id="unusedFunction" severity="style" msg="The function &apos;GetFileName&apos; is never used." />
+    <error file="framework\resourcefiles.cpp" line="113" id="unusedFunction" severity="style" msg="The function &apos;GetFileSize&apos; is never used." />
+    <error file="engine\sprite.cpp" line="401" id="unusedFunction" severity="style" msg="The function &apos;GetFrameHeight&apos; is never used." />
+    <error file="engine\sprite.cpp" line="405" id="unusedFunction" severity="style" msg="The function &apos;GetFrameWidth&apos; is never used." />
+    <error file="engine\screenmanager.hpp" line="23" id="unusedFunction" severity="style" msg="The function &apos;GetGameSize&apos; is never used." />
+    <error file="ui\base.hpp" line="92" id="unusedFunction" severity="style" msg="The function &apos;GetID&apos; is never used." />
+    <error file="framework\poolmanager.cpp" line="192" id="unusedFunction" severity="style" msg="The function &apos;GetInstanceGlobal&apos; is never used." />
+    <error file="framework\gamefile.cpp" line="161" id="unusedFunction" severity="style" msg="The function &apos;GetLine&apos; is never used." />
+    <error file="framework\poolmanager.hpp" line="236" id="unusedFunction" severity="style" msg="The function &apos;GetLuaPool&apos; is never used." />
+    <error file="framework\poolmanager.cpp" line="181" id="unusedFunction" severity="style" msg="The function &apos;GetMaxInstancesGlobal&apos; is never used." />
+    <error file="luasystem\luainterface.cpp" line="322" id="unusedFunction" severity="style" msg="The function &apos;GetMember&apos; is never used." />
+    <error file="framework\geometry.hpp" line="180" id="unusedFunction" severity="style" msg="The function &apos;GetPos&apos; is never used." />
+    <error file="ui\base.hpp" line="120" id="unusedFunction" severity="style" msg="The function &apos;GetTextObject&apos; is never used." />
+    <error file="input\inputmanager.hpp" line="230" id="unusedFunction" severity="style" msg="The function &apos;GetTouchTrueX&apos; is never used." />
+    <error file="input\inputmanager.hpp" line="236" id="unusedFunction" severity="style" msg="The function &apos;GetTouchTrueY&apos; is never used." />
+    <error file="framework\utils.cpp" line="69" id="unusedFunction" severity="style" msg="The function &apos;GetU24c&apos; is never used." />
+    <error file="framework\utils.cpp" line="79" id="unusedFunction" severity="style" msg="The function &apos;GetU64c&apos; is never used." />
+    <error file="settings\configmanager.hpp" line="20" id="unusedFunction" severity="style" msg="The function &apos;GetUIscale&apos; is never used." />
+    <error file="input\inputmanager.hpp" line="171" id="unusedFunction" severity="style" msg="The function &apos;GetWheelX&apos; is never used." />
+    <error file="input\inputmanager.hpp" line="176" id="unusedFunction" severity="style" msg="The function &apos;GetWheelY&apos; is never used." />
+    <error file="input\accelerometer.cpp" line="60" id="unusedFunction" severity="style" msg="The function &apos;GetX&apos; is never used." />
+    <error file="input\accelerometer.cpp" line="66" id="unusedFunction" severity="style" msg="The function &apos;GetY&apos; is never used." />
+    <error file="input\accelerometer.cpp" line="72" id="unusedFunction" severity="style" msg="The function &apos;GetZ&apos; is never used." />
+    <error file="input\inputmanager.hpp" line="266" id="unusedFunction" severity="style" msg="The function &apos;HasAccelerometerEnabled&apos; is never used." />
+    <error file="engine\timer.cpp" line="43" id="unusedFunction" severity="style" msg="The function &apos;HasFinished&apos; is never used." />
+    <error file="ui\base.hpp" line="114" id="unusedFunction" severity="style" msg="The function &apos;Hide&apos; is never used." />
+    <error file="luasystem\luainterface.cpp" line="211" id="unusedFunction" severity="style" msg="The function &apos;InsertFloat&apos; is never used." />
+    <error file="luasystem\luainterface.cpp" line="206" id="unusedFunction" severity="style" msg="The function &apos;InsertInt&apos; is never used." />
+    <error file="luasystem\luainterface.cpp" line="215" id="unusedFunction" severity="style" msg="The function &apos;InsertPointer&apos; is never used." />
+    <error file="framework\poolmanager.cpp" line="56" id="unusedFunction" severity="style" msg="The function &apos;InternalAddInstance&apos; is never used." />
+    <error file="input\joystick.cpp" line="80" id="unusedFunction" severity="style" msg="The function &apos;IsButtonUp&apos; is never used." />
+    <error file="framework\threadpool.cpp" line="220" id="unusedFunction" severity="style" msg="The function &apos;IsDone&apos; is never used." />
+    <error file="engine\timer.hpp" line="63" id="unusedFunction" severity="style" msg="The function &apos;IsEnabled&apos; is never used." />
+    <error file="input\inputmanager.hpp" line="212" id="unusedFunction" severity="style" msg="The function &apos;IsFingerPressed&apos; is never used." />
+    <error file="framework\utils.hpp" line="70" id="unusedFunction" severity="style" msg="The function &apos;IsInPosOk&apos; is never used." />
+    <error file="engine\particles.hpp" line="175" id="unusedFunction" severity="style" msg="The function &apos;IsInScreen&apos; is never used." />
+    <error file="input\beinput.cpp" line="43" id="unusedFunction" severity="style" msg="The function &apos;IsKeyUp&apos; is never used." />
+    <error file="framework\threadpool.hpp" line="175" id="unusedFunction" severity="style" msg="The function &apos;IsLocked&apos; is never used." />
+    <error file="engine\gamebase.hpp" line="116" id="unusedFunction" severity="style" msg="The function &apos;IsSDLStarted&apos; is never used." />
+    <error file="framework\resourcefiles.cpp" line="70" id="unusedFunction" severity="style" msg="The function &apos;ListFiles&apos; is never used." />
+    <error file="luasystem\luainterface.cpp" line="219" id="unusedFunction" severity="style" msg="The function &apos;LoadPrepare&apos; is never used." />
+    <error file="luasystem\luainterface.cpp" line="233" id="unusedFunction" severity="style" msg="The function &apos;LoadPrepareC&apos; is never used." />
+    <error file="engine\camera.cpp" line="23" id="unusedFunction" severity="style" msg="The function &apos;LockLimits&apos; is never used." />
+    <error file="engine\particles.hpp" line="170" id="unusedFunction" severity="style" msg="The function &apos;NotifyDamage&apos; is never used." />
+    <error file="engine\music.cpp" line="137" id="unusedFunction" severity="style" msg="The function &apos;Pause&apos; is never used." />
+    <error file="engine\sound.cpp" line="156" id="unusedFunction" severity="style" msg="The function &apos;PauseAll&apos; is never used." />
+    <error file="engine\music.cpp" line="116" id="unusedFunction" severity="style" msg="The function &apos;Play&apos; is never used." />
+    <error file="luasystem\luainterface.hpp" line="71" id="unusedFunction" severity="style" msg="The function &apos;Pop&apos; is never used." />
+    <error file="engine\sprite.hpp" line="309" id="unusedFunction" severity="style" msg="The function &apos;ReBlend&apos; is never used." />
+    <error file="framework\gamefile.hpp" line="119" id="unusedFunction" severity="style" msg="The function &apos;Read16&apos; is never used." />
+    <error file="framework\gamefile.hpp" line="131" id="unusedFunction" severity="style" msg="The function &apos;Read32&apos; is never used." />
+    <error file="input\beinput.cpp" line="27" id="unusedFunction" severity="style" msg="The function &apos;RegisterInput&apos; is never used." />
+    <error file="engine\tileset.cpp" line="70" id="unusedFunction" severity="style" msg="The function &apos;Render2&apos; is never used." />
+    <error file="engine\timer.cpp" line="35" id="unusedFunction" severity="style" msg="The function &apos;Restart&apos; is never used." />
+    <error file="engine\music.cpp" line="142" id="unusedFunction" severity="style" msg="The function &apos;Resume&apos; is never used." />
+    <error file="engine\sound.cpp" line="161" id="unusedFunction" severity="style" msg="The function &apos;ResumeAll&apos; is never used." />
+    <error file="engine\music.cpp" line="95" id="unusedFunction" severity="style" msg="The function &apos;Rewind&apos; is never used." />
+    <error file="luasystem\luainterface.cpp" line="370" id="unusedFunction" severity="style" msg="The function &apos;RunScript&apos; is never used." />
+    <error file="engine\screenmanager.hpp" line="35" id="unusedFunction" severity="style" msg="The function &apos;ScreenShake&apos; is never used." />
+    <error file="engine\timer.cpp" line="31" id="unusedFunction" severity="style" msg="The function &apos;SetDuration&apos; is never used." />
+    <error file="input\accelerometer.cpp" line="27" id="unusedFunction" severity="style" msg="The function &apos;SetFilterFactor&apos; is never used." />
+    <error file="engine\sprite.hpp" line="336" id="unusedFunction" severity="style" msg="The function &apos;SetFlip&apos; is never used." />
+    <error file="engine\text.cpp" line="357" id="unusedFunction" severity="style" msg="The function &apos;SetFontSize&apos; is never used." />
+    <error file="engine\sprite.hpp" line="236" id="unusedFunction" severity="style" msg="The function &apos;SetFrameTime&apos; is never used." />
+    <error file="ui\window.hpp" line="19" id="unusedFunction" severity="style" msg="The function &apos;SetHighlightEnabled&apos; is never used." />
+    <error file="framework\poolmanager.hpp" line="303" id="unusedFunction" severity="style" msg="The function &apos;SetIteratorPoolId&apos; is never used." />
+    <error file="engine\camera.hpp" line="62" id="unusedFunction" severity="style" msg="The function &apos;SetOffsetFollow&apos; is never used." />
+    <error file="engine\particles.cpp" line="163" id="unusedFunction" severity="style" msg="The function &apos;SetPatternMoveCircle&apos; is never used." />
+    <error file="engine\particles.hpp" line="121" id="unusedFunction" severity="style" msg="The function &apos;SetPatternMoveCustom&apos; is never used." />
+    <error file="engine\sound.cpp" line="105" id="unusedFunction" severity="style" msg="The function &apos;SetPosition&apos; is never used." />
+    <error file="engine\sprite.hpp" line="276" id="unusedFunction" severity="style" msg="The function &apos;SetRepeatTimes&apos; is never used." />
+    <error file="settings\configmanager.hpp" line="33" id="unusedFunction" severity="style" msg="The function &apos;SetResizeAction&apos; is never used." />
+    <error file="engine\screenmanager.cpp" line="177" id="unusedFunction" severity="style" msg="The function &apos;SetScreenName&apos; is never used." />
+    <error file="engine\tilemap.cpp" line="46" id="unusedFunction" severity="style" msg="The function &apos;SetTileSet&apos; is never used." />
+    <error file="engine\music.cpp" line="24" id="unusedFunction" severity="style" msg="The function &apos;SetVolume&apos; is never used." />
+    <error file="settings\configmanager.cpp" line="18" id="unusedFunction" severity="style" msg="The function &apos;SetWindowIcon&apos; is never used." />
+    <error file="engine\screenmanager.cpp" line="124" id="unusedFunction" severity="style" msg="The function &apos;SetWindowSize&apos; is never used." />
+    <error file="engine\collision.cpp" line="163" id="unusedFunction" severity="style" msg="The function &apos;SoftWarpAway&apos; is never used." />
+    <error file="luasystem\luaobject.cpp" line="22" id="unusedFunction" severity="style" msg="The function &apos;Start&apos; is never used." />
+    <error file="engine\sound.cpp" line="151" id="unusedFunction" severity="style" msg="The function &apos;StopAll&apos; is never used." />
+    <error file="framework\geometry.cpp" line="35" id="unusedFunction" severity="style" msg="The function &apos;Sum&apos; is never used." />
+    <error file="framework\threadpool.cpp" line="186" id="unusedFunction" severity="style" msg="The function &apos;TryLock&apos; is never used." />
+    <error file="engine\camera.hpp" line="70" id="unusedFunction" severity="style" msg="The function &apos;UnlockLimits&apos; is never used." />
+    <error file="framework\basepool.hpp" line="170" id="unusedFunction" severity="style" msg="The function &apos;UpdateInstancesForced&apos; is never used." />
+    <error file="engine\genericstate.cpp" line="9" id="unusedFunction" severity="style" msg="The function &apos;UpdateWindowses&apos; is never used." />
+    <error file="engine\light.cpp" line="353" id="unusedFunction" severity="style" msg="The function &apos;WaitDone&apos; is never used." />
+    <error file="engine\collision.cpp" line="186" id="unusedFunction" severity="style" msg="The function &apos;WarpAway&apos; is never used." />
+    <error file="framework\userfile.cpp" line="53" id="unusedFunction" severity="style" msg="The function &apos;WriteU16&apos; is never used." />
+    <error file="framework\userfile.cpp" line="60" id="unusedFunction" severity="style" msg="The function &apos;WriteU32&apos; is never used." />
+    <error file="framework\userfile.cpp" line="70" id="unusedFunction" severity="style" msg="The function &apos;WriteU64&apos; is never used." />
+    <error file="framework\userfile.cpp" line="45" id="unusedFunction" severity="style" msg="The function &apos;WriteU8&apos; is never used." />
+    <error file="engine\smarttexture.hpp" line="20" id="unusedFunction" severity="style" msg="The function &apos;getH&apos; is never used." />
+    <error file="engine\smarttexture.hpp" line="47" id="unusedFunction" severity="style" msg="The function &apos;getHeight&apos; is never used." />
+    <error file="engine\smarttexture.hpp" line="51" id="unusedFunction" severity="style" msg="The function &apos;getPitch&apos; is never used." />
+    <error file="engine\smarttexture.cpp" line="177" id="unusedFunction" severity="style" msg="The function &apos;getPixel32&apos; is never used." />
+    <error file="engine\smarttexture.hpp" line="50" id="unusedFunction" severity="style" msg="The function &apos;getPixels&apos; is never used." />
+    <error file="engine\smarttexture.hpp" line="19" id="unusedFunction" severity="style" msg="The function &apos;getW&apos; is never used." />
+    <error file="engine\smarttexture.hpp" line="46" id="unusedFunction" severity="style" msg="The function &apos;getWidth&apos; is never used." />
+    <error file="game\controlableobject.hpp" line="19" id="unusedFunction" severity="style" msg="The function &apos;isOnTop&apos; is never used." />
+    <error file="engine\smarttexture.cpp" line="156" id="unusedFunction" severity="style" msg="The function &apos;lockTexture&apos; is never used." />
+    <error file="engine\smarttexture.cpp" line="132" id="unusedFunction" severity="style" msg="The function &apos;setAlpha&apos; is never used." />
+    <error file="engine\smarttexture.cpp" line="128" id="unusedFunction" severity="style" msg="The function &apos;setBlendMode&apos; is never used." />
+    <error file="engine\smarttexture.cpp" line="124" id="unusedFunction" severity="style" msg="The function &apos;setColor&apos; is never used." />
+    <error file="framework\threadpool.cpp" line="26" id="unusedFunction" severity="style" msg="The function &apos;sleep&apos; is never used." />
+    <error file="framework\geometry.hpp" line="220" id="unusedFunction" severity="style" msg="The function &apos;toDeg&apos; is never used." />
+    <error file="engine\smarttexture.cpp" line="165" id="unusedFunction" severity="style" msg="The function &apos;unlockTexture&apos; is never used." />
+    <error id="missingIncludeSystem" severity="style" msg="Cppcheck cannot find all the include files. Cppcheck can check the code without the include files found. But the results will probably be more accurate if all the include files are found. Please check your project&apos;s include directories and add all of them as include directories for Cppcheck. To see what files Cppcheck cannot find use --check-config." />
+</results>

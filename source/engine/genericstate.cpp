@@ -3,6 +3,9 @@
 GenericState::GenericState(){
     requestDelete = requestQuit = false;
     storedUi = nullptr;
+    ParticlePool = nullptr;
+    STATEID = 0;
+    gameStarted = false;
 }
 
 

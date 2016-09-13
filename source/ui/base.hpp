@@ -32,7 +32,7 @@ class UIStyle{
             bg[2] = 100;
             bg[3] = 255;
             ncolors = 0;
-
+            custom = false;
             txtstyle = TEXT_SOLID;
             fontfile = "data/UnB-Office_Regular.ttf";
         };
