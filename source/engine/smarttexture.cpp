@@ -7,9 +7,10 @@ SmartTexture::SmartTexture(int xx,int yy,int ww,int hh,bool del,bool hasAliasing
    deleteTexture = del;
    pixels = nullptr;
 
+
    if (hasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-   t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, ww, hh);
+   t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, ww, hh);
    if (hasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
    pixels = new Uint32[w * h];
@@ -27,6 +28,7 @@ void SmartTexture::UpdateTexture(){
 SmartTexture::~SmartTexture(){
     delete []pixels;
     if (deleteTexture){
+        std::cout << "Morre ai textura\n";
         SDL_DestroyTexture( t );
     }
 }

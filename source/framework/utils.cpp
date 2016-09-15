@@ -104,3 +104,82 @@ uint32_t utils::GetAround(uint32_t**map ,int x,int y,int sx,int sy){
     return sqrt(n/k);
 
 }
+
+
+
+int utils::GetNumber(std::string &str,bool ignoreUntilFind){
+    int ret = 0;
+    bool found = false;
+    uint32_t pos = 0;
+    while (true){
+        if (pos > str.length())
+            return -1;
+        char c = str[pos];
+        pos++;
+        if (c >= '0' and c <= '9'){
+            ret *= 10;
+            ret += c-'0';
+            found = true;
+        }else{
+            if (ignoreUntilFind){
+                if (!found)
+                    continue;
+            }
+            break;
+        }
+    }
+    str = str.substr(pos);
+    return ret;
+}
+std::string utils::ReadWord(std::string &str,int n,char separator){
+    std::string buffer = "";
+    uint32_t pos = 0;
+    while (pos < str.length()){
+        char c = str[pos];
+        if (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z') || c == separator ){
+            str = str.substr(pos);
+            return buffer;
+        }
+        pos++;
+        buffer += c;
+    }
+    str = str.substr(pos);
+    return buffer;
+}
+#include <iostream>
+std::string utils::ReadUntil(std::string &str,std::string until){
+    std::string buffer = "";
+    uint32_t pos = 0;
+    while (pos < str.length()){
+        char c = str[pos];
+        pos++;
+        if (c == until[0]){
+            if (until == str.substr(pos-1,until.length())){
+                str = str.substr(pos+until.length()-1);
+                return buffer;
+            }
+        }
+        buffer += c;
+    }
+    pos = 0;
+    str = str.substr(pos);
+    return buffer;
+}
+std::string utils::ReadUntil(std::string &str,char rd){
+    std::string buffer = "";
+    uint32_t pos = 0;
+    while (pos < str.length()){
+        char c = str[pos];
+        pos++;
+        if (c == rd){
+            str = str.substr(pos);
+            return buffer;
+        }
+        buffer += c;
+    }
+    str = str.substr(pos);
+    return buffer;
+}
+std::string utils::GetLine(std::string &str){
+    return ReadUntil(str,'\n');
+}

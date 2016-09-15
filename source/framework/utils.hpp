@@ -59,6 +59,10 @@ namespace utils {
 
 
 
+
+
+
+
     std::string methodName(const std::string& prettyFunction);
 
     inline bool IsInRange(int x,int max){
@@ -77,6 +81,38 @@ namespace utils {
     uint32_t GetAround(uint32_t**matrix ,int x,int y,int sx,int sy);
     bool IsInLimits(int x,int y,int sx,int sy);
 
+
+    /*
+        String works
+    */
+
+    int GetNumber(std::string &str,bool ignoreUntilFind=false);
+    std::string ReadWord(std::string &str,int n=1,char separator=' ');
+    std::string ReadUntil(std::string &str,char rd);
+    std::string ReadUntil(std::string &str,std::string until);
+    std::string GetLine(std::string &str);
+
 }
+
+template<typename T> class GenericIterator{
+    public:
+        GenericIterator(T **vector_,int size){
+            vector = vector_;
+            sz = size;
+        }
+        T** begin(){
+            return &vector[0];
+        }
+        /**
+            Used to be the iterator on c++11
+        */
+        T** end(){
+            return &vector[sz];
+        }
+    private:
+        T **vector;
+        int sz;
+};
+
 
 #endif

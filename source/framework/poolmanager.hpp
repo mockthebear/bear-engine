@@ -4,6 +4,7 @@
 #define POOLMANAGERHPP
 
 #include <vector>
+#include "utils.hpp"
 #include <functional>
 #include <map>
 
@@ -136,25 +137,7 @@ typedef struct PoolGroup_{
 
  */
 
-template<typename T> class GenericIterator{
-    public:
-        GenericIterator(T **vector_,int size){
-            vector = vector_;
-            sz = size;
-        }
-        T** begin(){
-            return &vector[0];
-        }
-        /**
-            Used to be the iterator on c++11
-        */
-        T** end(){
-            return &vector[sz];
-        }
-    private:
-        T **vector;
-        int sz;
-};
+
 
 
 class PoolManager{

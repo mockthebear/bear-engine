@@ -107,7 +107,6 @@ class Console{
         template<typename... arg> bool Store(std::string str, const arg&... a){
             std::string str2 = utils::format(str,a...);
             stackline += str2;
-            std::cout << stackline << "\n";
             return false;
         }
         bool Store(){

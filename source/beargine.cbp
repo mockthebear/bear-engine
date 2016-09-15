@@ -125,6 +125,8 @@
 		<Unit filename="framework/userfile.hpp" />
 		<Unit filename="framework/utils.cpp" />
 		<Unit filename="framework/utils.hpp" />
+		<Unit filename="framework/xml.cpp" />
+		<Unit filename="framework/xml.hpp" />
 		<Unit filename="game/ball.cpp" />
 		<Unit filename="game/ball.hpp" />
 		<Unit filename="game/controlableobject.cpp" />

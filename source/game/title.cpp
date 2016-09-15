@@ -19,6 +19,7 @@
 #include "../framework/gamefile.hpp"
 #include "../framework/utils.hpp"
 #include "../framework/resourcemanager.hpp"
+#include "../framework/xml.hpp"
 
 
 
@@ -65,8 +66,8 @@ Title::Title(){
 void Title::Begin(){
     Pool.AddInstance(ControlableObject(200,200));
 
-    //Pool.AddInstance(ControlableObject(100,100));
-    //Pool.AddInstance(ControlableObject(300,300));
+    Pool.AddInstance(ControlableObject(100,100));
+    Pool.AddInstance(ControlableObject(300,300));
     Pool.AddInstance(Ball(Point(200,400)));
 
 
@@ -104,11 +105,23 @@ void Title::Update(float dt){
     }
 
     if( InputManager::GetInstance().KeyPress(SDLK_SPACE) ){
-        GameFile f("teste.txt");
-        bear::out << "[" << f.ReadWord() << "]\n";
-        bear::out << "[" << f.ReadUntil('\r') << "]\n";
-        bear::out << "[" << f.GetNumber(true) << "]\n";
-        f.Close();
+        Xml p;
+        XmlNode *n = p.Parse("data.xml");
+        bear::out << n->GetName() << " Has " << n->GetCount() << " members\n";
+        for (auto& it : (*n)) {
+            bear::out << "["<<it->GetIndex()<<"]"<<it->GetName() << " has" << it->GetCount() <<" members \n";
+            if (it->GetValue().length() > 0){
+                bear::out << "Eqauls to: ["<<it->GetValue()<<"]\n";
+            }
+            if (it->GetCount() > 0){
+                for (auto& et : (*it)) {
+                    bear::out << "----["<<et->GetIndex()<<"]"<<et->GetName() << " has" << et->GetCount() <<" members \n";
+                    if (et->GetValue().length() > 0){
+                        bear::out << "--------Eqauls to: ["<<et->GetValue()<<"]\n";
+                    }
+                }
+            }
+        }
     }
     ThreadPool::GetInstance().ClearJobs();
     Light::GetInstance()->Update(dt,LIGHT_BEGIN);
@@ -145,13 +158,13 @@ void Title::Update(float dt){
         Light::GetInstance()->AddBlock(it,255);
     }
 
-    /*Light::GetInstance()->AddBlockM(100,106,255);
+    Light::GetInstance()->AddBlockM(100,106,255);
     Light::GetInstance()->AddBlockM(100,112,255);
     Light::GetInstance()->AddBlockM(100,118,255);
 
     Light::GetInstance()->AddBlockM(100 + 15*6,106,255);
     Light::GetInstance()->AddBlockM(100 + 15*6,112,255);
-    Light::GetInstance()->AddBlockM(100 + 15*6,118,255);*/
+    Light::GetInstance()->AddBlockM(100 + 15*6,118,255);
 
     Pool.Update(dt);
     Map.clear();
@@ -211,14 +224,14 @@ void Title::Render(){
     Light::GetInstance()->Update(0,LIGHT_GEN);
 
     //if( InputManager::GetInstance().IsKeyDown(SDLK_TAB) )
-        Console::GetInstance().Render();
+
 
     ThreadPool::GetInstance().Help();
     ThreadPool::GetInstance().Lock();
 
-    Light::GetInstance()->Render();
 
-    RenderWindowses();
+
+
     if (path.size() > 0){
         for (auto &it : path){
             RenderHelp::DrawSquareColorA(it.x,it.y,16,16,0,255,0,180);
@@ -226,6 +239,9 @@ void Title::Render(){
 
     }
     astar.Render();
+    Light::GetInstance()->Render();
+    RenderWindowses();
+    Console::GetInstance().Render();
 
 }
 
