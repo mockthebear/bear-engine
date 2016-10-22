@@ -21,7 +21,7 @@ AssetMannager::AssetMannager(){
     id = ManagerId;
     AssetMannagerMap[id] = this;
     Console::GetInstance().AddTextInfoF("Created with %d.",id);
-    setOutput = true;
+    setOutput = false;
 }
 
 

@@ -10,6 +10,8 @@ class XmlNode{
         std::string GetName(){return Name;};
         std::string GetValue(){return Value;};
         std::string Info(std::string Info){return Data[Info];};
+        XmlNode * Get(std::string name);
+
         XmlNode * Next();
         XmlNode * GetNode(int n);
         int GetCount(){return nodeCount;};
@@ -41,11 +43,10 @@ class XmlNode{
 class Xml{
     public:
         Xml();
-        XmlNode *Parse(std::string fileName);
+        static XmlNode *Parse(std::string fileName);
 
     private:
-        void ParsePartial(XmlNode *d,std::string str);
-        bool IsXmlString(std::string str);
+        static void ParsePartial(XmlNode *d,std::string str);
+        static bool IsXmlString(std::string str);
         friend class XmlNode;
-        GameFile f;
 };

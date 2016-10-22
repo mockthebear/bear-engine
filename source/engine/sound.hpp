@@ -16,11 +16,13 @@
 typedef chain_ptr<Mix_Chunk> SoundPtr;
 
 
+
 class Sound{
     public:
         Sound();
         Sound(char *s);
         Sound(const char *s);
+        Sound(SoundPtr snd,const char *s);
         bool Open(const char *str);
         void SetVolume(int vol);
         void Play (int times);
@@ -37,12 +39,13 @@ class Sound{
 
         bool IsOpen();
         bool IsPlaying();
-        static int PlayOnce(const char *s);
+        static int PlayOnce(const char *s,bool useGlobalAssetManager=false);
 
         static Mix_Chunk* Preload (std::string name);
         static Mix_Chunk* Preload(SDL_RWops* file,std::string name);
 
         std::string GetFileName(){return file;};
+        void SetAssetManager(int id){};
     private:
 
         bool static working;

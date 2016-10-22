@@ -1,5 +1,6 @@
 #include "../settings/definitions.hpp"
 #include "../performance/console.hpp"
+#include "../mobile/android/jnihelper.hpp"
 #include <iostream>
 #ifndef DISABLE_LUAINTERFACE
 

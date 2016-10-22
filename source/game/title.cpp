@@ -21,6 +21,8 @@
 #include "../framework/resourcemanager.hpp"
 #include "../framework/xml.hpp"
 
+#include "../mobile/android/jnihelper.hpp"
+
 
 
 #include "controlableobject.hpp"
@@ -57,7 +59,7 @@ Title::Title(){
 
 
 
-
+    JniHelper::CallFunction<void>(std::string("kek"),std::string("kik"),123);
 
 
 }

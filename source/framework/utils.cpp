@@ -112,8 +112,8 @@ int utils::GetNumber(std::string &str,bool ignoreUntilFind){
     bool found = false;
     uint32_t pos = 0;
     while (true){
-        if (pos > str.length())
-            return -1;
+        if (pos >= str.length())
+            return ret;
         char c = str[pos];
         pos++;
         if (c >= '0' and c <= '9'){
@@ -131,6 +131,23 @@ int utils::GetNumber(std::string &str,bool ignoreUntilFind){
     str = str.substr(pos);
     return ret;
 }
+int utils::TrimString(std::string &str,char tocut){
+    std::string buffer = "";
+    uint32_t pos = 0;
+    uint32_t counter = 0;
+    while (pos < str.length()){
+        char c = str[pos];
+        if (c != tocut ){
+            buffer += c;
+            counter++;
+        }
+
+        pos++;
+
+    }
+    str = buffer;
+    return counter;
+}
 std::string utils::ReadWord(std::string &str,int n,char separator){
     std::string buffer = "";
     uint32_t pos = 0;
@@ -146,7 +163,7 @@ std::string utils::ReadWord(std::string &str,int n,char separator){
     str = str.substr(pos);
     return buffer;
 }
-#include <iostream>
+
 std::string utils::ReadUntil(std::string &str,std::string until){
     std::string buffer = "";
     uint32_t pos = 0;

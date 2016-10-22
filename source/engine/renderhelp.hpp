@@ -11,6 +11,9 @@ class RenderHelp{
     public:
         static bool RendedTexture(SDL_Texture* texture,int x,int y,int w,int h,float angle=0,SDL_RendererFlip flip=SDL_FLIP_NONE,Point center=Point(0,0));
         static void DrawLineColorA(int x,int y,int x2,int y2,int r,int g,int b,int a=255);
+        static void DrawSquareColorA(Rect box,int r,int g,int b,int a=255,bool outline=false){
+            DrawSquareColorA(box.x,box.y,box.w,box.h,r,g,b,a,outline);
+        };
         static void DrawSquareColorA(int x,int y,int w,int h,int r,int g,int b,int a=255,bool outline=false);
         static void DrawSquareColorANS(int x,int y,int w,int h,int r,int g,int b,int a=255);
         static void DrawSquareColorUnscaled(int x,int y,int w,int h,int r,int g,int b,int a=255);

@@ -27,19 +27,16 @@ void MultiTileSet::Render(int ind,int x,int y){
 }
 
 
-BlockTileSet::BlockTileSet(int tilew,int tileh,char *file){
+BlockTileSet::BlockTileSet(int tilew,int tileh,Sprite tset){
     SetTileWidth(tilew);
     SetTileHeight(tileh);
-    Open(file);
-}
-
-void BlockTileSet::Open(const char *file){
-    tileset = Game::GetCurrentState().Assets.make<Sprite>(file);
+    tileset = tset;
     if (tileset.IsLoaded()){
         columns = tileset.GetWidth()/GetTileWidth();
         rows = tileset.GetHeight()/GetTileHeight();
     }
 }
+
 
 BlockTileSet::~BlockTileSet(){
 

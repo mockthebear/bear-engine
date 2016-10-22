@@ -101,8 +101,8 @@ void Camera::Update(float dt){
             pos.x += cos(angle)*dt*speed;
             pos.y += sin(angle)*dt*speed;
         }else{
-            pos.x = floor(focus->box.x+focus->box.w/2.0-pos.w/2.0);
-            pos.y = floor(focus->box.y+focus->box.h/2.0-pos.h/2.0);
+            pos.x = (focus->box.x+focus->box.w/2-pos.w/2);
+            pos.y = (focus->box.y+focus->box.h/2-pos.h/2);
         }
         if (UseLimits){
             pos.x = std::max(minX,pos.x);

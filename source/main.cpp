@@ -10,6 +10,7 @@
 #include "engine/gamebase.hpp"
 #include "framework/gamefile.hpp"
 #include "settings/configmanager.hpp"
+#include "settings/definitions.hpp"
 
 
 #ifdef __EMSCRIPTEN__
@@ -27,8 +28,8 @@ void GameLoop(){
 
 extern "C"
 {
-
-    /*JNIEXPORT void JNICALL Java_com_tutorial_game_HelloSDL2Activity_load(JNIEnv *env, jclass clesse, jobject mgr){
+    /*
+    JNIEXPORT void JniCallFunction(load)(JNIEnv *env, jclass clesse, jobject mgr){
         AAssetManager* mgr2 = AAssetManager_fromJava(env, mgr);
         if (mgr2){
             GameFile::m_assetManager = mgr2;

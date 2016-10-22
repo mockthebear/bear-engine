@@ -87,6 +87,7 @@ namespace utils {
     */
 
     int GetNumber(std::string &str,bool ignoreUntilFind=false);
+    int TrimString(std::string &str,char tocut=' ');
     std::string ReadWord(std::string &str,int n=1,char separator=' ');
     std::string ReadUntil(std::string &str,char rd);
     std::string ReadUntil(std::string &str,std::string until);

@@ -14,21 +14,32 @@ std::vector<std::string> GetFiles(std::string path){
     if ((dir = opendir (path.c_str())) != NULL) {
       while ((ent = readdir (dir)) != NULL) {
         int size = strlen(ent->d_name);
+
         bool found = false;
         for (int i=0;i<size;i++){
-            if (ent->d_name[i] == '.' && size > 2){
+            if (size > 2){
                 found = true;
                 break;
             }
         }
-        if (found){
-            std::string add = std::string(ent->d_name);
-            data.emplace_back(add);
+       if (found){
+            if (ent->d_type != 0){
+                std::string notherDir = path+ent->d_name+"/";
+                std::vector<std::string> dirc = GetFiles(notherDir);
+                for (auto &it : dirc){
+                    data.emplace_back(std::string(ent->d_name)+"/"+it);
+                }
+            }else{
+                std::string add = std::string(ent->d_name);
+                data.emplace_back(add);
+            }
         }
       }
       closedir (dir);
     } else {
+      return data;
       std::cout << "Dir not found\n";
+      getchar();
     }
     return data;
 }

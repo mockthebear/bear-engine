@@ -9,7 +9,7 @@ class TileSet{
     public:
         ~TileSet(){tileWidth=tileHeight=0;};
         TileSet(){tileWidth=tileHeight=0;};
-        virtual void Open (const char*s)=0;
+        virtual void Open (const char*s){};
         virtual void Render (int ind,int x,int y)=0;
         int GetTileWidth(){return tileWidth;};
         int GetTileHeight(){return tileHeight;};
@@ -33,13 +33,12 @@ class MultiTileSet: public TileSet{
 
 class BlockTileSet: public TileSet{
     public:
-        BlockTileSet(int tileWidth,int tileHeight,char *file);
+        BlockTileSet(int tileWidth,int tileHeight,Sprite tset);
         ~BlockTileSet();
         void RawRender(int index,int x,int y);
         void Render(int index,int x,int y);
         void Render2(int index,int x,int y,float,float);
         SDL_Texture *GetTexture();
-        void Open(const char *f);
         Sprite tileset;
     private:
 

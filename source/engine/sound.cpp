@@ -4,6 +4,7 @@
 #include "../framework/dirmanager.hpp"
 #include "../performance/console.hpp"
 #include "assetmanager.hpp"
+#include "gamebase.hpp"
 #include <stdio.h>
 #include <iostream>
 
@@ -25,6 +26,12 @@ Sound::Sound(char *s):Sound(){
 
 
 
+Sound::Sound(SoundPtr snd,const char *s):Sound(){
+    music = snd;
+    file = s;
+    channel = -1;
+    working = ConfigManager::GetInstance().IsWorkingAudio();
+}
 Sound::Sound(const char *s):Sound(){
     music = NULL;
     channel = -1;
@@ -75,16 +82,23 @@ Mix_Chunk* Sound::Preload(std::string stdnamee){
     return r_music;
 }
 
-int Sound::PlayOnce(const char *s){
+int Sound::PlayOnce(const char *s,bool global){
     if (!ConfigManager::GetInstance().IsWorkingAudio())
         return -1;
     std::string stdnamee(s);
     SoundPtr snd;
     if (stdnamee.find(":")!=std::string::npos){
-        snd = GlobalAssetManager::GetInstance().makeSound(false,ResourceManager::GetInstance().GetFile(stdnamee),stdnamee);
+        if (global)
+            snd = GlobalAssetManager::GetInstance().makeSound(false,ResourceManager::GetInstance().GetFile(stdnamee),stdnamee);
+        else
+            snd = Game::GetCurrentState().Assets.makeSound(false,ResourceManager::GetInstance().GetFile(stdnamee),stdnamee);
     }else{
-        snd = GlobalAssetManager::GetInstance().makeSound(false,s);
+        if (global)
+            snd = GlobalAssetManager::GetInstance().makeSound(false,s);
+        else
+            snd = Game::GetCurrentState().Assets.makeSound(false,s);
     }
+
     if (snd.get()){
         return Mix_PlayChannel(-1,snd.get(), 0);
     }

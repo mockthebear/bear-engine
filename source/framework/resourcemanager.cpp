@@ -19,11 +19,14 @@ ResourceManager& ResourceManager::GetInstance(){
 bool ResourceManager::Load(std::string file,std::string alias){
     if (alias == "")
         alias = file;
-    if (resources[alias])
+    if (resources[alias]){
+        Console::GetInstance().AddTextInfo(utils::format("Cannot load file 2[%s]",file.c_str()));
         return false;
+
+    }
     ResourceFile *f = new ResourceFile();
     if (!f->Open(file)){
-        Console::GetInstance().AddTextInfo(utils::format("Cannot load file [%s]",file.c_str()));
+        Console::GetInstance().AddTextInfo(utils::format("Cannot load file 1[%s]",file.c_str()));
         delete f;
         return false;
     }

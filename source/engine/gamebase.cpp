@@ -77,8 +77,8 @@ Game::Game(const char *name){
 
         if (!ResourceManager::GetInstance().Load("engine/enginedata.burr","engine")){
             Console::GetInstance().AddTextInfo("engine/enginedata.burr missing!!!");
-            getchar();
             exit(1);
+            return;
         }
 
         if (!ResourceManager::GetInstance().Load("engine/ui.burr","ui")){
@@ -217,6 +217,7 @@ void Game::Begin(){
         Console::GetInstance().AddText("[Game::Begin]<OnLoad> Returned false. May not continue!");
         Close();
         exit(1);
+        return;
     }
     if (storedState != NULL){
         stateStack.emplace(storedState);

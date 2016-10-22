@@ -204,6 +204,7 @@ namespace Collision {
 
         bool WarpAway(Rect &obj1,Rect obj2);
         bool SoftWarpAway(GameObject* thisObject,GameObject* otherObject);
+        bool SoftWarpAway(GameObject* thisObject,GameObject* otherObject,Point speed);
 
 
         int AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,PoolManager &pool,PoolGroupId gid=-1);

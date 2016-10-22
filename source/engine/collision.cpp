@@ -160,12 +160,31 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
     return ret;
 }
 
+bool Collision::SoftWarpAway(GameObject* thisObject,GameObject* otherObject,Point speed){
+    Rect aux = thisObject->box;
+    float dist = 0;
+    while (Collision::IsColliding(aux,otherObject->box)){
+        dist += 0.5;
+        aux = thisObject->box;
+        aux.x += speed.x*dist;
+        aux.y += speed.y*dist;
+        if  (not Collision::IsColliding(aux,otherObject->box)){
+            thisObject->box = aux;
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Collision::SoftWarpAway(GameObject* thisObject,GameObject* otherObject){
     Point Center1 = thisObject->box.GetCenter();
     Point Center2 = otherObject->box.GetCenter();
-    float angle = Center1.getDirection(Center2);
-    for (float dist=(otherObject->box.w+otherObject->box.h)/2;dist < otherObject->box.w*otherObject->box.w;dist++){
-        Rect aux = thisObject->box;
+    float angle = Center2.getDirection(Center1);
+    Rect aux = thisObject->box;
+    float dist = 0;
+    while (Collision::IsColliding(aux,otherObject->box)){
+        dist += 0.5;
+        aux = thisObject->box;
         aux.x += sin(angle)*dist;
         aux.y += cos(angle)*dist;
         if  (not Collision::IsColliding(aux,otherObject->box)){
@@ -196,9 +215,9 @@ bool Collision::WarpAway(Rect &obj1,Rect obj2){
     if (Center1.y > Center2.y){
         //Means top
         if (Center1.x < Center2.x){
-            direction = 0;
-        }else{
             direction = 1;
+        }else{
+            direction = 0;
         }
     }else{
         //means Bottom

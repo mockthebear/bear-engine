@@ -15,7 +15,14 @@ XmlNode * XmlNode::GetNode(int n){
     return Nodes[n];
 }
 
-
+XmlNode * XmlNode::Get(std::string name){
+    for (int i=0;i<nodeCount;i++){
+        if (Nodes[i] && Nodes[i]->GetName() == name){
+            return Nodes[i];
+        }
+    }
+    return nullptr;
+}
 Xml::Xml(){
 
 }
@@ -23,11 +30,14 @@ Xml::Xml(){
 
 
 XmlNode *Xml::Parse(std::string fileName){
+    GameFile f;
     if (not f.Open(fileName)){
         return nullptr;
     }
     f.Cache();
+
     std::string data = f.GetCache();
+
 
     utils::ReadUntil(data,"<?");
     if (data.length() <= 0){
@@ -54,15 +64,16 @@ XmlNode *Xml::Parse(std::string fileName){
     d->nodeCount = 0;
     while (content.length() > 0){
         std::string baseName = utils::ReadUntil(content,'=');
+        utils::TrimString(baseName,' ');
         utils::ReadUntil(content,'"');
         std::string nodeContent = utils::ReadUntil(content,'"');
-        std::cout << "["<<baseName<<"]" << " = "<< nodeContent <<"\n";
         utils::ReadUntil(content,' ');
         d->Data[baseName] = nodeContent;
     }
     d->Name = mouduleName;
     std::string dataFromWithin = utils::ReadUntil(data,"</"+mouduleName+">");
     ParsePartial(d,dataFromWithin);
+
     return d;
 }
 
@@ -91,26 +102,29 @@ void Xml::ParsePartial(XmlNode *d,std::string content){
         aux->nodeCount = 0;
         utils::ReadUntil(content,"<");
         std::string mouduleName = utils::ReadWord(content,0,' ');
-        std::cout << "Module is: "<<mouduleName<<"\n";
         std::string internalData = utils::ReadUntil(content,">");
-        std::cout << "The internal data is: ["<<internalData<<"]\n";
+        bool justATag = false;
+        if (internalData[internalData.length()-1] == '/' || mouduleName.length() == 0){
+            justATag = true;
+        }
         while (internalData.length() > 0){
             std::string baseName = utils::ReadUntil(internalData,'=');
+            utils::TrimString(baseName,' ');
             utils::ReadUntil(internalData,'"');
             std::string nodeContent = utils::ReadUntil(internalData,'"');
-            std::cout << "["<<baseName<<"]" << " = "<< nodeContent <<"\n";
             utils::ReadUntil(internalData,' ');
             if (baseName.length() > 0){
                 aux->Data[baseName] = nodeContent;
-            }
 
+            }
         }
-        std::string dataFromWithin = utils::ReadUntil(content,"</"+mouduleName+">");
-        if (IsXmlString(dataFromWithin)){
-            std::cout << "Recursivooooooo\n";
-            ParsePartial(aux,dataFromWithin);
-        }else{
-            aux->Value = dataFromWithin;
+        if (!justATag){
+            std::string dataFromWithin = utils::ReadUntil(content,"</"+mouduleName+">");
+            if (IsXmlString(dataFromWithin)){
+                ParsePartial(aux,dataFromWithin);
+            }else{
+                aux->Value = dataFromWithin;
+            }
         }
         if (mouduleName.length() > 0){
             aux->Name =  mouduleName;

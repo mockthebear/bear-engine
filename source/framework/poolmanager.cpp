@@ -1,5 +1,6 @@
 #include "poolmanager.hpp"
 #include "../luasystem/luaobject.hpp"
+#include "../engine/bear.hpp"
 
 PoolManager::PoolManager(bool insertUnregistered){
 
@@ -14,12 +15,12 @@ PoolManager::PoolManager(bool insertUnregistered){
 
 PoolManager::~PoolManager(){
     delete []contentList;
-    Console::GetInstance().AddTextInfo("Erasing pools.");
+    bear::out << "Erasing pools.\n";
     for(unsigned int i = 0; i< Pools.size(); ++i){
         if (Pools[i].Drop)
             Pools[i].Delete();
     }
-    Console::GetInstance().AddTextInfo("Pools deleted.");
+    bear::out << "Pools deleted.\n";
 }
 
 PoolId PoolManager::RegisterPool(std::function<int(void)> maxFuncion,

@@ -18,16 +18,28 @@ class AssetMannager{
 
 
 
-        TexturePtr makeTexture(bool forced,std::string str,bool hasAliasing=false){
-            return makeTexture(forced,str,1,0,1, hasAliasing);
-        };
-        TexturePtr makeTexture(bool forced,std::string str,int fcount,float ftime=0,int rep=1,bool hasAliasing=false);
+        TexturePtr makeTexture(bool forced,std::string str,int fcount=1,float ftime=0,int rep=1,bool hasAliasing=false);
         TexturePtr makeTexture(bool forced,SDL_RWops* rw,std::string str,bool hasAntiAliasign=false);
         TexturePtr makeTexture(bool forced,std::string fileName,ColorReplacer &r,bool HasAliasing=false);
 
 
         SoundPtr makeSound(bool forced,std::string fileName);
         SoundPtr makeSound(bool forced,SDL_RWops* rw,std::string str);
+
+        std::vector<std::string> getAssetNamesInternal(Sprite t){
+            std::vector<std::string> stuff;
+            for (auto &it : spriteMap){
+                stuff.emplace_back(it.first);
+            }
+            return stuff;
+        }
+
+
+        template<typename T> std::vector<std::string> getAssetNames(){
+            T empt;
+            std::vector<std::string> assetList = getAssetNamesInternal(empt);
+            return assetList;
+        }
 
 
 

@@ -21,8 +21,10 @@ template <typename T> class chain_ptr{
         };
 
         void destroy(){
-            delete myHolder[0];
-            delete myHolder;
+            if (myHolder){
+                delete myHolder[0];
+                delete myHolder;
+            }
         }
 
         static chain_ptr<T> make(T *TrueData){
@@ -43,7 +45,8 @@ template <typename T> class chain_ptr{
             return *(myHolder[0]);  //This will return the middle pointer object
         }
         void reset(T *data){
-            myHolder[0][0] = data;
+            if (myHolder)
+                myHolder[0][0] = data;
         }
     private:
         T*** myHolder;

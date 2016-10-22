@@ -159,6 +159,7 @@
 		<Unit filename="luasystem/luaobject.hpp" />
 		<Unit filename="luasystem/luatools.hpp" />
 		<Unit filename="main.cpp" />
+		<Unit filename="mobile/android/jnihelper.hpp" />
 		<Unit filename="performance/console.cpp" />
 		<Unit filename="performance/console.hpp" />
 		<Unit filename="resource.rc">

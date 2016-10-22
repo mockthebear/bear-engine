@@ -32,13 +32,13 @@ void ScreenManager::TerminateScreen(){
 
     if (m_renderer != NULL){
         std::cout << "[Terminating renderer]\n";
-        //SDL_DestroyRenderer( m_renderer );
+        SDL_DestroyRenderer( m_renderer );
         m_renderer = NULL;
         std::cout << "[Done] "<<SDL_GetError()<<"\n";
     }
 
     if (m_window != NULL){
-        std::cout << "[Terminating window]\n";
+        std::cout << "[Terminating window]"<<SDL_GetError()<<"\n";
         SDL_DestroyWindow( m_window );
         m_window = NULL;
         std::cout << "[Done] "<<SDL_GetError()<<"\n";

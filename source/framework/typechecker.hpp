@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#define TYPEOF(var) typeid(var).hash_code()
+#define TYPEOF(var) (int)typeid(var).hash_code()
 
 
 
