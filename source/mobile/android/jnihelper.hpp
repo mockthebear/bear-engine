@@ -31,39 +31,37 @@ template<> struct GenericJniCaller <float>{
 class JniHelper{
     public:
         template <class Ret,typename ... Types> static Ret CallFunction(Types... arg){
-            //JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
-            //jobject activity = (jobject)SDL_AndroidGetActivity();
-            //jclass clazz(env->GetObjectClass(activity));
+            #ifdef __ANDROID__
+            JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
+            jobject activity = (jobject)SDL_AndroidGetActivity();
+            jclass clazz(env->GetObjectClass(activity));
 
 
-            //jstring jStringParam = env->NewStringUTF( par.c_str() );
-            //jmethodID method_id = env->GetMethodID(clazz, name.c_str(), "(Ljava/lang/String;)V");
+            jstring jStringParam = env->NewStringUTF( par.c_str() );
+            jmethodID method_id = env->GetMethodID(clazz, name.c_str(), "(Ljava/lang/String;)V");
 
-            //auto ArgumentList = argument::makeTypes<Types ...>(arg...);
+            auto ArgumentList = argument::makeTypes<Types ...>(arg...);
             //readLuaValues<sizeof...(Types)>::Read(ArgumentList);
             auto t = GenericJniCaller<std::string>::Call("ad");
             //std::tuple<int,float> t(1,3.4f);
             //auto t2 = std::tuple_cat(t,std::make_pair("Foo", "bar"));
-            auto f = [=](){
-                std::cout << "oiq\n";
-            };
-            std::cout << t << "\n";
-            //Ret rData = m_expander<sizeof...(Types),Ret>::expand(f,arg...);
+
+            Ret rData = m_expander<sizeof...(Types),Ret>::expand(f,arg...);
 
 
-            //env->CallVoidMethod(activity, method_id,jStringParam);
+            env->CallVoidMethod(activity, method_id,jStringParam);
+            env->DeleteLocalRef( jStringParam );
 
-            //env->DeleteLocalRef( jStringParam );
-
-            //env->DeleteLocalRef(activity);
-            //env->DeleteLocalRef(clazz);
+            env->DeleteLocalRef(activity);
+            env->DeleteLocalRef(clazz);
+            #endif
         }
     private:
 
 
 
 
-        /*template<int N,typename Ret> struct m_expander {
+        template<int N,typename Ret> struct m_expander {
             template<typename Function, typename... Args>
                 static Ret expand(const Function& f, const Args&... args) {
                     return m_expander<N-1,Ret>::expand(args...);
@@ -78,7 +76,7 @@ class JniHelper{
         template<typename Ret, typename F, typename... Args> Ret m_functionCaller(const F& f,const Args&... args) {
             Ret ret = f(args...);
             return (Ret)ret;
-        }*/
+        }
 
 
 };

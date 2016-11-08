@@ -9,7 +9,7 @@ PoolManager::PoolManager(bool insertUnregistered){
     localMaximum = 0;
     GroupsCount = 0;
     nextPoolGroup = 255;
-    this->insertUnregistered = insertUnregistered)
+    this->insertUnregistered = insertUnregistered;
     indexCounter = insertUnregistered ? 1 : 0;
 }
 

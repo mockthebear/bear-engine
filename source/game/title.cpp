@@ -39,7 +39,7 @@ Title::Title(){
 
     Group = Pool.CreatePoolGroup(group);
 
-    astar = PathFind(800,600);
+    astar = PathFind(SCREEN_SIZE_W,SCREEN_SIZE_H);
 
     bg = Assets.make<Sprite>("data:wall.jpg");
 
@@ -51,7 +51,7 @@ Title::Title(){
     int s=0;
     std::cout <<"Value is: ["<< utils::GetU16c(c,s) << "]\n";
 
-    Camera::Initiate(Rect(0,0,SCREEN_SIZE_H,SCREEN_SIZE_W),128,200);
+    Camera::Initiate(Rect(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H),128,200);
     Camera::speed = 0;
 
     InputManager::GetInstance().SetTouchOffset(Point(8,0));
@@ -84,8 +84,8 @@ void Title::Begin(){
 
 
 
-    Light::GetInstance()->StartLights( Point(800,600) ,Point(160,160) ,6,6.5,90);
-    Light::GetInstance()->SetLightRaysCount(128);
+    Light::GetInstance()->StartLights( Point(SCREEN_SIZE_W,SCREEN_SIZE_H) ,Point(160,160) ,8,6.5,90);
+    Light::GetInstance()->SetLightRaysCount(120);
 
 }
 
@@ -208,7 +208,7 @@ void Title::Update(float dt){
 
 void Title::Render(){
 
-    RenderHelp::DrawSquareColorA(0,0,800,600,255,255,255,255);
+    RenderHelp::DrawSquareColorA(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H,255,255,255,255);
     bg.Render(0,0);
     Light::GetInstance()->Update(0,LIGHT_REDUCE);
 

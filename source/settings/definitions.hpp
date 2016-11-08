@@ -25,8 +25,8 @@
     Screen
 */
 
-#define SCREEN_SIZE_W 800
-#define SCREEN_SIZE_H 600
+#define SCREEN_SIZE_W 1000
+#define SCREEN_SIZE_H 900
 
 #define MAXFPS 900.0
 
