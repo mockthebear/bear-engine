@@ -2,6 +2,7 @@
 #define INPUTDEF_BE
 
 #define MAX_TOUCHSCREEN_FINGERS 20
+#include <map>
 /**
  * @brief Enum to pressed status
  */
@@ -59,4 +60,5 @@ class TouchInfo{
         */
         float y_f;
 };
+
 #endif // INPUTDEF_BE

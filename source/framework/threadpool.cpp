@@ -55,7 +55,7 @@ ThreadPool::ThreadPool(int threads){
     }
     Locked = true;
     #else
-    std::cout << "Threads are disabled.";
+    bear::out << "Threads are disabled.";
     UsePThreads=1;
     Params = new  parameters[UsePThreads];
     Params[0].id = 0;

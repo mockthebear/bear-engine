@@ -39,14 +39,20 @@ class Sound{
 
         bool IsOpen();
         bool IsPlaying();
-        static int PlayOnce(const char *s,bool useGlobalAssetManager=false);
+        static int PlayOnce(const char *s,bool useGlobalAssetManager=false,int volume=-128);
+
 
         static Mix_Chunk* Preload (std::string name);
         static Mix_Chunk* Preload(SDL_RWops* file,std::string name);
 
         std::string GetFileName(){return file;};
         void SetAssetManager(int id){};
+        static bool SetMasterVolume(uint8_t vol);
+        static uint8_t GetMasterVolume(){ return MasterVolume;};
+
+
     private:
+        static uint8_t MasterVolume;
 
         bool static working;
         std::string file;

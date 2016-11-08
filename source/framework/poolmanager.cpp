@@ -9,7 +9,7 @@ PoolManager::PoolManager(bool insertUnregistered){
     localMaximum = 0;
     GroupsCount = 0;
     nextPoolGroup = 255;
-    this->insertUnregistered = insertUnregistered;
+    this->insertUnregistered = insertUnregistered)
     indexCounter = insertUnregistered ? 1 : 0;
 }
 
@@ -54,19 +54,26 @@ void PoolManager::ErasePools(){
     }
     Pools.clear();
 }
-bool PoolManager::InternalAddInstance(GameObject *obj){
+GameObject *PoolManager::InternalAddInstance(GameObject *obj,bool deleteptr){
     for(unsigned int i = 0; i< Pools.size(); ++i){
         if (obj->IsHash(Pools[i].Hash())){
-            Pools[i].Add(obj);
-            return true;
+            GameObject *add = Pools[i].Add(obj);
+            if (deleteptr)
+                delete obj;
+            GenerateInternalPool();
+            return add;
         }
     }
     if (insertUnregistered){
         Unregistered.emplace_back(obj);
-        return true;
+        GenerateInternalPool();
+        return obj;
+    }else{
+        bear::out << "Cannot add object with PoolManager::insertUnregistered as false.\n";
+        int type = TypeChecker::GetInstance().getObjectType(obj);
+        bear::out << "Object typeid is "<< type << " named as " << TypeChecker::GetInstance().getTypeName(type) << "\n";
+        return nullptr;
     }
-    GenerateInternalPool();
-    return false;
 }
 
 void PoolManager::GenerateInternalPool(){
@@ -87,9 +94,8 @@ void PoolManager::GenerateInternalPool(){
         }
     }
     for(unsigned int i = 0; i< Unregistered.size(); ++i){
-        GameObject *obj = Unregistered[i];
-        if (obj != NULL && !obj->IsDead()){
-            contentList[count] = obj;
+        if (Unregistered[i].get() != NULL && !Unregistered[i]->IsDead()){
+            contentList[count] = Unregistered[i].get();
             count++;
         }
     }
@@ -211,10 +217,33 @@ void PoolManager::Update(float dt){
     for(unsigned int i = 0; i< Pools.size(); ++i){
         Pools[i].Update(dt);
     }
+    for (auto &it : Unregistered){
+        it->Update(dt);
+    }
 }
 
 void PoolManager::PreRender(std::map<int,std::vector<GameObject*>*> &Map){
     for(unsigned int i = 0; i< Pools.size(); ++i){
         Pools[i].PRender(Map);
+    }
+    for (auto &it : Unregistered){
+        if (!it->IsDead() && Camera::EffectArea.IsInside(it->box)  ){
+            if (it->hasPerspective() == 0){
+                int posy = it->box.y;
+                if (!Map[posy]){
+                    Map[posy] = new std::vector<GameObject*>;
+                    Map[posy]->emplace_back( it.get());
+                }else{
+                    Map[posy]->emplace_back( it.get());
+                }
+            }else{
+                int persp = it->hasPerspective();
+                if (!Map[persp]){
+                    Map[persp] = new std::vector<GameObject*>;
+                }
+                Map[persp]->emplace_back( it.get());
+            }
+        }
+
     }
 }

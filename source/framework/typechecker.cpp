@@ -1,6 +1,8 @@
 #include "typechecker.hpp"
 #include "../engine/object.hpp"
 
+int TypeChecker::typeCounter = 0;
+
 TypeChecker::TypeChecker(){
 
 }
@@ -21,3 +23,4 @@ bool TypeChecker::checkType(GameObject *object1,GameObject *object2){
 bool TypeChecker::checkType(GameObject *object1,int hash){
     return object1->GetHash() == hash;
 }
+

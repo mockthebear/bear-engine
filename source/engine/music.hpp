@@ -34,7 +34,10 @@ class Music{
         void SetVolume(int vol);
         static void Clear();
         std::string GetFileName(){return file;};
+        static bool SetMasterVolume(uint8_t vol);
+        static uint8_t GetMasterVolume(){ return MasterVolume;};
     private:
+        static uint8_t MasterVolume;
         bool isPlaying;
         bool working;
         std::string file;

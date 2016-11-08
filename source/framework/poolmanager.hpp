@@ -203,12 +203,15 @@ class PoolManager{
         */
 
 
+        template<typename T>GameObject* AddInstance(T* obj,bool deletePtr=false){
+            return InternalAddInstance((GameObject*)obj,deletePtr);
+        }
+
         template<typename T> GameObject* AddInstance(T object){
             GameObject *added = NULL;
             for(int i = 0; i< Pools.size(); ++i){
                 if (object.IsHash(Pools[i].Hash())){
                     added = Pools[i].Add(&object);
-
                     GenerateInternalPool();
                     return added;
                 }
@@ -312,12 +315,12 @@ class PoolManager{
         int LuaPool;
         GameObject **contentList;
         int localMaximum;
-        bool InternalAddInstance(GameObject *);
+        GameObject * InternalAddInstance(GameObject *,bool deleteptr);
         uint8_t indexCounter;
         int GroupsCount;
         std::vector<Holder> Pools;
         std::vector<PoolGroup> Groups;
-        std::vector<GameObject*> Unregistered;
+        std::vector<std::unique_ptr<GameObject>> Unregistered;
 };
 
 

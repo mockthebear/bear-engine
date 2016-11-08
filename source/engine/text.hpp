@@ -1,3 +1,6 @@
+// *** ADDED BY HEADER FIXUP ***
+#include <iterator>
+// *** END ***
 #include "../framework/geometry.hpp"
 #include "sprite.hpp"
 
@@ -92,6 +95,9 @@ class CustomFont{
         /**
             *Constructor
         */
+        CustomFont(){
+            loaded = false;
+        };
         CustomFont(std::string letterpositions);
         /**
             *BYE
@@ -106,9 +112,10 @@ class CustomFont{
             @return Point containing the width and height of the text
         */
         Point GetSizes(std::string str);
+        Sprite sp;
     private:
         bool loaded;
-        Sprite *sp;
+
         int oldAlpha;
         std::unordered_map<unsigned char, std::unique_ptr<Letter>> Letters;
 };

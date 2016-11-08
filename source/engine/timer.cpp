@@ -15,16 +15,6 @@ Timer::Timer(float duration,int repeat){
 void Timer::Update(float dt){
     if (!m_enabled)
         return;
-    if (m_time <= 0){
-        if (m_repeat > 0 or m_repeat == -1){
-            if (m_repeat != -1)
-                m_repeat--;
-            m_time = m_duration;
-        }else{
-            m_enabled = false;
-            return;
-        }
-    }
     m_time -= dt;
 };
 
@@ -35,6 +25,7 @@ void Timer::SetDuration(float duration){
 void Timer::Restart(){
     m_time = m_duration;
     m_enabled = true;
+    m_repeat = 0;
 };
 
 float Timer::Get(){

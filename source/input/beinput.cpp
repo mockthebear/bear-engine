@@ -30,6 +30,9 @@ bool BEInput::RegisterInput(BEKeyBinds key,InputMethod method){
 }
 
 
+void BEInput::clear(){
+    keyData.clear();
+}
 bool BEInput::IsKeyDown(BEKeyBinds key){
     for (auto &it : keyData[key]){
         InputState state = GetKeyStatus(it);
@@ -58,6 +61,26 @@ bool BEInput::KeyPress(BEKeyBinds key){
     }
     return false;
 }
+int BEInput::GetKeyBind(BEKeyBinds key,InputMethodIdentifier method){
+    for (auto &it : keyData[key]){
+        if (it.method == method){
+            return it.Key;
+        }
+    }
+    return -1;
+}
+
+bool BEInput::IsBound(int key,InputMethodIdentifier method){
+    for (auto &vec : keyData){
+        for (auto &it : vec.second){
+            if (it.method == method && it.Key == key){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 bool BEInput::KeyRelease(BEKeyBinds key){
     for (auto &it : keyData[key]){
         InputState state = GetKeyStatus(it);

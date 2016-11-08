@@ -3,6 +3,7 @@
 #define CONFIGH
 
 #include "definitions.hpp"
+#include "../engine/sprite.hpp"
 #include "../framework/geometry.hpp"
 #include <vector>
 #include <string>
@@ -24,6 +25,7 @@ class ConfigManager{
         PointInt GetScreenSize(){return m_screenSize;};
 
         void SetScreenSize(int w,int h);
+        void SetWindowIcon(std::string icon,ColorReplacer &r);
         void SetWindowIcon(std::string icon);
 
         bool IsWorkingAudio(){return hasAudio;};

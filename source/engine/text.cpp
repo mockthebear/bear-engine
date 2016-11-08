@@ -23,15 +23,15 @@ CustomFont::CustomFont(std::string letterpositions){
 
         int m = j.find("@");
         j = j.substr (m+1);
-        if (sscanf(j.c_str(),"<%[a-z./\\0-9 ]>:%s@",pngfile,data)){
-            sp = new Sprite(pngfile);
+        if (sscanf(j.c_str(),"<%[a-z./\\0-9 :]>:%s@",pngfile,data)){
+            sp = Game::GetCurrentState().Assets.make<Sprite>(pngfile);
             std::string letterData = data;
              bool find = true;
             int m=1;
             char letter[10];
             int xx=0,yy=0,hh=0,ww=0,padd=0,pddin=0,yoffset=0;
             while (find and m > 0){
-                if ( (sscanf(letterData.c_str(),"%[a-zA-Z0-9*+,.-]=<%d,%d,%d,%d,%d,%d,%dx>",letter,&xx,&yy,&ww,&hh,&padd,&pddin,&yoffset))  ){
+                if ( (sscanf(letterData.c_str(),"%c=<%d,%d,%d,%d,%d,%d,%dx>",letter,&xx,&yy,&ww,&hh,&padd,&pddin,&yoffset))  ){
                     m = letterData.find(";");
                     if (m != -1){
                         Letters[(unsigned char)letter[0]] = std::unique_ptr<Letter>(new Letter(xx,yy,ww,hh,padd,pddin,yoffset));
@@ -48,13 +48,11 @@ CustomFont::CustomFont(std::string letterpositions){
         delete content;
         delete fp;
     }else{
-        std::cout << "[CustomFont::CustomFont] Cannot load [" <<letterpositions<< "]\n";
+        bear::out << "[CustomFont::CustomFont] Cannot load [" <<letterpositions<< "]\n";
         delete fp;
     }
 }
 CustomFont::~CustomFont(){
-    if (loaded)
-        delete sp;
     Letters.clear();
 }
 
@@ -100,7 +98,7 @@ Point CustomFont::Render(std::string str_,int x_,int y_,int alpha){
     int y=0;
     if (oldAlpha != alpha){
         oldAlpha = alpha;
-        sp->SetAlpha(alpha);
+        sp.SetAlpha(alpha);
     }
 
     for (unsigned int i=0;i<str_.size();i++){
@@ -115,8 +113,8 @@ Point CustomFont::Render(std::string str_,int x_,int y_,int alpha){
         }else{
             Letter l = *Letters[str[i]].get();
 
-                sp->SetClip(l.x,l.y,l.w,l.h);
-                sp->Render(beginx+x+l.padin,beginy+y+l.yoffset);
+                sp.SetClip(l.x,l.y,l.w,l.h);
+                sp.Render(beginx+x+l.padin,beginy+y+l.yoffset);
                 x+= l.w + l.pad;
         }
         p.x = std::max((int)p.x,x);

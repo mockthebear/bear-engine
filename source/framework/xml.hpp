@@ -10,6 +10,9 @@ class XmlNode{
         std::string GetName(){return Name;};
         std::string GetValue(){return Value;};
         std::string Info(std::string Info){return Data[Info];};
+        int InfoInt(std::string Info){
+            return utils::GetNumber(Data[Info]);
+        };
         XmlNode * Get(std::string name);
 
         XmlNode * Next();

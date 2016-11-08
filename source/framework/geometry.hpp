@@ -135,36 +135,43 @@ typedef GenericPoint<int> PointInt;
 /**
     @brief Basic rect class
 */
-class Rect{
+template <typename T=float>class GenericRect{
     public:
         /**
             Constructor
         */
-        Rect(float x,float y ,float w,float h);
+        GenericRect(T xx,T yy ,T ww,T hh){
+            x = xx;
+            y = yy;
+            h = hh;
+            w = ww;
+        }
         /**
             Empty constructor start all components with 0
         */
 
-        Rect(const int n[4]){
+        GenericRect(const int n[4]){
             x = n[0];
             y = n[1];
             w = n[2];
             h = n[3];
         };
-        Rect(const float n[4]){
+        GenericRect(const float n[4]){
             x = n[0];
             y = n[1];
             w = n[2];
             h = n[3];
         };
-        Rect(const long n[4]){
+        GenericRect(const long n[4]){
             x = n[0];
             y = n[1];
             w = n[2];
             h = n[3];
         };
 
-        Rect();
+        GenericRect(){
+            x = y = h = w = 0;
+        };
         /**
             Update only the x,y
             @param p Get a point then apply Point x and y to the cordinates of the Rect
@@ -173,38 +180,70 @@ class Rect{
             x = p.x;
             y = p.y;
         };
+
+        void operator=(const GenericRect<int>& p){
+            x = p.x;
+            y = p.y;
+            w = p.w;
+            h = p.h;
+        };
+        void operator=(const GenericRect<double>& p){
+            x = p.x;
+            y = p.y;
+            w = p.w;
+            h = p.h;
+        };
+        void operator=(const GenericRect<float>& p){
+            x = p.x;
+            y = p.y;
+            w = p.w;
+            h = p.h;
+        };
         /**
             Get x,y
             @return an Point with the x,y
         */
-        Point GetPos(){return Point(x,y);};
+        GenericPoint<T> GetPos(){return GenericPoint<T>(x,y);};
         /**
             @return the middle position of the rect. X axis
         */
-        float getXCenter(){return x+w/2.0;};
+        T getXCenter(){return x+w/2.0;};
         /**
             @return the middle position of the rect. Y axis
         */
-        float getYCenter(){return y+h/2.0;};
+        T getYCenter(){return y+h/2.0;};
         /**
             @return if the given two positions are inside the rect
         */
-        bool IsInside(float xx,float yy);
+        bool IsInside(T xx,T yy){
+            return xx >= x and xx <= x+w and yy >= y and yy <= y+h;
+        };
+        bool IsInside(Point p){
+            return p.x >= x and p.x <= x+w and p.y >= y and p.y <= y+h;
+        };
         /**
             @return if the given Point are inside the rect
         */
-        bool IsInside(Rect *r);
-        /**
-            @param n Add n to all values
-        */
-        void Sum(float n);
+        bool IsInside(GenericRect<int> r){
+            return r.x >= x and r.x <= x+w and r.y >= y and r.y <= y+h;
+        };
+        bool IsInside(GenericRect<float> r){
+            return r.x >= x and r.x <= x+w and r.y >= y and r.y <= y+h;
+        };
+        bool IsInside(GenericRect<double> r){
+            return r.x >= x and r.x <= x+w and r.y >= y and r.y <= y+h;
+        };
+
+
         /**
             @return A Point containing in x,y the middle position of the rect
         */
-        Point GetCenter();
-        float x,y,h,w;
-
+        GenericPoint<T> GetCenter(){return GenericPoint<T>(x+(w/2.0),y+(h/2.0));}
+        T x,y,h,w;
 };
+
+typedef GenericRect<float> Rect;
+typedef GenericRect<int> RectInt;
 /**
     @brief [WIP] Class to deal with angles and geometry stuff
 */

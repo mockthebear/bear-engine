@@ -1,3 +1,6 @@
+// *** ADDED BY HEADER FIXUP ***
+#include <string>
+// *** END ***
 #ifndef BE_CONSOLE
 #define BE_CONSOLE
 #include "../engine/text.hpp"

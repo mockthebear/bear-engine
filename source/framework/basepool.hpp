@@ -34,11 +34,11 @@ template <typename T> class SPP{
 
             max = size;
             pool = new T[size+1];
-            Type = typeid(T).hash_code();
+            Type = TypeChecker::Get<T>();
             for (int in=0;in<=size;in++){
                 pool[in].poolIndex = in;
                 if (pool[in].GetHash() != Type){
-                    std::cout << "[Basepool:create] There is something wrong about the type "<< typeid(T).name() <<". You forgot to set OBJ_REGISTER() in creator "<<pool[in].GetHash()<< "x "<< Type <<"?\n";
+                    bear::out << "[Basepool:create] There is something wrong about the type "<< typeid(T).name() <<". You forgot to set OBJ_REGISTER() in creator "<<pool[in].GetHash()<< "x "<< Type <<"?\n";
                 }
             }
         };
@@ -66,7 +66,7 @@ template <typename T> class SPP{
         */
         void PreRender(std::map<int,std::vector<GameObject*>*> &Map){
             for (int i=0;i<GetMaxInstances();i++){
-                if (!pool[i].IsDead() && Camera::EffectArea.IsInside(&pool[i].box)  ){
+                if (!pool[i].IsDead() && Camera::EffectArea.IsInside(pool[i].box)  ){
                     if (pool[i].hasPerspective() == 0){
                         int posy = pool[i].box.y;
                         if (!Map[posy]){
@@ -151,7 +151,7 @@ template <typename T> class SPP{
             for (int i=0;i<GetMaxInstances();i++){ //Maximo adcionado
                 if (!pool[i].IsDead()){
 
-                   if (pool[i].canForceUpdate() or Camera::UpdateArea.IsInside(&pool[i].box)){
+                   if (pool[i].canForceUpdate() or Camera::UpdateArea.IsInside(pool[i].box)){
                         pool[i].Update(dt);
                    }
                 }
@@ -170,7 +170,7 @@ template <typename T> class SPP{
         void UpdateInstancesForced(float dt){
             for (int i=0;i<max;i++){ //Maximo adcionado
                 if (!pool[i].IsDead()){
-                   if (Camera::UpdateArea.IsInside(&pool[i].box) or pool[i].canForceUpdate() ){
+                   if (Camera::UpdateArea.IsInside(pool[i].box) or pool[i].canForceUpdate() ){
                         pool[i].Update(dt);
                    }
                 }

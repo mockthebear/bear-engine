@@ -78,7 +78,7 @@ XmlNode *Xml::Parse(std::string fileName){
 }
 
 bool Xml::IsXmlString(std::string str){
-    for (int i=0;i<str.length();i++){
+    for (uint32_t i=0;i<str.length();i++){
         char c = str[i];
         if (c == '<'){
             if (str[i+1] != '!'){

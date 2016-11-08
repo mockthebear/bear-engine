@@ -7,8 +7,8 @@
 
 class TileSet{
     public:
-        ~TileSet(){tileWidth=tileHeight=0;};
         TileSet(){tileWidth=tileHeight=0;};
+        virtual ~TileSet() {};
         virtual void Open (const char*s){};
         virtual void Render (int ind,int x,int y)=0;
         int GetTileWidth(){return tileWidth;};
@@ -33,8 +33,8 @@ class MultiTileSet: public TileSet{
 
 class BlockTileSet: public TileSet{
     public:
+        ~BlockTileSet(){};
         BlockTileSet(int tileWidth,int tileHeight,Sprite tset);
-        ~BlockTileSet();
         void RawRender(int index,int x,int y);
         void Render(int index,int x,int y);
         void Render2(int index,int x,int y,float,float);

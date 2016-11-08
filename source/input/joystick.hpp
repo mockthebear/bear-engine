@@ -214,6 +214,11 @@ class Joystick{
         int GetHatsCount(){return m_hats;};
 
         std::string GetName(){return m_name;};
+
+        int IsAnyKeyPressed(){
+            return anyKeyPressed;
+        }
+
     private:
         /* Buttons */
         std::unordered_map<int, InputState> Buttons;
@@ -239,7 +244,7 @@ class Joystick{
         int m_axes,m_buttons,m_balls,m_hats;
         SDL_Joystick *m_joyHandler;
         SDL_Haptic *m_haptic;
-        bool anyKeyPressed;
+        int anyKeyPressed;
 
 
 

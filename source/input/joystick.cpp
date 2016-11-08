@@ -56,7 +56,7 @@ void Joystick::Render(int id){
 void Joystick::Update(float dt){
     if (!IsWorking())
         return;
-    anyKeyPressed = false;
+    anyKeyPressed = -1;
     for ( auto it = Buttons.begin(); it != Buttons.end(); ++it ){
         if (it->second == JUST_PRESSED){
             it->second = PRESSED;
@@ -84,7 +84,7 @@ bool Joystick::IsButtonUp(int key){
 void Joystick::Button(int button,int state){
     if (state == SDL_PRESSED){
         if (Buttons[button] != PRESSED){
-            anyKeyPressed = true;
+            anyKeyPressed = button;
             Buttons[button] = JUST_PRESSED;
         }
     }else{

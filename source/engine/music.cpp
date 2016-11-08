@@ -7,7 +7,7 @@
 
 std::unordered_map<std::string, Mix_Music*> Music::assetTable;
 
-
+uint8_t Music::MasterVolume = MIX_MAX_VOLUME;
 Music::Music(){
     music = NULL;
     working = BearEngine->AudioWorking();
@@ -20,7 +20,12 @@ Music::Music(char *s):Music(){
 Music::Music(const char *s):Music(){
     Open(s);
 }
+bool Music::SetMasterVolume(uint8_t vol){
+    MasterVolume = std::min((uint8_t)MIX_MAX_VOLUME,vol);
+    Mix_VolumeMusic(MasterVolume);
+    return true;
 
+}
 void Music::SetVolume(int vol){
     if (BearEngine->AudioWorking())
         Mix_VolumeMusic(vol);
@@ -73,7 +78,7 @@ void Music::Open(const char *s){
         if (music){
             assetTable[stdnamee] = music;
         }else{
-            std::cout << "[Music::Open] Cannot play "<<stdnamee<<" because : "<< Mix_GetError() <<"\n";
+            bear::out << "[Music::Open] Cannot play "<<stdnamee<<" because : "<< Mix_GetError() <<"\n";
         }
     }
     if (IsOpen()){
@@ -108,7 +113,7 @@ bool Music::Preload(const char *s){
             assetTable[stdnamee] = musick;
             return true;
         }else{
-            std::cout << "[Music::Open] Cannot play "<<stdnamee<<" because : "<< Mix_GetError() <<"\n";
+            bear::out << "[Music::Open] Cannot play "<<stdnamee<<" because : "<< Mix_GetError() <<"\n";
         }
     }
     return false;
@@ -118,6 +123,7 @@ void Music::Play(int times){
         return;
     if (IsOpen())
         Mix_PlayMusic(music, times);
+        Mix_VolumeMusic(MasterVolume);
 }
 
 void Music::Stop(){

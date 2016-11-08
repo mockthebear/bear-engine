@@ -1,3 +1,6 @@
+// *** ADDED BY HEADER FIXUP ***
+#include <ctime>
+// *** END ***
 #include "../settings/definitions.hpp"
 #ifndef SHADER_
 #define SHADER_

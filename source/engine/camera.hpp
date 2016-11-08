@@ -16,15 +16,15 @@ class Camera{
         /**
             The true camera position
         */
-        static Rect pos;
+        static RectInt pos;
         /**
             An area bigger than Camera::pos, it will tell what instances can be rendered
         */
-        static Rect EffectArea;
+        static RectInt EffectArea;
         /**
             An area bigger than Camera::pos and maybe same size as Camera::EffectArea, it will tell what instances can be updated
         */
-        static Rect UpdateArea;
+        static RectInt UpdateArea;
         /**
             *This will startup the camera with the default values of the screen as the main Rect\n
             *Start a 0,0
@@ -39,7 +39,7 @@ class Camera{
         /**
             Used to move the camera only in its position
         */
-        void operator=(const Rect& b){ pos = b;};
+        void operator=(const RectInt& b){ pos = b;};
         /**
             Used to move the camera only in its position
         */
@@ -98,13 +98,15 @@ class Camera{
         static PointInt AdjustPosition(Point p);
         static PointInt AdjustPosition(Rect p);
         static PointInt AdjustPosition(Circle p);
+        static float maxX,maxY,minX,minY,MouseRange;
+        static bool UseLimits;
     private:
     static GameObject *focus;
     static int Offset_x,Offset_y;
-    static bool UseLimits;
+
     static bool Smooth;
     static int OffsetEffect,OffsetUpdate;
-    static float maxX,maxY,minX,minY,MouseRange;
+
 };
 
 #endif

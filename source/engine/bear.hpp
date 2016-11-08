@@ -27,7 +27,12 @@ namespace bear {
         return o;
     }
 
-
+    class randomStuff{
+        bear::outstream out2;
+        randomStuff(int a){
+            out2 = out;
+        }
+    };
 
 }
 

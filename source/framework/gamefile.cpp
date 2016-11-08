@@ -221,7 +221,6 @@ int GameFile::FindInt(){
         }
     }
     i = by-'0';
-    std::cout << "a:" << i << "\n";
     by = ReadByte();
     while (by >= '0' && by <= '9'){
         i *= 10;

@@ -200,7 +200,7 @@ class Particle: public GameObject{
             Saved position from where it was created
         */
         Point createdPosition;
-
+        Sprite &GetSprite(){ return sp;};
     private:
         /*
             Rotation stuff

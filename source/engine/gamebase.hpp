@@ -1,3 +1,6 @@
+// *** ADDED BY HEADER FIXUP ***
+#include <string>
+// *** END ***
 #ifndef GAMEBASEH
 #define GAMEBASEH
 #include <cstdlib>

@@ -3,9 +3,9 @@
 #include "../settings/configmanager.hpp"
 
 float       Camera::speed = 12;
-Rect        Camera::pos(0,0,0,0);
-Rect        Camera::EffectArea(0,0,0,0);
-Rect        Camera::UpdateArea(0,0,0,0);
+RectInt        Camera::pos(0,0,0,0);
+RectInt        Camera::EffectArea(0,0,0,0);
+RectInt        Camera::UpdateArea(0,0,0,0);
 GameObject* Camera::focus = NULL;
 
 int         Camera::Offset_x = 0;
@@ -105,10 +105,10 @@ void Camera::Update(float dt){
             pos.y = (focus->box.y+focus->box.h/2-pos.h/2);
         }
         if (UseLimits){
-            pos.x = std::max(minX,pos.x);
-            pos.y = std::max(minY,pos.y);
-            pos.y = std::min(maxY,pos.y+pos.h)-pos.h;
-            pos.x = std::min(maxX,pos.x+pos.w)-pos.w;
+            pos.x = std::max((int)minX,pos.x);
+            pos.y = std::max((int)minY,pos.y);
+            pos.y = std::min((int)maxY,pos.y);
+            pos.x = std::min((int)maxX,pos.x);
         }
         EffectArea.x = pos.x-OffsetEffect;
         EffectArea.y = pos.y-OffsetEffect;
@@ -142,10 +142,12 @@ void Camera::Update(float dt){
             pos.y = std::min(maxY,pos.y+pos.h)-pos.h;
             pos.x = std::min(maxX,pos.x+pos.w)-pos.w;
         }
+        */
+
         EffectArea.x = pos.x-OffsetEffect/2.0;
         EffectArea.y = pos.y-OffsetEffect/2.0;
         UpdateArea.x = pos.x-OffsetUpdate/2.0;
-        UpdateArea.y = pos.y-OffsetUpdate/2.0;*/
+        UpdateArea.y = pos.y-OffsetUpdate/2.0;
 
     }
 }

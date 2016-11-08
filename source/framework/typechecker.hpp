@@ -4,8 +4,10 @@
 #include <map>
 #include <iostream>
 #include <string>
+#include <typeinfo>
+#include "../engine/bear.hpp"
 
-#define TYPEOF(var) (int)typeid(var).hash_code()
+#define TYPEOF(var) TypeChecker::Get<var>()
 
 
 
@@ -17,10 +19,28 @@ class GameObject;
  * Use this class to handle run time type checking
  */
 
+
+
+
+
 class TypeChecker{
     public:
         TypeChecker();
         ~TypeChecker();
+
+        static int typeCounter;
+
+        template<class T> static int Get(){
+            static int cnter = (typeCounter++);
+            static bool registered = false;
+            if (!registered){
+                registered = true;
+                GetInstance().Register(cnter,typeid(T).name());
+            }
+            return cnter;
+        };
+
+
         /**
             Singleton
         */
@@ -32,13 +52,13 @@ class TypeChecker{
             *
             *Its called from an macro OBJ_REGISTER(type);
         */
-        template<typename T> int Register(int hash,std::string name,T *object){
+        int Register(int hash,std::string name){
             if (TypeMap[hash] != ""){
                 return 1;
             }
             TypeMap[hash] = name;
             TypeMapi[name] = hash;
-            std::cout << "Registered type " << name << "["<<hash<<"]\n";
+            bear::out << "Registered type " << name << "["<<hash<<"]\n";
             return 0;
         }
         /**
@@ -95,9 +115,32 @@ class TypeChecker{
             @param name typename
             @return true is they are the same type
         */
+        template<typename T,typename R> bool checkType(T *object1){
+            return object1->GetHash() == Get<R>();
+        }
+        template<typename T,typename R> bool checkType(T &object1){
+            return object1.GetHash() == Get<R>();
+        }
+
+        template<typename T,typename R> bool checkType(){
+            return Get<T>() == Get<R>();
+        }
+
+
         template<typename T> bool checkType(T &object1,std::string name){
             return object1.GetHash() == TypeMapi[name];
         }
+
+        template<typename T> int getObjectType(T *object1){
+            return object1->GetHash();
+        }
+        template<typename T> int getObjectType(T &object1){
+            return object1.GetHash();
+        }
+        std::string getTypeName(int id){
+            return TypeMap[id];
+        }
+
 
 
     private:

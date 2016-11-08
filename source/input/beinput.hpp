@@ -5,7 +5,7 @@
 #include <vector>
 
 enum BEKeyBinds{
-    BE_KEY_UP,
+    BE_KEY_UP=0,
     BE_KEY_DOWN,
     BE_KEY_LEFT,
     BE_KEY_RIGHT,
@@ -13,6 +13,8 @@ enum BEKeyBinds{
     BE_KEY_B,
     BE_KEY_X,
     BE_KEY_Y,
+    BE_KEY_PAUSE,
+    BE_KEY_SELECT,
 };
 enum InputMethodIdentifier{
     IM_NONE,
@@ -47,11 +49,14 @@ class BEInput{
         BEInput();
         ~BEInput();
         bool RegisterInput(BEKeyBinds key,InputMethod method);
-
+        void clear();
         bool IsKeyDown(BEKeyBinds key);
         bool IsKeyUp(BEKeyBinds key);
         bool KeyPress(BEKeyBinds key);
         bool KeyRelease(BEKeyBinds key);
+        int GetKeyBind(BEKeyBinds key,InputMethodIdentifier method=IM_KEYBOARD);
+        bool IsBound(int key,InputMethodIdentifier method=IM_KEYBOARD);
+
 
         void Update(float dt);
     private:

@@ -31,22 +31,22 @@ ScreenManager& ScreenManager::GetInstance(){
 void ScreenManager::TerminateScreen(){
 
     if (m_renderer != NULL){
-        std::cout << "[Terminating renderer]\n";
+        bear::out << "[Terminating renderer]\n";
         SDL_DestroyRenderer( m_renderer );
         m_renderer = NULL;
-        std::cout << "[Done] "<<SDL_GetError()<<"\n";
+        bear::out << "[Done] "<<SDL_GetError()<<"\n";
     }
 
     if (m_window != NULL){
-        std::cout << "[Terminating window]"<<SDL_GetError()<<"\n";
+        bear::out << "[Terminating window]"<<SDL_GetError()<<"\n";
         SDL_DestroyWindow( m_window );
         m_window = NULL;
-        std::cout << "[Done] "<<SDL_GetError()<<"\n";
+        bear::out << "[Done] "<<SDL_GetError()<<"\n";
     }
 
 }
 void ScreenManager::NotyifyScreenClosed(){
-    std::cout << "[Forcing window terminate]\n";
+    bear::out << "[Forcing window terminate]\n";
     m_window = NULL;
 }
 SDL_Window* ScreenManager::StartScreen(std::string name){
@@ -56,7 +56,7 @@ SDL_Window* ScreenManager::StartScreen(std::string name){
     }
     m_screen = PointInt(ConfigManager::GetInstance().GetScreenW(),ConfigManager::GetInstance().GetScreenH());
     if (m_display.x != 0 && m_display.y != 0 && (m_display.x < m_screen.x or m_display.y < m_screen.y) ){
-        std::cout << "[ScreenManager::StartScreen] Display size suported is "<<m_display.x<<"x"<<m_display.y<<".\nImpossible to create"<<m_screen.x<<"x"<<m_screen.y<<"\n";
+        bear::out << "[ScreenManager::StartScreen] Display size suported is "<<m_display.x<<"x"<<m_display.y<<".\nImpossible to create"<<m_screen.x<<"x"<<m_screen.y<<"\n";
         return NULL;
     }
     m_display = m_screen;

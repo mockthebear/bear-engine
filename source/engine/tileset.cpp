@@ -38,10 +38,6 @@ BlockTileSet::BlockTileSet(int tilew,int tileh,Sprite tset){
 }
 
 
-BlockTileSet::~BlockTileSet(){
-
-}
-
 void BlockTileSet::Render(int index,int x,int y){
     if (tileset.IsLoaded()){
         if (index <= columns*rows and index != -1){

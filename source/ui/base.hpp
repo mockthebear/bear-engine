@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include "../engine/text.hpp"
 #include "../engine/sprite.hpp"
+#include "../framework/typechecker.hpp"
 
 enum TypeComponent{
     COMPONENT_GENERIC=0,
@@ -18,7 +19,7 @@ enum TypeComponent{
     COMPONENT_END,
 };
 
-#define UI_REGISTER(Type) hashIt(typeid(Type).hash_code()); GenerateId()
+#define UI_REGISTER(tc) hashIt(TypeChecker::Get<tc>()); GenerateId()
 
 
 class UIStyle{
@@ -32,7 +33,7 @@ class UIStyle{
             bg[2] = 100;
             bg[3] = 255;
             ncolors = 0;
-            custom = false;
+
             txtstyle = TEXT_SOLID;
             fontfile = "data/UnB-Office_Regular.ttf";
         };

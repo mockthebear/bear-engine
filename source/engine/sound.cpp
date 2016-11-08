@@ -9,6 +9,17 @@
 #include <iostream>
 
 bool Sound::working = false;
+uint8_t Sound::MasterVolume = MIX_MAX_VOLUME;
+
+bool Sound::SetMasterVolume(uint8_t vol){
+    MasterVolume = std::min((uint8_t)MIX_MAX_VOLUME,vol);
+    for (int chan=0;chan<MIX_CHANNELS;chan++){
+        if (Mix_Playing(chan)){
+            Mix_Volume(chan,MasterVolume);
+        }
+    }
+    return true;
+}
 
 Sound::Sound(){
     music = NULL;
@@ -82,7 +93,7 @@ Mix_Chunk* Sound::Preload(std::string stdnamee){
     return r_music;
 }
 
-int Sound::PlayOnce(const char *s,bool global){
+int Sound::PlayOnce(const char *s,bool global,int volume){
     if (!ConfigManager::GetInstance().IsWorkingAudio())
         return -1;
     std::string stdnamee(s);
@@ -100,7 +111,20 @@ int Sound::PlayOnce(const char *s,bool global){
     }
 
     if (snd.get()){
-        return Mix_PlayChannel(-1,snd.get(), 0);
+        int l_channel = Mix_PlayChannel(-1,snd.get(), 0);
+        if (l_channel >= -1){
+            if (volume == -128){
+                Mix_Volume(l_channel,MasterVolume);
+            }else{
+                volume = std::max(0,volume);
+                volume = std::min(MIX_MAX_VOLUME,volume);
+                volume *= ( (float)MasterVolume/((float)MIX_MAX_VOLUME));
+                Mix_Volume(l_channel,volume);
+            }
+        }
+        return l_channel;
+    }else{
+        bear::out << "Cannot play " << s << " because " << SDL_GetError() << "\n";
     }
     return -1;
 }
@@ -131,6 +155,8 @@ void Sound::Play(int times){
     if (!working)
         return;
     channel = Mix_PlayChannel(-1,(music.get()), times);
+    if (channel != -1)
+        Mix_Volume(channel,MasterVolume);
 }
 
 void Sound::Resume(){

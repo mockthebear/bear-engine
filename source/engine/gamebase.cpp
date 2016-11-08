@@ -1,3 +1,6 @@
+// *** ADDED BY HEADER FIXUP ***
+#include <ctime>
+// *** END ***
 //////////////////////////////////////////////////////////////
 ////////////////////MAIN FILE/////////////////////////////////
 //////////////////////////////////////////////////////////////
@@ -267,10 +270,12 @@ void Game::Run(){
                 }else{
                     delete stateStack.top();
                     stateStack.pop();
+                    stateStack.top()->Resume();
                 }
             }
 
             if (storedState != NULL){
+                stateStack.top()->Pause();
                 stateStack.emplace(storedState);
 
                 stateStack.top()->Begin();

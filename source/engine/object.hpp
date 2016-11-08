@@ -46,7 +46,7 @@ enum ObjType{
 };
 
 
-#define OBJ_REGISTER(Type) hashIt(typeid(Type).hash_code()); TypeChecker::GetInstance().Register(GetHash(),typeid(Type).name(),this)
+#define OBJ_REGISTER(Type) hashIt(TypeChecker::Get<Type>());
 
 /**
  * @brief Basic object class

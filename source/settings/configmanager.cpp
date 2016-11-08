@@ -1,5 +1,6 @@
 #include "configmanager.hpp"
 #include "../engine/gamebase.hpp"
+#include "../engine/renderhelp.hpp"
 #include "../framework/resourcemanager.hpp"
 #include "../performance/console.hpp"
 
@@ -15,6 +16,35 @@ ConfigManager::ConfigManager(){
 
 }
 
+void ConfigManager::SetWindowIcon(std::string icon,ColorReplacer &r){
+    SDL_Surface *surf = nullptr;
+    if (icon.find(":")!=std::string::npos){
+        SDL_RWops* rw = ResourceManager::GetInstance().GetFile(icon);
+        if (rw){
+            surf = IMG_Load_RW(rw, 1);
+        }else{
+            Console::GetInstance().AddTextInfo(utils::format("Cannot open the rw file %s",icon));
+        }
+    }else{
+        surf = IMG_Load(icon.c_str());
+    }
+    if (not surf){
+        Console::GetInstance().AddTextInfo(utils::format("The surface %s cannot be loaded because %s",icon,SDL_GetError()));
+    }else{
+        Uint32* pixels = (Uint32*)surf->pixels;
+        int pixelCount = ( surf->pitch / 4 ) * surf->h;
+        Uint8 R,G,B,A;
+        std::map<uint32_t,std::tuple<bool,uint32_t>> replacer;
+        SDL_PixelFormat* ScreenPixelFormat = SDL_GetWindowSurface( Game::GetInstance()->GetWindow() )->format;
+        for( int i = 0; i < pixelCount; ++i ){
+            SDL_GetRGBA(pixels[ i ],ScreenPixelFormat,&R,&G,&B,&A);
+            Uint32 theColor = RenderHelp::FormatRGBA(R,B,G,A);
+            pixels[i] = r.Get(theColor);
+        }
+
+        SDL_SetWindowIcon(Game::GetInstance()->GetWindow(), surf);
+    }
+}
 void ConfigManager::SetWindowIcon(std::string icon){
     SDL_Surface *surf = nullptr;
     if (icon.find(":")!=std::string::npos){

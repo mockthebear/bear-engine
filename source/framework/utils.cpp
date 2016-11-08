@@ -153,7 +153,7 @@ std::string utils::ReadWord(std::string &str,int n,char separator){
     uint32_t pos = 0;
     while (pos < str.length()){
         char c = str[pos];
-        if (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z') || c == separator ){
+        if ( (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z')) || c == separator ){
             str = str.substr(pos);
             return buffer;
         }
