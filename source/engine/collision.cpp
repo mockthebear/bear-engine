@@ -78,6 +78,8 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
     Rect tempY(dis->box.x,dis->box.y+sy*dt,dis->box.w,dis->box.h);
     Rect tempXY(dis->box.x+sx*dt,dis->box.y+sy*dt,dis->box.w,dis->box.h);
     int ret = -1;
+    float colSize = 0.5;
+    float colSize2 = 0.5;
     if (sx != 0 or sy !=0)
         for (auto &obj : pool.ForGroup(gid)){
             if (obj != dis && !obj->IsDead()){
@@ -85,29 +87,36 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
                     if (Collision::IsColliding(obj->box,tempY,0,0)){
                         float ax=0;
                         if (sy > 0){
-                            for (ax=0;ax<sy;ax += 0.5){
+                            for (ax=0;ax<sy;ax += colSize){
                                 Rect tempY2(dis->box.x,dis->box.y+ax*dt,dis->box.w,dis->box.h);
                                 if (Collision::IsColliding(obj->box,tempY2)){
                                     if (ax != 0)
-                                        ax-=0.5;
+                                        ax-=colSize2;
                                     break;
                                 }
                             }
                             sy = ax;
+                            Rect tempY2(dis->box.x,dis->box.y-sy*dt,dis->box.w,dis->box.h);
+                            if (Collision::IsColliding(obj->box,tempY2)){
+                                sy = 0;
+                            }
                             dis->NotifyCollision(obj);
 
                             ret = 0;
                         }else{
-                            for (ax=0;ax<(sy)*-1;ax+=0.5){
+                            for (ax=0;ax<(sy)*-1;ax+=colSize){
                                 Rect tempY2(dis->box.x,dis->box.y-ax*dt,dis->box.w,dis->box.h);
                                 if (Collision::IsColliding(obj->box,tempY2)){
                                     if (ax != 0)
-                                        ax-=0.5;
+                                        ax-=colSize2;
                                     break;
                                 }
                             }
                             sy = -ax;
-
+                            Rect tempY2(dis->box.x,dis->box.y-sy*dt,dis->box.w,dis->box.h);
+                            if (Collision::IsColliding(obj->box,tempY2)){
+                                sy = 0;
+                            }
                             dis->NotifyCollision(obj);
 
                             ret = 1;
@@ -118,34 +127,34 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
                         float ax=0;
                         if (sx > 0){
                             int iter = 0;
-                            for (ax=0;ax<sx;ax+=0.5){
+                            for (ax=0;ax<sx;ax+=colSize){
                                 Rect tempY2(dis->box.x+ax*dt,dis->box.y,dis->box.w,dis->box.h);
                                 iter++;
                                 if (Collision::IsColliding(obj->box,tempY2)){
                                     if (ax != 0)
-                                        ax-=0.5;
+                                        ax-=colSize2;
                                     break;
                                 }
                             }
                             sx = ax;
                             Rect tempY2(dis->box.x+ax*dt,dis->box.y,dis->box.w,dis->box.h);
-                            if (Collision::IsColliding(obj->box,tempX)){
+                            if (Collision::IsColliding(obj->box,tempY2)){
                                 sx = 0;
                             }
                             dis->NotifyCollision(obj);
                             ret = 2;
                         }else{
-                            for (ax=0;ax<(sx)*-1;ax+=0.5){
+                            for (ax=0;ax<(sx)*-1;ax+=colSize){
                                 Rect tempY2(dis->box.x-ax*dt,dis->box.y,dis->box.w,dis->box.h);
                                 if (Collision::IsColliding(obj->box,tempY2)){
                                     if (ax != 0)
-                                        ax-=0.5;
+                                        ax-=colSize2;
                                     break;
                                 }
                             }
                             sx = -ax;
                             Rect tempY2(dis->box.x+ax*dt,dis->box.y,dis->box.w,dis->box.h);
-                            if (Collision::IsColliding(obj->box,tempX)){
+                            if (Collision::IsColliding(obj->box,tempY2)){
                                 sx = 0;
                             }
                             dis->NotifyCollision(obj);
@@ -183,7 +192,7 @@ bool Collision::SoftWarpAway(GameObject* thisObject,GameObject* otherObject){
     Rect aux = thisObject->box;
     float dist = 0;
     while (Collision::IsColliding(aux,otherObject->box)){
-        dist += 0.5;
+        dist += 0.2;
         aux = thisObject->box;
         aux.x += sin(angle)*dist;
         aux.y += cos(angle)*dist;

@@ -1,5 +1,5 @@
 #include <algorithm>
-#include <math.h>
+#include <ctgmath>
 #include "object.hpp"
 #include "../framework/poolmanager.hpp"
 

@@ -31,17 +31,18 @@ ScreenManager& ScreenManager::GetInstance(){
 void ScreenManager::TerminateScreen(){
 
     if (m_renderer != NULL){
+        bear::out << "[Done1] ["<<SDL_GetError()<<"]\n";
         bear::out << "[Terminating renderer]\n";
         SDL_DestroyRenderer( m_renderer );
         m_renderer = NULL;
-        bear::out << "[Done] "<<SDL_GetError()<<"\n";
+        bear::out << "[Done] ["<<SDL_GetError()<<"]\n";
     }
 
     if (m_window != NULL){
         bear::out << "[Terminating window]"<<SDL_GetError()<<"\n";
         SDL_DestroyWindow( m_window );
         m_window = NULL;
-        bear::out << "[Done] "<<SDL_GetError()<<"\n";
+        bear::out << "[Done] ["<<SDL_GetError()<<"]\n";
     }
 
 }
@@ -49,6 +50,7 @@ void ScreenManager::NotyifyScreenClosed(){
     bear::out << "[Forcing window terminate]\n";
     m_window = NULL;
 }
+
 SDL_Window* ScreenManager::StartScreen(std::string name){
     if( SDL_GetCurrentDisplayMode( 0, &m_displayMode ) == 0 )
     {
@@ -183,6 +185,7 @@ void ScreenManager::Update(float dt){
         if (ShakingDuration <= 0){
             shaking = false;
             shake = Point(0,0);
+            savedShake = Point(0,0);
         }
         ShakingTick -= dt;
         if (ShakingTick <= 0){

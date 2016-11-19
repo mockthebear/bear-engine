@@ -29,5 +29,5 @@ void bear::outstream::printme(const char *c){
     if (found){
         Console::GetInstance().Deploy();
     }
-    delete alt;
+    delete []alt;
 }

@@ -60,7 +60,6 @@ int Light::GetAround(unsigned char** map,int x,int y){
     return sqrt(n/k);
 }
 void Light::Gen(parameters *P,Job &j){
-
     for (int y=j.from;y<j.to;y++){
         for (int x=0;x<sizeX;x++){
             pix[y*sizeX + x ] = RenderHelp::FormatARGB(GetAround(ShadeMap,x,y),0,0,0);
@@ -416,7 +415,9 @@ void Light::Update(float dt,LightStep step){
         }else{
             Update(dt,LIGHT_SHADE);
         }
+
     }
+
 }
 
 void Light::Render(Point pos){
@@ -424,7 +425,6 @@ void Light::Render(Point pos){
         return;
     }
     out->UpdateTexture();
-
     int extraX = ((int)(floor(Camera::pos.x))%blockSize);
     int extraY = ((int)(floor(Camera::pos.y))%blockSize);
     double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();

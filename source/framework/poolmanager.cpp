@@ -9,7 +9,7 @@ PoolManager::PoolManager(bool insertUnregistered){
     localMaximum = 0;
     GroupsCount = 0;
     nextPoolGroup = 255;
-    this->insertUnregistered = insertUnregistered;
+    this->insertUnregistered = true;
     indexCounter = insertUnregistered ? 1 : 0;
 }
 
@@ -26,7 +26,7 @@ PoolManager::~PoolManager(){
 PoolId PoolManager::RegisterPool(std::function<int(void)> maxFuncion,
                               std::function<GameObject*(int)> getFunction,
                               std::function<void(void)> deleteFunction,
-                              std::function<void(std::map<int,std::vector<GameObject*>*>&)> preRenderFunction,
+                              std::function<void(std::map<int,std::vector<GameObject*>>&)> preRenderFunction,
                               std::function<void(float)> updateFunction,
                               std::function<GameObject*(GameObject*)> addFunction,
                               std::function<int(void)> hashFuncion,bool DropPool)
@@ -222,7 +222,7 @@ void PoolManager::Update(float dt){
     }
 }
 
-void PoolManager::PreRender(std::map<int,std::vector<GameObject*>*> &Map){
+void PoolManager::PreRender(std::map<int,std::vector<GameObject*>> &Map){
     for(unsigned int i = 0; i< Pools.size(); ++i){
         Pools[i].PRender(Map);
     }
@@ -230,18 +230,12 @@ void PoolManager::PreRender(std::map<int,std::vector<GameObject*>*> &Map){
         if (!it->IsDead() && Camera::EffectArea.IsInside(it->box)  ){
             if (it->hasPerspective() == 0){
                 int posy = it->box.y;
-                if (!Map[posy]){
-                    Map[posy] = new std::vector<GameObject*>;
-                    Map[posy]->emplace_back( it.get());
-                }else{
-                    Map[posy]->emplace_back( it.get());
-                }
+
+                Map[posy].emplace_back( it.get());
+
             }else{
                 int persp = it->hasPerspective();
-                if (!Map[persp]){
-                    Map[persp] = new std::vector<GameObject*>;
-                }
-                Map[persp]->emplace_back( it.get());
+                Map[persp].emplace_back( it.get());
             }
         }
 

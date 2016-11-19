@@ -10,7 +10,7 @@
 
 #define POOL_CAST_MAX(Var)          [=](){return Var->GetMaxInstances();}
 #define POOL_CAST_GET(Var)          [=](int index){return Var->GetInstance(index);}
-#define POOL_CAST_PRENDER(Var)      [=](std::map<int,std::vector<GameObject*>*> &Map){Var->PreRender(Map);}
+#define POOL_CAST_PRENDER(Var)      [=](std::map<int,std::vector<GameObject*>> &Map){Var->PreRender(Map);}
 #define POOL_CAST_UPDATE(Var)       [=](float dt){Var->UpdateInstances(dt);}
 #define POOL_CAST_REMOVE(Var)       [=](){delete Var;}
 #define POOL_CAST_ADD(Var,Type)     [=](GameObject *obj){Type *localObj =(Type*)obj; return Var->AddInstance(*localObj);}
@@ -29,7 +29,7 @@ typedef struct Holder_s{
     std::function<GameObject*(GameObject*)> Add;
     std::function<void(void)> Delete;
     std::function<int(void)> Hash;
-    std::function<void(std::map<int,std::vector<GameObject*>*>&)> PRender;
+    std::function<void(std::map<int,std::vector<GameObject*>>&)> PRender;
     std::function<void(float)> Update;
     bool Drop;
     uint8_t Index;
@@ -162,7 +162,7 @@ class PoolManager{
         PoolId RegisterPool(std::function<int(void)> maxFuncion,
                               std::function<GameObject*(int)> getFunction,
                               std::function<void(void)> deleteFunction,
-                              std::function<void(std::map<int,std::vector<GameObject*>*>&)> preRenderFunction,
+                              std::function<void(std::map<int,std::vector<GameObject*>>&)> preRenderFunction,
                               std::function<void(float)> updateFunction,
                               std::function<GameObject*(GameObject*)> addFunction,
                               std::function<int(void)> hashFuncion,bool DropPool=true);
@@ -209,7 +209,7 @@ class PoolManager{
 
         template<typename T> GameObject* AddInstance(T object){
             GameObject *added = NULL;
-            for(int i = 0; i< Pools.size(); ++i){
+            for(uint32_t i = 0; i< Pools.size(); ++i){
                 if (object.IsHash(Pools[i].Hash())){
                     added = Pools[i].Add(&object);
                     GenerateInternalPool();
@@ -232,7 +232,7 @@ class PoolManager{
             *Pre Render.
             *Check GenericState::Map
         */
-        void PreRender(std::map<int,std::vector<GameObject*>*> &Map);
+        void PreRender(std::map<int,std::vector<GameObject*>> &Map);
         /**
             *When this function is called, it will run trough all registered pools looking for alive objects.\n
             *This dont mean that when you have a pool with 10000 object it will run trough all of it.

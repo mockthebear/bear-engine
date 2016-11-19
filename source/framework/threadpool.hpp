@@ -43,10 +43,10 @@ enum JOBTYPE{
 */
 class Job{
     public:
-        Job(){Type = JOB_NOTHING;Parameter=NULL;};
-        Job(JOBTYPE t){Type = t;};
-        Job(std::function<void(int,int,void*)> F){Type = JOB_LAMBDA;lambda=F;Parameter=NULL;};
-        Job(std::function<void(int,int,void*)> Reduce,int min_p,int max_p){
+        Job(){Type = JOB_NOTHING;Parameter=NULL;min=max=0;vect=nullptr;from=to=0;tsize=0;bright=0;};
+        Job(JOBTYPE t):Job(){Type = t;};
+        Job(std::function<void(int,int,void*)> F):Job(){Type = JOB_LAMBDA;lambda=F;Parameter=NULL;};
+        Job(std::function<void(int,int,void*)> Reduce,int min_p,int max_p):Job(){
             Type = JOB_FOR;
             lambda=Reduce;
             Parameter=NULL;
@@ -125,7 +125,7 @@ class ThreadPool{
         /**
             Empty\n
         */
-        ThreadPool(){started=false;};
+        ThreadPool(){started=false;Locked=false;fastJobs=nullptr;UsePThreads=4;Params=nullptr;};
         /** @brief This is created in the singleton\n
 
             @param threads Default is 4

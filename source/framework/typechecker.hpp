@@ -115,14 +115,14 @@ class TypeChecker{
             @param name typename
             @return true is they are the same type
         */
-        template<typename T,typename R> bool checkType(T *object1){
+        template<typename T,typename R> static bool checkType(T *object1){
             return object1->GetHash() == Get<R>();
         }
-        template<typename T,typename R> bool checkType(T &object1){
+        template<typename T,typename R> static bool checkType(T &object1){
             return object1.GetHash() == Get<R>();
         }
 
-        template<typename T,typename R> bool checkType(){
+        template<typename T,typename R> static bool checkType(){
             return Get<T>() == Get<R>();
         }
 

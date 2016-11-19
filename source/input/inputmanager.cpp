@@ -91,13 +91,13 @@ InputManager& InputManager::GetInstance(){
 }
 void InputManager::Render(){
     //touchscreen.Render();
-    for ( auto &it : TKeys ){
+    /*for ( auto &it : TKeys ){
         it.Render();
     }
     for ( auto &it : Joysticks ){
         if (it.second != NULL)
             it.second->Render(it.first);
-    }
+    }*/
 }
 
 void InputManager::Vibrate(uint32_t milis){
@@ -255,7 +255,7 @@ void InputManager::Update(float dt){
             S << "Unhooked event id " << event.type;
             Console::GetInstance().AddText(S.str());
             */
-            //std::cout << "Unhooked event id " << event.type << "\n";
+            //
 
         }
    }

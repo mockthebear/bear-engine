@@ -2,6 +2,8 @@
 #define GEOMH
 #include <math.h>
 #include <stdio.h>
+#include <cstdint>
+#include <algorithm>
 /**
     @brief Basic template Point class (2d vector)
 */
@@ -86,6 +88,8 @@ template <typename T=float> class GenericPoint{
         */
         T y;
 
+        uint32_t GetSize(){return 1;};
+
 };
 /**
     @brief [WIP] Basic class to 3d points
@@ -117,6 +121,7 @@ template <typename T=float> class GenericPoint3{
             z = z_;
         };
         T x,y,z;
+        uint32_t GetSize(){return 1;};
 };
 /**
     @brief Point its an GenericPoint made from float
@@ -240,6 +245,8 @@ template <typename T=float>class GenericRect{
         */
         GenericPoint<T> GetCenter(){return GenericPoint<T>(x+(w/2.0),y+(h/2.0));}
         T x,y,h,w;
+
+        uint32_t GetSize(){return std::max(w,h);};
 };
 
 typedef GenericRect<float> Rect;
@@ -276,6 +283,7 @@ class Circle{
         }
         Circle();
         float x,y,r;
+        uint32_t GetSize(){return r;};
 };
 
 class Cone : public Circle{
@@ -302,6 +310,7 @@ class Cone : public Circle{
             opening = 0;
         };
         float start_angle,opening;
+        uint32_t GetSize(){return r;};
 };
 
 

@@ -161,7 +161,7 @@ class GenericState{
             *Also you can go to GameObject class, and change the function
             *GameObject::hasPerspective. The less the value, more on "bottom" it will be
         */
-        std::map<int,std::vector<GameObject*>*> Map;
+        std::map<int,std::vector<GameObject*>> Map;
 
         void RenderInstances();
         /**

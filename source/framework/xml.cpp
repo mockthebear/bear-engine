@@ -43,7 +43,7 @@ XmlNode *Xml::Parse(std::string fileName){
     if (data.length() <= 0){
         return nullptr;
     }
-    std::string header = utils::ReadUntil(data,"?>");
+    std::string Header = utils::ReadUntil(data,"?>");
 
     //Dispensavel
     utils::ReadUntil(data,"<");
@@ -62,6 +62,7 @@ XmlNode *Xml::Parse(std::string fileName){
     d->Nodes = new XmlNode*[1];
     d->Nodes[0] = nullptr;
     d->nodeCount = 0;
+    d->Header = Header;
     while (content.length() > 0){
         std::string baseName = utils::ReadUntil(content,'=');
         utils::TrimString(baseName,' ');

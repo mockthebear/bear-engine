@@ -5,6 +5,8 @@
 #include <vector>
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>
+#include <map>
 
 
 namespace utils {
@@ -93,8 +95,98 @@ namespace utils {
     std::string ReadUntil(std::string &str,std::string until);
     std::string GetLine(std::string &str);
 
-}
 
+    template<typename T> class Mat3{
+        public:
+            Mat3(){
+                Data = nullptr;
+            };
+            Mat3(int sizeX_,int sizeY_,int sizeZ_=1){
+                sizeX = sizeX_;
+                sizeY = sizeY_;
+                sizeZ = sizeZ_;
+                TotalSize = sizeZ * sizeY * sizeX;
+                Data = new T[ TotalSize ];
+
+            };
+            T &at(int x,int y,int z){
+                if (Data == nullptr){
+                    std::cout << "Is null\n";
+                }
+                return Data[ x + (y*sizeX) + (z*sizeX*sizeY) ];
+            }
+            void erase(){
+                if (Data){
+                    delete [] Data;
+                }
+            }
+        private:
+            uint32_t sizeX;
+            uint32_t sizeY;
+            uint32_t sizeZ;
+            uint32_t TotalSize;
+            T *Data;
+    };
+
+    template<typename T> class Mat2{
+        public:
+            Mat2(){
+                Data = nullptr;
+            };
+            Mat2(int sizeX_,int sizeY_){
+                sizeX = sizeX_;
+                sizeY = sizeY_;
+                TotalSize = sizeY * sizeX;
+                Data = new T[ TotalSize ];
+
+            };
+            T &at(int x,int y){
+                return Data[ x + (y*sizeX) ];
+            }
+            void erase(){
+                if (Data){
+                    delete [] Data;
+                }
+            }
+        private:
+            uint32_t sizeX;
+            uint32_t sizeY;
+            uint32_t TotalSize;
+            T *Data;
+    };
+
+
+}
+class PlainRand{
+    public:
+        PlainRand(){
+        };
+        PlainRand(int n){
+            SelectorMap.clear();
+            for (int i=0;i<n;i++){
+                SelectorMap[i] = 0;
+            }
+            Size = n;
+        }
+        int Generate(){
+            int MinNum = 9999;
+            for (int i=0;i<Size;i++){
+                if (SelectorMap[i] <= MinNum){
+                    MinNum = SelectorMap[i];
+                }
+            }
+            while (1){
+                int Selected = rand()%Size;
+                if (SelectorMap[Selected] == MinNum){
+                    SelectorMap[Selected]++;
+                    return Selected;
+                }
+            }
+        }
+    private:
+        int Size;
+        std::map<int,int> SelectorMap;
+};
 template<typename T> class GenericIterator{
     public:
         GenericIterator(T **vector_,int size){

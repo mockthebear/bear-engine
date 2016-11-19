@@ -64,26 +64,20 @@ template <typename T> class SPP{
             *and who will be rendered last.
             @param Map an reference to the GenericState::Map std::map<int,std::vector<GameObject*>*>
         */
-        void PreRender(std::map<int,std::vector<GameObject*>*> &Map){
+        void PreRender(std::map<int,std::vector<GameObject*>> &Map){
             for (int i=0;i<GetMaxInstances();i++){
-                if (!pool[i].IsDead() && Camera::EffectArea.IsInside(pool[i].box)  ){
-                    if (pool[i].hasPerspective() == 0){
-                        int posy = pool[i].box.y;
-                        if (!Map[posy]){
-                            Map[posy] = new std::vector<GameObject*>;
-                            Map[posy]->emplace_back( &pool[i]);
+                if (!pool[i].IsDead()){
+                    if ( Camera::EffectArea.IsInside(pool[i].box)  ){
+                        if (pool[i].hasPerspective() == 0){
+                            int posy = pool[i].box.y;
+                            Map[posy].emplace_back( &pool[i]);
+
                         }else{
-                            Map[posy]->emplace_back( &pool[i]);
-                        }
-                    }else{
 
-                        int persp = pool[i].hasPerspective();
-                        if (!Map[persp]){
-                            Map[persp] = new std::vector<GameObject*>;
+                            int persp = pool[i].hasPerspective();
+                            Map[persp].emplace_back( &pool[i]);
                         }
-                        Map[persp]->emplace_back( &pool[i]);
                     }
-
                 }
             }
         }

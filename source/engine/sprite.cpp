@@ -342,7 +342,7 @@ bool Sprite::Open(SDL_RWops* file,std::string name,bool HasAliasing){
         return Open((char*)newName.c_str());
         #else
         Console::GetInstance().AddText(utils::format("Cannot load rwop sprite FAAAAIL [%s]",name.c_str()));
-        return nullptr;
+        return false;
         #endif // __EMSCRIPTEN__
     }
 }

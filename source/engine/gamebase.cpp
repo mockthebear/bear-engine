@@ -112,6 +112,12 @@ Game::Game(const char *name){
         Console::GetInstance().AddText(utils::format("SDL_TTF compiled with %d.%d.%d",compiled.major, compiled.minor, compiled.patch));
         Console::GetInstance().AddText(utils::format("SDL_TTF Linked with %d.%d.%d.", link_version->major, link_version->minor, link_version->patch));
 
+        link_version=Mix_Linked_Version();
+        SDL_MIXER_VERSION(&compiled);
+
+        Console::GetInstance().AddText(utils::format("SDL_Mixer compiled with %d.%d.%d",compiled.major, compiled.minor, compiled.patch));
+        Console::GetInstance().AddText(utils::format("SDL_Mixer Linked with %d.%d.%d.", link_version->major, link_version->minor, link_version->patch));
+
 
         Console::GetInstance().Begin();
         ConfigManager::GetInstance().DisplayArgs();
@@ -138,6 +144,9 @@ Game::Game(const char *name){
         CalculateDeltaTime();
         Console::GetInstance().AddTextInfo(utils::format("Bear started in %f seconds",GetDeltaTime()/10.0f));
         dt = frameStart = 0;
+
+        //ScreenManager::GetInstance().Render();
+        //getchar();
 
 
     }else{
@@ -181,6 +190,7 @@ void Game::Close(){
 
     Console::GetInstance().AddTextInfo("Quit game");
     Console::GetInstance().CloseOutput();
+
     #ifdef __ANDROID__
     exit(0);
     #endif

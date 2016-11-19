@@ -11,6 +11,7 @@ uint8_t Music::MasterVolume = MIX_MAX_VOLUME;
 Music::Music(){
     music = NULL;
     working = BearEngine->AudioWorking();
+    isPlaying = false;
 }
 
 Music::Music(char *s):Music(){

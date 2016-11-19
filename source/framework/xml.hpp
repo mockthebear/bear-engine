@@ -6,7 +6,7 @@
 
 class XmlNode{
     public:
-        XmlNode(){nodeCount=0;nodePtr=0;index=0;};
+        XmlNode(){nodeCount=0;nodePtr=0;index=0;Nodes=nullptr;};
         std::string GetName(){return Name;};
         std::string GetValue(){return Value;};
         std::string Info(std::string Info){return Data[Info];};
@@ -36,6 +36,7 @@ class XmlNode{
         std::map<std::string,std::string> Data;
         std::string Name;
         std::string Value;
+        std::string Header;
         friend class Xml;
         XmlNode **Nodes;
         int index;
