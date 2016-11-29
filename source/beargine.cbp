@@ -30,7 +30,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-lMinGW32 -lSDL2main -lSDL2 -lSDL2_image" />
-					<Add option="-lSDL2_ttf -lSDL2_mixer -llua51 -pthread" />
+					<Add option="-lSDL2_ttf -lopenal32 -lvorbisfile -llua51 -pthread" />
 				</Linker>
 			</Target>
 			<Target title="unix release">
@@ -103,6 +103,8 @@
 		<Unit filename="engine/timer.cpp" />
 		<Unit filename="engine/timer.hpp" />
 		<Unit filename="framework/basepool.hpp" />
+		<Unit filename="framework/chainptr.cpp" />
+		<Unit filename="framework/chainptr.hpp" />
 		<Unit filename="framework/debughelper.cpp" />
 		<Unit filename="framework/debughelper.hpp" />
 		<Unit filename="framework/dirmanager.cpp" />

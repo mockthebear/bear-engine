@@ -4,7 +4,7 @@
 #include "../framework/resourcemanager.hpp"
 #include "../performance/console.hpp"
 
-
+/*
 std::unordered_map<std::string, Mix_Music*> Music::assetTable;
 
 uint8_t Music::MasterVolume = MIX_MAX_VOLUME;
@@ -164,6 +164,6 @@ void Music::Clear(){
 }
 
 
-
+*/
 
 

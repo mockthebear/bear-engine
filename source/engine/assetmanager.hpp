@@ -49,10 +49,9 @@ class AssetMannager{
             return makeTexture(forced,str,args...);
         }
 
-        template<typename ...Args> SoundPtr gen(bool forced,Sound s,std::string str,Args ...args){
+       template<typename ...Args> SoundPtr gen(bool forced,Sound s,std::string str,Args ...args){
             return makeSound(forced,str,args...);
         }
-
 
         template<class T,typename ...Args> T reload(Args ...args){
             auto t = gen(true,T(),args...);
@@ -81,7 +80,7 @@ class AssetMannager{
 
         std::unordered_map<std::string, TexturePtr> spriteMap;
         std::unordered_map<std::string, SoundPtr> soundMap;
-        std::unordered_map<std::string, MusicPtr> musicMap;
+        //std::unordered_map<std::string, MusicPtr> musicMap;
 
 
         static std::map<uint32_t,AssetMannager*> AssetMannagerMap;

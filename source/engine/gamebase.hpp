@@ -22,6 +22,11 @@
 #include SDL_MIXER_LIB_HEADER
 #include STATE_FILE
 
+
+#include <AL/al.h>
+#include <AL/alc.h>
+
+
 #include "../input/inputmanager.hpp"
 #include "../settings/configmanager.hpp"
 #include "screenmanager.hpp"
@@ -145,6 +150,10 @@ class Game{
 
         SDL_Renderer* renderer;
         SDL_Window* window;
+
+
+        ALCdevice *device;
+        ALCcontext *ctx;
 
 
 

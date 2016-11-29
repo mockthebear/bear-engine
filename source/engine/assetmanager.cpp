@@ -111,15 +111,15 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,ColorReplacer 
 
 SoundPtr AssetMannager::makeSound(bool forced,std::string str){
     if (not soundMap[str] or forced){
-        Mix_Chunk* c = Sound::Preload(str);
+        BufferData *c = Sound::Preload(str);
         if (not c){
             return SoundPtr();
         }
         if (forced and soundMap[str].get()){
-            Mix_FreeChunk( soundMap[str].get() );
+            //todo cleanup
             soundMap[str].reset(c);
         }else{
-            soundMap[str] = chain_ptr<Mix_Chunk>::make(c);
+            soundMap[str] = chain_ptr<BufferData>::make(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("Lets alloc [%s] in %d",str,id);
         }
@@ -132,15 +132,16 @@ SoundPtr AssetMannager::makeSound(bool forced,SDL_RWops* rw,std::string str){
         if (not rw){
             return SoundPtr();
         }
-        Mix_Chunk* c = Sound::Preload(rw,str);
+        BufferData *c = Sound::Preload(rw,str);
         if (not c){
             return SoundPtr();
         }
         if (forced and soundMap[str].get()){
-            Mix_FreeChunk( soundMap[str].get() );
+            //Mix_FreeChunk( soundMap[str].get() );
+            //todo cleanup
             soundMap[str].reset(c);
         }else{
-            soundMap[str] = chain_ptr<Mix_Chunk>::make(c);
+            soundMap[str] = chain_ptr<BufferData>::make(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("Lets alloc rw[%s] in %d",str,id);
         }
@@ -156,11 +157,12 @@ bool AssetMannager::erase(){
         it.second.destroy();
     }
     spriteMap.clear();
-    for (auto &it : soundMap){
+    //todo cleanup
+    /*for (auto &it : soundMap){
         Mix_FreeChunk( it.second.get() );
         it.second.reset(nullptr);
         it.second.destroy();
     }
-    soundMap.clear();
+    soundMap.clear();*/
     return true;
 }

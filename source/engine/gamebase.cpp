@@ -50,19 +50,19 @@ Game::Game(const char *name){
         if (not IMG_Init(BEAR_SDL_IMAGE_CONST_INIT)){
             Console::GetInstance().AddTextInfo( utils::format("SDL img not working [%s]",IMG_GetError()));
         }
-        if (not Mix_Init(MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG)){
+        /*if (not Mix_Init(MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG)){
             Console::GetInstance().AddTextInfo("Audio not found");
             HasAudio=false;
         }else{
             HasAudio = true;
-        }
+        }*/
         if (TTF_Init()  == -1 ){
             Console::GetInstance().AddTextInfo("TTF not working");
         }
-        if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,MIX_DEFAULT_CHANNELS,1024) == -1){
+        /*if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,MIX_DEFAULT_CHANNELS,1024) == -1){
             HasAudio=false;
             Console::GetInstance().AddTextInfo("Audio not found");
-        }
+        }*/
 
 
         ConfigManager::GetInstance().SetSound(HasAudio);
@@ -112,15 +112,25 @@ Game::Game(const char *name){
         Console::GetInstance().AddText(utils::format("SDL_TTF compiled with %d.%d.%d",compiled.major, compiled.minor, compiled.patch));
         Console::GetInstance().AddText(utils::format("SDL_TTF Linked with %d.%d.%d.", link_version->major, link_version->minor, link_version->patch));
 
-        link_version=Mix_Linked_Version();
+        /*link_version=Mix_Linked_Version();
         SDL_MIXER_VERSION(&compiled);
 
         Console::GetInstance().AddText(utils::format("SDL_Mixer compiled with %d.%d.%d",compiled.major, compiled.minor, compiled.patch));
-        Console::GetInstance().AddText(utils::format("SDL_Mixer Linked with %d.%d.%d.", link_version->major, link_version->minor, link_version->patch));
+        Console::GetInstance().AddText(utils::format("SDL_Mixer Linked with %d.%d.%d.", link_version->major, link_version->minor, link_version->patch));*/
 
 
         Console::GetInstance().Begin();
         ConfigManager::GetInstance().DisplayArgs();
+        device = alcOpenDevice(NULL);
+        if (device){
+            HasAudio = true;
+            ctx = alcCreateContext(device,NULL);
+            alcMakeContextCurrent(ctx);
+        }else{
+            HasAudio = true;
+            Console::GetInstance().AddText("KD audio cara.");
+            std::cout << alGetError() << "\n";
+        }
 
 
         skipRender = 1;
@@ -136,10 +146,10 @@ Game::Game(const char *name){
         LuaInterface::Instance().Startup();
         #endif
 
-        if (HasAudio){
+        /*if (HasAudio){
             Mix_Volume(-1,   128.0/2.0);
             Mix_VolumeMusic( 128.0/2.0);
-        }
+        }*/
 
         CalculateDeltaTime();
         Console::GetInstance().AddTextInfo(utils::format("Bear started in %f seconds",GetDeltaTime()/10.0f));
@@ -176,14 +186,18 @@ void Game::Close(){
     Console::GetInstance().AddTextInfo("Closing screen");
     ScreenManager::GetInstance().TerminateScreen();
 
-    if (HasAudio)
+
+    if (HasAudio){
         Console::GetInstance().AddTextInfo("Closing audio");
-    if (HasAudio)
-        Mix_CloseAudio();
+        alcDestroyContext(ctx);
+        alcCloseDevice(device);
+
+    }
+    //    Mix_CloseAudio();
     Console::GetInstance().AddTextInfo("Closing text");
     TTF_Quit();
     Console::GetInstance().AddTextInfo("Closing mix");
-    Mix_Quit();
+    //Mix_Quit();
     Console::GetInstance().AddTextInfo("Closing img");
     IMG_Quit();
     Console::GetInstance().AddTextInfo("Closing sdl");

@@ -143,7 +143,7 @@ int playSound(lua_State *L)
     //showAnimatedText(x,y,sx,sy,r,g,b,sz,str)
     std::string index = lua_tostring(L,-1);
     lua_pop(L,1);
-    Sound::PlayOnce(index.c_str());
+    //Sound::PlayOnce(index.c_str());
     return 1;
 }
 

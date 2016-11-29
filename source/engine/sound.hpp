@@ -2,6 +2,10 @@
 #include SDL_LIB_HEADER
 #include SDL_MIXER_LIB_HEADER
 
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <vorbis/vorbisfile.h>
+
 #ifndef SOUNDH_
 #define SOUNDH_
 #include "../settings/configmanager.hpp"
@@ -12,18 +16,61 @@
 /**
     @brief Basic sound class [Not 100% ready] TODO: Port to openAl
 */
+class BufferData{
+    public:
+    BufferData(){
+        buffer = 0;
+        freq = 0;
+    };
+    ALuint buffer;
+    ALenum format;
+    ALsizei freq;
+};
 
-typedef chain_ptr<Mix_Chunk> SoundPtr;
+typedef chain_ptr<BufferData> SoundPtr;
 
+/*
+ * Load wave file function. No need for ALUT with this
+ */
+
+ /*
+* Struct to hold the data of the wave file
+*/
+struct WAVE_Data {
+  char subChunkID[4]; //should contain the word data
+  long subChunk2Size; //Stores the size of the data block
+};
+
+/*
+ * Struct to hold fmt subchunk data for WAVE files.
+ */
+struct WAVE_Format {
+  char subChunkID[4];
+  long subChunkSize;
+  short audioFormat;
+  short numChannels;
+  long sampleRate;
+  long byteRate;
+  short blockAlign;
+  short bitsPerSample;
+};
+
+struct RIFF_Header {
+  char chunkID[4];
+  long chunkSize;//size not including chunkSize or chunkID
+  char format[4];
+};
 
 
 class Sound{
     public:
         Sound();
-        Sound(char *s);
-        Sound(const char *s);
+        Sound(char *s,bool isWave=false);
+        Sound(const char *s,bool isWave=false);
+
+
         Sound(SoundPtr snd,const char *s);
-        bool Open(const char *str);
+        bool Open(const char *str,bool isWave=false);
         void SetVolume(int vol);
         void Play (int times);
         void Stop();
@@ -42,8 +89,8 @@ class Sound{
         static int PlayOnce(const char *s,bool useGlobalAssetManager=false,int volume=-128);
 
 
-        static Mix_Chunk* Preload (std::string name);
-        static Mix_Chunk* Preload(SDL_RWops* file,std::string name);
+        static BufferData* Preload (std::string name);
+        static BufferData* Preload(SDL_RWops* file,std::string name);
 
         std::string GetFileName(){return file;};
         void SetAssetManager(int id){};
@@ -52,13 +99,18 @@ class Sound{
 
 
     private:
+
+        static BufferData* loadWavFile(const char *c);
+        static BufferData* loadOggFile(const char *c);
+        static BufferData* loadWavFileRW(SDL_RWops* soundFile);
+
+
         static uint8_t MasterVolume;
 
         bool static working;
         std::string file;
-        SoundPtr music;
-        int channel;
 
+        SoundPtr snd;
 
 };
 

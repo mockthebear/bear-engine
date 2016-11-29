@@ -13,6 +13,7 @@ class Title: public State{
         void Render();
         void Input();
         void Begin();
+        void Resume(){};
     private:
         PathFind astar;
         std::vector<Point> path;
@@ -20,6 +21,8 @@ class Title: public State{
         float volume;
         Sprite bg;
         Text message;
+        Sound *snd;
+        Sound *snd2;
         int Group;
 };
 #endif
