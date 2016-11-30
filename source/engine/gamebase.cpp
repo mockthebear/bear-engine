@@ -17,6 +17,7 @@
 
 #include "../settings/definitions.hpp"
 #include "../performance/console.hpp"
+#include "../sound/soundsources.hpp"
 
 #include __BEHAVIOR_FOLDER__
 
@@ -128,9 +129,9 @@ Game::Game(const char *name){
             alcMakeContextCurrent(ctx);
         }else{
             HasAudio = true;
-            Console::GetInstance().AddText("KD audio cara.");
-            std::cout << alGetError() << "\n";
+            Console::GetInstance().AddText("Cannot start audio");
         }
+        SoundPool::GetInstance(true);
 
 
         skipRender = 1;

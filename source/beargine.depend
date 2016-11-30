@@ -8549,13 +8549,13 @@
 	<vector>
 	<string>
 
-1480386207 source:c:\users\mock\documents\github\bear-engine\source\engine\defaultbehavior.cpp
+1480488021 source:c:\users\mock\documents\github\bear-engine\source\engine\defaultbehavior.cpp
 	"defaultbehavior.hpp"
 	"../settings/configmanager.hpp"
 	"screenmanager.hpp"
 	"camera.hpp"
 	"music.hpp"
-	"sound.hpp"
+	"../sound/sound.hpp"
 	"gamebase.hpp"
 
 1452630383 c:\users\mock\documents\github\bear-engine\source\engine\defaultbehavior.hpp
@@ -8574,7 +8574,7 @@
 	<unordered_map>
 	<string>
 
-1480401754 c:\users\mock\documents\github\bear-engine\source\engine\sound.hpp
+1480483115 c:\users\mock\documents\github\bear-engine\source\engine\sound.hpp
 	"../settings/definitions.hpp"
 	<AL/al.h>
 	<AL/alc.h>
@@ -8944,7 +8944,7 @@
 	"../engine/object.hpp"
 	"../engine/sprite.hpp"
 
-1472314535 source:c:\users\mock\documents\github\bear-engine\source\game\gamebehavior.cpp
+1480439733 source:c:\users\mock\documents\github\bear-engine\source\game\gamebehavior.cpp
 	"gamebehavior.hpp"
 	"title.hpp"
 	"../engine/defaultbehavior.hpp"
@@ -8957,7 +8957,7 @@
 1452628204 c:\users\mock\documents\github\bear-engine\source\game\gamebehavior.hpp
 	"../engine/defaultbehavior.hpp"
 
-1480400941 c:\users\mock\documents\github\bear-engine\source\game\title.hpp
+1480489122 c:\users\mock\documents\github\bear-engine\source\game\title.hpp
 	"state.hpp"
 	<stack>
 	"../performance/console.hpp"
@@ -8972,7 +8972,7 @@
 	<list>
 	"../framework/poolmanager.hpp"
 
-1480387942 source:c:\users\mock\documents\github\bear-engine\source\game\title.cpp
+1480489646 source:c:\users\mock\documents\github\bear-engine\source\game\title.cpp
 	"title.hpp"
 	<sstream>
 	<cmath>
@@ -9026,7 +9026,7 @@
 1456855282 source:c:\users\mock\documents\github\bear-engine\source\input\keyboard.cpp
 	"keyboard.hpp"
 
-1456857981 source:c:\users\mock\documents\github\bear-engine\source\input\mouse.cpp
+1480449751 source:c:\users\mock\documents\github\bear-engine\source\input\mouse.cpp
 	"mouse.hpp"
 	<iostream>
 
@@ -9041,13 +9041,13 @@
 	"../engine/renderhelp.hpp"
 	<iostream>
 
-1480386451 source:c:\users\mock\documents\github\bear-engine\source\luasystem\luainterface.cpp
+1480488098 source:c:\users\mock\documents\github\bear-engine\source\luasystem\luainterface.cpp
 	"luainterface.hpp"
 	"luatools.hpp"
 	"../performance/console.hpp"
 	"../engine/gamebase.hpp"
 	<iostream>
-	"../engine/sound.hpp"
+	"../sound/sound.hpp"
 	"luaobject.hpp"
 
 1470378091 source:c:\users\mock\documents\github\bear-engine\source\luasystem\luaobject.cpp
@@ -9135,7 +9135,7 @@
 	"../engine/renderhelp.hpp"
 	"../input/inputmanager.hpp"
 
-1480388471 source:c:\users\mock\documents\github\bear-engine\source\engine\gamebase.cpp
+1480481139 source:c:\users\mock\documents\github\bear-engine\source\engine\gamebase.cpp
 	<ctime>
 	<time.h>
 	"gamebase.hpp"
@@ -9145,15 +9145,17 @@
 	"../framework/resourcemanager.hpp"
 	"../settings/definitions.hpp"
 	"../performance/console.hpp"
+	"../sound/soundsources.hpp"
 	<emscripten.h>
 
-1480401297 source:c:\users\mock\documents\github\bear-engine\source\engine\sound.cpp
+1480483152 source:c:\users\mock\documents\github\bear-engine\source\engine\sound.cpp
 	"sound.hpp"
 	"../settings/definitions.hpp"
 	"../framework/resourcemanager.hpp"
 	"../framework/dirmanager.hpp"
 	"../framework/gamefile.hpp"
 	"../performance/console.hpp"
+	"../sound/soundsources.hpp"
 	"assetmanager.hpp"
 	"gamebase.hpp"
 	<iostream>
@@ -10655,11 +10657,11 @@
 	"../performance/console.hpp"
 	<iostream>
 
-1480399051 c:\users\mock\documents\github\bear-engine\source\engine\assetmanager.hpp
+1480486865 c:\users\mock\documents\github\bear-engine\source\engine\assetmanager.hpp
 	<memory>
 	<unordered_map>
 	"sprite.hpp"
-	"sound.hpp"
+	"../sound/sound.hpp"
 	"music.hpp"
 	"../performance/console.hpp"
 	<iostream>
@@ -10691,4 +10693,54 @@
 
 1472530740 source:c:\users\mock\documents\github\bear-engine\source\framework\chainptr.cpp
 	"chainptr.hpp"
+
+1480486706 source:c:\users\mock\documents\github\bear-engine\source\sound\soundsources.cpp
+	"soundsources.hpp"
+	"../engine/bear.hpp"
+
+1480486677 c:\users\mock\documents\github\bear-engine\source\sound\soundsources.hpp
+	<AL/al.h>
+	<AL/alc.h>
+	<vorbis/vorbisfile.h>
+	"sound.hpp"
+
+1480489167 c:\users\mock\documents\github\bear-engine\source\sound\sound.hpp
+	"../settings/definitions.hpp"
+	"../settings/configmanager.hpp"
+	"../framework/chainptr.hpp"
+	"sounddef.hpp"
+	<unordered_map>
+	<string>
+	<memory>
+	<AL/al.h>
+	<AL/alc.h>
+
+1480485673 c:\users\mock\documents\github\bear-engine\source\sound\sounddef.hpp
+	"../settings/configmanager.hpp"
+	"../framework/chainptr.hpp"
+	<AL/al.h>
+	<AL/alc.h>
+
+1480485799 source:c:\users\mock\documents\github\bear-engine\source\sound\soundloader.cpp
+	"soundloader.hpp"
+	"../engine/bear.hpp"
+	<vorbis/vorbisfile.h>
+
+1480485716 c:\users\mock\documents\github\bear-engine\source\sound\soundloader.hpp
+	"sounddef.hpp"
+
+1480489706 source:c:\users\mock\documents\github\bear-engine\source\sound\sound.cpp
+	"sound.hpp"
+	"../settings/definitions.hpp"
+	"../framework/resourcemanager.hpp"
+	"../framework/dirmanager.hpp"
+	"../framework/gamefile.hpp"
+	"../performance/console.hpp"
+	"../sound/soundsources.hpp"
+	"../engine/assetmanager.hpp"
+	"../engine/gamebase.hpp"
+	"soundloader.hpp"
+	<iostream>
+	<cstdio>
+	<vector>
 

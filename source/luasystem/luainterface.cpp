@@ -9,7 +9,7 @@
 #ifndef DISABLE_LUAINTERFACE
 #include "../engine/gamebase.hpp"
 #include <iostream>
-#include "../engine/sound.hpp"
+#include "../sound/sound.hpp"
 #include "luaobject.hpp"
 
 LuaInterface& LuaInterface::Instance(){

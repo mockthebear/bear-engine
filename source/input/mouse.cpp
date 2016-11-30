@@ -16,7 +16,7 @@ Mouse::~Mouse(){
 void Mouse::Update(float dt){
     lastKey = 0;
     lastRKey = 0;
-    for ( int i=0;i<3;i++ ){
+    for ( int i=0;i<=3;i++ ){
           if (mouseState[i] == JUST_PRESSED){
                 mouseState[i] = PRESSED;
           }

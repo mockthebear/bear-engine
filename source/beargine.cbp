@@ -90,8 +90,6 @@
 		<Unit filename="engine/smarttexture.hpp" />
 		<Unit filename="engine/smarttexturemanager.cpp" />
 		<Unit filename="engine/smarttexturemanager.hpp" />
-		<Unit filename="engine/sound.cpp" />
-		<Unit filename="engine/sound.hpp" />
 		<Unit filename="engine/sprite.cpp" />
 		<Unit filename="engine/sprite.hpp" />
 		<Unit filename="engine/text.cpp" />
@@ -170,6 +168,13 @@
 		<Unit filename="settings/configmanager.cpp" />
 		<Unit filename="settings/configmanager.hpp" />
 		<Unit filename="settings/definitions.hpp" />
+		<Unit filename="sound/sound.cpp" />
+		<Unit filename="sound/sound.hpp" />
+		<Unit filename="sound/sounddef.hpp" />
+		<Unit filename="sound/soundloader.cpp" />
+		<Unit filename="sound/soundloader.hpp" />
+		<Unit filename="sound/soundsources.cpp" />
+		<Unit filename="sound/soundsources.hpp" />
 		<Unit filename="ui/base.cpp" />
 		<Unit filename="ui/base.hpp" />
 		<Unit filename="ui/button.cpp" />

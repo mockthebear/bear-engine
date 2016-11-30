@@ -36,6 +36,10 @@ bool GameBehavior::OnLoad(){
         Console::GetInstance().AddText("Failed to load assets");
     }
 
+    if (!ResourceManager::GetInstance().Load("snd.burr","snd")){
+        Console::GetInstance().AddText("Failed to load snd");
+    }
+
 
     PointInt P = ScreenManager::GetInstance().GetDisplaySize();
     PointInt P2 = ConfigManager::GetInstance().GetScreenSize();
