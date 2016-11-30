@@ -46,6 +46,7 @@ Sound::Sound(){
     working = ConfigManager::GetInstance().IsWorkingAudio();
     volume = 127;
     classType = 0;
+    pitch = 1.0;
 
 }
 
@@ -241,6 +242,8 @@ bool Sound::Play(bool repeat){
     if (snd.get()->buffer){
         sourceID = SoundPool::GetInstance().GetSource(classType);
         alSourcei(sourceID, AL_BUFFER, snd.get()->buffer);
+
+        SetPitch(pitch);
         SetRepeat(repeat);
         SetPosition(pos);
         SetVolume(-1);
@@ -251,11 +254,17 @@ bool Sound::Play(bool repeat){
 }
 
 void Sound::Resume(){
-    if (!working|| !checkSource())
+    if (!working || !checkSource())
         return;
     if (!IsPlaying()){
         alSourcePlay(sourceID);
     }
+}
+void Sound::SetPitch(float f){
+    pitch = f;
+    if (!working|| !checkSource())
+        return;
+    alSourcef(sourceID, AL_PITCH, pitch);
 }
 void Sound::Toggle(){
     if (IsPlaying()){

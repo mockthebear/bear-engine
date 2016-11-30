@@ -55,11 +55,13 @@ class Sound{
         void SetPosition(float x,float y,float z){
             SetPosition(Point3(x,y,z));
         }
+        void SetPitch(float f);
     protected:
         int classType;
         bool static working;
         int volume;
     private:
+        float pitch;
         Point3 pos;
         bool checkSource();
 

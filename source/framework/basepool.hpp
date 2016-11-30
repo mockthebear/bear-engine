@@ -21,6 +21,7 @@
  */
 template <typename T> class SPP{
     public:
+        friend class GameObject;
         /**
            @brief  Constructor
            *
@@ -37,6 +38,7 @@ template <typename T> class SPP{
             Type = TypeChecker::Get<T>();
             for (int in=0;in<=size;in++){
                 pool[in].poolIndex = in;
+                pool[in].NotifyInPool(this);
                 if (pool[in].GetHash() != Type){
                     bear::out << "[Basepool:create] There is something wrong about the type "<< typeid(T).name() <<". You forgot to set OBJ_REGISTER() in creator "<<pool[in].GetHash()<< "x "<< Type <<"?\n";
                 }
@@ -113,6 +115,7 @@ template <typename T> class SPP{
 
                         pool[e] = instance;
                         pool[e].poolIndex = e;
+                        pool[e].NotifyInPool(this);
                         n = e;
                         if (e > lastAdded){
                             lastAdded = e;

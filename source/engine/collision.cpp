@@ -73,13 +73,13 @@ GameObject* Collision::GetCollidingObject(GameObject* thisObject,PoolManager &po
 
 
 
-int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObject* dis,PoolManager &pool,PoolGroupId gid){
+int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObject* dis,PoolManager &pool,PoolGroupId gid,float msize){
     Rect tempX(dis->box.x+sx*dt,dis->box.y,dis->box.w,dis->box.h);
     Rect tempY(dis->box.x,dis->box.y+sy*dt,dis->box.w,dis->box.h);
     Rect tempXY(dis->box.x+sx*dt,dis->box.y+sy*dt,dis->box.w,dis->box.h);
     int ret = -1;
-    float colSize = 0.5;
-    float colSize2 = 0.5;
+    float colSize = msize;
+    float colSize2 = msize;
     if (sx != 0 or sy !=0)
         for (auto &obj : pool.ForGroup(gid)){
             if (obj != dis && !obj->IsDead()){
@@ -212,30 +212,7 @@ bool Collision::SoftWarpAway(GameObject* thisObject,GameObject* otherObject){
 }
 
 bool Collision::WarpAway(Rect &obj1,Rect obj2){
-    int direction = -1;
-    /*
-        0 top left
-        1 top right
-        2 bottom right
-        3 bottom left
-    */
-    Point Center1 = obj1.GetCenter();
-    Point Center2 = obj2.GetCenter();
-    if (Center1.y > Center2.y){
-        //Means top
-        if (Center1.x < Center2.x){
-            direction = 1;
-        }else{
-            direction = 0;
-        }
-    }else{
-        //means Bottom
-        if (Center1.x < Center2.x){
-            direction = 3;
-        }else{
-            direction = 2;
-        }
-    }
+    int direction = GetCollidingSide(obj1,obj2);
     switch (direction){
         case 0:{
             obj1.x = obj2.x - obj1.w;

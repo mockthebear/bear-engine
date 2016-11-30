@@ -8972,7 +8972,7 @@
 	<list>
 	"../framework/poolmanager.hpp"
 
-1480489646 source:c:\users\mock\documents\github\bear-engine\source\game\title.cpp
+1480524530 source:c:\users\mock\documents\github\bear-engine\source\game\title.cpp
 	"title.hpp"
 	<sstream>
 	<cmath>
@@ -10704,7 +10704,7 @@
 	<vorbis/vorbisfile.h>
 	"sound.hpp"
 
-1480489167 c:\users\mock\documents\github\bear-engine\source\sound\sound.hpp
+1480524668 c:\users\mock\documents\github\bear-engine\source\sound\sound.hpp
 	"../settings/definitions.hpp"
 	"../settings/configmanager.hpp"
 	"../framework/chainptr.hpp"
@@ -10729,7 +10729,7 @@
 1480485716 c:\users\mock\documents\github\bear-engine\source\sound\soundloader.hpp
 	"sounddef.hpp"
 
-1480489706 source:c:\users\mock\documents\github\bear-engine\source\sound\sound.cpp
+1480524655 source:c:\users\mock\documents\github\bear-engine\source\sound\sound.cpp
 	"sound.hpp"
 	"../settings/definitions.hpp"
 	"../framework/resourcemanager.hpp"

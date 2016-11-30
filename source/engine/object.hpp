@@ -188,12 +188,17 @@ class GameObject{
     */
     int poolIndex;
 
+    virtual void NotifyInPool(void *pool){};
+
     protected:
         void hashIt(int var){hash = var;};
         inline int GetHash_internal(){return hash;};
         float rotation;
         uint64_t Flags;
+
+
     private:
+
         int hash;
 
 

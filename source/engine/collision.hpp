@@ -3,8 +3,6 @@
 #include "object.hpp"
 #include "../framework/poolmanager.hpp"
 
-
-// Substitua isso pelo(s) header(s) da(s) sua(s) classe(s) de geometria criadas no E1
 #include "../framework/geometry.hpp"
 
 
@@ -40,6 +38,38 @@ namespace Collision {
             float cs = cos(angle), sn = sin(angle);
             return Point ( p.x * cs - p.y * sn, p.x * sn + p.y * cs );
         }
+        /**
+            0 top left
+            1 top right
+            2 bottom right
+            3 bottom left
+        */
+        static inline int GetCollidingSide( Rect A,Rect B ){
+            int direction = -1;
+
+
+            Point Center1 = A.GetCenter();
+            Point Center2 = B.GetCenter();
+            if (Center1.y >= Center2.y){
+                //Means top
+                if (Center1.x <= Center2.x){
+                    direction = 1;
+                }else{
+                    direction = 0;
+                }
+            }else{
+                //means Bottom
+                if (Center1.x <= Center2.x){
+                    direction = 3;
+                }else{
+                    direction = 2;
+                }
+            }
+            return direction;
+        }
+        /**
+            TODO: mudar saporra
+        */
 
         static inline bool IsColliding( Rect& b,Circle& a ){
             //Closest point on collision box
@@ -159,7 +189,31 @@ namespace Collision {
             }
             return true;
         };
-
+        static inline int GetCollidingSide2( Rect A,Rect B ){
+            if (!IsColliding(A,B))
+                return -1;
+            Point Center1 = A.GetCenter();
+            Point Center2 = B.GetCenter();
+            int dir = 0;
+            float angle = Center1.getDirection(Center2);
+            /*
+                0 left
+                1 top
+                2 right
+                3 bottom
+            */
+            angle = Geometry::toDeg(angle);
+            if (angle <= 45 || angle > 315){
+                dir = 0;
+            }else if(angle > 45 && angle <= 135){
+                dir = 1;
+            }else if(angle > 135 && angle <= 225){
+                dir = 2;
+            }else if(angle > 225 && angle <= 315){
+                dir = 3;
+            }
+            return dir;
+        }
         static inline bool IsColliding(Rect& a,  Rect& b, float angleOfA, float angleOfB) {
             Point A[] = { Point( a.x, a.y + a.h ),
                           Point( a.x + a.w, a.y + a.h ),
@@ -208,7 +262,7 @@ namespace Collision {
 
 
         int AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,PoolManager &pool,PoolGroupId gid=-1);
-        int AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObject* dis,PoolManager &pool,PoolGroupId gid=-1);
+        int AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObject* dis,PoolManager &pool,PoolGroupId gid=-1,float msize=0.5);
         bool CheckCollision(Rect tempXY,GameObject* dis,PoolManager &pool,PoolGroupId gid=-1,bool onlySolid = true);
         GameObject* GetCollidingObject(GameObject* thisObject,PoolManager &pool,PoolGroupId gid=-1,bool onlySolid = true);
         std::vector<GameObject*> GetCollidingObjects(GameObject* thisObject,PoolManager &pool,PoolGroupId gid=-1,bool onlySolid = true);
