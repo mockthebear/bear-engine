@@ -127,7 +127,7 @@ BufferData* Sound::Preload(std::string stdnamee){
 }
 
 
-int Sound::PlayOnce(const char *s,bool global,int volume,int classN){
+int Sound::PlayOnce(const char *s,bool global,int volume,Point3 pos,int classN){
     if (!ConfigManager::GetInstance().IsWorkingAudio())
         return -1;
     std::string stdnamee(s);
@@ -147,30 +147,52 @@ int Sound::PlayOnce(const char *s,bool global,int volume,int classN){
     if (snd.get()){
         ALuint sourceID_ = SoundPool::GetInstance().GetSource(classN);
         if (sourceID_ != 0){
+            volume = std::max(volume,0);
+            volume = std::min(128,volume);
+            SoundLoader::ShowError();
+            std::cout << "Source form " << s << " is " << sourceID_ << "\n";
             alSourcei(sourceID_, AL_BUFFER, snd.get()->buffer);
+            SoundLoader::ShowError();
+            alSource3f(sourceID_, AL_POSITION, pos.x, pos.y, pos.z);
+            SoundLoader::ShowError();
+            alSourcef(sourceID_, AL_GAIN, MasterVolume[classN]*((float)volume/127.0f) );
+            SoundLoader::ShowError();
+            alSourcef(sourceID_, AL_PITCH, 1.0);
+            SoundLoader::ShowError();
+            alSourcei(sourceID_, AL_LOOPING, false);
+            SoundLoader::ShowError();
             alSourcePlay(sourceID_);
+            SoundLoader::ShowError();
+
+
+
             return snd.get()->buffer;
+        }else{
+            bear::out << "No source\n";
         }
     }else{
-        bear::out << "Cannot play " << s << " because " << SDL_GetError() << "\n";
+        bear::out << "Cannot play " << s << " because no source\n";
     }
     return -1;
 }
 
 
 void Sound::SetVolume(int vol){
-     if (!working)
+    vol = std::max(vol,-1);
+    vol = std::min(128,vol);
+    if (!working || !IsOpen() || !checkSource()){
+        if (vol != -1){
+            volume = vol;
+        }
         return;
-    if (!IsOpen())
-        return;
-    if (!checkSource())
-        return;
+    }
     if (vol != -1){
         volume = vol;
     }else{
         vol = volume;
     }
     alSourcef(sourceID, AL_GAIN, MasterVolume[classType]*((float)vol/127.0f) );
+    SoundLoader::ShowError("on volume");
 }
 
 void Sound::SetPosition(float pos){
@@ -181,6 +203,7 @@ void Sound::SetPosition(float pos){
     if (!checkSource())
         return;
     alSourcef(sourceID,AL_SEC_OFFSET,pos);
+    SoundLoader::ShowError("on offset");
 }
 
 float Sound::GetPosition(){
@@ -217,6 +240,7 @@ float Sound::GetDuration(){
     alGetBufferi(snd.get()->buffer, AL_CHANNELS, &channels);
     alGetBufferi(snd.get()->buffer, AL_BITS, &bits);
     alGetBufferi(snd.get()->buffer, AL_FREQUENCY, &frequency);
+    SoundLoader::ShowError();
     ALint lengthInSamples = sizeInBytes * 8 / (channels * bits);
     float durationInSeconds = (float)lengthInSamples / (float)frequency;
     return durationInSeconds;
@@ -228,27 +252,38 @@ void Sound::SetPosition(Point3 p){
     if (!checkSource())
         return;
     alSource3f(sourceID, AL_POSITION, pos.x, pos.y, pos.z);
+    SoundLoader::ShowError("on position");
 }
 void Sound::SetRepeat(bool repeat){
     if (!working)
         return;
     if (!checkSource())
         return;
+
     alSourcei(sourceID, AL_LOOPING, repeat);
+    SoundLoader::ShowError("on loop");
 }
 bool Sound::Play(bool repeat){
     if (!working)
         return false;
-    if (snd.get()->buffer){
-        sourceID = SoundPool::GetInstance().GetSource(classType);
+    if (snd.get() && snd.get()->buffer){
+        if (sourceID == 0 || !checkSource())
+            sourceID = SoundPool::GetInstance().GetSource(classType);
+        if (sourceID == 0){
+            std::cout << "Cant find any source\n";
+            return false;
+        }
         alSourcei(sourceID, AL_BUFFER, snd.get()->buffer);
-
+        std::cout << "stored Source form " << file << " is " << sourceID << "\n";
         SetPitch(pitch);
         SetRepeat(repeat);
         SetPosition(pos);
         SetVolume(-1);
         alSourcePlay(sourceID);
+        SoundLoader::ShowError("on play");
         return true;
+    }else{
+        std::cout << "No buffer loaded\n";
     }
     return false;
 }
@@ -258,6 +293,7 @@ void Sound::Resume(){
         return;
     if (!IsPlaying()){
         alSourcePlay(sourceID);
+        SoundLoader::ShowError();
     }
 }
 void Sound::SetPitch(float f){
@@ -265,6 +301,7 @@ void Sound::SetPitch(float f){
     if (!working|| !checkSource())
         return;
     alSourcef(sourceID, AL_PITCH, pitch);
+    SoundLoader::ShowError("on pitch");
 }
 void Sound::Toggle(){
     if (IsPlaying()){
@@ -276,6 +313,9 @@ void Sound::Toggle(){
 bool Sound::checkSource(){
     ALint buffid;
     if (sourceID == 0){
+        return false;
+    }
+    if (!snd.get() || !snd.get()->buffer){
         return false;
     }
     alGetSourcei(sourceID, AL_BUFFER, &buffid);
@@ -311,6 +351,7 @@ void Sound::Pause(){
     if (!IsPlaying())
         return;
     alSourcePause(sourceID);
+    SoundLoader::ShowError("on pause");
 }
 
 

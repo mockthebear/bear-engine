@@ -71,8 +71,6 @@
 		<Unit filename="engine/genericstate.hpp" />
 		<Unit filename="engine/light.cpp" />
 		<Unit filename="engine/light.hpp" />
-		<Unit filename="engine/music.cpp" />
-		<Unit filename="engine/music.hpp" />
 		<Unit filename="engine/object.hpp" />
 		<Unit filename="engine/particlecreator.cpp" />
 		<Unit filename="engine/particlecreator.hpp" />

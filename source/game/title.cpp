@@ -13,7 +13,6 @@
 #include "../engine/renderhelp.hpp"
 #include "../engine/smarttexture.hpp"
 #include "../engine/smarttexturemanager.hpp"
-#include "../engine/collision.h"
 #include "../engine/light.hpp"
 #include "../framework/threadpool.hpp"
 #include "../framework/gamefile.hpp"

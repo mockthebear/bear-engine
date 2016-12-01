@@ -8,4 +8,6 @@ class SoundLoader{
         static BufferData* loadOggFile(const char *c);
         static BufferData* loadWavFileRW(SDL_RWops* soundFile);
         static BufferData* loadOggFileRW(SDL_RWops* soundFile);
+
+        static void ShowError(std::string where = "");
 };

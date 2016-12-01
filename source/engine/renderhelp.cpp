@@ -102,13 +102,9 @@ SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h,std::fu
     SDL_UpdateTexture(t, NULL, pixels, w * sizeof(Uint32));
 	return new SmartTexture(t,pixels,x,y,h,w);
 }
-Uint32 RenderHelp::FormatRGBA(int r,int b,int g,int a){
+Uint32 RenderHelp::FormatRGBA(int r,int g,int b,int a){
 
-    Uint32 R,G,B;
-    R = r << (24);
-    G = g << 16;
-    B = b << 8;
-    return R+G+B+a;
+    return r+(g<<8)+(b<<16)+(a<<24);
 }
 
 Uint32 RenderHelp::FormatARGB(int a,int r,int b,int g){

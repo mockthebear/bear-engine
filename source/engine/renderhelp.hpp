@@ -22,8 +22,8 @@ class RenderHelp{
         static SmartTexture *GeneratePatternTexture(int x,int y,int width,int height,std::function<Uint32 (Uint32 , int, int)> F);
         static SmartTexture *GeneratePatternTexture(int x,int y,int width,int height);
 
-        static Uint32 FormatRGBA(int r,int b,int g,int a);
-        static Uint32 FormatARGB(int a,int r,int b,int g);
+        static Uint32 FormatRGBA(int r,int g,int b,int a);
+        static Uint32 FormatARGB(int a,int r,int g,int b);
 
 
         static void DrawCollisionBox(Rect &box,Point offset,int r_color,int g,int b,int alpha=100){

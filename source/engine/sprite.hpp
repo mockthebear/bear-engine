@@ -1,6 +1,6 @@
 #include "../settings/definitions.hpp"
 #include SDL_LIB_HEADER
-#include SDL_IMAGE_LIB_HEADER
+
 
 #ifndef SPRITEHA
 #define SPRITEHA

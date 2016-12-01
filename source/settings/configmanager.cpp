@@ -4,6 +4,10 @@
 #include "../framework/resourcemanager.hpp"
 #include "../performance/console.hpp"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "../image/stb_image.h"
+
+
 int ConfigManager::MaxFps = MAXFPS;
 float ConfigManager::MinimumDT = 10.32;
 ConfigManager::ConfigManager(){
@@ -17,52 +21,50 @@ ConfigManager::ConfigManager(){
 }
 
 void ConfigManager::SetWindowIcon(std::string icon,ColorReplacer &r){
-    SDL_Surface *surf = nullptr;
-    if (icon.find(":")!=std::string::npos){
-        SDL_RWops* rw = ResourceManager::GetInstance().GetFile(icon);
-        if (rw){
-            surf = IMG_Load_RW(rw, 1);
-        }else{
-            Console::GetInstance().AddTextInfo(utils::format("Cannot open the rw file %s",icon));
-        }
-    }else{
-        surf = IMG_Load(icon.c_str());
-    }
-    if (not surf){
-        Console::GetInstance().AddTextInfo(utils::format("The surface %s cannot be loaded because %s",icon,SDL_GetError()));
-    }else{
-        Uint32* pixels = (Uint32*)surf->pixels;
-        int pixelCount = ( surf->pitch / 4 ) * surf->h;
-        Uint8 R,G,B,A;
-        std::map<uint32_t,std::tuple<bool,uint32_t>> replacer;
-        SDL_PixelFormat* ScreenPixelFormat = SDL_GetWindowSurface( Game::GetInstance()->GetWindow() )->format;
-        for( int i = 0; i < pixelCount; ++i ){
-            SDL_GetRGBA(pixels[ i ],ScreenPixelFormat,&R,&G,&B,&A);
-            Uint32 theColor = RenderHelp::FormatRGBA(R,B,G,A);
-            pixels[i] = r.Get(theColor);
-        }
 
-        SDL_SetWindowIcon(Game::GetInstance()->GetWindow(), surf);
-    }
 }
 void ConfigManager::SetWindowIcon(std::string icon){
     SDL_Surface *surf = nullptr;
+    unsigned char *imageData;
+    uint64_t rsize;
+    int sizeX,sizeY,comp;
     if (icon.find(":")!=std::string::npos){
         SDL_RWops* rw = ResourceManager::GetInstance().GetFile(icon);
         if (rw){
-            surf = IMG_Load_RW(rw, 1);
+            char *res = ResourceManager::GetFileBuffer(rw,rsize);
+            imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
+            ResourceManager::ClearFileBuffer(res);
         }else{
             Console::GetInstance().AddTextInfo(utils::format("Cannot open the rw file %s",icon));
         }
     }else{
-        surf = IMG_Load(icon.c_str());
-
+        SDL_RWops* rw = SDL_RWFromFile(icon.c_str(), "rb");
+        if (!rw){
+            Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",icon.c_str(),SDL_GetError()));
+            return;
+        }
+        char *res = ResourceManager::GetFileBuffer(rw,rsize);
+        imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
+        ResourceManager::ClearFileBuffer(res);
     }
-    if (not surf){
+    if (!imageData){
         Console::GetInstance().AddTextInfo(utils::format("The surface %s cannot be loaded because %s",icon,SDL_GetError()));
+        return;
     }else{
-        SDL_SetWindowIcon(Game::GetInstance()->GetWindow(), surf);
+        #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+        surf = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
+        #else
+        surf = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+        #endif
+        if (not surf){
+            Console::GetInstance().AddTextInfo(utils::format("The surface %s cannot be loaded because %s",icon,SDL_GetError()));
+        }else{
+            SDL_SetWindowIcon(Game::GetInstance()->GetWindow(), surf);
+        }
+        stbi_image_free(imageData);
     }
+
+
 
 }
 

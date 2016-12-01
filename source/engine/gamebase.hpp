@@ -17,9 +17,7 @@
 #include "../settings/definitions.hpp"
 
 #include SDL_LIB_HEADER
-#include SDL_IMAGE_LIB_HEADER
 #include SDL_TTF_LIB_HEADER
-#include SDL_MIXER_LIB_HEADER
 #include STATE_FILE
 
 

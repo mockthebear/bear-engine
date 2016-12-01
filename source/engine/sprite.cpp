@@ -8,6 +8,7 @@
 #include "smarttexture.hpp"
 #include "../framework/resourcemanager.hpp"
 
+#include "../image/stb_image.h"
 
 
 ColorReplacer::ColorReplacer(){
@@ -179,121 +180,158 @@ SDL_Texture* Sprite::Preload(char *file,bool adjustDir,bool HasAliasing){
     if (adjustDir){
         stdnamee = DirManager::AdjustAssetsPath(stdnamee);
     }
-    if (HasAliasing)
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-    SDL_Texture* texture = IMG_LoadTexture(BearEngine->GetRenderer(),stdnamee.c_str());
-    if (texture != NULL){
-        if (HasAliasing)
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
-        return texture;
-    }else{
+    unsigned char* imageData = nullptr;
+    SDL_RWops* rw = SDL_RWFromFile(file, "rb");
+    if (!rw){
         Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",stdnamee.c_str(),SDL_GetError()));
+        return nullptr;
     }
-    if (HasAliasing)
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+    uint64_t rsize;
+    int sizeX,sizeY,comp;
+    char *res = ResourceManager::GetFileBuffer(rw,rsize);
+    imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
+    ResourceManager::ClearFileBuffer(res);
+    if (imageData){
+        #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+        SDL_Surface* surface = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
+        #else
+        SDL_Surface* surface = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+        #endif
+        if (surface){
+            /*
+                Pixel replacing
+            */
+            int pixelCount = (sizeX*sizeY);
+            for( int i = 0; i < pixelCount; ++i ){
+                ((Uint32*)surface->pixels)[i] =((Uint32*)imageData)[i];
+            }
+            /*
+                Generate texture
+            */
+            if (HasAliasing)
+                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
+            SDL_Texture *ret = SDL_CreateTextureFromSurface(Game::GetInstance()->GetRenderer(),surface);// = finalSmart->GetTexture();
+            if (HasAliasing)
+                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+
+            /*
+                Cleanup and return
+            */
+            stbi_image_free(imageData);
+            SDL_FreeSurface(surface);
+            return ret;
+        }else{
+            stbi_image_free(imageData);
+            Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",file,SDL_GetError()));
+        }
+    }
     return nullptr;
 }
 
 SDL_Texture* Sprite::Preload(SDL_RWops* rw,std::string name,bool HasAliasing){
     if (HasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-    SDL_Texture* texture = NULL;
-    SDL_Surface *aux_surface = IMG_Load_RW(rw, 1);
-    if (aux_surface){
-        texture =  SDL_CreateTextureFromSurface(BearEngine->GetRenderer(),aux_surface);
-        SDL_FreeSurface(aux_surface);
-    }
-    if (texture != NULL){
-        if (HasAliasing)
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
-        return texture;
-     }else{
-        Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",name.c_str(),SDL_GetError()));
-        #ifdef __EMSCRIPTEN__
-        Console::GetInstance().AddTextInfo("Resourcefiles aren't suported by emscripten. Trying instead loading.");
-        std::string newName = name;
-        char *c = (char*)newName.c_str();
-        for (int i=0;i<newName.size();i++){
-            if (c[i] == ':'){
-                c[i] = '/';
-                break;
+    unsigned char* imageData = nullptr;
+    int sizeX,sizeY,comp;
+    uint64_t rsize;
+    char *res = ResourceManager::GetFileBuffer(rw,rsize);
+    imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
+    ResourceManager::ClearFileBuffer(res);
+    if (imageData){
+        #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+        SDL_Surface* surface = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
+        #else
+        SDL_Surface* surface = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+        #endif
+        if (surface){
+            /*
+                Pixel replacing
+            */
+            int pixelCount = (sizeX*sizeY);
+            for( int i = 0; i < pixelCount; ++i ){
+                ((Uint32*)surface->pixels)[i] = (((Uint32*)imageData)[i]);
             }
+            /*
+                Generate texture
+            */
+            if (HasAliasing)
+                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
+            SDL_Texture *ret = SDL_CreateTextureFromSurface(Game::GetInstance()->GetRenderer(),surface);// = finalSmart->GetTexture();
+            if (HasAliasing)
+                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+
+            /*
+                Cleanup and return
+            */
+            stbi_image_free(imageData);
+            SDL_FreeSurface(surface);
+
+            return ret;
+        }else{
+            stbi_image_free(imageData);
+            Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",name.c_str(),SDL_GetError()));
         }
-        Console::GetInstance().AddText(utils::format("Trying instead to load [%s]",newName.c_str()));
-        return Preload((char*)newName.c_str(),true,HasAliasing);
-        #endif // __EMSCRIPTEN__
-
-
     }
+
+
     if (HasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
 
-    return NULL;
+    return nullptr;
 }
 SDL_Texture* Sprite::Preload(std::string fileName,ColorReplacer &r,bool HasAliasing){
     if (fileName == ""){
         return nullptr;
     }
     fileName = DirManager::AdjustAssetsPath(fileName);
-    SDL_Surface *surface = nullptr;
+    unsigned char* imageData = nullptr;
+    int sizeX,sizeY,comp;
     if (fileName.find(":")!=std::string::npos){
-        surface = IMG_Load_RW(ResourceManager::GetInstance().GetFile(fileName),1);
+        /**
+            Loading from rwops
+        */
+        SDL_RWops* rw = ResourceManager::GetInstance().GetFile(fileName);
+        uint64_t rsize;
+        char *res = ResourceManager::GetFileBuffer(rw,rsize);
+        imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
+        ResourceManager::ClearFileBuffer(res);
     }else{
-        surface = IMG_Load( fileName.c_str() );
+        imageData = stbi_load(fileName.c_str(),&sizeX,&sizeY,&comp,STBI_rgb_alpha);
     }
-    if (surface){
-        if (HasAliasing)
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-        SDL_PixelFormat* ScreenPixelFormat = SDL_GetWindowSurface( Game::GetInstance()->GetWindow() )->format;
-        SDL_Surface* formated = SDL_ConvertSurface( surface, ScreenPixelFormat, 0 );
-        if (formated){
-            SDL_Texture *auxTexture = SDL_CreateTexture( Game::GetInstance()->GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, formated->w, formated->h );
-            SmartTexture *finalSmart = new SmartTexture(0,0, formated->w, formated->h ,false);
-            if (auxTexture){
-                Uint32* pixels;
-                int mPitch;
-                SDL_LockTexture( auxTexture, NULL, (void**)&pixels, &mPitch );
-				memcpy( pixels, formated->pixels, formated->pitch * formated->h );
-				SDL_UnlockTexture( auxTexture );
-
-
-
-				SDL_LockTexture( auxTexture, NULL, (void**)&pixels, &mPitch );
-
-
-				Uint32* pixels2 = finalSmart->GetPixels();
-                int pixelCount = ( mPitch / 4 ) * formated->h;
-
-
-
-                Uint8 R,G,B,A;
-                std::map<uint32_t,std::tuple<bool,uint32_t>> replacer;
-                for( int i = 0; i < pixelCount; ++i )
-                {
-                    SDL_GetRGBA(pixels[ i ],ScreenPixelFormat,&R,&G,&B,&A);
-                    Uint32 theColor = RenderHelp::FormatRGBA(R,B,G,A);
-                    pixels2[i] = r.Get(theColor);
-                }
-
-                SDL_UnlockTexture( auxTexture );
-                finalSmart->UpdateTexture();
-
-                SDL_FreeSurface(surface);
-                SDL_FreeSurface(formated);
-                SDL_DestroyTexture( auxTexture );
-
-                SDL_Texture *ret = finalSmart->GetTexture();
-                if (HasAliasing)
-                    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
-                delete finalSmart;
-                return ret;
-            }else{
-                Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",fileName.c_str(),SDL_GetError()));
+    if (imageData){
+        #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+        SDL_Surface* surface = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
+        #else
+        SDL_Surface* surface = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+        #endif
+        if (surface){
+            /*
+                Pixel replacing
+            */
+            int pixelCount = (sizeX*sizeY);
+            for( int i = 0; i < pixelCount; ++i ){
+                ((Uint32*)surface->pixels)[i] = r.Get(((Uint32*)imageData)[i]);
             }
+            /*
+                Generate texture
+            */
+            if (HasAliasing)
+                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
+            SDL_Texture *ret = SDL_CreateTextureFromSurface(Game::GetInstance()->GetRenderer(),surface);// = finalSmart->GetTexture();
+            if (HasAliasing)
+                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+
+            /*
+                Cleanup and return
+            */
+            stbi_image_free(imageData);
+            SDL_FreeSurface(surface);
+            return ret;
+        }else{
+            stbi_image_free(imageData);
+            Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",fileName.c_str(),SDL_GetError()));
         }
     }
-    if (HasAliasing)
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
     return nullptr;
 }
 

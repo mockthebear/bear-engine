@@ -27,6 +27,34 @@ long AR_tellOgg( void *fh )
 }
 
 
+void SoundLoader::ShowError(std::string where){
+    ALCenum error = alGetError();
+    if (error != AL_NO_ERROR){
+        if(error == AL_INVALID_NAME)
+        {
+            bear::out << "[AL ERROR] Invalid name ["<<where<<"]\n";
+        }
+        else if(error == AL_INVALID_ENUM)
+        {
+            bear::out << "[AL ERROR] Invalid enum ["<<where<<"]\n";
+        }
+        else if(error == AL_INVALID_VALUE)
+        {
+            bear::out << "[AL ERROR] Invalid value ["<<where<<"]\n";
+        }
+        else if(error == AL_INVALID_OPERATION)
+        {
+            bear::out << "[AL ERROR] Invalid operation ["<<where<<"]\n";
+        }
+        else if(error == AL_OUT_OF_MEMORY)
+        {
+            bear::out << "[AL ERROR] Out of memory ["<<where<<"]\n";
+        }else{
+
+            bear::out << "[AL ERROR] Don't know ["<<where<<"]\n";
+        }
+    }
+}
 BufferData *SoundLoader::loadOggFileRW(SDL_RWops* soundFile){
     BufferData *ret = new BufferData();
     int endian = 0;                         // 0 for Little-Endian, 1 for Big-Endian
@@ -294,6 +322,7 @@ BufferData *SoundLoader::loadWavFileRW(SDL_RWops* soundFile){
     alBufferData(ret->buffer, ret->format, (void*)data,size, ret->freq);
     return ret;
   } catch(const char * error) {
+      bear::out << "Error: " << error << "\n";
     return nullptr;
   }
 }

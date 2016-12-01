@@ -80,7 +80,8 @@ class ResourceManager{
             @return SDL_RWops* , NULL when fails
         */
         SDL_RWops* GetFile(std::string file);
-
+        static char *GetFileBuffer(SDL_RWops* rw,uint64_t &size);
+        static void ClearFileBuffer(char* buff);
         /**
             *Erase an asset
             @param assetAlias the alias

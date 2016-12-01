@@ -1,4 +1,5 @@
 #include "soundsources.hpp"
+#include "soundloader.hpp"
 #include "../engine/bear.hpp"
 
 SoundPool& SoundPool::GetInstance(bool autoQuantity){
@@ -15,8 +16,9 @@ SoundPool::SoundPool(bool autoQuantity){
     for (int i=0;i<count;i++){
         classes[i] = 0;
     }
-
+    SoundLoader::ShowError();
     alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
+    SoundLoader::ShowError();
 
     //ALenum err = alGetError();
 }
@@ -38,10 +40,14 @@ ALuint SoundPool::GetSource(int thisClass){
         }
     }
     bear::out << "No sound sources left \n";
+    SoundLoader::ShowError();
     return 0;
 }
 
 SoundPool::~SoundPool(){
-    alDeleteSources(count, sources);
+    for (int i=0;i<count;i++){
+        alDeleteSources(1, &sources[i]);
+    }
+    SoundLoader::ShowError();
     delete [] sources;
 }

@@ -15,6 +15,24 @@ ResourceManager& ResourceManager::GetInstance(){
     return Singleton;
 }
 
+char *ResourceManager::GetFileBuffer(SDL_RWops* rw,uint64_t &size){
+    Sint64 res_size = SDL_RWsize(rw);
+    char* res =new char[res_size + 1];
+    uint64_t nb_read_total = 0, nb_read = 1;
+    char* buf = res;
+    while (nb_read_total < res_size && nb_read != 0) {
+            nb_read = SDL_RWread(rw, buf, 1, (res_size - nb_read_total));
+            nb_read_total += nb_read;
+            buf += nb_read;
+    }
+    res[nb_read_total] = '\0';
+    size = (res_size + 1);
+    return res;
+}
+
+void ResourceManager::ClearFileBuffer(char* buff){
+    delete [] buff;
+}
 
 bool ResourceManager::Load(std::string file,std::string alias){
     if (alias == "")

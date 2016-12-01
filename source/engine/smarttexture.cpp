@@ -10,7 +10,7 @@ SmartTexture::SmartTexture(int xx,int yy,int ww,int hh,bool del,bool hasAliasing
 
    if (hasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-   t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, ww, hh);
+   t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, ww, hh);
    if (hasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
    pixels = new Uint32[w * h];
@@ -70,16 +70,16 @@ bool SmartSurface::loadFromFile( std::string path )
 {
 	free();
 	SDL_Texture* texture_aux = NULL;
-	SDL_Surface* surf = IMG_Load( path.c_str() );
+	/*SDL_Surface* surf = IMG_Load( path.c_str() );
 	if( surf == NULL ){
 		printf( "Cannot load img: %s\n", path.c_str() );
 		return false;
 	}else{
-		SDL_Surface* aux_surf = SDL_ConvertSurfaceFormat( surf, SDL_PIXELFORMAT_ARGB8888, 0 );
+		SDL_Surface* aux_surf = SDL_ConvertSurfaceFormat( surf, SDL_PIXELFORMAT_RGBA8888, 0 );
 		if( aux_surf == NULL ){
 			printf( "Unable to convert loaded surface to display format! %s\n", SDL_GetError() );
 		}else{
-			texture_aux = SDL_CreateTexture( Game::GetInstance()->GetRenderer(), SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, aux_surf->w, aux_surf->h );
+			texture_aux = SDL_CreateTexture( Game::GetInstance()->GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, aux_surf->w, aux_surf->h );
             if (not texture_aux){
                 return false;
             }
@@ -106,7 +106,7 @@ bool SmartSurface::loadFromFile( std::string path )
 	}
 
 	//Return success
-	texture = texture_aux;
+	texture = texture_aux;*/
 	return true;
 }
 

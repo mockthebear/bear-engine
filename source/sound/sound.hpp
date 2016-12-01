@@ -40,7 +40,7 @@ class Sound{
         bool IsOpen();
         bool IsPlaying();
         bool IsPaused();
-        static int PlayOnce(const char *s,bool useGlobalAssetManager=false,int volume=-128,int classN=0);
+        static int PlayOnce(const char *s,bool useGlobalAssetManager=false,int volume=128,Point3 pos=Point3(),int classN=0);
 
         static BufferData* Preload (std::string name);
         static BufferData* Preload(SDL_RWops* file,std::string name);
@@ -48,7 +48,7 @@ class Sound{
         std::string GetFileName(){return file;};
         void SetAssetManager(int id){};
         static bool SetMasterVolume(uint8_t vol,int classType=0);
-        static float GetMasterVolume(int classType=0){ return MasterVolume[classType];};
+        static float GetMasterVolume(int classType=0){ return MasterVolume[classType]*127.0;};
         void SetClassType(int n);
         int GetClassType(){return classType;};
         void SetPosition(Point3 p);
@@ -64,11 +64,6 @@ class Sound{
         float pitch;
         Point3 pos;
         bool checkSource();
-
-
-
-
-
 
         std::string file;
         ALuint sourceID;

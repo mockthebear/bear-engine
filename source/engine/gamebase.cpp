@@ -18,7 +18,7 @@
 #include "../settings/definitions.hpp"
 #include "../performance/console.hpp"
 #include "../sound/soundsources.hpp"
-
+#include "../sound/soundloader.hpp"
 #include __BEHAVIOR_FOLDER__
 
 
@@ -47,9 +47,6 @@ Game::Game(const char *name){
 
         if (SDL_Init(BEAR_SDL_CONST_INIT) != 0){
             Console::GetInstance().AddTextInfo( utils::format("SDL may nor work because [%s]",SDL_GetError()) );
-        }
-        if (not IMG_Init(BEAR_SDL_IMAGE_CONST_INIT)){
-            Console::GetInstance().AddTextInfo( utils::format("SDL img not working [%s]",IMG_GetError()));
         }
         /*if (not Mix_Init(MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG)){
             Console::GetInstance().AddTextInfo("Audio not found");
@@ -99,15 +96,9 @@ Game::Game(const char *name){
         Console::GetInstance().AddText(utils::format("Linked with SDL version %d.%d.%d.", linked.major, linked.minor, linked.patch));
 
 
-        const SDL_version *link_version=IMG_Linked_Version();
-        SDL_IMAGE_VERSION(&compiled);
 
 
-        Console::GetInstance().AddText(utils::format("SDL_Image compiled with %d.%d.%d",compiled.major, compiled.minor, compiled.patch));
-        Console::GetInstance().AddText(utils::format("SDL_Image Linked with %d.%d.%d.", link_version->major, link_version->minor, link_version->patch));
-
-
-        link_version=TTF_Linked_Version();
+        const SDL_version *link_version =TTF_Linked_Version();
         SDL_TTF_VERSION(&compiled);
 
         Console::GetInstance().AddText(utils::format("SDL_TTF compiled with %d.%d.%d",compiled.major, compiled.minor, compiled.patch));
@@ -124,9 +115,11 @@ Game::Game(const char *name){
         ConfigManager::GetInstance().DisplayArgs();
         device = alcOpenDevice(NULL);
         if (device){
+            SoundLoader::ShowError();
             HasAudio = true;
             ctx = alcCreateContext(device,NULL);
             alcMakeContextCurrent(ctx);
+            SoundLoader::ShowError();
         }else{
             HasAudio = true;
             Console::GetInstance().AddText("Cannot start audio");
@@ -199,8 +192,6 @@ void Game::Close(){
     TTF_Quit();
     Console::GetInstance().AddTextInfo("Closing mix");
     //Mix_Quit();
-    Console::GetInstance().AddTextInfo("Closing img");
-    IMG_Quit();
     Console::GetInstance().AddTextInfo("Closing sdl");
 
     Console::GetInstance().AddTextInfo("Quit game");

@@ -157,12 +157,11 @@ bool AssetMannager::erase(){
         it.second.destroy();
     }
     spriteMap.clear();
-    //todo cleanup
-    /*for (auto &it : soundMap){
-        Mix_FreeChunk( it.second.get() );
+    for (auto &it : soundMap){
+        alDeleteBuffers(1, &it.second.get()->buffer);
         it.second.reset(nullptr);
         it.second.destroy();
     }
-    soundMap.clear();*/
+    soundMap.clear();
     return true;
 }
