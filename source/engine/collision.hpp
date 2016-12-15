@@ -73,7 +73,7 @@ namespace Collision {
 
         static inline bool IsColliding( Rect& b,Circle& a ){
             //Closest point on collision box
-            int cX, cY;
+            float cX, cY;
             //Find closest x offset
             if( a.x <= b.x )
             {
@@ -116,7 +116,7 @@ namespace Collision {
 
         static inline bool IsColliding( Rect& b,Cone& a ){
             //Closest point on collision box
-            int cX=b.x, cY=b.y;
+            float cX=b.x, cY=b.y;
 
             //Find closest x offset
             if( a.x <= b.x )
@@ -151,13 +151,13 @@ namespace Collision {
                     angle = (Geometry::PI()*2+angle);
                 }
                 if (a.start_angle > a.opening){
-                    if (angle <= a.start_angle and angle >= (a.opening) ){
+                    if (angle <= a.start_angle && angle >= (a.opening) ){
                         return false;
                     }else{
                         return true;
                     }
                 }else{
-                    if (angle >= a.start_angle and angle <= (a.opening) ){
+                    if (angle >= a.start_angle && angle <= (a.opening) ){
                         return true;
                     }
                 }

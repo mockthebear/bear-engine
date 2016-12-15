@@ -68,13 +68,13 @@ namespace utils {
     std::string methodName(const std::string& prettyFunction);
 
     inline bool IsInRange(int x,int max){
-        if (x < 0 or x >= max){
+        if (x < 0 || x >= max){
             return false;
         }
         return true;
     }
     inline bool IsInPosOk(int x,int y,int max){
-        if ( IsInRange(x, max) and IsInRange(y, max)){
+        if ( IsInRange(x, max) && IsInRange(y, max)){
             return true;
         }
         return false;

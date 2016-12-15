@@ -16,7 +16,7 @@ ResourceManager& ResourceManager::GetInstance(){
 }
 
 char *ResourceManager::GetFileBuffer(SDL_RWops* rw,uint64_t &size){
-    Sint64 res_size = SDL_RWsize(rw);
+	uint64_t res_size = SDL_RWsize(rw);
     char* res =new char[res_size + 1];
     uint64_t nb_read_total = 0, nb_read = 1;
     char* buf = res;
@@ -37,17 +37,20 @@ void ResourceManager::ClearFileBuffer(char* buff){
 bool ResourceManager::Load(std::string file,std::string alias){
     if (alias == "")
         alias = file;
+
     if (resources[alias]){
         Console::GetInstance().AddTextInfo(utils::format("Cannot load file 2[%s]",file.c_str()));
         return false;
 
     }
+
     ResourceFile *f = new ResourceFile();
     if (!f->Open(file)){
         Console::GetInstance().AddTextInfo(utils::format("Cannot load file 1[%s]",file.c_str()));
         delete f;
         return false;
     }
+
     resources[alias] = f;
     return true;
 }

@@ -61,7 +61,7 @@ void Console::Begin(){
 bool Console::AddText(std::string str){
     if (hasStarted){
         if (logFile)
-            myfile << str << "\n";
+            myfile << str << "\r\n";
         std::cout << str<<"\n";
 
         #ifdef __ANDROID__
@@ -83,7 +83,7 @@ bool Console::AddText(std::string str){
     }else{
         std::cout << "[Console:Not started] "<<str<<"\n";
         if (logFile)
-            myfile << "[Console:Not started] "<<str<<"\n";
+            myfile << "[Console:Not started] "<<str<<"\r\n";
 
 
 

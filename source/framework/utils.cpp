@@ -83,7 +83,7 @@ uint64_t utils::GetU64c(char *str,int &pos){
 }
 
 bool utils::IsInLimits(int x,int y,int sx,int sy){
-    if (x < 0 or x >= sx or y < 0 or y >= sy){
+    if (x < 0 || x >= sx || y < 0 || y >= sy){
         return false;
     }
     return true;
@@ -116,7 +116,7 @@ int utils::GetNumber(std::string &str,bool ignoreUntilFind){
             return ret;
         char c = str[pos];
         pos++;
-        if (c >= '0' and c <= '9'){
+        if (c >= '0' && c <= '9'){
             ret *= 10;
             ret += c-'0';
             found = true;

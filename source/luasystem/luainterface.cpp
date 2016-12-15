@@ -143,7 +143,7 @@ int playSound(lua_State *L)
     //showAnimatedText(x,y,sx,sy,r,g,b,sz,str)
     std::string index = lua_tostring(L,-1);
     lua_pop(L,1);
-    //Sound::PlayOnce(index.c_str());
+    Sound::PlayOnce(index.c_str());
     return 1;
 }
 
@@ -218,7 +218,7 @@ void LuaInterface::InsertPointer(void *p){
 }
 bool LuaInterface::LoadPrepare(std::string name){
 
-    if (!HScript[name] or name == ""){
+    if (!HScript[name] || name == ""){
         return false;
     }
     if (ScriptTable[HScript[name]] == ""){
@@ -232,7 +232,7 @@ bool LuaInterface::LoadPrepare(std::string name){
 
 bool LuaInterface::LoadPrepareC(std::string name,std::string func){
 
-    if (!HScript[name] or name == ""){
+    if (!HScript[name] || name == ""){
         return false;
     }
     if (ScriptTable[HScript[name]] == ""){
@@ -298,7 +298,7 @@ std::vector<LuaMember> LuaInterface::ListTableFields(std::string tableName){
             return members;
         }
     }
-    if (not lua_istable(L,-1)){
+    if (!lua_istable(L,-1)){
         LuaWarningMessageF("Requesting table. The type is %s.",LuaMember::GetType(L));
         return members;
     }
@@ -333,7 +333,7 @@ bool LuaInterface::GetMember(int num){
 
 bool LuaInterface::RunTimer(std::string name){
 
-    if (!HScript[name] or name == ""){
+    if (!HScript[name] || name == ""){
         return false;
     }
     if (ScriptTable[HScript[name]] == ""){
@@ -369,7 +369,7 @@ bool LuaInterface::CallClear(){
 
 bool LuaInterface::RunScript(std::string name){
 
-    if (!HScript[name] or name == ""){
+    if (!HScript[name] || name == ""){
         return false;
     }
     if (ScriptTable[HScript[name]] == ""){
@@ -511,7 +511,7 @@ int LAlphasAsDuration(lua_State *L){
 int LParticleMovementLine(lua_State *L)
 {
     int mCount = lua_gettop(L);
-    if (mCount > 5 or mCount < 2){
+    if (mCount > 5 || mCount < 2){
         Console::GetInstance().AddTextInfo("Error, function has too much methods");
         return 0;
     }

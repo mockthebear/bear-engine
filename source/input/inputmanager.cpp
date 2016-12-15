@@ -238,7 +238,7 @@ void InputManager::Update(float dt){
                     break;
                 }
             }
-        }else if (event.type == SDL_JOYBUTTONDOWN or event.type == SDL_JOYBUTTONUP ){
+        }else if (event.type == SDL_JOYBUTTONDOWN || event.type == SDL_JOYBUTTONUP ){
             if (Joysticks[event.jbutton.which])
                 Joysticks[event.jbutton.which]->Button(event.jbutton.button,event.jbutton.state);
         }else if (event.type == SDL_JOYAXISMOTION ){
@@ -279,7 +279,7 @@ bool InputManager::MouseRelease(int key){
 }
 
 bool InputManager::IsMousePressed(int key){
-    return mouse.mouseState[key] == JUST_PRESSED or mouse.mouseState[key] == PRESSED;
+    return mouse.mouseState[key] == JUST_PRESSED || mouse.mouseState[key] == PRESSED;
 }
 
 
@@ -311,11 +311,11 @@ InputState InputManager::GetKeyState(int key){
     return keyboard.keyState[key];
 }
 bool InputManager::IsKeyDown(int key){
-    return keyboard.keyState[key] == JUST_PRESSED or keyboard.keyState[key] == PRESSED;
+    return keyboard.keyState[key] == JUST_PRESSED || keyboard.keyState[key] == PRESSED;
 }
 
 bool InputManager::IsKeyUp(int key){
-    return keyboard.keyState[key] == JUST_RELEASED or keyboard.keyState[key] == RELEASED;
+    return keyboard.keyState[key] == JUST_RELEASED || keyboard.keyState[key] == RELEASED;
 }
 
 int InputManager::IsAnyKeyPressed(bool considerTap){

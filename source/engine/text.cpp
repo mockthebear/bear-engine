@@ -29,12 +29,13 @@ CustomFont::CustomFont(std::string letterpositions){
              bool find = true;
             int m=1;
             char letter[10];
-            int xx=0,yy=0,hh=0,ww=0,padd=0,pddin=0,yoffset=0;
-            while (find and m > 0){
-                if ( (sscanf(letterData.c_str(),"%c=<%d,%d,%d,%d,%d,%d,%dx>",letter,&xx,&yy,&ww,&hh,&padd,&pddin,&yoffset))  ){
-                    m = letterData.find(";");
+            int xx=0,yy=0,hh=0,ww=0,padd=0,pddin=0, xoffset = 0;
+            while (find && m > 0){
+                if ( (sscanf(letterData.c_str(),"%c=<%d,%d,%d,%d,%d,%d,%dx>",letter,&xx,&yy,&ww,&hh,&padd,&pddin,&xoffset))  ){
+					//std::cout << "Achei: " << (int)letter[0] << "\n";
+					m = letterData.find(";");
                     if (m != -1){
-                        Letters[(unsigned char)letter[0]] = std::unique_ptr<Letter>(new Letter(xx,yy,ww,hh,padd,pddin,yoffset));
+                        Letters[(unsigned char)letter[0]] = std::unique_ptr<Letter>(new Letter(xx,yy,ww,hh,padd,pddin, xoffset));
                     }else{
                         break;
                     }
@@ -145,7 +146,7 @@ Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string tex
     alpha=255;
     std::string ftnm = fontfilep;
     char buff[20];
-    sprintf(buff,"%d",fontsize);
+	sprintf(buff,"%d",fontsize);
     ftnm = ftnm+buff;
     //Not resource tweaks
     bool tweaks = true;
@@ -357,7 +358,7 @@ void Text::SetFontSize(int ftsz){
         return;
     std::string ftnm = fontfile;
     char buff[10];
-    sprintf(buff,"%d",ftsz);
+	sprintf(buff,"%d",ftsz);
     ftnm = ftnm+buff;
 
     if (assetTable[ftnm]){

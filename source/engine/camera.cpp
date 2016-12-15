@@ -29,13 +29,13 @@ void Camera::LockLimits(float mx,float my,float x,float y){
 }
 
 PointInt Camera::AdjustPosition(Point p){
-    return PointInt(p.x-pos.x,p.y-pos.y);
+    return PointInt((int)(p.x-pos.x),(int)(p.y-pos.y));
 }
 PointInt Camera::AdjustPosition(Rect p){
     return PointInt(p.x-pos.x,p.y-pos.y);
 }
 PointInt Camera::AdjustPosition(Circle p){
-    return PointInt(p.x-pos.x,p.y-pos.y);
+    return PointInt(int(p.x-pos.x), int(p.y-pos.y));
 }
 
 PointInt Camera::AdjustPosition(Point p,float xof,float yof){
@@ -58,17 +58,17 @@ void Camera::Follow(GameObject *ob,bool smoothed){
 }
 
 void Camera::Resize(Point newDimension){
-    pos.w = newDimension.x;
-    pos.h = newDimension.y;
-    EffectArea.w = newDimension.x;
-    EffectArea.h = newDimension.y;
-    EffectArea.w = newDimension.x;
-    EffectArea.h = newDimension.y;
+    pos.w = (int)newDimension.x;
+    pos.h = (int)newDimension.y;
+    EffectArea.w = (int)newDimension.x;
+    EffectArea.h = (int)newDimension.y;
+    EffectArea.w = (int)newDimension.x;
+    EffectArea.h = (int)newDimension.y;
 
-    EffectArea.w += OffsetEffect*2.0f;
-    EffectArea.h += OffsetEffect*2.0f;
-    UpdateArea.w += OffsetEffect*2.0f;
-    UpdateArea.h += OffsetEffect*2.0f;
+    EffectArea.w += (int)(OffsetEffect*2.0f);
+    EffectArea.h += (int)(OffsetEffect*2.0f);
+    UpdateArea.w += (int)(OffsetEffect*2.0f);
+    UpdateArea.h += (int)(OffsetEffect*2.0f);
 
 }
 void Camera::Initiate(Rect startingPos,int offsetEffect_, int offsetUpdate_){
@@ -98,11 +98,11 @@ void Camera::Update(float dt){
         Point posCenter(pos.getXCenter(),pos.getYCenter());
         if (Smooth && toGo.getDistance(posCenter) >= speed*dt ){
             float angle = toGo.getDirection(posCenter);
-            pos.x += cos(angle)*dt*speed;
-            pos.y += sin(angle)*dt*speed;
+            pos.x += (int)(cos(angle)*dt*speed);
+            pos.y += (int)(sin(angle)*dt*speed);
         }else{
-            pos.x = (focus->box.x+focus->box.w/2-pos.w/2);
-            pos.y = (focus->box.y+focus->box.h/2-pos.h/2);
+            pos.x = (int)(focus->box.x+focus->box.w/2-pos.w/2);
+            pos.y = (int)(focus->box.y+focus->box.h/2-pos.h/2);
         }
         if (UseLimits){
             pos.x = std::max((int)minX,pos.x);
@@ -122,16 +122,16 @@ void Camera::Update(float dt){
         /*float sx,sy;
         Point mouse = InputManager::GetInstance().GetMouse();
         sx = sy = 0;
-        if (InputManager::GetInstance().IsKeyDown(UP_ARROW_KEY) or mouse.y <= MouseRange){
+        if (InputManager::GetInstance().IsKeyDown(UP_ARROW_KEY) || mouse.y <= MouseRange){
             sy = sy-speed;
         }
-        if (InputManager::GetInstance().IsKeyDown(DOWN_ARROW_KEY) or mouse.y >= ConfigManager::GetInstance().GetScreenH()-MouseRange){
+        if (InputManager::GetInstance().IsKeyDown(DOWN_ARROW_KEY) || mouse.y >= ConfigManager::GetInstance().GetScreenH()-MouseRange){
             sy = sy+speed;
         }
-        if (InputManager::GetInstance().IsKeyDown(LEFT_ARROW_KEY) or mouse.x <= MouseRange){
+        if (InputManager::GetInstance().IsKeyDown(LEFT_ARROW_KEY) || mouse.x <= MouseRange){
             sx = sx-speed;
         }
-        if (InputManager::GetInstance().IsKeyDown(RIGHT_ARROW_KEY) or mouse.x >= ConfigManager::GetInstance().GetScreenW()-MouseRange){
+        if (InputManager::GetInstance().IsKeyDown(RIGHT_ARROW_KEY) || mouse.x >= ConfigManager::GetInstance().GetScreenW()-MouseRange){
             sx = sx+speed;
         }
         pos.y += sy*dt;
@@ -144,10 +144,10 @@ void Camera::Update(float dt){
         }
         */
 
-        EffectArea.x = pos.x-OffsetEffect/2.0;
-        EffectArea.y = pos.y-OffsetEffect/2.0;
-        UpdateArea.x = pos.x-OffsetUpdate/2.0;
-        UpdateArea.y = pos.y-OffsetUpdate/2.0;
+        EffectArea.x = (int)(pos.x-OffsetEffect/2.0f);
+        EffectArea.y = (int)(pos.y-OffsetEffect/2.0f);
+        UpdateArea.x = (int)(pos.x-OffsetUpdate/2.0f);
+        UpdateArea.y = (int)(pos.y-OffsetUpdate/2.0f);
 
     }
 }

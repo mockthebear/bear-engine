@@ -49,12 +49,12 @@ void ShootEffect::Render(){
 }
 
 bool ShootEffect::IsDead(){
-    return (!oneTimeOnly or endTime.Get() >= timeLimit);
+    return (!oneTimeOnly || endTime.Get() >= timeLimit);
 }
 bool ShootEffect::Is(int p){
     return p == OBJ_STILLANIMATION;
 }
 bool ShootEffect::IsInScreen(Point& p){
-    return not box.IsInside(p.x,p.y);
+    return !box.IsInside(p.x,p.y);
 }
 

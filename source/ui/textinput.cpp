@@ -46,7 +46,7 @@ void TextInput::Input(){
                 }
             }else if(key >= 97 && key <= 122){
 
-                if (Upper or InputManager::GetInstance().IsKeyDown(SDLK_LSHIFT) or InputManager::GetInstance().IsKeyDown(SDLK_RSHIFT)){
+                if (Upper || InputManager::GetInstance().IsKeyDown(SDLK_LSHIFT) || InputManager::GetInstance().IsKeyDown(SDLK_RSHIFT)){
                     key -= 32;
                     S << txt.GetText() << (char)key;
                 }else{

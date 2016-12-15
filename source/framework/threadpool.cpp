@@ -10,8 +10,9 @@
 #include "../engine/gamebase.hpp"
 #include <math.h>
 #include <stdlib.h>
+#ifndef DISABLE_THREADPOOL
 #include <pthread.h>
-
+#endif
 #include <iostream>
 
 
@@ -55,7 +56,7 @@ ThreadPool::ThreadPool(int threads){
     }
     Locked = true;
     #else
-    bear::out << "Threads are disabled.";
+    bear::out << "Threads are disabled.\n";
     UsePThreads=1;
     Params = new  parameters[UsePThreads];
     Params[0].id = 0;
@@ -100,11 +101,13 @@ bool ThreadPool::KillThreads(){
 }
 
 ThreadPool::~ThreadPool(){
-    std::cout << "[ThreadPool] Closing threads!\n";
+
     if (started){
+        std::cout << "[ThreadPool] Closing threads!\n";
         KillThreads();
+        std::cout << "[ThreadPool] Bye!\n";
     }
-    std::cout << "[ThreadPool] Bye!\n";
+
 }
 
 void ThreadPool::AddLambdaJob(std::function<void(int,int,void*)> F){
@@ -142,7 +145,7 @@ void ThreadPool::AddParallelFor(std::function<void(int,int,void*)> F,int min,int
 
 
 void ThreadPool::ClearJobs(){
-    while (not Jobs.empty()){
+    while (!Jobs.empty()){
         Jobs.pop();
     }
 }
@@ -254,7 +257,7 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
             #ifndef DISABLE_THREADPOOL
             pthread_mutex_lock(&This->Critical);
             #endif
-            if (not This->Jobs.empty()){
+            if (!This->Jobs.empty()){
                 P->working = true;
                 todo = This->Jobs.top();
                 This->Jobs.pop();

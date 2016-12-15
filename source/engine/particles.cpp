@@ -193,14 +193,14 @@ void Particle::Update(float dt){
         currentDelay = Delay;
         currentFrame++;
     }
-    if (sp.IsAnimationOver() or currentFrame >= Frame){
+    if (sp.IsAnimationOver() || currentFrame >= Frame){
         if (repeat > 0){
             sp.ResetAnimation();
             repeat--;
             currentFrame = 0;
         }
     }
-    if (IsDead() and txt.IsWorking()){
+    if (IsDead() && txt.IsWorking()){
         txt.Close();
     }
 }
@@ -225,7 +225,7 @@ void Particle::Render(){
 
 }
 bool Particle::IsDead(){
-    return currentFrame >= Frame or (Alpha <= 0 or Alpha > 255);
+    return currentFrame >= Frame || (Alpha <= 0 || Alpha > 255);
 }
 
 bool Particle::Is(int t){

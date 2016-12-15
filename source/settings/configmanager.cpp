@@ -25,7 +25,7 @@ void ConfigManager::SetWindowIcon(std::string icon,ColorReplacer &r){
 }
 void ConfigManager::SetWindowIcon(std::string icon){
     SDL_Surface *surf = nullptr;
-    unsigned char *imageData;
+    unsigned char *imageData = nullptr;
     uint64_t rsize;
     int sizeX,sizeY,comp;
     if (icon.find(":")!=std::string::npos){
@@ -56,7 +56,11 @@ void ConfigManager::SetWindowIcon(std::string icon){
         #else
         surf = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
         #endif
-        if (not surf){
+        int pixelCount = (sizeX*sizeY);
+        for( int i = 0; i < pixelCount; ++i ){
+            ((Uint32*)surf->pixels)[i] = ((Uint32*)imageData)[i];
+        }
+        if (!surf){
             Console::GetInstance().AddTextInfo(utils::format("The surface %s cannot be loaded because %s",icon,SDL_GetError()));
         }else{
             SDL_SetWindowIcon(Game::GetInstance()->GetWindow(), surf);

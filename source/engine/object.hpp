@@ -109,7 +109,7 @@ class GameObject{
         @param thing the parameter here is the object type HASH. Check GameObject::GetHash
         @code
             Is(int i){
-                return i == OBJ_TYPE_BLA or i == GetHash();
+                return i == OBJ_TYPE_BLA || i == GetHash();
             }
         @endcode
     */
@@ -159,7 +159,7 @@ class GameObject{
     /**
         *Can be used as an depth var. Use as you wish
     */
-    float Depth;
+    int Depth;
     /**
         *Used to check collision.
         *Actually means the position and the size of the object

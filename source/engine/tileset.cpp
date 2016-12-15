@@ -40,7 +40,7 @@ BlockTileSet::BlockTileSet(int tilew,int tileh,Sprite tset){
 
 void BlockTileSet::Render(int index,int x,int y){
     if (tileset.IsLoaded()){
-        if (index <= columns*rows and index != -1){
+        if (index <= columns*rows && index != -1){
             int cx = index%columns;
             int cy = index/columns;
             tileset.SetClip(GetTileWidth()*cx,GetTileHeight()*cy,GetTileHeight(),GetTileWidth());
@@ -51,7 +51,7 @@ void BlockTileSet::Render(int index,int x,int y){
 
 void BlockTileSet::RawRender(int index,int x,int y){
     if (tileset.IsLoaded()){
-        if (index <= columns*rows and index != -1){
+        if (index <= columns*rows && index != -1){
             int cx = index%columns;
             int cy = index/columns;
             tileset.SetClip(GetTileWidth()*cx,GetTileHeight()*cy,GetTileHeight(),GetTileWidth());
@@ -62,7 +62,7 @@ void BlockTileSet::RawRender(int index,int x,int y){
 
 void BlockTileSet::Render2(int index,int x,int y,float cxe,float cye){
     if (tileset.IsLoaded()){
-        if (index <= columns*rows and index != -1){
+        if (index <= columns*rows && index != -1){
             int cx = index%columns;
             int cy = index/columns;
             tileset.SetScaleX(cxe);

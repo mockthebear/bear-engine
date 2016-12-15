@@ -36,26 +36,30 @@ GameFile::~GameFile(){
 }
 
 bool GameFile::Open(std::string name,bool notify){
-    if (name.find(":")!=std::string::npos){
+    
+	if (name.find(":")!=std::string::npos){
         m_filePointer = ResourceManager::GetInstance().GetFile(name);
     }else{
         name = DirManager::AdjustAssetsPath(name);
         m_filePointer = SDL_RWFromFile(name.c_str(),"rb");
     }
 
-
+	std::cout << name.c_str() << "\n";
 
     if (m_filePointer == NULL){
         if (notify){
             Console::GetInstance().AddText(utils::format("Cannot locate %s", name.c_str() ) );
         }
+
         return false;
     }
+
 
     SDL_RWseek(m_filePointer, 0L, RW_SEEK_END);
     m_size = SDL_RWtell(m_filePointer);
     SDL_RWseek(m_filePointer, 0L, RW_SEEK_SET);
     m_filePos = 0;
+
     return true;
 }
 bool GameFile::ClearCache(){
@@ -68,7 +72,7 @@ bool GameFile::ClearCache(){
 }
 
 char *GameFile::PopCache(){
-    if (!IsOpen() or !IsCached())
+    if (!IsOpen() || !IsCached())
         return NULL;
     char *oldCache = m_cache;
     m_cache = NULL;
@@ -83,7 +87,7 @@ bool GameFile::Close(){
 }
 
 char *GameFile::GetCache(){
-    if (!IsOpen() or !IsCached())
+    if (!IsOpen() || !IsCached())
         return NULL;
     char *l_cache = new char[m_size+1];
     for (uint32_t i=0;i<m_size+1;i++){
@@ -93,7 +97,7 @@ char *GameFile::GetCache(){
 }
 
 bool GameFile::Cache(){
-    if (!IsOpen() or IsCached())
+    if (!IsOpen() || IsCached())
         return false;
     m_cache = new char[m_size+1];
     SDL_RWread(m_filePointer,m_cache, 1, m_size);
@@ -143,7 +147,7 @@ int GameFile::GetNumber(bool ignoreUntilFind){
         if (m_filePos > m_size)
             return -1;
         char c = ReadByte();
-        if (c >= '0' and c <= '9'){
+        if (c >= '0' && c <= '9'){
             ret *= 10;
             ret += c-'0';
             found = true;

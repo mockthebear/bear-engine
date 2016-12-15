@@ -31,7 +31,7 @@ Xml::Xml(){
 
 XmlNode *Xml::Parse(std::string fileName){
     GameFile f;
-    if (not f.Open(fileName)){
+    if (!f.Open(fileName)){
         return nullptr;
     }
     f.Cache();

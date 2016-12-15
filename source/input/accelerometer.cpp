@@ -3,7 +3,7 @@
 
 Accelerometer::Accelerometer(){
     m_joy = NULL;
-    m_factor = 0.2;
+    m_factor = 0.2f;
 }
 void Accelerometer::Set(Joystick *j){
     m_joy = j;

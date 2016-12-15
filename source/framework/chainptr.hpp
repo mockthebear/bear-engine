@@ -39,7 +39,7 @@ template <typename T> class chain_ptr{
             return !myHolder;
         }
         T *get(){
-            if (myHolder == nullptr or (*myHolder) == nullptr){
+            if (myHolder == nullptr || (*myHolder) == nullptr){
                 return nullptr;
             }
             return *(myHolder[0]);  //This will return the middle pointer object

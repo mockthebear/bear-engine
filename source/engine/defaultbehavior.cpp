@@ -25,6 +25,11 @@ bool DefaultBehavior::OnLoad(){
     return true;
 }
 
+void DefaultBehavior::OnUpdate(float dt){
+
+}
+
+
 void DefaultBehavior::OnClose(){
     Text::Clear();
     //Music::Clear();

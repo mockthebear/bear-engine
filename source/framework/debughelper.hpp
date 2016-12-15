@@ -1,7 +1,13 @@
 #ifndef DEBUGHELPERBE
 #define DEBUGHELPERBE
+#ifdef __GNUC__
 #define WHERE_ARG __FILE__,__PRETTY_FUNCTION__,__LINE__
-#define Assert(ptr) AssertAlloc(ptr,WHERE_ARG)
+#else
+
+#define WHERE_ARG __FILE__,__FUNCTION__,__LINE__
+#endif
+
+#define AssertE(ptr) AssertAlloc(ptr,WHERE_ARG)
 
 #include <string>
 #include <stdlib.h>

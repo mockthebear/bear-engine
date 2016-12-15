@@ -189,8 +189,8 @@ class GenericState{
         void AddWindow(UIBase *b);
     protected:
         friend class Game;
-        virtual void Pause(){};
-        virtual void Resume(){};
+        virtual void Pause(GenericState *){};
+        virtual void Resume(GenericState *){};
 
         /**
             *You may need show some windows. Here's a vector to Window components

@@ -221,22 +221,22 @@ template <typename T=float>class GenericRect{
             @return if the given two positions are inside the rect
         */
         bool IsInside(T xx,T yy){
-            return xx >= x and xx <= x+w and yy >= y and yy <= y+h;
+            return xx >= x && xx <= x+w && yy >= y && yy <= y+h;
         };
         bool IsInside(Point p){
-            return p.x >= x and p.x <= x+w and p.y >= y and p.y <= y+h;
+            return p.x >= x && p.x <= x+w && p.y >= y && p.y <= y+h;
         };
         /**
             @return if the given Point are inside the rect
         */
         bool IsInside(GenericRect<int> r){
-            return r.x >= x and r.x <= x+w and r.y >= y and r.y <= y+h;
+            return r.x >= x && r.x <= x+w && r.y >= y && r.y <= y+h;
         };
         bool IsInside(GenericRect<float> r){
-            return r.x >= x and r.x <= x+w and r.y >= y and r.y <= y+h;
+            return r.x >= x && r.x <= x+w && r.y >= y && r.y <= y+h;
         };
         bool IsInside(GenericRect<double> r){
-            return r.x >= x and r.x <= x+w and r.y >= y and r.y <= y+h;
+            return r.x >= x && r.x <= x+w && r.y >= y && r.y <= y+h;
         };
 
 
@@ -283,7 +283,7 @@ class Circle{
         }
         Circle();
         float x,y,r;
-        uint32_t GetSize(){return r;};
+        float GetSize(){return r;};
 };
 
 class Cone : public Circle{
@@ -310,7 +310,7 @@ class Cone : public Circle{
             opening = 0;
         };
         float start_angle,opening;
-        uint32_t GetSize(){return r;};
+		float GetSize(){return r;};
 };
 
 

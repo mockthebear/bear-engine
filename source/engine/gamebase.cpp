@@ -27,8 +27,6 @@
 #include <emscripten.h>
 #endif
 
-
-
 Game* Game::instance = NULL;
 
 Game::Game(const char *name){
@@ -70,7 +68,9 @@ Game::Game(const char *name){
             Console::GetInstance().AddTextInfo("Failed creating screen");
             return;
         }
+
         renderer = ScreenManager::GetInstance().StartRenderer();
+
         if (!renderer){
             Console::GetInstance().AddTextInfo("Failed creating render");
             return;
@@ -197,6 +197,8 @@ void Game::Close(){
     Console::GetInstance().AddTextInfo("Quit game");
     Console::GetInstance().CloseOutput();
 
+
+
     #ifdef __ANDROID__
     exit(0);
     #endif
@@ -213,6 +215,7 @@ void Game::Update(){
 
     float dt = std::min(GetDeltaTime(),1.2f );
     InputManager::GetInstance().Update(dt);
+    GameBehavior::GetInstance().OnUpdate(dt);
     ScreenManager::GetInstance().PreRender();
     if (!CanStop()){
         #ifndef DISABLE_LUAINTERFACE
@@ -247,7 +250,7 @@ void Game::Begin(){
 }
 
 bool Game::CanStop(){
-    if (isClosing or (SDL_QuitRequested() or stateStack.top()->RequestedQuit())){
+    if (isClosing || (SDL_QuitRequested() || stateStack.top()->RequestedQuit())){
         isClosing = true;
         return true;
     }else{
@@ -286,14 +289,13 @@ void Game::Run(){
                 }else{
                     delete stateStack.top();
                     stateStack.pop();
-                    stateStack.top()->Resume();
+                    stateStack.top()->Resume(storedState);
                 }
             }
 
             if (storedState != NULL){
-                stateStack.top()->Pause();
+                stateStack.top()->Pause(storedState);
                 stateStack.emplace(storedState);
-
                 stateStack.top()->Begin();
                 storedState =NULL;
                 return;

@@ -144,7 +144,7 @@ class InputManager{
             @return true or false
         */
         bool IsMouseReleased(int key){
-            return not IsMousePressed(key);
+            return !IsMousePressed(key);
         };
 
         /**
@@ -188,7 +188,7 @@ class InputManager{
             Get the mouse position as a Point
             @return Point
         */
-        inline Point GetMouse(){return Point(GetMouseX(),GetMouseY());};
+        inline Point GetMouse(){return Point(float(GetMouseX()),float(GetMouseY()));};
 
         /**
             *This can be used of calibration
@@ -209,7 +209,7 @@ class InputManager{
             @param fingerId The finger. Dpending from your device can be up to 10
             @return true or false
         */
-        bool IsFingerPressed(int fingerId){return touchscreen.fingers[fingerId].m_state == JUST_PRESSED or touchscreen.fingers[fingerId].m_state == PRESSED;};
+        bool IsFingerPressed(int fingerId){return touchscreen.fingers[fingerId].m_state == JUST_PRESSED || touchscreen.fingers[fingerId].m_state == PRESSED;};
         /**
             *Get the Point position from an given finger.
             @param fingerId When set to no argument or -1, the return position will be from the last finger that touched the screen

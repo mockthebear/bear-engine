@@ -31,18 +31,17 @@ ScreenManager& ScreenManager::GetInstance(){
 void ScreenManager::TerminateScreen(){
 
     if (m_renderer != NULL){
-        bear::out << "[Done1] ["<<SDL_GetError()<<"]\n";
-        bear::out << "[Terminating renderer]\n";
+        bear::out << "[Terminating renderer]...";
         SDL_DestroyRenderer( m_renderer );
         m_renderer = NULL;
-        bear::out << "[Done] ["<<SDL_GetError()<<"]\n";
+        bear::out << "[Done]\n";
     }
 
     if (m_window != NULL){
-        bear::out << "[Terminating window]"<<SDL_GetError()<<"\n";
+        bear::out << "[Terminating window]...";
         SDL_DestroyWindow( m_window );
         m_window = NULL;
-        bear::out << "[Done] ["<<SDL_GetError()<<"]\n";
+        bear::out << "[Done]\n";
     }
 
 }
@@ -57,7 +56,7 @@ SDL_Window* ScreenManager::StartScreen(std::string name){
         m_display = PointInt(m_displayMode.w,m_displayMode.h);
     }
     m_screen = PointInt(ConfigManager::GetInstance().GetScreenW(),ConfigManager::GetInstance().GetScreenH());
-    if (m_display.x != 0 && m_display.y != 0 && (m_display.x < m_screen.x or m_display.y < m_screen.y) ){
+    if (m_display.x != 0 && m_display.y != 0 && (m_display.x < m_screen.x || m_display.y < m_screen.y) ){
         bear::out << "[ScreenManager::StartScreen] Display size suported is "<<m_display.x<<"x"<<m_display.y<<".\nImpossible to create"<<m_screen.x<<"x"<<m_screen.y<<"\n";
         return NULL;
     }
@@ -139,7 +138,7 @@ void ScreenManager::Resize(int w,int h){
     SDL_SetWindowSize(m_window,w,h);
 }
 void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
-    if (w < ConfigManager::GetInstance().GetScreenW() or h < ConfigManager::GetInstance().GetScreenH()){
+    if (w < ConfigManager::GetInstance().GetScreenW() || h < ConfigManager::GetInstance().GetScreenH()){
         Resize(ConfigManager::GetInstance().GetScreenW(),ConfigManager::GetInstance().GetScreenH());
         return;
     }
@@ -160,10 +159,10 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
         m_scaleRatio.y = std::min(m_scaleRatio.x,m_scaleRatio.y);
     }
 
-    if (w < m_originalScreen.x*m_scaleRatio.x or h < m_originalScreen.y*m_scaleRatio.y){
+    if (w < m_originalScreen.x*m_scaleRatio.x || h < m_originalScreen.y*m_scaleRatio.y){
         Point ValidScale = m_scaleRatio;
         Point LocalScale = m_scaleRatio;
-        while(m_originalScreen.x*LocalScale.x > w or m_originalScreen.y*LocalScale.y > h){
+        while(m_originalScreen.x*LocalScale.x > w || m_originalScreen.y*LocalScale.y > h){
             ValidScale.x -= 1.0/8.0;
             ValidScale.y -= 1.0/8.0;
             LocalScale.x = round(ValidScale.x*8.0)/8.0;
@@ -173,7 +172,6 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
     }
 
     m_offsetScreen.x = m_originalScreen.x == w ? 0 : w/2 - (m_originalScreen.x/2)*m_scaleRatio.x;
-    //std::cout << m_offsetScreen.x << " or size: " <<m_originalScreen.x << "ratio: " << m_scaleRatio.x << " to: " << w << "\n";
 }
 
 void ScreenManager::SetScreenName(std::string name){

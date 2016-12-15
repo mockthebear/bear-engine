@@ -11,11 +11,12 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 #define MAX_VOL_TYPES 16
+#define MAX_VOL_SIZE 128.0f
 
 /**
     @brief Basic sound class
 */
-static float MasterVolume[MAX_VOL_TYPES] = {1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,
+static volatile float MasterVolume[MAX_VOL_TYPES] = {1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,
                                  1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
 
 class Sound{
@@ -48,7 +49,7 @@ class Sound{
         std::string GetFileName(){return file;};
         void SetAssetManager(int id){};
         static bool SetMasterVolume(uint8_t vol,int classType=0);
-        static float GetMasterVolume(int classType=0){ return MasterVolume[classType]*127.0;};
+        static float GetMasterVolume(int classType=0);
         void SetClassType(int n);
         int GetClassType(){return classType;};
         void SetPosition(Point3 p);

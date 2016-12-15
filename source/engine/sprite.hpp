@@ -265,8 +265,8 @@ class Sprite{
         */
         void SetCenter(Point p){
             hasCenter=true;
-            center.x = p.x;
-            center.y = p.y;
+            center.x = (int)p.x;
+            center.y = (int)p.y;
         };
         /**
             *Check if the animation have done one cycle

@@ -20,7 +20,7 @@ TileMap::TileMap (char *str,TileSet* s){
 void TileMap::Load(char *str){
     FILE *f = fopen(str,"r");
     if (f){
-        fscanf(f,"%d,%d,%d,",&mapWidth,&mapHeight,&mapDepth);
+		fscanf(f,"%d,%d,%d,",&mapWidth,&mapHeight,&mapDepth);
         printf("%d,%d,%d,\n",mapWidth,mapHeight,mapDepth);
         tileMatrix.resize(mapWidth*mapHeight*mapDepth);
         for(int i =tileMatrix.size() - 1; i >= 0; --i){

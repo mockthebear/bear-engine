@@ -4,7 +4,7 @@
 
 int Collision::AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,PoolManager &pool,PoolGroupId gid){
     Rect tempXY(dis->box.x+sx*dt,dis->box.y+sy*dt,dis->box.w,dis->box.h);
-    if (sx != 0 or sy !=0)
+    if (sx != 0 || sy !=0)
         for (auto &obj : pool.ForGroup(gid))
         {
             if (obj != dis && !obj->IsDead()){
@@ -19,7 +19,7 @@ int Collision::AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,Pool
                         dis->NotifyCollision((GameObject*)obj);
                         return 4;
                     }
-                    if (sy == 0 and sx == 0)
+                    if (sy == 0 && sx == 0)
                         break;
                 }
             }
@@ -80,7 +80,7 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
     int ret = -1;
     float colSize = msize;
     float colSize2 = msize;
-    if (sx != 0 or sy !=0)
+    if (sx != 0 || sy !=0)
         for (auto &obj : pool.ForGroup(gid)){
             if (obj != dis && !obj->IsDead()){
                 if ( obj->solid ){
@@ -161,7 +161,7 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
                             ret = 3;
                         }
                     }
-                    if (sy == 0 and sx == 0)
+                    if (sy == 0 && sx == 0)
                         break;
                 }
             }
@@ -177,7 +177,7 @@ bool Collision::SoftWarpAway(GameObject* thisObject,GameObject* otherObject,Poin
         aux = thisObject->box;
         aux.x += speed.x*dist;
         aux.y += speed.y*dist;
-        if  (not Collision::IsColliding(aux,otherObject->box)){
+        if  (!Collision::IsColliding(aux,otherObject->box)){
             thisObject->box = aux;
             return true;
         }
@@ -192,11 +192,11 @@ bool Collision::SoftWarpAway(GameObject* thisObject,GameObject* otherObject){
     Rect aux = thisObject->box;
     float dist = 0;
     while (Collision::IsColliding(aux,otherObject->box)){
-        dist += 0.2;
+        dist += 0.2f;
         aux = thisObject->box;
         aux.x += sin(angle)*dist;
         aux.y += cos(angle)*dist;
-        if  (not Collision::IsColliding(aux,otherObject->box)){
+        if  (!Collision::IsColliding(aux,otherObject->box)){
             thisObject->box = aux;
             return true;
         }

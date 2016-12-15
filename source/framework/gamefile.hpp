@@ -68,7 +68,7 @@ class GameFile{
             * Check GameFile::Cache
             @return true if the file is open
         */
-        bool IsOpen(){return m_filePointer != NULL;};
+        bool IsOpen(){return m_filePointer != nullptr;};
 
         /**
             @return true if there is cached stuff

@@ -57,7 +57,7 @@ int Light::GetAround(unsigned char** map,int x,int y){
             }
         }
     }
-    return sqrt(n/k);
+    return (int)sqrt(n/k);
 }
 void Light::Gen(parameters *P,Job &j){
     for (int y=j.from;y<j.to;y++){
@@ -135,7 +135,7 @@ void Light::Shade(parameters *P,Job &j){
         for (float step=0;STR>0;step += 0.5){
             int sx = sin(i * (360.0f/(float)MaxCycles) * M_PI / 180.0f)*step;
             int sy = cos(i * (360.0f/(float)MaxCycles) * M_PI / 180.0f)*step;
-            if (lsx == (int)sx and lsy == (int)sy){
+            if (lsx == (int)sx && lsy == (int)sy){
                 STR -= Permissive;
                 continue;
             }
@@ -183,7 +183,7 @@ void Light::Shade(parameters *P,Job &j){
 }
 
 bool Light::Shutdown(){
-    if(not IsStarted()){
+    if(!IsStarted()){
         return false;
     }
     Console::GetInstance().AddTextInfo("Deleting light.");
@@ -258,16 +258,16 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float perm
     return true;
 }
 bool Light::IsInLimits(int x,int y){
-    if(not IsStarted()){
+    if(!IsStarted()){
         return false;
     }
-    if (x < 0 or x >= sizeX or y < 0 or y >= sizeY){
+    if (x < 0 || x >= sizeX || y < 0 || y >= sizeY){
         return false;
     }
     return true;
 }
 void Light::AddBlockM(int x,int y,unsigned char strenght){
-        if(not IsStarted()){
+        if(!IsStarted()){
             return;
         }
         x = ( (x-floor(((int)Camera::pos.x/blockSize)*blockSize) + ExtraSize.x/2 -blockSize)/blockSize );
@@ -279,7 +279,7 @@ void Light::AddBlockM(int x,int y,unsigned char strenght){
 }
 
 void Light::AddBlock(Rect r,uint8_t strenght){
-    if(not IsStarted()){
+    if(!IsStarted()){
         return;
     }
     int x = ( (r.x-floor(((int)Camera::pos.x/blockSize)*blockSize) + ExtraSize.x/2 -blockSize)/blockSize );
@@ -295,7 +295,7 @@ void Light::AddBlock(Rect r,uint8_t strenght){
     }
 }
 bool Light::AddLightM(int x, int y,uint8_t strenght){
-        if(not IsStarted()){
+        if(!IsStarted()){
             return false;
         }
         x = ( (x-floor(((int)Camera::pos.x/blockSize)*blockSize) + ExtraSize.x/2 -blockSize)/blockSize );
@@ -316,7 +316,7 @@ bool Light::AddLightM(int x, int y,uint8_t strenght){
 }
 
 uint8_t **Light::GiveAnAdderess(bool clear){
-    if(not IsStarted()){
+    if(!IsStarted()){
         return nullptr;
     }
     uint8_t** VartoRet= MapMap[CurrentAlloc];
@@ -351,7 +351,7 @@ uint8_t **Light::GiveAnAdderess(bool clear){
 }
 
 void Light::WaitDone(){
-    if(not IsStarted()){
+    if(!IsStarted()){
         return;
     }
     #ifndef DISABLE_THREADPOOL
@@ -369,7 +369,7 @@ void Light::WaitDone(){
     #endif
 }
 void Light::Update(float dt,LightStep step){
-    if(not IsStarted()){
+    if(!IsStarted()){
         return;
     }
     if (step == LIGHT_BEGIN){
@@ -421,7 +421,7 @@ void Light::Update(float dt,LightStep step){
 }
 
 void Light::Render(Point pos){
-    if(not IsStarted()){
+    if(!IsStarted()){
         return;
     }
     out->UpdateTexture();

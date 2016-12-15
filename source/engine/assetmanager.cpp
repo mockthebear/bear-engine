@@ -1,5 +1,6 @@
 #include "assetmanager.hpp"
 #include "../performance/console.hpp"
+#include "../sound/soundloader.hpp"
 #include <iostream>
 
 
@@ -39,12 +40,12 @@ TexturePtr AssetMannager::resource(std::string str,bool hasAntiAliasign){
 */
 
 TexturePtr AssetMannager::makeTexture(bool forced,std::string str,int fcount,float ftime,int rep,bool hasAliasing) {
-    if (not spriteMap[str] or forced){
+    if (!spriteMap[str] || forced){
         SDL_Texture* c =Sprite::Preload((char*)str.c_str(),true,hasAliasing);
-        if (not c){
+        if (!c){
             return TexturePtr();
         }
-        if (forced and spriteMap[str].get()){
+        if (forced && spriteMap[str].get()){
             SDL_DestroyTexture( spriteMap[str].get() );
             spriteMap[str].reset(c);
             if (setOutput)
@@ -60,17 +61,17 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,int fcount,flo
 }
 
 TexturePtr AssetMannager::makeTexture(bool forced,SDL_RWops* rw,std::string str,bool hasAntiAliasign)  {
-    if (not spriteMap[str] or forced){
-        if (not rw){
+    if (!spriteMap[str] || forced){
+        if (!rw){
             return TexturePtr();
         }
         SDL_Texture* c =Sprite::Preload(rw,str,hasAntiAliasign);
-        if (not c){
+        if (!c){
             Console::GetInstance().AddTextInfoF("Failed to create. %s in %d",str,id);
             return TexturePtr();
         }
 
-        if (forced and spriteMap[str].get()){
+        if (forced && spriteMap[str].get()){
             SDL_DestroyTexture( spriteMap[str].get() );
             spriteMap[str].reset(c);
             if (setOutput)
@@ -87,13 +88,13 @@ TexturePtr AssetMannager::makeTexture(bool forced,SDL_RWops* rw,std::string str,
 }
 
 TexturePtr AssetMannager::makeTexture(bool forced,std::string str,ColorReplacer &r,bool HasAliasing)  {
-    if (not spriteMap[str] or forced){
+    if (!spriteMap[str] || forced){
         SDL_Texture* c =Sprite::Preload(str,r,HasAliasing);
-        if (not c){
+        if (!c){
             return TexturePtr();
         }
 
-        if (forced and spriteMap[str].get()){
+        if (forced && spriteMap[str].get()){
             SDL_DestroyTexture( spriteMap[str].get() );
             spriteMap[str].reset(c);
             if (setOutput)
@@ -110,12 +111,12 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,ColorReplacer 
 }
 
 SoundPtr AssetMannager::makeSound(bool forced,std::string str){
-    if (not soundMap[str] or forced){
+    if (!soundMap[str] || forced){
         BufferData *c = Sound::Preload(str);
-        if (not c){
+        if (!c){
             return SoundPtr();
         }
-        if (forced and soundMap[str].get()){
+        if (forced && soundMap[str].get()){
             //todo cleanup
             soundMap[str].reset(c);
         }else{
@@ -128,15 +129,15 @@ SoundPtr AssetMannager::makeSound(bool forced,std::string str){
     return soundMap[str];
 }
 SoundPtr AssetMannager::makeSound(bool forced,SDL_RWops* rw,std::string str){
-    if (not soundMap[str] or forced){
-        if (not rw){
+    if (!soundMap[str] || forced){
+        if (!rw){
             return SoundPtr();
         }
         BufferData *c = Sound::Preload(rw,str);
-        if (not c){
+        if (!c){
             return SoundPtr();
         }
-        if (forced and soundMap[str].get()){
+        if (forced && soundMap[str].get()){
             //Mix_FreeChunk( soundMap[str].get() );
             //todo cleanup
             soundMap[str].reset(c);
@@ -152,15 +153,20 @@ SoundPtr AssetMannager::makeSound(bool forced,SDL_RWops* rw,std::string str){
 
 bool AssetMannager::erase(){
     for (auto &it : spriteMap){
-        SDL_DestroyTexture( it.second.get() );
-        it.second.reset(nullptr);
-        it.second.destroy();
+        if (it.second.get()){
+            SDL_DestroyTexture( it.second.get() );
+            it.second.reset(nullptr);
+            it.second.destroy();
+        }
     }
     spriteMap.clear();
     for (auto &it : soundMap){
-        alDeleteBuffers(1, &it.second.get()->buffer);
-        it.second.reset(nullptr);
-        it.second.destroy();
+        if (it.second.get() && it.second.get()->buffer){
+            alDeleteBuffers(1, &it.second.get()->buffer);
+            SoundLoader::ShowError("erasing assets");
+            it.second.reset(nullptr);
+            it.second.destroy();
+        }
     }
     soundMap.clear();
     return true;

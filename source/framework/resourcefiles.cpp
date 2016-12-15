@@ -18,14 +18,18 @@ ResourceFile::~ResourceFile(){
 }
 
 bool ResourceFile::Open(std::string dir){
-    GameFile l_file(dir,true);
+    
+	GameFile l_file(dir,true);
     if (!l_file.IsOpen()){
         return false;
     }
+
     l_file.Cache();
+
     m_fileSize = l_file.GetSize();
     m_cached = l_file.PopCache();
     l_file.Close();
+
     if (m_cached == NULL)
         return false;
 
@@ -50,6 +54,7 @@ bool ResourceFile::Open(std::string dir){
         delete name;
         m_fileData[lName] = std::tuple<uint32_t,uint32_t>(filePos,fileSize);
     }
+
     return true;
 }
 void ResourceFile::Close(){

@@ -101,7 +101,7 @@ template <typename T> class SPP{
             bool added = false;
             int n=0;
 
-            if (ignoreLiving and lastAdded < max){
+            if (ignoreLiving && lastAdded < max){
                 int e = lastAdded;
                 pool[e] = instance;
                 pool[e].poolIndex = e;
@@ -148,7 +148,7 @@ template <typename T> class SPP{
             for (int i=0;i<GetMaxInstances();i++){ //Maximo adcionado
                 if (!pool[i].IsDead()){
 
-                   if (pool[i].canForceUpdate() or Camera::UpdateArea.IsInside(pool[i].box)){
+                   if (pool[i].canForceUpdate() || Camera::UpdateArea.IsInside(pool[i].box)){
                         pool[i].Update(dt);
                    }
                 }
@@ -167,7 +167,7 @@ template <typename T> class SPP{
         void UpdateInstancesForced(float dt){
             for (int i=0;i<max;i++){ //Maximo adcionado
                 if (!pool[i].IsDead()){
-                   if (Camera::UpdateArea.IsInside(pool[i].box) or pool[i].canForceUpdate() ){
+                   if (Camera::UpdateArea.IsInside(pool[i].box) || pool[i].canForceUpdate() ){
                         pool[i].Update(dt);
                    }
                 }
@@ -189,7 +189,7 @@ template <typename T> class SPP{
             *Get the object in the pool with a given index.
         */
        GameObject *GetInstance(int i){
-            if (i > max or i < 0){
+            if (i > max || i < 0){
                 std::cout << "[ERROR] Required more than alloc. " << i << " / " << max << "\n";
                 return NULL;
             }

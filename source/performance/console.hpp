@@ -8,11 +8,19 @@
 #include "../framework/userfile.hpp"
 #include <fstream>
 
-
+#ifdef MINGW32
 #define AddTextInfo(str) AddText("[%s] %s",utils::methodName(__PRETTY_FUNCTION__),std::string(str).c_str())
 #define AddTextInfoF(str,...) AddTextInfo(utils::format(std::string(str).c_str(),__VA_ARGS__))
 #define AddTextInfoLine(str) AddText("[%s %d] %s",utils::methodName(__PRETTY_FUNCTION__),__LINE__,std::string(str).c_str())
 #define AddTextInfoLineF(str,...) AddTextInfoLine(utils::format(std::string(str).c_str(),__VA_ARGS__))
+#else 
+#define AddTextInfo(str) AddText("[%s] %s",utils::methodName(__FUNCTION__),std::string(str).c_str())
+#define AddTextInfoF(str,...) AddTextInfo(utils::format(std::string(str).c_str(),__VA_ARGS__))
+#define AddTextInfoLine(str) AddText("[%s %d] %s",utils::methodName(__FUNCTION__),__LINE__,std::string(str).c_str())
+#define AddTextInfoLineF(str,...) AddTextInfoLine(utils::format(std::string(str).c_str(),__VA_ARGS__))
+
+
+#endif
 
 #ifndef DISABLE_LUAINTERFACE
 #define LuaWarningMessage(str) Console::GetInstance().AddText(utils::format("[Lua:Warning] %s"),str)

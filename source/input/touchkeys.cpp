@@ -34,7 +34,7 @@ void TouchKeys::Update(float dt,Keyboard &handler,Touch &thandler,Mouse &mhandle
             f.x += thandler.m_offset.x;
             f.y += thandler.m_offset.y;
         }
-        if ( (state == PRESSED or state == JUST_PRESSED) and box.IsInside(f.x,f.y)){
+        if ( (state == PRESSED || state == JUST_PRESSED) && box.IsInside(f.x,f.y)){
             if (!Touched)
                 handler.KeyPress(Key);
             Touched = true;

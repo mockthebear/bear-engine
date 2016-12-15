@@ -35,7 +35,7 @@ Joystick::~Joystick(){
     delete Balls;
 }
 void Joystick::Close(){
-    if (IsWorking() and SDL_JoystickGetAttached(m_joyHandler)) {
+    if (IsWorking() && SDL_JoystickGetAttached(m_joyHandler)) {
         SDL_JoystickClose(m_joyHandler);
         m_joyHandler = NULL;
     }
@@ -74,11 +74,11 @@ bool Joystick::ButtonRelease(int key){
     return Buttons[key] == JUST_RELEASED;
 }
 bool Joystick::IsButtonDown(int key){
-    return Buttons[key] == JUST_PRESSED or Buttons[key] == PRESSED;
+    return Buttons[key] == JUST_PRESSED || Buttons[key] == PRESSED;
 }
 
 bool Joystick::IsButtonUp(int key){
-    return Buttons[key] == JUST_RELEASED or Buttons[key] == RELEASED;
+    return Buttons[key] == JUST_RELEASED || Buttons[key] == RELEASED;
 }
 
 void Joystick::Button(int button,int state){
