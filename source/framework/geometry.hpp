@@ -50,6 +50,12 @@ template <typename T=float> class GenericPoint{
         T getDistance(GenericPoint *p){
             return sqrt(pow((x - p->x),(T)2) + pow((y-p->y),(T)2));
         };
+        /* mag
+
+        */
+        T Mag(){
+            return sqrt(pow((x ),(T)2) + pow((y),(T)2));
+        };
         /**
             Get the distance between two points
         */
@@ -78,6 +84,15 @@ template <typename T=float> class GenericPoint{
         }
         GenericPoint operator*(T f) const {
            return GenericPoint(x*f,y*f);
+        }
+        GenericPoint operator/(T f) const {
+           return GenericPoint(x/f,y/f);
+        }
+        GenericPoint operator*(GenericPoint f) const {
+           return GenericPoint(x*f.x,y*f.y);
+        }
+        GenericPoint operator/(GenericPoint& f) const {
+           return GenericPoint(x/f.x,y/f.y);
         }
         /**
             The X;
@@ -154,6 +169,12 @@ template <typename T=float>class GenericRect{
         /**
             Empty constructor start all components with 0
         */
+        template<typename K>GenericRect(GenericRect<K> reqt){
+            x = reqt.x;
+            y = reqt.y;
+            h = reqt.h;
+            w = reqt.w;
+        }
 
         GenericRect(const int n[4]){
             x = n[0];
@@ -282,6 +303,7 @@ class Circle{
             r = n[2];
         }
         Circle();
+        Point GetPoint(){return Point(x,y);};
         float x,y,r;
         float GetSize(){return r;};
 };

@@ -3,6 +3,8 @@
 #include <tuple>
 #include <iostream>
 
+#ifndef __EMSCRIPTEN__
+
 typedef std::string jStringParam;
 typedef int jint;
 typedef float jfloat;
@@ -80,3 +82,4 @@ class JniHelper{
 
 
 };
+#endif

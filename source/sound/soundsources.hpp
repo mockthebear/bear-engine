@@ -2,7 +2,7 @@
 
 #include <AL/al.h>
 #include <AL/alc.h>
-#include <vorbis/vorbisfile.h>
+//#include <vorbis/vorbisfile.h>
 #include "sound.hpp"
 
 

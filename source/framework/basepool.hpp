@@ -69,7 +69,7 @@ template <typename T> class SPP{
         void PreRender(std::map<int,std::vector<GameObject*>> &Map){
             for (int i=0;i<GetMaxInstances();i++){
                 if (!pool[i].IsDead()){
-                    if ( Camera::EffectArea.IsInside(pool[i].box)  ){
+                    if ( Camera::EffectArea.IsInside(pool[i].box) || pool[i].canForceRender()  ){
                         if (pool[i].hasPerspective() == 0){
                             int posy = pool[i].box.y;
                             Map[posy].emplace_back( &pool[i]);

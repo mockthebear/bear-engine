@@ -261,7 +261,7 @@ void Sound::SetRepeat(bool repeat){
         return;
     if (!checkSource())
         return;
-    alSourcei(sourceID, AL_LOOPING, AL_TRUE);
+    alSourcei(sourceID, AL_LOOPING, repeat);
     SoundLoader::ShowError("on loop");
 }
 bool Sound::Play(bool repeat){

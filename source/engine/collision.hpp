@@ -16,11 +16,18 @@
 #define COLH
 
 namespace Collision {
-        static inline double distanceSquared( int x1, int y1, int x2, int y2 )
+        static inline double distanceSquared( double x1, double y1, double x2, double y2 )
         {
-            int deltaX = x2 - x1;
-            int deltaY = y2 - y1;
+            double deltaX = x2 - x1;
+            double deltaY = y2 - y1;
             return deltaX*deltaX + deltaY*deltaY;
+        }
+
+        static inline double distance( double x1, double y1, double x2, double y2 )
+        {
+            double deltaX = x2 - x1;
+            double deltaY = y2 - y1;
+            return sqrt(deltaX*deltaX + deltaY*deltaY);
         }
         static inline float Mag(const Point& p) {
             return sqrt(p.x * p.x + p.y * p.y);
@@ -113,6 +120,13 @@ namespace Collision {
             return false;
         };
 
+
+        static inline bool IsColliding( Circle& b,Circle& a ){
+            if (distance( a.x, a.y, b.x, b.y ) <= b.r+a.r){
+                return true;
+            }
+            return false;
+        }
 
         static inline bool IsColliding( Rect& b,Cone& a ){
             //Closest point on collision box
