@@ -38,7 +38,7 @@
 /*
     Lua
 */
-//#define DISABLE_LUAINTERFACE
+#define DISABLE_LUAINTERFACE
 
 /*
     Android things
