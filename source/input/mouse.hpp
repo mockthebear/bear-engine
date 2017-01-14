@@ -3,6 +3,7 @@
 #include "../framework/geometry.hpp"
 #include "inputdefinitions.hpp"
 #include "../settings/definitions.hpp"
+#define MouseButtons 16
 
 class Mouse{
     public:
@@ -21,7 +22,7 @@ class Mouse{
         bool isInside;
         GenericPoint<int> position;
         GenericPoint<int> wheel;
-        InputState mouseState[16];
+        InputState mouseState[MouseButtons];
 
 };
 #endif // MOUSEH_BE

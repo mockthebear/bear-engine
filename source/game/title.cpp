@@ -58,9 +58,8 @@ Title::Title(){
 
 
 
-    JniHelper::CallFunction<void>(std::string("kek"),std::string("kik"),123);
-    snd = new Sound("Bomb.ogg");
-    //snd2 = new Sound("big.WAV",1);
+    //JniHelper::CallFunction<void>(std::string("kek"),std::string("kik"),123);
+    snd2 = new Sound("data/yay3.wav");
 
 }
 
@@ -134,13 +133,16 @@ void Title::Update(float dt){
     if( InputManager::GetInstance().MousePress(3) ){
         astar.AddBlock(p.x,p.y);
         staticBlock.emplace_back(Rect(p.x,p.y,16,16));
-        snd->SetPosition((rand()%50) - 25,(rand()%50) - 25,(rand()%50) - 25);
+        snd->SetPosition((rand()%100) -50,(rand()%100) -50,(rand()%100) -50);
         snd->SetPitch( 0.5 + (rand()%100)/100.0f );
         snd->Play(false);
-        //snd2->Play(true);
-    }
-    if( InputManager::GetInstance().MousePress(1) ){
 
+    }
+
+    if( InputManager::GetInstance().MousePress(1) ){
+        snd2->SetPosition((rand()%100) -50,(rand()%100) -50,(rand()%100) -50);
+        snd2->SetPitch( 0.5 + (rand()%100)/100.0f );
+        snd2->Play(false,true);
         std::stack<Point> shown = astar.Find(PointInt(32,32),PointInt(p.x,p.y));
         path.clear();
         while (shown.size() > 0){

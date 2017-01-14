@@ -1,5 +1,6 @@
 #include "soundloader.hpp"
 #include "../engine/bear.hpp"
+#include "../framework/dirmanager.hpp"
 #include <vorbis/vorbisfile.h>
 
 size_t AR_readOgg(void* dst, size_t size1, size_t size2, void* fh)
@@ -92,7 +93,7 @@ BufferData *SoundLoader::loadOggFileRW(SDL_RWops* soundFile){
 
     // Check the number of channels... always use 16-bit samples
     if (pInfo->channels == 1)
-        ret->format = AL_FORMAT_MONO16;
+        ret->format = AL_FORMAT_STEREO16;
     else
         ret->format = AL_FORMAT_STEREO16;
     // end if
@@ -119,7 +120,6 @@ BufferData *SoundLoader::loadOggFileRW(SDL_RWops* soundFile){
         bufferData.insert(bufferData.end(), array, array + bytes);
         }
     while (bytes > 0);
-
     // Clean up!
     ov_clear(&oggFile);
 
@@ -129,42 +129,41 @@ BufferData *SoundLoader::loadOggFileRW(SDL_RWops* soundFile){
     return ret;
 }
 BufferData *SoundLoader::loadOggFile(const char *str){
-    BufferData *ret = new BufferData();
+
     int endian = 0;                         // 0 for Little-Endian, 1 for Big-Endian
     int bitStream;
     long bytes;
-    char array[BUFFER_SIZE];                // Local fixed size array
-    FILE *f;
+    char array[BUFFER_SIZE];                // Local fixed size array,
     std::vector<char> bufferData;
 
     // Open for binary reading
-    f = fopen(str, "rb");
-
-    if (f == NULL)
-        {
-        bear::out << "Cannot open " << str << " for reading...\n";
-        delete ret;
+    std::string name = DirManager::AdjustAssetsPath(str);
+    SDL_RWops *file = SDL_RWFromFile(name.c_str(),"rb");
+    if (!file){
+        bear::out << "Cannot open "<<name<<"\n";
         return nullptr;
     }
-    // end if
 
-    vorbis_info *pInfo;
+
+    ov_callbacks callbacks;
+    callbacks.read_func = AR_readOgg;
+    callbacks.seek_func = AR_seekOgg;
+    callbacks.close_func = AR_closeOgg;
+    callbacks.tell_func = AR_tellOgg;
     OggVorbis_File oggFile;
-
-    // Try opening the given file
-    if (ov_open(f, &oggFile, NULL, 0) != 0){
-        bear::out << "Error opening " << str << " for decoding...\n";
-        delete ret;
+    if (ov_open_callbacks((void *)file, &oggFile, NULL, -1, callbacks) != 0){
+        bear::out << "Error opening rw for decoding...\n";
         return nullptr;
     }
-    // end if
+    BufferData *ret = new BufferData();
+    vorbis_info *pInfo;
 
     // Get some information about the OGG file
     pInfo = ov_info(&oggFile, -1);
 
     // Check the number of channels... always use 16-bit samples
     if (pInfo->channels == 1)
-        ret->format = AL_FORMAT_MONO16;
+        ret->format = AL_FORMAT_STEREO16;
     else
         ret->format = AL_FORMAT_STEREO16;
     // end if
@@ -210,11 +209,12 @@ BufferData *SoundLoader::loadWavFile(const char *filename){
       RIFF_Header riff_header;
       WAVE_Data wave_data;
       unsigned char* data;
-
+      std::string name = DirManager::AdjustAssetsPath(filename);
       try {
-        soundFile = fopen((const char*)filename, "rb");
+
+        soundFile = fopen(name.c_str(), "rb");
         if (!soundFile)
-          throw (filename);
+          throw (name.c_str());
         fread(&riff_header, sizeof(RIFF_Header), 1, soundFile);
         if ((riff_header.chunkID[0] != 'R' ||
              riff_header.chunkID[1] != 'I' ||

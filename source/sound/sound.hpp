@@ -27,7 +27,7 @@ class Sound{
         Sound(SoundPtr snd,const char *s);
         bool Open(const char *str,bool isWave=false);
         void SetVolume(int vol);
-        bool Play (bool repeat=false);
+        bool Play (bool repeat=false, bool newSource=false);
         void SetRepeat(bool repeat);
         void Stop();
         void Pause();
