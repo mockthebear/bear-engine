@@ -26,10 +26,12 @@
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
-
+Game g_game;
 Game* Game::instance = NULL;
 
-Game::Game(const char *name){
+Game::Game(){};
+
+void Game::init(const char *name){
     if (instance == NULL){
         SDLStarted = false;
         isClosing = false;
@@ -110,7 +112,7 @@ Game::Game(const char *name){
         Console::GetInstance().AddText(utils::format("SDL_Mixer compiled with %d.%d.%d",compiled.major, compiled.minor, compiled.patch));
         Console::GetInstance().AddText(utils::format("SDL_Mixer Linked with %d.%d.%d.", link_version->major, link_version->minor, link_version->patch));*/
 
-
+        g_input.init();
         Console::GetInstance().Begin();
         ConfigManager::GetInstance().DisplayArgs();
         device = alcOpenDevice(NULL);
@@ -206,10 +208,7 @@ void Game::Close(){
 }
 
 Game *Game::GetInstance(const char *name){
-    if (instance == NULL){
-        instance = new Game(name);
-    }
-    return instance;
+    return &g_game;
 }
 void Game::Update(){
 

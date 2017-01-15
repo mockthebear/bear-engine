@@ -269,6 +269,8 @@ class InputManager{
         float GetAccelerometerZ(){return m_acceletometer.GetXPercent();};
         Point3 GetAccelerometerForces(){return m_acceletometer.GetPercent();};
     private:
+        friend class Game;
+        void init();
         bool HasAccelerometer;
         int AccelerometerJoystick;
         Accelerometer m_acceletometer;
@@ -287,4 +289,6 @@ class InputManager{
         bool quitGame;
 
 };
+
+extern InputManager g_input;
 #endif

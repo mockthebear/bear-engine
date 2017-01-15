@@ -52,14 +52,16 @@ class Camera{
             Set the camera to follow one object
         */
         static void Follow(GameObject *ob,bool smooth = false);
+        static void Follow(Rect *focusRect,bool smooth = false);
         /**
             Disabled following
         */
-        static void Unfollow(){focus = NULL;};
+        static void Unfollow(){focus = NULL;focusPoint=nullptr;focusRect=nullptr;};
         /**
             Set an offset to following thing
         */
         static void SetOffsetFollow(int x,int y){Offset_x=x,Offset_y=y;};
+        static void UpdateByPos(Rect r,float dt);
         /**
             *You must call this function
         */
@@ -94,7 +96,7 @@ class Camera{
             @endcode
         */
         static PointInt AdjustPosition(Circle p,float xof,float yof);
-
+        static void SetSmooth(bool smooth){Smooth=smooth;};
         static PointInt AdjustPosition(Point p);
         static PointInt AdjustPosition(Rect p);
         static PointInt AdjustPosition(Circle p);
@@ -102,6 +104,8 @@ class Camera{
         static bool UseLimits;
     private:
     static GameObject *focus;
+    static Point *focusPoint;
+    static Rect *focusRect;
     static int Offset_x,Offset_y;
 
     static bool Smooth;

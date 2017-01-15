@@ -125,13 +125,15 @@ class Game{
             only run time
         */
         bool canDebug;
+        Game();
+        ~Game();
+        void init(const char *name);
     private:
         inline void CalculateDeltaTime(){dt = SDL_GetTicks();};
         void Update();
         void Render();
         static Game* instance;
-        Game(const char *name);
-        ~Game();
+
         std::stack<DefinedState*> stateStack;
         bool hasBeenClosed;
         int skipRender;
@@ -156,4 +158,6 @@ class Game{
 
 
 };
+
+extern Game g_game;
 #endif

@@ -227,7 +227,7 @@ void PoolManager::PreRender(std::map<int,std::vector<GameObject*>> &Map){
         Pools[i].PRender(Map);
     }
     for (auto &it : Unregistered){
-        if (!it->IsDead() && (Camera::EffectArea.IsInside(it->box) || it->canForceRender())  ){
+        if (!it->IsDead() && Camera::EffectArea.IsInside(it->box)  ){
             if (it->hasPerspective() == 0){
                 int posy = it->box.y;
 

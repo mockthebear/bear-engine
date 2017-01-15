@@ -3,10 +3,12 @@
 #include "../settings/configmanager.hpp"
 
 float       Camera::speed = 12;
-RectInt        Camera::pos(0,0,0,0);
-RectInt        Camera::EffectArea(0,0,0,0);
-RectInt        Camera::UpdateArea(0,0,0,0);
-GameObject* Camera::focus = NULL;
+RectInt     Camera::pos(0,0,0,0);
+RectInt     Camera::EffectArea(0,0,0,0);
+RectInt     Camera::UpdateArea(0,0,0,0);
+GameObject* Camera::focus = nullptr;
+Point*      Camera::focusPoint = nullptr;
+Rect*       Camera::focusRect = nullptr;
 
 int         Camera::Offset_x = 0;
 int         Camera::Offset_y = 0;
@@ -49,11 +51,18 @@ PointInt Camera::AdjustPosition(Circle p,float xof,float yof){
 }
 
 void Camera::Follow(GameObject *ob,bool smoothed){
+    Unfollow();
     if (ob != NULL){
         Smooth = smoothed;
         focus = ob;
-    }else{
-        Unfollow();
+    }
+}
+
+void Camera::Follow(Rect *ob,bool smoothed){
+    Unfollow();
+    if (ob != NULL){
+        Smooth = smoothed;
+        focusRect = ob;
     }
 }
 
@@ -87,37 +96,40 @@ void Camera::Initiate(Rect startingPos,int offsetEffect_, int offsetUpdate_){
 }
 
 
+void Camera::UpdateByPos(Rect box,float dt){
+    Point toGo;
+    toGo.x = floor(box.getXCenter());
+    toGo.y = floor(box.getYCenter());
+    Point posCenter(pos.getXCenter(),pos.getYCenter());
+    if (Smooth && toGo.getDistance(posCenter) >= speed*dt ){
+        float angle = toGo.getDirection(posCenter);
+        pos.x += (int)(cos(angle)*dt*speed);
+        pos.y += (int)(sin(angle)*dt*speed);
+    }else{
+        pos.x = (int)(box.x+box.w/2-pos.w/2);
+        pos.y = (int)(box.y+box.h/2-pos.h/2);
+    }
+    if (UseLimits){
+        pos.x = std::max((int)minX,pos.x);
+        pos.y = std::max((int)minY,pos.y);
+        pos.y = std::min((int)maxY,pos.y);
+        pos.x = std::min((int)maxX,pos.x);
+    }
+    EffectArea.x = pos.x-OffsetEffect;
+    EffectArea.y = pos.y-OffsetEffect;
+    UpdateArea.x = pos.x-OffsetUpdate;
+    UpdateArea.y = pos.y-OffsetUpdate;
 
+    pos.x += Offset_x;
+    pos.y += Offset_y;
+}
 void Camera::Update(float dt){
     if (focus != NULL){
-        //focus = Penguins::player;
-        //int x = focus->getX();e
-        Point toGo;
-        toGo.x = floor(focus->box.getXCenter());
-        toGo.y = floor(focus->box.getYCenter());
-        Point posCenter(pos.getXCenter(),pos.getYCenter());
-        if (Smooth && toGo.getDistance(posCenter) >= speed*dt ){
-            float angle = toGo.getDirection(posCenter);
-            pos.x += (int)(cos(angle)*dt*speed);
-            pos.y += (int)(sin(angle)*dt*speed);
-        }else{
-            pos.x = (int)(focus->box.x+focus->box.w/2-pos.w/2);
-            pos.y = (int)(focus->box.y+focus->box.h/2-pos.h/2);
-        }
-        if (UseLimits){
-            pos.x = std::max((int)minX,pos.x);
-            pos.y = std::max((int)minY,pos.y);
-            pos.y = std::min((int)maxY,pos.y);
-            pos.x = std::min((int)maxX,pos.x);
-        }
-        EffectArea.x = pos.x-OffsetEffect;
-        EffectArea.y = pos.y-OffsetEffect;
-        UpdateArea.x = pos.x-OffsetUpdate;
-        UpdateArea.y = pos.y-OffsetUpdate;
-
-        pos.x += Offset_x;
-        pos.y += Offset_y;
-
+        UpdateByPos(focus->box,dt);
+    }else if (focusPoint != NULL){
+        UpdateByPos(Rect(focusPoint->x,focusPoint->y,1,1),dt);
+    }else if (focusRect != NULL){
+        UpdateByPos(*focusRect,dt);
     }else{
         /*float sx,sy;
         Point mouse = InputManager::GetInstance().GetMouse();

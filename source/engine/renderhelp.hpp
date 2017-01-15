@@ -26,10 +26,10 @@ class RenderHelp{
         static Uint32 FormatARGB(int a,int r,int g,int b);
 
 
-        /*static void DrawCollisionBox(Rect &box,Point offset,int r_color,int g,int b,int alpha=100){
+        static void DrawCollisionBox(Rect &box,Point offset,int r_color,int g,int b,int alpha=100){
             RenderHelp::DrawSquareColorA(box.x-Camera::pos.x+offset.x,box.y-Camera::pos.y+offset.y,box.w,box.h,r_color,g,b,alpha);
-        }*/
-        template<class Te> static void DrawCollisionBox(Te &cb,Point offset,int r_color,int g,int b,int alpha=100){
+        }
+        /*template<class Te> static void DrawCollisionBox(Te &cb,Point offset,int r_color,int g,int b,int alpha=100){
             int maxSize = cb.GetSize();
 
             SmartTexture T(0,0,maxSize,maxSize,true);
@@ -51,7 +51,7 @@ class RenderHelp{
             T.UpdateTexture();
             T.Render(PointInt(cb.x-Camera::pos.x-T.getW()/2 + offset.x,cb.y-Camera::pos.y-T.getW()/2 + offset.y));
         };
-
+        */
 };
 
 

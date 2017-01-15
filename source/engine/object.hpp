@@ -146,7 +146,6 @@ class GameObject{
         * equal to box.y.
     */
     int hasPerspective(){return 0;};
-    bool canForceRender(){return false;};
 
     /**
         *<b>DONT REPLACE THIS</b>

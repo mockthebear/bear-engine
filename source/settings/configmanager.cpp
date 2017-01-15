@@ -5,7 +5,7 @@
 #include "../performance/console.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "../stb/stb_image.h"
+#include "../image/stb_image.h"
 
 
 int ConfigManager::MaxFps = MAXFPS;

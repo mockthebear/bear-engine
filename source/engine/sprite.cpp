@@ -8,7 +8,7 @@
 #include "smarttexture.hpp"
 #include "../framework/resourcemanager.hpp"
 
-#include "../stb/stb_image.h"
+#include "../image/stb_image.h"
 
 
 ColorReplacer::ColorReplacer(){
@@ -181,9 +181,9 @@ SDL_Texture* Sprite::Preload(char *file,bool adjustDir,bool HasAliasing){
         stdnamee = DirManager::AdjustAssetsPath(stdnamee);
     }
     unsigned char* imageData = nullptr;
-    SDL_RWops* rw = SDL_RWFromFile(stdnamee.c_str(), "rb");
+    SDL_RWops* rw = SDL_RWFromFile(file, "rb");
     if (!rw){
-        Console::GetInstance().AddTextInfo(utils::format("Cannot [1] preload sprite [%s] because: %s",stdnamee.c_str(),SDL_GetError()));
+        Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",stdnamee.c_str(),SDL_GetError()));
         return nullptr;
     }
     uint64_t rsize;
@@ -191,7 +191,6 @@ SDL_Texture* Sprite::Preload(char *file,bool adjustDir,bool HasAliasing){
     char *res = ResourceManager::GetFileBuffer(rw,rsize);
     imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
     ResourceManager::ClearFileBuffer(res);
-    SDL_RWclose(rw);
     if (imageData){
         #if SDL_BYTEORDER == SDL_BIG_ENDIAN
         SDL_Surface* surface = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
@@ -223,7 +222,7 @@ SDL_Texture* Sprite::Preload(char *file,bool adjustDir,bool HasAliasing){
             return ret;
         }else{
             stbi_image_free(imageData);
-            Console::GetInstance().AddTextInfo(utils::format("Cannot [2] preload sprite [%s] because: %s",file,SDL_GetError()));
+            Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",file,SDL_GetError()));
         }
     }
     return nullptr;
@@ -270,7 +269,7 @@ SDL_Texture* Sprite::Preload(SDL_RWops* rw,std::string name,bool HasAliasing){
             return ret;
         }else{
             stbi_image_free(imageData);
-            Console::GetInstance().AddTextInfo(utils::format("Cannot [3] preload sprite [%s] because: %s",name.c_str(),SDL_GetError()));
+            Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",name.c_str(),SDL_GetError()));
         }
     }
 
@@ -330,7 +329,7 @@ SDL_Texture* Sprite::Preload(std::string fileName,ColorReplacer &r,bool HasAlias
             return ret;
         }else{
             stbi_image_free(imageData);
-            Console::GetInstance().AddTextInfo(utils::format("Cannot [4] preload sprite [%s] because: %s",fileName.c_str(),SDL_GetError()));
+            Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",fileName.c_str(),SDL_GetError()));
         }
     }
     return nullptr;

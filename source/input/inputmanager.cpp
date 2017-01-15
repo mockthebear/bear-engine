@@ -12,8 +12,11 @@
 
 #define FORCE_ACCELEROMETER
 
+InputManager g_input;
 
-InputManager::InputManager(){
+InputManager::InputManager(){}
+void InputManager::init(){
+
     #ifdef __ANDROID__
     SDL_SetHint(SDL_HINT_ACCELEROMETER_AS_JOYSTICK,"1");
     #endif
@@ -66,7 +69,7 @@ InputManager::InputManager(){
         }
 
     }
-
+    //g_input = *this;
     //CreateVirtualButton(SDLK_UP,PointInt(200,500),"Up");
 }
 
@@ -86,8 +89,7 @@ InputManager::~InputManager(){
 }
 
 InputManager& InputManager::GetInstance(){
-    static InputManager teste;
-    return teste;
+    return g_input;
 }
 void InputManager::Render(){
     //touchscreen.Render();
