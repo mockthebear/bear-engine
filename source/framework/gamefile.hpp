@@ -110,6 +110,8 @@ class GameFile{
             * adds +1 to the position
             @return an number
         */
+        const char *Read(uint16_t size);
+
         uint8_t Read8();
         /**
             * Read two bytes and return an uint16_t

@@ -36,7 +36,7 @@ GameFile::~GameFile(){
 }
 
 bool GameFile::Open(std::string name,bool notify){
-    
+
 	if (name.find(":")!=std::string::npos){
         m_filePointer = ResourceManager::GetInstance().GetFile(name);
     }else{
@@ -81,7 +81,8 @@ char *GameFile::PopCache(){
 bool GameFile::Close(){
     if (!IsOpen())
         return false;
-    SDL_RWclose(m_filePointer);
+    if (m_filePointer)
+        SDL_RWclose(m_filePointer);
     m_filePointer = NULL;
     return true;
 }
@@ -181,6 +182,16 @@ std::string GameFile::ReadUntil(char rd){
         buffer += c;
     }
     return buffer;
+}
+
+const char *GameFile::Read(uint16_t size){
+    std::string buffer = "";
+    while (m_filePos < m_size || size > 0){
+        char c = ReadByte();
+        buffer += c;
+        size--;
+    }
+    return buffer.c_str();
 }
 
 bool GameFile::GetLine(std::string &line){
