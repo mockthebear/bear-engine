@@ -214,6 +214,24 @@ namespace Collision {
             }
             return dir;
         }
+        static inline int GetCollidingDepth(Rect& a,  Rect& b){
+            if (!IsColliding(a,b)){
+                return 0;
+            }
+            int side = GetCollidingSide2(a,b);
+            if (side == 0){
+                return abs(a.x - (b.x+b.w) );
+            }else if (side == 1){
+                return abs(a.y - (b.y+b.h) );
+            }else if (side == 2){
+                return abs(a.x + a.w - (b.x) );
+            }else if (side == 3){
+                return abs(a.y + a.h - (b.y) );
+            }else{
+                return 0;
+            }
+
+        }
         static inline bool IsColliding(Rect& a,  Rect& b, float angleOfA, float angleOfB) {
             Point A[] = { Point( a.x, a.y + a.h ),
                           Point( a.x + a.w, a.y + a.h ),
