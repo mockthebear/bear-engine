@@ -16,6 +16,9 @@ ResourceManager& ResourceManager::GetInstance(){
 }
 
 char *ResourceManager::GetFileBuffer(SDL_RWops* rw,uint64_t &size){
+	if (!rw){
+        return nullptr;
+	}
 	uint64_t res_size = SDL_RWsize(rw);
     char* res =new char[res_size + 1];
     uint64_t nb_read_total = 0, nb_read = 1;

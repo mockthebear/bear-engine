@@ -80,6 +80,7 @@ void Game::init(const char *name){
 
         if (!ResourceManager::GetInstance().Load("engine/enginedata.burr","engine")){
             Console::GetInstance().AddTextInfo("engine/enginedata.burr missing!!!");
+            Console::GetInstance().CloseOutput();
             exit(1);
             return;
         }
@@ -117,11 +118,21 @@ void Game::init(const char *name){
         ConfigManager::GetInstance().DisplayArgs();
         device = alcOpenDevice(NULL);
         if (device){
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("on make");
             HasAudio = true;
             ctx = alcCreateContext(device,NULL);
-            alcMakeContextCurrent(ctx);
-            SoundLoader::ShowError();
+            if (!alcMakeContextCurrent(ctx)){
+               SoundLoader::ShowError("on device");
+               Console::GetInstance().AddText("Some error on audio!");
+            }
+            SoundLoader::ShowError("on make");
+            ALfloat listenerOri[] = { 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f };
+            alListener3f(AL_POSITION, 0, 0, 1.0f);
+            SoundLoader::ShowError("on pos");
+            alListener3f(AL_VELOCITY, 0, 0, 0);
+            SoundLoader::ShowError("on vel");
+            alListenerfv(AL_ORIENTATION, listenerOri);
+            SoundLoader::ShowError("on ori");
         }else{
             HasAudio = true;
             Console::GetInstance().AddText("Cannot start audio");

@@ -46,6 +46,7 @@ void ConfigManager::SetWindowIcon(std::string icon){
         char *res = ResourceManager::GetFileBuffer(rw,rsize);
         imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
         ResourceManager::ClearFileBuffer(res);
+        SDL_RWclose(rw);
     }
     if (!imageData){
         Console::GetInstance().AddTextInfo(utils::format("The surface %s cannot be loaded because %s",icon,SDL_GetError()));

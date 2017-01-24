@@ -16,10 +16,6 @@ SoundPool::SoundPool(bool autoQuantity){
     for (int i=0;i<count;i++){
         classes[i] = 0;
     }
-    SoundLoader::ShowError();
-    alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
-    SoundLoader::ShowError();
-
     //ALenum err = alGetError();
 }
 void SoundPool::UpdateClassType(ALuint src,int classType){

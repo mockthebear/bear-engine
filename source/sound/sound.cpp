@@ -261,27 +261,19 @@ void Sound::SetRepeat(bool repeat){
         return;
     if (!checkSource())
         return;
-    int isRepeating;
-    alGetSourcei(sourceID, AL_LOOPING, &isRepeating);
-    if (isRepeating != repeat){
-        std::cout << "aa: " << isRepeating << " : rep: " << repeat << "\n";
-        alSourcei(sourceID, AL_LOOPING, repeat);
-    }
+    alSourcei(sourceID, AL_LOOPING, AL_TRUE);
     SoundLoader::ShowError("on loop");
 }
-bool Sound::Play(bool repeat, bool newSource){
+bool Sound::Play(bool repeat){
     if (!working)
         return false;
     if (snd.get() && snd.get()->buffer){
-        if (sourceID == 0 || !checkSource() || newSource){
-            ALuint aux_sourceID = SoundPool::GetInstance().GetSource(classType);
-            if (aux_sourceID == 0){
-                bear::out << "Cant find any source\n";
-                return false;
-            }
-            sourceID = aux_sourceID;
+        if (sourceID == 0 || !checkSource())
+            sourceID = SoundPool::GetInstance().GetSource(classType);
+        if (sourceID == 0){
+            bear::out << "Cant find any source\n";
+            return false;
         }
-
         alSourcei(sourceID, AL_BUFFER, snd.get()->buffer);
         SetPitch(pitch);
         SetRepeat(repeat);
@@ -308,7 +300,7 @@ void Sound::SetPitch(float f){
     pitch = f;
     if (!working|| !checkSource())
         return;
-    SoundLoader::ShowError("on pitch");
+    alSourcef(sourceID, AL_PITCH, pitch);
 }
 void Sound::Toggle(){
     if (IsPlaying()){

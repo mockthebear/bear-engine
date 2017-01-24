@@ -191,6 +191,7 @@ SDL_Texture* Sprite::Preload(char *file,bool adjustDir,bool HasAliasing){
     char *res = ResourceManager::GetFileBuffer(rw,rsize);
     imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
     ResourceManager::ClearFileBuffer(res);
+    SDL_RWclose(rw);
     if (imageData){
         #if SDL_BYTEORDER == SDL_BIG_ENDIAN
         SDL_Surface* surface = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
@@ -234,6 +235,10 @@ SDL_Texture* Sprite::Preload(SDL_RWops* rw,std::string name,bool HasAliasing){
     unsigned char* imageData = nullptr;
     int sizeX,sizeY,comp;
     uint64_t rsize;
+    if (rw == nullptr){
+        Console::GetInstance().AddTextInfo(utils::format("Cannot preload rw sprite [%s]",name.c_str()));
+        return nullptr;
+    }
     char *res = ResourceManager::GetFileBuffer(rw,rsize);
     imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
     ResourceManager::ClearFileBuffer(res);
@@ -291,6 +296,10 @@ SDL_Texture* Sprite::Preload(std::string fileName,ColorReplacer &r,bool HasAlias
             Loading from rwops
         */
         SDL_RWops* rw = ResourceManager::GetInstance().GetFile(fileName);
+        if (!rw){
+            bear::out << "Error loading ["<<fileName<<"]: " << SDL_GetError() << "\n";
+            return nullptr;
+        }
         uint64_t rsize;
         char *res = ResourceManager::GetFileBuffer(rw,rsize);
         imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
