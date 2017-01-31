@@ -10,7 +10,6 @@
 #include "engine/gamebase.hpp"
 #include "framework/gamefile.hpp"
 #include "settings/configmanager.hpp"
-#include "settings/definitions.hpp"
 
 
 #ifdef __EMSCRIPTEN__
@@ -22,14 +21,16 @@ void GameLoop(){
 }
 #endif
 
+
+
 #ifdef __ANDROID__
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
 
 extern "C"
 {
-    /*
-    JNIEXPORT void JniCallFunction(load)(JNIEnv *env, jclass clesse, jobject mgr){
+
+    /*JNIEXPORT void JNICALL Java_com_tutorial_game_HelloSDL2Activity_load(JNIEnv *env, jclass clesse, jobject mgr){
         AAssetManager* mgr2 = AAssetManager_fromJava(env, mgr);
         if (mgr2){
             GameFile::m_assetManager = mgr2;
@@ -42,10 +43,10 @@ extern "C"
 
 #endif // __ANDROID__
 
+
 int main (int argc, char** argv) {
 
-    ConfigManager::GetInstance().RegisterArgs(argc,argv);
-    Game::GetInstance("Bear engine test");
+    g_game.init("Bear engine");
     Game::GetInstance()->Begin();
     #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(GameLoop, 60, 1);
@@ -56,6 +57,7 @@ int main (int argc, char** argv) {
     #endif
     Game::GetInstance()->Close();
     exit(0);
+
     return 0;
 
 }

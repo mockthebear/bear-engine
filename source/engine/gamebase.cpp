@@ -137,8 +137,8 @@ void Game::init(const char *name){
             HasAudio = true;
             Console::GetInstance().AddText("Cannot start audio");
         }
+        Console::GetInstance().AddText("Finished audio!");
         SoundPool::GetInstance(true);
-
 
         skipRender = 1;
         nextUpdate =  1000;

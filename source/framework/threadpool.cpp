@@ -30,7 +30,11 @@ void ThreadPool::sleep(float milliseconds) // cross-platform sleep function
     time_end = clock() + milliseconds * CLOCKS_PER_SEC/1000;
     while (clock() < time_end){}
 }
-ThreadPool::ThreadPool(int threads){
+ThreadPool::ThreadPool(int threads)
+#ifdef USE_LOCK_FREE_STACK
+    :Jobs(threads,16)
+#endif
+{
 
     Light::Startup();
     #ifndef DISABLE_THREADPOOL
@@ -118,15 +122,13 @@ void ThreadPool::AddLambdaJob(std::function<void(int,int,void*)> F){
 }
 
 void ThreadPool::AddJobStack(Job &j){
-    #ifndef DISABLE_THREADPOOL
-    pthread_mutex_lock(&Critical);
-    #endif
-
+    #ifdef USE_LOCK_FREE_STACK
+    Jobs.Push(j);
+    #else
     Jobs.push(j);
-
-    #ifndef DISABLE_THREADPOOL
-    pthread_mutex_unlock(&Critical);
     #endif
+
+
 }
 void ThreadPool::AddJob_(Job &j,bool ignoreFast){
 
@@ -145,24 +147,18 @@ void ThreadPool::AddParallelFor(std::function<void(int,int,void*)> F,int min,int
 
 
 void ThreadPool::ClearJobs(){
-    while (!Jobs.empty()){
-        Jobs.pop();
-    }
+
+    //Jobs.clear();
+
 }
 
 bool ThreadPool::Help(){
-    #ifndef DISABLE_THREADPOOL
-    pthread_mutex_lock(&Critical);
-    #endif
+
     if (Jobs.empty()){
-        #ifndef DISABLE_THREADPOOL
-        pthread_mutex_unlock(&Critical);
-        #endif
         return false;
     }
-    #ifndef DISABLE_THREADPOOL
-    pthread_mutex_unlock(&Critical);
-    #endif
+    std::cout << "Helping\n";
+
     parameters Param;
     Param.id = UsePThreads;
     Param.me = (void*)this;
@@ -222,15 +218,9 @@ void ThreadPool::Unlock(){
 
 bool ThreadPool::IsDone(){
     bool finished = false;
-    #ifndef DISABLE_THREADPOOL
-    pthread_mutex_lock(&Critical);
-    #endif
     if (Jobs.empty()){
         finished = true;
     }
-    #ifndef DISABLE_THREADPOOL
-    pthread_mutex_unlock(&Critical);
-    #endif
     if (finished)
         return true;
     return false;
@@ -252,27 +242,31 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
         P->working = true;
         Job todo;
         while (P->working){
-
             todo.Type = JOB_NOTHING;
+            #ifdef USE_LOCK_FREE_STACK
+            todo = This->Jobs.Get(P->id);
+            if (!todo.empty){
+            #else
             #ifndef DISABLE_THREADPOOL
             pthread_mutex_lock(&This->Critical);
-            #endif
-            if (!This->Jobs.empty()){
-                P->working = true;
+            #endif // DISABLE_THREADPOOL
+            if (This->Jobs.size() > 0){
                 todo = This->Jobs.top();
                 This->Jobs.pop();
+            #endif
+                P->working = true;
             }else{
                 P->working = false;
                 if (P->mainThread){
-                    #ifndef DISABLE_THREADPOOL
-                    pthread_mutex_unlock(&This->Critical);
-                    #endif
                     return nullptr;
                 }
             }
+            #ifndef USE_LOCK_FREE_STACK
             #ifndef DISABLE_THREADPOOL
             pthread_mutex_unlock(&This->Critical);
+            #endif // DISABLE_THREADPOOL
             #endif
+
             if (todo.Type != JOB_NOTHING){
                 if (todo.Type == JOB_LAMBDA){
                     todo.lambda(P->id,P->Threads,NULL);

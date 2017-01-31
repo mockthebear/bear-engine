@@ -19,6 +19,7 @@
 #include "../framework/utils.hpp"
 #include "../framework/resourcemanager.hpp"
 #include "../framework/xml.hpp"
+#include "../framework/lcokfreequeue.hpp"
 
 #include "../mobile/android/jnihelper.hpp"
 
@@ -83,8 +84,8 @@ void Title::Begin(){
 
 
 
-    Light::GetInstance()->StartLights( Point(SCREEN_SIZE_W,SCREEN_SIZE_H) ,Point(160,160) ,8,6.5,90);
-    Light::GetInstance()->SetLightRaysCount(120);
+    Light::GetInstance()->StartLights( Point(SCREEN_SIZE_W,SCREEN_SIZE_H) ,Point(160,160) ,2,6.5,90);
+    Light::GetInstance()->SetLightRaysCount(220);
 
 }
 
@@ -133,16 +134,16 @@ void Title::Update(float dt){
     if( InputManager::GetInstance().MousePress(3) ){
         astar.AddBlock(p.x,p.y);
         staticBlock.emplace_back(Rect(p.x,p.y,16,16));
-        snd->SetPosition((rand()%100) -50,(rand()%100) -50,(rand()%100) -50);
-        snd->SetPitch( 0.5 + (rand()%100)/100.0f );
-        snd->Play(false);
+        //snd->SetPosition((rand()%100) -50,(rand()%100) -50,(rand()%100) -50);
+        //snd->SetPitch( 0.5 + (rand()%100)/100.0f );
+        //snd->Play(false);
 
     }
 
     if( InputManager::GetInstance().MousePress(1) ){
         snd2->SetPosition((rand()%100) -50,(rand()%100) -50,(rand()%100) -50);
         snd2->SetPitch( 0.5 + (rand()%100)/100.0f );
-        snd2->Play(false,true);
+        snd2->Play(false);
         std::stack<Point> shown = astar.Find(PointInt(32,32),PointInt(p.x,p.y));
         path.clear();
         while (shown.size() > 0){
@@ -228,13 +229,13 @@ void Title::Render(){
 
     message.Render(300,300,TEXT_RENDER_CENTER);
 
-    ThreadPool::GetInstance().Help();
+    //ThreadPool::GetInstance().Help();
     Light::GetInstance()->Update(0,LIGHT_GEN);
 
     //if( InputManager::GetInstance().IsKeyDown(SDLK_TAB) )
 
 
-    ThreadPool::GetInstance().Help();
+    // ThreadPool::GetInstance().Help();
     ThreadPool::GetInstance().Lock();
 
 

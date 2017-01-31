@@ -2,6 +2,7 @@
 #include <ctime>
 // *** END ***
 #include "../settings/definitions.hpp"
+#include "lcokfreequeue.hpp"
 #ifndef SHADER_
 #define SHADER_
 #include <stack>
@@ -11,6 +12,8 @@
 #endif
 #include <functional>
 #include <time.h>
+
+//#define USE_LOCK_FREE_STACK
 typedef struct{
     int id;
     int Threads;
@@ -43,7 +46,16 @@ enum JOBTYPE{
 */
 class Job{
     public:
-        Job(){Type = JOB_NOTHING;Parameter=NULL;min=max=0;vect=nullptr;from=to=0;tsize=0;bright=0;};
+        Job(){
+            lambda = [](int,int,void*){};
+            Type = JOB_NOTHING;
+            Parameter=NULL;
+            min=max=0;
+            vect=nullptr;
+            from=to=0;
+            tsize=0;bright=0;
+            empty = false;
+        };
         Job(JOBTYPE t):Job(){Type = t;};
         Job(std::function<void(int,int,void*)> F):Job(){Type = JOB_LAMBDA;lambda=F;Parameter=NULL;};
         Job(std::function<void(int,int,void*)> Reduce,int min_p,int max_p):Job(){
@@ -54,9 +66,9 @@ class Job{
             max = max_p;
         };
 
-        Job(JOBTYPE t,int i,int b){Type = t;from = i;to = b;};
-        Job(JOBTYPE t, int i, int b, int d,int ts, uint8_t** V, unsigned char br){Type = t;from = i;to = b;me=d;vect=V;bright=br;tsize=ts;};
-
+        Job(JOBTYPE t,int i,int b):Job(){Type = t;from = i;to = b;};
+        Job(JOBTYPE t, int i, int b, int d,int ts, uint8_t** V, unsigned char br):Job(){Type = t;from = i;to = b;me=d;vect=V;bright=br;tsize=ts;};
+        bool empty;
         JOBTYPE Type;
         std::function<void(int,int,void*)> lambda;
         void *Parameter;
@@ -125,7 +137,12 @@ class ThreadPool{
         /**
             Empty\n
         */
-        ThreadPool(){started=false;Locked=false;fastJobs=nullptr;UsePThreads=4;Params=nullptr;};
+
+        ThreadPool()
+        #ifdef USE_LOCK_FREE_STACK
+            :Jobs(4,16)
+        #endif
+        {started=false;Locked=false;fastJobs=nullptr;UsePThreads=4;Params=nullptr;};
         /** @brief This is created in the singleton\n
 
             @param threads Default is 4
@@ -238,7 +255,11 @@ class ThreadPool{
     private:
         bool Locked;
         void AddPriorityJob(Job &j,int threadId);
+        #ifdef USE_LOCK_FREE_STACK
+        LockFreeQueue<Job> Jobs;
+        #else
         std::stack<Job> Jobs;
+        #endif
         Job *fastJobs;
 
         static void *thread_pool_worker(void *OBJ);
