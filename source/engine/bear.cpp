@@ -9,6 +9,9 @@ void bear::outstream::printme(int n){
     Console::GetInstance().Store("%d",n);
 }
 
+void bear::outstream::printme(float n){
+    Console::GetInstance().Store("%f",n);
+}
 
 
 
