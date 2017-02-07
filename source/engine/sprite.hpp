@@ -25,6 +25,10 @@ typedef chain_ptr<SDL_Texture> TexturePtr;
 class ColorReplacer{
     public:
         ColorReplacer();
+        void clear(){
+            canReplace.clear();
+            Replace.clear();
+        }
         void AddReplacer(uint32_t from,uint32_t to);
         uint32_t Get(uint32_t color);
     private:

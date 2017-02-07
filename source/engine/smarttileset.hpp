@@ -15,7 +15,17 @@ class SmartTileset{
         void RenderLayer(int layer);
         void Update(float dt);
         void ResetFocus();
+        SmartTileset& operator=(SmartTileset T){
+            /*
+            shallow copy
+            */
+            void *data = (void*)&T;
+            memcpy(this,data,sizeof(SmartTileset));
+            T.isValid = false;
+            return *this;
+        }
     private:
+
         void RenderTile(int x,int y,int tile);
         SDL_Texture *GetTextureFromPosition(int layer,int x,int y);
         PointInt framesOnMap;

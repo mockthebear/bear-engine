@@ -88,6 +88,8 @@
 		<Unit filename="engine/smarttexture.hpp" />
 		<Unit filename="engine/smarttexturemanager.cpp" />
 		<Unit filename="engine/smarttexturemanager.hpp" />
+		<Unit filename="engine/smarttileset.cpp" />
+		<Unit filename="engine/smarttileset.hpp" />
 		<Unit filename="engine/sprite.cpp" />
 		<Unit filename="engine/sprite.hpp" />
 		<Unit filename="engine/text.cpp" />
