@@ -69,6 +69,7 @@ void InputManager::init(){
         }
 
     }
+    onResize = false;
     //g_input = *this;
     //CreateVirtualButton(SDLK_UP,PointInt(200,500),"Up");
 }
@@ -139,11 +140,13 @@ void InputManager::Update(float dt){
         if (it.second != NULL)
             it.second->Update(dt);
     }
+    onResize = false;
     while (SDL_PollEvent(&event)) {
 
         if(event.type == SDL_WINDOWEVENT){
             //Console::GetInstance().AddTextInfo(utils::format("%d",(int)event.window.event));
             if(event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED){
+                onResize = true;
                 ScreenManager::GetInstance().NotifyResized();
             }else if(event.window.event == SDL_WINDOWEVENT_HIDDEN){
                 Console::GetInstance().AddText( "[InputManager::Update]Hidden");

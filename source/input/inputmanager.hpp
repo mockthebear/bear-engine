@@ -253,6 +253,8 @@ class InputManager{
         */
         Joystick* GetJoystick(int id);
 
+        bool OnScreenResize(){return onResize;};
+
         /**
             *Wip
         */
@@ -287,6 +289,7 @@ class InputManager{
         Keyboard keyboard;
         Touch touchscreen;
         bool quitGame;
+        bool onResize;
 
 };
 
