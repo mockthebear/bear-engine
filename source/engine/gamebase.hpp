@@ -137,6 +137,7 @@ class Game{
         std::stack<DefinedState*> stateStack;
         bool hasBeenClosed;
         int skipRender;
+        bool Started;
         bool HasAudio;
         bool GameBegin;
         DefinedState *storedState;

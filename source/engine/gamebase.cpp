@@ -34,6 +34,7 @@ Game::Game(){};
 void Game::init(const char *name){
     if (instance == NULL){
         SDLStarted = false;
+        Started = false;
         isClosing = false;
         hasBeenClosed = false;
         instance = this;
@@ -42,32 +43,23 @@ void Game::init(const char *name){
         dt = frameStart = 0;
         canDebug = false;
 
-        Console::GetInstance(true); //Start console
+        Console::GetInstance(true);
         Console::GetInstance().AddTextInfo("Starting...");
 
         if (SDL_Init(BEAR_SDL_CONST_INIT) != 0){
             Console::GetInstance().AddTextInfo( utils::format("SDL may nor work because [%s]",SDL_GetError()) );
         }
-        /*if (not Mix_Init(MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG)){
-            Console::GetInstance().AddTextInfo("Audio not found");
-            HasAudio=false;
-        }else{
-            HasAudio = true;
-        }*/
+
         if (TTF_Init()  == -1 ){
             Console::GetInstance().AddTextInfo("TTF not working");
         }
-        /*if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,MIX_DEFAULT_CHANNELS,1024) == -1){
-            HasAudio=false;
-            Console::GetInstance().AddTextInfo("Audio not found");
-        }*/
-
 
         ConfigManager::GetInstance().SetSound(HasAudio);
         GameBehavior::GetInstance();
         window = ScreenManager::GetInstance().StartScreen(name);
         if (window == NULL){
             Console::GetInstance().AddTextInfo("Failed creating screen");
+            exit(1);
             return;
         }
 
@@ -75,6 +67,7 @@ void Game::init(const char *name){
 
         if (!renderer){
             Console::GetInstance().AddTextInfo("Failed creating render");
+            exit(1);
             return;
         }
 
@@ -98,20 +91,11 @@ void Game::init(const char *name){
         Console::GetInstance().AddText(utils::format("Compiled with SDL version %d.%d.%d",compiled.major, compiled.minor, compiled.patch));
         Console::GetInstance().AddText(utils::format("Linked with SDL version %d.%d.%d.", linked.major, linked.minor, linked.patch));
 
-
-
-
         const SDL_version *link_version =TTF_Linked_Version();
         SDL_TTF_VERSION(&compiled);
 
         Console::GetInstance().AddText(utils::format("SDL_TTF compiled with %d.%d.%d",compiled.major, compiled.minor, compiled.patch));
         Console::GetInstance().AddText(utils::format("SDL_TTF Linked with %d.%d.%d.", link_version->major, link_version->minor, link_version->patch));
-
-        /*link_version=Mix_Linked_Version();
-        SDL_MIXER_VERSION(&compiled);
-
-        Console::GetInstance().AddText(utils::format("SDL_Mixer compiled with %d.%d.%d",compiled.major, compiled.minor, compiled.patch));
-        Console::GetInstance().AddText(utils::format("SDL_Mixer Linked with %d.%d.%d.", link_version->major, link_version->minor, link_version->patch));*/
 
         g_input.init();
         Console::GetInstance().Begin();
@@ -137,7 +121,6 @@ void Game::init(const char *name){
             HasAudio = true;
             Console::GetInstance().AddText("Cannot start audio");
         }
-        Console::GetInstance().AddText("Finished audio!");
         SoundPool::GetInstance(true);
 
         skipRender = 1;
@@ -145,27 +128,16 @@ void Game::init(const char *name){
 
         srand(time(NULL));
 
-
         ThreadPool::GetInstance(POOL_DEFAULT_THREADS);
-
 
         #ifndef DISABLE_LUAINTERFACE
         LuaInterface::Instance().Startup();
         #endif
 
-        /*if (HasAudio){
-            Mix_Volume(-1,   128.0/2.0);
-            Mix_VolumeMusic( 128.0/2.0);
-        }*/
-
         CalculateDeltaTime();
         Console::GetInstance().AddTextInfo(utils::format("Bear started in %f seconds",GetDeltaTime()/10.0f));
         dt = frameStart = 0;
-
-        //ScreenManager::GetInstance().Render();
-        //getchar();
-
-
+        Started = true;
     }else{
         Console::GetInstance().AddTextInfo("It seems you created a new Game instance. Well. Closing");
         Close();
@@ -183,11 +155,13 @@ void Game::Close(){
     stateStack.pop();
     //delete title;
     isClosing = true;
-    GameBehavior::GetInstance().OnClose();
+    if (Started)
+        GameBehavior::GetInstance().OnClose();
     Console::GetInstance().AddTextInfo("Closing engine assets");
     #ifndef DISABLE_THREADPOOL
     Console::GetInstance().AddTextInfo("Closing threads");
-    ThreadPool::GetInstance().KillThreads();
+    if (Started)
+        ThreadPool::GetInstance().KillThreads();
     #endif
     ResourceManager::GetInstance().Erase("engine");
     Console::GetInstance().AddTextInfo("Closing screen");
@@ -312,13 +286,13 @@ void Game::Run(){
             }
 
             #ifdef CYCLYC_DEBUG
-            std::cout << "[Render]";
+            bear::out << "[Render]";
             #endif
 
             Render();
 
             #ifdef CYCLYC_DEBUG
-            std::cout << "[\\Render]\n";
+            bear::out << "[\\Render]\n";
             #endif
             float delay = SDL_GetTicks()-dt;
 
