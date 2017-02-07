@@ -58,7 +58,6 @@ class TypeChecker{
             }
             TypeMap[hash] = name;
             TypeMapi[name] = hash;
-            bear::out << "Registered type " << name << "["<<hash<<"]\n";
             return 0;
         }
         /**

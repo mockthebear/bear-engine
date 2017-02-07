@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include <iostream>
+#include "../engine/bear.hpp"
 #include "../engine/object.hpp"
 #include "../engine/camera.hpp"
 #include "../engine/particlecreator.hpp"
@@ -49,12 +50,12 @@ template <typename T> class SPP{
         */
         ~SPP(){
             #ifdef DEBUG_ON_DELETE
-            std::cout << "[Basepool:delete]\n";
+            bear::out << "[Basepool:delete]\n";
             #endif // DEBUG_ON_DELETE
 
             delete []pool;
             #ifdef DEBUG_ON_DELETE
-            std::cout << "[/Basepool:delete]\n";
+            bear::out << "[/Basepool:delete]\n";
             #endif // DEBUG_ON_DELETE
 
         };
@@ -69,7 +70,7 @@ template <typename T> class SPP{
         void PreRender(std::map<int,std::vector<GameObject*>> &Map){
             for (int i=0;i<GetMaxInstances();i++){
                 if (!pool[i].IsDead()){
-                    if ( Camera::EffectArea.IsInside(pool[i].box) || pool[i].canForceRender()  ){
+                    if ( Camera::EffectArea.IsInside(pool[i].box)  ){
                         if (pool[i].hasPerspective() == 0){
                             int posy = pool[i].box.y;
                             Map[posy].emplace_back( &pool[i]);
@@ -128,7 +129,7 @@ template <typename T> class SPP{
                 }
             }
             if (added == false){
-                std::cout << "[ERROR] Maximum pool reached - " << sizeof(T) <<" [" << lastAdded <<":"<<max<<"]\n";
+                bear::out << "[ERROR] Maximum pool reached - " << sizeof(T) <<" [" << lastAdded <<":"<<max<<"]\n";
                 return NULL;
             }else{
                 return &pool[n];
@@ -190,7 +191,7 @@ template <typename T> class SPP{
         */
        GameObject *GetInstance(int i){
             if (i > max || i < 0){
-                std::cout << "[ERROR] Required more than alloc. " << i << " / " << max << "\n";
+                bear::out << "[ERROR] Required more than alloc. " << i << " / " << max << "\n";
                 return NULL;
             }
             return (GameObject*)&pool[i];
