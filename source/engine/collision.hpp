@@ -71,6 +71,13 @@ namespace Collision {
             TODO: mudar saporra
         */
 
+        static inline bool IsColliding( Circle& b,Circle& a ){
+            if (distance( a.x, a.y, b.x, b.y ) <= b.r+a.r){
+                return true;
+            }
+            return false;
+        }
+
         static inline bool IsColliding( Rect& b,Circle& a ){
             //Closest point on collision box
             float cX, cY;
