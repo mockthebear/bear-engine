@@ -109,6 +109,7 @@
 		<Unit filename="framework/gamefile.hpp" />
 		<Unit filename="framework/geometry.cpp" />
 		<Unit filename="framework/geometry.hpp" />
+		<Unit filename="framework/lcokfreequeue.hpp" />
 		<Unit filename="framework/poolmanager.cpp" />
 		<Unit filename="framework/poolmanager.hpp" />
 		<Unit filename="framework/resourcefiles.cpp" />
