@@ -104,7 +104,7 @@ SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h,std::fu
 }
 Uint32 RenderHelp::FormatRGBA(int r,int g,int b,int a){
 
-    return r+(g<<8)+(b<<16)+(a<<24);
+    return a+(b<<8)+(g<<16)+(r<<24);
 }
 
 Uint32 RenderHelp::FormatARGB(int a,int r,int b,int g){
