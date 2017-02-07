@@ -169,8 +169,7 @@ namespace Collision {
 
             return false;
         };
-
-        static inline bool IsColliding(Rect& a,  Rect& b){
+        template<typename T,typename K> static inline bool IsColliding(GenericRect<T> a,  GenericRect<K> b){
             if( a.y + a.h < b.y )
             {
                 return false;
