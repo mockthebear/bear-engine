@@ -75,6 +75,9 @@ SDL_Renderer* ScreenManager::StartRenderer(){
     Console::GetInstance().AddText(utils::format("Driver: %s",info.name));
     Console::GetInstance().AddText(utils::format("Max view: %d x %d",info.max_texture_width,info.max_texture_height));
 
+    m_maxTextureSize.x = info.max_texture_width;
+    m_maxTextureSize.y = info.max_texture_height;
+
     if (m_renderer){
         SDL_SetRenderDrawBlendMode(m_renderer,SDL_BLENDMODE_BLEND);
     }

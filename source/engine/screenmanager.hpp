@@ -21,6 +21,7 @@ class ScreenManager{
         PointInt GetDisplaySize(){return m_display;};
         PointInt GetScreenSize(){return m_screen;};
         PointInt GetGameSize(){return m_originalScreen;};
+        PointInt GetMaxTextureSize(){return m_maxTextureSize;};
         void NotifyResized();
         void NotyifyScreenClosed();
         void TerminateScreen();
@@ -67,6 +68,7 @@ class ScreenManager{
         PointInt m_screen;
         PointInt m_originalScreen;
         PointInt m_offsetScreen;
+        PointInt m_maxTextureSize;
         Point m_scaleRatio;
         Point m_trueScaleRatio;
         SDL_DisplayMode m_displayMode;

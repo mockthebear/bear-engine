@@ -49,10 +49,14 @@ bool DefaultBehavior::OnResize(int newW,int newH){
         case RESIZE_BEHAVIOR_SCALE_FREE:
             ScreenManager::GetInstance().ResizeToScale(newW,newH,RESIZE_FREE_SCALE);
             break;
+        case RESIZE_BEHAVIOR_SDL_RENDER_LOGICAL:
+            SDL_RenderSetLogicalSize(Game::GetInstance()->GetRenderer(), ConfigManager::GetInstance().GetScreenW(), ConfigManager::GetInstance().GetScreenH());
+            break;
         case RESIZE_BEHAVIOR_INCREASE:
             Camera::Resize(Point(newW,newH));
             break;
     }
+
     return true;
 }
 

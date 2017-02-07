@@ -9,14 +9,14 @@
 
 
 int ConfigManager::MaxFps = MAXFPS;
-float ConfigManager::MinimumDT = 10.32;
+float ConfigManager::MinimumDT = 10.32f;
 ConfigManager::ConfigManager(){
     m_screenSize.x=SCREEN_SIZE_W;
     m_screenSize.y=SCREEN_SIZE_H;
     pause = false;
     m_rbheavior = RESIZE_BEHAVIOR_SCALE;
 
-    MinimumDT = 10.33;
+    MinimumDT = 10.33f;
 
 }
 
