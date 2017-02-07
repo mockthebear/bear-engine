@@ -209,7 +209,6 @@ SDL_Texture* Sprite::Preload(char *file,bool adjustDir,bool HasAliasing){
             /*
                 Generate texture
             */
-            std::cout << g_game.GetRenderer() << "\n";
             if (HasAliasing)
                 SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
             SDL_Texture *ret = SDL_CreateTextureFromSurface(Game::GetInstance()->GetRenderer(),surface);// = finalSmart->GetTexture();
@@ -260,7 +259,6 @@ SDL_Texture* Sprite::Preload(SDL_RWops* rw,std::string name,bool HasAliasing){
             /*
                 Generate texture
             */
-            std::cout << surface << "\n";
             if (HasAliasing)
                 SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
             SDL_Texture *ret = SDL_CreateTextureFromSurface(Game::GetInstance()->GetRenderer(),surface);// = finalSmart->GetTexture();

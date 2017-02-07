@@ -107,7 +107,10 @@ class CustomFont{
             *This will render the text at screen, and return the value of sizes
             @return Point containing the width and height of the text
         */
-        Point Render(std::string str,int x,int y,int alpha);
+        Point Render(const char*c,int x,int y,int alpha=255){
+            return Render(std::string(c),x,y,alpha);
+        };
+        Point Render(std::string str,int x,int y,int alpha=255);
         /**
             @return Point containing the width and height of the text
         */
