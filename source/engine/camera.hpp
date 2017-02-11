@@ -102,11 +102,13 @@ class Camera{
         static PointInt AdjustPosition(Circle p);
         static float maxX,maxY,minX,minY,MouseRange;
         static bool UseLimits;
+        static int Offset_x,Offset_y;
+
     private:
+    static RectInt RealPos;
     static GameObject *focus;
     static Point *focusPoint;
     static Rect *focusRect;
-    static int Offset_x,Offset_y;
 
     static bool Smooth;
     static int OffsetEffect,OffsetUpdate;

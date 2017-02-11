@@ -4,6 +4,7 @@
 
 float       Camera::speed = 12;
 RectInt     Camera::pos(0,0,0,0);
+RectInt     Camera::RealPos(0,0,0,0);
 RectInt     Camera::EffectArea(0,0,0,0);
 RectInt     Camera::UpdateArea(0,0,0,0);
 GameObject* Camera::focus = nullptr;
@@ -31,23 +32,23 @@ void Camera::LockLimits(float mx,float my,float x,float y){
 }
 
 PointInt Camera::AdjustPosition(Point p){
-    return PointInt((int)(p.x-pos.x),(int)(p.y-pos.y));
+    return PointInt((int)(p.x-RealPos.x),(int)(p.y-RealPos.y));
 }
 PointInt Camera::AdjustPosition(Rect p){
-    return PointInt(p.x-pos.x,p.y-pos.y);
+    return PointInt(p.x-RealPos.x,p.y-RealPos.y);
 }
 PointInt Camera::AdjustPosition(Circle p){
-    return PointInt(int(p.x-pos.x), int(p.y-pos.y));
+    return PointInt(int(p.x-RealPos.x), int(p.y-RealPos.y));
 }
 
 PointInt Camera::AdjustPosition(Point p,float xof,float yof){
-    return PointInt(p.x-pos.x+xof,p.y-pos.y+yof);
+    return PointInt(p.x-RealPos.x+xof,p.y-RealPos.y+yof);
 }
 PointInt Camera::AdjustPosition(Rect p,float xof,float yof){
-    return PointInt(p.x-pos.x+xof,p.y-pos.y+yof);
+    return PointInt(p.x-RealPos.x+xof,p.y-RealPos.y+yof);
 }
 PointInt Camera::AdjustPosition(Circle p,float xof,float yof){
-    return PointInt(p.x-pos.x+xof,p.y-pos.y+yof);
+    return PointInt(p.x-RealPos.x+xof,p.y-RealPos.y+yof);
 }
 
 void Camera::Follow(GameObject *ob,bool smoothed){
@@ -67,8 +68,8 @@ void Camera::Follow(Rect *ob,bool smoothed){
 }
 
 void Camera::Resize(Point newDimension){
-    pos.w = (int)newDimension.x;
-    pos.h = (int)newDimension.y;
+    RealPos.w = (int)newDimension.x;
+    RealPos.h = (int)newDimension.y;
     EffectArea.w = (int)newDimension.x;
     EffectArea.h = (int)newDimension.y;
     EffectArea.w = (int)newDimension.x;
@@ -78,20 +79,22 @@ void Camera::Resize(Point newDimension){
     EffectArea.h += (int)(OffsetEffect*2.0f);
     UpdateArea.w += (int)(OffsetEffect*2.0f);
     UpdateArea.h += (int)(OffsetEffect*2.0f);
+    pos = RealPos;
 
 }
 void Camera::Initiate(Rect startingPos,int offsetEffect_, int offsetUpdate_){
     OffsetEffect = offsetEffect_;
     OffsetUpdate = offsetUpdate_;
     pos = startingPos;
+    RealPos = startingPos;
     EffectArea.x = startingPos.x;
     EffectArea.y = startingPos.y;
     UpdateArea.x = startingPos.y;
     UpdateArea.y = startingPos.y;
-    EffectArea.w = pos.w+ offsetEffect_*2.0f;
-    EffectArea.h = pos.h+ offsetEffect_*2.0f;
-    UpdateArea.w = pos.w+ offsetUpdate_*2.0f;
-    UpdateArea.h = pos.h+ offsetUpdate_*2.0f;
+    EffectArea.w = RealPos.w+ offsetEffect_*2.0f;
+    EffectArea.h = RealPos.h+ offsetEffect_*2.0f;
+    UpdateArea.w = RealPos.w+ offsetUpdate_*2.0f;
+    UpdateArea.h = RealPos.h+ offsetUpdate_*2.0f;
     focus = nullptr;
 }
 
@@ -100,26 +103,26 @@ void Camera::UpdateByPos(Rect box,float dt){
     Point toGo;
     toGo.x = floor(box.getXCenter());
     toGo.y = floor(box.getYCenter());
-    Point posCenter(pos.getXCenter(),pos.getYCenter());
+    Point posCenter(RealPos.getXCenter(),RealPos.getYCenter());
     if (Smooth && toGo.getDistance(posCenter) >= speed*dt ){
         float angle = toGo.getDirection(posCenter);
-        pos.x += (int)(cos(angle)*dt*speed);
-        pos.y += (int)(sin(angle)*dt*speed);
+        RealPos.x += (int)(cos(angle)*dt*speed);
+        RealPos.y += (int)(sin(angle)*dt*speed);
     }else{
-        pos.x = (int)(box.x+box.w/2-pos.w/2);
-        pos.y = (int)(box.y+box.h/2-pos.h/2);
+        RealPos.x = (int)(box.x+box.w/2-RealPos.w/2);
+        RealPos.y = (int)(box.y+box.h/2-RealPos.h/2);
     }
     if (UseLimits){
-        pos.x = std::max((int)minX,pos.x);
-        pos.y = std::max((int)minY,pos.y);
-        pos.y = std::min((int)maxY,pos.y);
-        pos.x = std::min((int)maxX,pos.x);
+        RealPos.x = std::max((int)minX,RealPos.x);
+        RealPos.y = std::max((int)minY,RealPos.y);
+        RealPos.y = std::min((int)maxY,RealPos.y);
+        RealPos.x = std::min((int)maxX,RealPos.x);
     }
-    EffectArea.x = pos.x-OffsetEffect;
-    EffectArea.y = pos.y-OffsetEffect;
-    UpdateArea.x = pos.x-OffsetUpdate;
-    UpdateArea.y = pos.y-OffsetUpdate;
-
+    EffectArea.x = RealPos.x-OffsetEffect;
+    EffectArea.y = RealPos.y-OffsetEffect;
+    UpdateArea.x = RealPos.x-OffsetUpdate;
+    UpdateArea.y = RealPos.y-OffsetUpdate;
+    pos = RealPos;
     pos.x += Offset_x;
     pos.y += Offset_y;
 }
@@ -156,10 +159,10 @@ void Camera::Update(float dt){
         }
         */
 
-        EffectArea.x = (int)(pos.x-OffsetEffect/2.0f);
-        EffectArea.y = (int)(pos.y-OffsetEffect/2.0f);
-        UpdateArea.x = (int)(pos.x-OffsetUpdate/2.0f);
-        UpdateArea.y = (int)(pos.y-OffsetUpdate/2.0f);
+        EffectArea.x = (int)(RealPos.x-OffsetEffect/2.0f);
+        EffectArea.y = (int)(RealPos.y-OffsetEffect/2.0f);
+        UpdateArea.x = (int)(RealPos.x-OffsetUpdate/2.0f);
+        UpdateArea.y = (int)(RealPos.y-OffsetUpdate/2.0f);
 
     }
 }
