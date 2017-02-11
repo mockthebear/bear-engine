@@ -27,7 +27,7 @@ LuaInterface::LuaInterface(){
 LuaInterface::~LuaInterface(){
     if (L != NULL)
        lua_close(L);
-    std::cout << "Closing lua\n" << std::endl;
+    bear::out << "Closing lua\n" << std::endl;
 }
 
 int CallTimer(lua_State *L)
@@ -163,7 +163,7 @@ int RegisterScript(lua_State *L){
 void LuaInterface::Startup(){
     L = luaL_newstate();
     if (L == NULL){
-        std::cout << "Cannot start lua" << std::endl;
+        bear::out << "Cannot start lua" << std::endl;
     }else{
         Console::GetInstance().AddTextInfo("Lua started.");
         luaL_openlibs(L);

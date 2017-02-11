@@ -28,7 +28,6 @@ void SmartTexture::UpdateTexture(){
 SmartTexture::~SmartTexture(){
     delete []pixels;
     if (deleteTexture){
-        std::cout << "Morre ai textura\n";
         SDL_DestroyTexture( t );
     }
 }

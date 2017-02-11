@@ -4,6 +4,7 @@
 #include "camera.hpp"
 #include "bear.hpp"
 #include "renderhelp.hpp"
+#include "timer.hpp"
 
 
 
@@ -24,7 +25,9 @@ SmartTileset::SmartTileset(PointInt tileSize,PointInt tilesetSize,int layers,Poi
 
     this->tilesetCompatSize = tilesetSize;
     bear::out << "Max texture size set to " << maxTextureSize.x << " x " << maxTextureSize.y << "\n";
+    PointInt tilesPerBlock = maxTextureSize/tileSize;
     tilesetSize = tilesetSize * tileSize;
+    bear::out << "Each texture has "<<tilesPerBlock<<" tiles \n";
     bear::out << "Map size is " << tilesetSize <<" \n";
     if (tilesetSize.x == 0 || tilesetSize.y == 0){
         return;
@@ -115,8 +118,23 @@ void SmartTileset::RenderTile(int x,int y,int index){
 bool SmartTileset::MakeMap(){
     if (!isValid)
         return false;
+    Stopwatch timer;
     bear::out << "Making the map\n";
     SDL_Texture *lastTexture = nullptr;
+
+    for (int l=0;l<Layers;l++){
+        for (int y=0;y<framesOnMap.y;y++){
+            for (int x=0;x<framesOnMap.x;x++){
+                ScreenManager::GetInstance().SetRenderTarget(textureMap[l][y][x]);
+                SDL_SetRenderDrawBlendMode(BearEngine->GetRenderer(), SDL_BLENDMODE_NONE);
+                SDL_SetRenderDrawColor(BearEngine->GetRenderer(), 0, 0, 0, 0);
+                SDL_RenderClear(BearEngine->GetRenderer());
+                SDL_SetRenderDrawBlendMode(BearEngine->GetRenderer(), SDL_BLENDMODE_BLEND);
+                needRemake[l][y][x] = false;
+            }
+        }
+    }
+
     for (int l=0;l<Layers;l++){
         for (int y=0;y<tilesetCompatSize.y;y++){
             for (int x=0;x<tilesetCompatSize.x;x++){
@@ -134,14 +152,9 @@ bool SmartTileset::MakeMap(){
             }
         }
     }
-    for (int l=0;l<Layers;l++){
-        for (int y=0;y<framesOnMap.y;y++){
-            for (int x=0;x<framesOnMap.x;x++){
-                needRemake[l][y][x] = false;
-            }
-        }
-    }
+    bear::out << "Finished in " << float(timer.Get()/1000.0) << "\n";
     ScreenManager::GetInstance().SetRenderTarget(nullptr);
+
     return true;
 }
 
@@ -215,7 +228,9 @@ void SmartTileset::Update(float dt){
                     PointInt tilesPerBlock = maxTextureSize/tileSize;
                     for (int tx = 0; tx < tilesPerBlock.x; tx++){
                         for (int ty = 0; ty < tilesPerBlock.y; ty++){
-                            RenderTile(  tx * tileSize.x, ty * tileSize.y,tileMap[l][ (y * tilesPerBlock.y) + ty ][ (x * tilesPerBlock.x) + tx ] );
+                            int addy = (y * tilesPerBlock.y) + ty;
+                            int addx = (x * tilesPerBlock.x) + tx;
+                            RenderTile(  tx * tileSize.x, ty * tileSize.y,tileMap[l][ addy ][ addx ] );
                         }
                     }
                 }

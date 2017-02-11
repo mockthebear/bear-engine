@@ -8,11 +8,17 @@
 void bear::outstream::printme(int n){
     Console::GetInstance().Store("%d",n);
 }
+void bear::outstream::printme(unsigned int n){
+    Console::GetInstance().Store("%ud",n);
+}
 
 void bear::outstream::printme(float n){
     Console::GetInstance().Store("%f",n);
 }
 
+void bear::outstream::printme(double n){
+    Console::GetInstance().Store("%lf",n);
+}
 
 
 void bear::outstream::printme(const char *c){

@@ -7,7 +7,9 @@ namespace bear {
     class outstream{
         public:
             void printme(int n);
+            void printme(unsigned int n);
             void printme(float n);
+            void printme(double n);
             void printme(const char *c);
     };
     static outstream out;
@@ -18,6 +20,21 @@ namespace bear {
         o.printme(n);
         return o;
     }
+    static inline bear::outstream &operator << ( bear::outstream &o ,unsigned int n){
+        o.printme(n);
+        return o;
+    }
+
+    static inline bear::outstream &operator << ( bear::outstream &o ,float n){
+        o.printme(n);
+        return o;
+    }
+
+    static inline bear::outstream &operator << ( bear::outstream &o ,double n){
+        o.printme(n);
+        return o;
+    }
+
 
     static inline bear::outstream &operator << ( bear::outstream &o ,const char *e){
         o.printme(e);

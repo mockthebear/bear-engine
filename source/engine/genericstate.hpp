@@ -189,7 +189,7 @@ class GenericState{
         void AddWindow(UIBase *b);
     protected:
         friend class Game;
-        virtual void Pause(GenericState *){std::cout << "generic pause";};
+        virtual void Pause(GenericState *){};
         virtual void Resume(GenericState *){};
 
         /**

@@ -96,10 +96,10 @@ void Game::init(const char *name){
 
         Console::GetInstance().AddText(utils::format("SDL_TTF compiled with %d.%d.%d",compiled.major, compiled.minor, compiled.patch));
         Console::GetInstance().AddText(utils::format("SDL_TTF Linked with %d.%d.%d.", link_version->major, link_version->minor, link_version->patch));
-
+        Console::GetInstance().AddText("Opening input");
         g_input.init();
-        Console::GetInstance().Begin();
         ConfigManager::GetInstance().DisplayArgs();
+        Console::GetInstance().AddText("Opening audio");
         device = alcOpenDevice(NULL);
         if (device){
             SoundLoader::ShowError("on make");
@@ -129,6 +129,9 @@ void Game::init(const char *name){
         srand(time(NULL));
 
         ThreadPool::GetInstance(POOL_DEFAULT_THREADS);
+
+        Console::GetInstance().AddText("Opening console");
+        Console::GetInstance().Begin();
 
         #ifndef DISABLE_LUAINTERFACE
         LuaInterface::Instance().Startup();
@@ -248,11 +251,11 @@ void Game::Run(){
         CalculateDeltaTime();
 
         #ifdef CYCLYC_DEBUG
-        std::cout << "[Update]";
+        bear::out << "[Update]";
         #endif
         Update();
         #ifdef CYCLYC_DEBUG
-        std::cout << "[\\Update]\n";
+        bear::out << "[\\Update]\n";
         #endif
         if (!CanStop()){
             if (InputManager::GetInstance().KeyPress(SDLK_F3)){
