@@ -120,7 +120,10 @@ SDL_RWops* ResourceFile::GetFile(std::string name){
         SDL_RWops* rw = SDL_RWFromMem(auxB,size);
         rw->hidden.unknown.data1 = auxB;
         rw->close = [](SDL_RWops * me) -> int{
-            delete me->hidden.unknown.data1;
+            char *ptr = (char*)me->hidden.unknown.data1;
+            if (ptr)
+                delete ptr;
+                return 0;
         };
         return rw;
     }
@@ -165,6 +168,13 @@ SDL_RWops* ResourceFile::GetFile(std::string name,int &size){
         char *auxB = new char[size+1];
         l_file.Read(auxB,size);
         SDL_RWops* rw = SDL_RWFromMem(auxB,size);
+        rw->hidden.unknown.data1 = auxB;
+        rw->close = [](SDL_RWops * me) -> int{
+            char *ptr = (char*)me->hidden.unknown.data1;
+            if (ptr)
+                delete ptr;
+                return 0;
+        };
         return rw;
     }
 }

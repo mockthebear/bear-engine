@@ -274,7 +274,7 @@ namespace Collision {
         }
 
 	static inline bool IsColliding( Circle& b,Circle& a ){
-            if (distance( a.x, a.y, b.x, b.y ) <= b.r+a.r){
+            if (distanceSquared( a.x, a.y, b.x, b.y ) <= b.r+a.r){
                 return true;
             }
             return false;

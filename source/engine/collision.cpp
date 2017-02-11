@@ -29,7 +29,7 @@ int Collision::AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,Pool
 }
 std::vector<Rect> Collision::CheckCollision(std::vector<Rect> &rectArr,GameObject* dis,PoolManager &pool,PoolGroupId gid,bool onlySolid){
     std::vector<Rect> col;
-    int i;
+    uint32_t i;
     for (auto &obj : pool.ForGroup(gid))
     {
         if (obj && obj != dis && !obj->IsDead()){
