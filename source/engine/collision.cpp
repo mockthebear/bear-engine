@@ -27,11 +27,28 @@ int Collision::AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,Pool
         return -1;
 
 }
+std::vector<Rect> Collision::CheckCollision(std::vector<Rect> &rectArr,GameObject* dis,PoolManager &pool,PoolGroupId gid,bool onlySolid){
+    std::vector<Rect> col;
+    int i;
+    for (auto &obj : pool.ForGroup(gid))
+    {
+        if (obj && obj != dis && !obj->IsDead()){
+            if (!onlySolid ||obj->solid ){
+                for (i=0;i<rectArr.size();i++){
+                    if (Collision::IsColliding(obj->box,rectArr[i],0,0) ){
+                        col.emplace_back(rectArr[i]);
+                    }
+                }
+            }
+        }
+    }
+    return col;
+}
 
 bool Collision::CheckCollision(Rect tempXY,GameObject* dis,PoolManager &pool,PoolGroupId gid,bool onlySolid){
         for (auto &obj : pool.ForGroup(gid))
         {
-        if (obj != dis && !obj->IsDead()){
+        if (obj && obj != dis && !obj->IsDead()){
             if (!onlySolid ||obj->solid ){
                 if (Collision::IsColliding(obj->box,tempXY,0,0) ){
                     return true;

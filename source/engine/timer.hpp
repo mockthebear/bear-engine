@@ -1,5 +1,8 @@
 #ifndef TIMERH
 #define TIMERH
+#include <stdint.h>
+#include "../settings/definitions.hpp"
+#include SDL_LIB_HEADER
 /**
     @brief Basic timer
 
@@ -70,6 +73,21 @@ class Timer{
         float m_duration;
         float m_time;
         int   m_repeat;
+};
+
+class Stopwatch{
+    public:
+        Stopwatch(){
+            Reset();
+        };
+        void Reset(){
+            begin = SDL_GetTicks();
+        }
+        uint32_t Get(){
+            return SDL_GetTicks() - begin;
+        };
+    private:
+        uint32_t begin;
 };
 
 #endif
