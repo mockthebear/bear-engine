@@ -175,7 +175,10 @@ SDL_Texture* Sprite::CopyTexture(){
 SDL_Texture* Sprite::Preload(char *file,bool adjustDir,bool HasAliasing){
     std::string stdnamee(file);
     if (stdnamee.find(":")!=std::string::npos){
-        return Sprite::Preload(ResourceManager::GetInstance().GetFile(stdnamee),stdnamee,HasAliasing);
+        SDL_RWops *rw = ResourceManager::GetInstance().GetFile(stdnamee); //Safe
+        SDL_Texture* returnTexture = Sprite::Preload(rw,stdnamee,HasAliasing);
+        SDL_RWclose(rw);
+        return returnTexture;
     }
     if (adjustDir){
         stdnamee = DirManager::AdjustAssetsPath(stdnamee);
@@ -295,7 +298,7 @@ SDL_Texture* Sprite::Preload(std::string fileName,ColorReplacer &r,bool HasAlias
         /**
             Loading from rwops
         */
-        SDL_RWops* rw = ResourceManager::GetInstance().GetFile(fileName);
+        SDL_RWops* rw = ResourceManager::GetInstance().GetFile(fileName); //safe
         if (!rw){
             bear::out << "Error loading ["<<fileName<<"]: " << SDL_GetError() << "\n";
             return nullptr;
@@ -304,6 +307,7 @@ SDL_Texture* Sprite::Preload(std::string fileName,ColorReplacer &r,bool HasAlias
         char *res = ResourceManager::GetFileBuffer(rw,rsize);
         imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
         ResourceManager::ClearFileBuffer(res);
+        SDL_RWclose(rw);
     }else{
         imageData = stbi_load(fileName.c_str(),&sizeX,&sizeY,&comp,STBI_rgb_alpha);
     }
@@ -358,7 +362,10 @@ bool Sprite::Open(char *file,bool HasAliasing){
     scaleX = scaleY = 1;
     std::string stdnamee(file);
     if (stdnamee.find(":")!=std::string::npos){
-        return Open(ResourceManager::GetInstance().GetFile(stdnamee),stdnamee,HasAliasing);
+        SDL_RWops* file = ResourceManager::GetInstance().GetFile(stdnamee); //safe
+        bool ret = Open(file,stdnamee,HasAliasing);
+        SDL_RWclose(file);
+        return ret;
     }
     textureShred = GlobalAssetManager::GetInstance().makeTexture(false,stdnamee,HasAliasing);
     if (textureShred.get()){

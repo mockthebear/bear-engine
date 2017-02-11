@@ -110,7 +110,8 @@ class GameFile{
             * adds +1 to the position
             @return an number
         */
-        const char *Read(uint16_t size);
+        std::string Read(uint16_t size);
+        uint32_t Read(char *c,uint32_t size);
 
         uint8_t Read8();
         /**

@@ -109,10 +109,11 @@ class Sprite{
             @param rw The rwop
             @param name An alias/name to the sprite
             @code
-            Spirte::Preload(
-                            ResourceManager::GetInstance().GetFile("ycoins","coin.png"),
+            SDL_RWops* file = ResourceManager::GetInstance().GetFile("ycoins","coin.png"); //safe
+            Spirte::Preload(file,
                             "coin"
                             );
+            SDL_RWclose(file);
             @endcode
         */
         static SDL_Texture* Preload(SDL_RWops* rw,std::string name,bool HasAliasing=false);

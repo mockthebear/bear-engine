@@ -2,7 +2,7 @@
 #define RESOURCEFILEHBE
 #include "../settings/definitions.hpp"
 #include SDL_LIB_HEADER
-
+#include "gamefile.hpp"
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -84,6 +84,8 @@ class ResourceFile{
         */
         int GetFileSize(std::string name);
     private:
+        GameFile l_file;
+        bool m_isCached;
         uint16_t m_header;
         bool m_isOpen;
         char *m_cached;

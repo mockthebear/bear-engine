@@ -38,7 +38,7 @@ GameFile::~GameFile(){
 bool GameFile::Open(std::string name,bool notify){
 
 	if (name.find(":")!=std::string::npos){
-        m_filePointer = ResourceManager::GetInstance().GetFile(name);
+        m_filePointer = ResourceManager::GetInstance().GetFile(name); //safe
     }else{
         name = DirManager::AdjustAssetsPath(name);
         m_filePointer = SDL_RWFromFile(name.c_str(),"rb");
@@ -179,14 +179,25 @@ std::string GameFile::ReadUntil(char rd){
     return buffer;
 }
 
-const char *GameFile::Read(uint16_t size){
+uint32_t GameFile::Read(char *c,uint32_t size){
+    uint32_t read = 0;
+    int kek = size;
+    while (kek > 0 && m_filePos < m_size){
+        c[read] = ReadByte();
+        read++;
+        kek--;
+    }
+    return read;
+}
+std::string GameFile::Read(uint16_t size){
     std::string buffer = "";
     while (m_filePos < m_size || size > 0){
         char c = ReadByte();
         buffer += c;
         size--;
     }
-    return buffer.c_str();
+    buffer += '\0';
+    return buffer;
 }
 
 bool GameFile::GetLine(std::string &line){

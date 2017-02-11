@@ -81,7 +81,7 @@ Sound::Sound(const char *s,int classType):Sound(){
 bool Sound::Open(const char *str,bool isWave){
     std::string stdnamee(str);
     if (stdnamee.find(":")!=std::string::npos){
-        snd = GlobalAssetManager::GetInstance().makeSound(false,ResourceManager::GetInstance().GetFile(stdnamee),str);
+        snd = GlobalAssetManager::GetInstance().makeSound(false,str);
     }else{
         snd = GlobalAssetManager::GetInstance().makeSound(false,str);
     }
@@ -112,7 +112,10 @@ BufferData* Sound::Preload(std::string stdnamee){
     if (!ConfigManager::GetInstance().IsWorkingAudio())
         return NULL;
     if (stdnamee.find(":")!=std::string::npos){
-        return Preload(ResourceManager::GetInstance().GetFile(stdnamee),stdnamee);
+        SDL_RWops* rw = ResourceManager::GetInstance().GetFile(stdnamee); //safe
+        BufferData* retData = Preload(rw,stdnamee);
+        SDL_RWclose(rw);
+        return retData;
     }
     GameFile f(stdnamee);
     if (f.IsOpen()){
@@ -140,9 +143,9 @@ int Sound::PlayOnce(const char *s,bool global,int volume,Point3 pos,int classN){
     SoundPtr snd;
     if (stdnamee.find(":")!=std::string::npos){
         if (global)
-            snd = GlobalAssetManager::GetInstance().makeSound(false,ResourceManager::GetInstance().GetFile(stdnamee),stdnamee);
+            snd = GlobalAssetManager::GetInstance().makeSound(false,stdnamee);
         else
-            snd = Game::GetCurrentState().Assets.makeSound(false,ResourceManager::GetInstance().GetFile(stdnamee),stdnamee);
+            snd = Game::GetCurrentState().Assets.makeSound(false,stdnamee);
     }else{
         if (global)
             snd = GlobalAssetManager::GetInstance().makeSound(false,s);
@@ -261,7 +264,7 @@ void Sound::SetRepeat(bool repeat){
         return;
     if (!checkSource())
         return;
-    alSourcei(sourceID, AL_LOOPING, repeat);
+    alSourcei(sourceID, AL_LOOPING, AL_TRUE);
     SoundLoader::ShowError("on loop");
 }
 bool Sound::Play(bool repeat){

@@ -32,7 +32,6 @@ CustomFont::CustomFont(std::string letterpositions){
             int xx=0,yy=0,hh=0,ww=0,padd=0,pddin=0, xoffset = 0;
             while (find && m > 0){
                 if ( (sscanf(letterData.c_str(),"%c=<%d,%d,%d,%d,%d,%d,%dx>",letter,&xx,&yy,&ww,&hh,&padd,&pddin,&xoffset))  ){
-					//std::cout << "Achei: " << (int)letter[0] << "\n";
 					m = letterData.find(";");
                     if (m != -1){
                         Letters[(unsigned char)letter[0]] = std::unique_ptr<Letter>(new Letter(xx,yy,ww,hh,padd,pddin, xoffset));
@@ -165,7 +164,9 @@ Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string tex
         isWorking = true;
     }else{
         if (tweaks){
-            font = TTF_OpenFontRW(ResourceManager::GetInstance().GetFile(fontfilep),1,fontsize);
+            SDL_RWops* rw = ResourceManager::GetInstance().GetFile(fontfilep);
+            font = TTF_OpenFontRW(rw,1,fontsize);
+            //SDL_RWclose(rw);
         }else{
             font = TTF_OpenFont(fontfilep.c_str(), fontsize);
         }
@@ -444,11 +445,11 @@ void Text::RemakeTexture(bool Destory){
         dimensions2.w = box.w;
 
         if (SDL_RenderCopy(BearEngine->GetRenderer(),texture,NULL,&dimensions2) < 0){
-            std::cout << "[TXT:Render] Failed to render, SDL reason["<<SDL_GetError()<<"]:"<<"|"<<text.size()<<"{"<<text<<"}\n";
+            bear::out << "[TXT:RemakeTexture] Failed to render, SDL reason["<<SDL_GetError()<<"]:"<<"|"<<text.size()<<"{"<<text<<"}\n";
         }
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
         SDL_FreeSurface(surf);
     }else{
-        std::cout << "[Text:RemakeTexture] Surface not loaded "<<SDL_GetError()<<"\n";
+        std::cout << "[Text:RemakeTexture] Surface not loaded "<<SDL_GetError()<<" ("<<text<<")\n";
     }
 }

@@ -29,7 +29,7 @@ void ConfigManager::SetWindowIcon(std::string icon){
     uint64_t rsize;
     int sizeX,sizeY,comp;
     if (icon.find(":")!=std::string::npos){
-        SDL_RWops* rw = ResourceManager::GetInstance().GetFile(icon);
+        SDL_RWops* rw = ResourceManager::GetInstance().GetFile(icon); //safe
         if (rw){
             char *res = ResourceManager::GetFileBuffer(rw,rsize);
             imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
@@ -37,6 +37,8 @@ void ConfigManager::SetWindowIcon(std::string icon){
         }else{
             Console::GetInstance().AddTextInfo(utils::format("Cannot open the rw file %s",icon));
         }
+        SDL_RWclose(rw);
+
     }else{
         SDL_RWops* rw = SDL_RWFromFile(icon.c_str(), "rb");
         if (!rw){
