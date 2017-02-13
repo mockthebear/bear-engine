@@ -1,6 +1,7 @@
 #ifndef BEUTILS_H
 #define BEUTILS_H
 
+#include "../engine/bear.hpp"
 #include <string>
 #include <vector>
 #include <stdlib.h>
@@ -127,30 +128,68 @@ namespace utils {
             uint32_t TotalSize;
             T *Data;
     };
-
-    template<typename T> class Mat2{
+    template<int N> struct expander{
+        template<typename... Args>
+            static int expand(uint32_t sMax,uint32_t *addr,int v1, const Args&... args) {
+                addr[N] = v1;
+                return v1 * expander<N-1>::expand(sMax,addr,args...);
+        }
+        static int expandOffset(uint32_t *addr) {
+                return addr[N]*expander<N-1>::expandOffset(addr);
+        }
+        template<typename... Args>
+            static int expandAdderess(uint32_t *addr,int v1, const Args&... args) {
+                if (addr[N] <= v1){
+                    bear::out << "[Warning] Acessing coordinate "<<N<<" wich has size of "<<addr[N]<<" and requested position "<<v1<<"\n";
+                }
+                int first =  expander<N-1>::expandOffset(addr) * v1;
+                int second = expander<N-1>::expandAdderess(addr,args...);
+                return first+ second ;
+        }
+    };
+    template<> struct expander <0> {
+        template<typename... Args>
+            static int expand(uint32_t sMax,uint32_t *addr) {
+                return 1;
+        }
+        static int expandAdderess(uint32_t *addr) {
+            return 0;
+        }
+        static int expandOffset(uint32_t *addr) {
+                return 1;
+        }
+    };
+    template<typename T,int N> class MatN{
         public:
-            Mat2(){
+            MatN(){
                 Data = nullptr;
             };
-            Mat2(int sizeX_,int sizeY_){
-                sizeX = sizeX_;
-                sizeY = sizeY_;
-                TotalSize = sizeY * sizeX;
+            template <typename ... Types> MatN(Types ... args){
+                if ((sizeof...(Types)) != N){
+                    bear::out << "wrong argument size1\n";
+                    return;
+                }
+                TotalSize = expander<sizeof...(Types)>::expand(N,coordSizes,args...);
                 Data = new T[ TotalSize ];
-
+                if (!Data){
+                    bear::out << "Cannot allocate an matrix sized with "<<(TotalSize*sizeof(T)) << " bytes\n";
+                }
             };
-            T &at(int x,int y){
-                return Data[ x + (y*sizeX) ];
+            template <typename ... Types> T &at(Types ... args){
+                if ((sizeof...(Types)) != N){
+                    bear::out << "wrong argument size 2. Got "<<(sizeof...(Types))<<" expected " << N <<"\n";
+                }
+                int addrOffset = expander<sizeof...(Types)>::expandAdderess(coordSizes,args...);
+                return Data[ addrOffset ];
             }
             void erase(){
                 if (Data){
                     delete [] Data;
                 }
             }
+
         private:
-            uint32_t sizeX;
-            uint32_t sizeY;
+            uint32_t coordSizes[N+1];
             uint32_t TotalSize;
             T *Data;
     };
