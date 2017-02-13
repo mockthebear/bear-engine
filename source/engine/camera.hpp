@@ -17,6 +17,7 @@ class Camera{
             The true camera position
         */
         static RectInt pos;
+         static Rect RealPos;
         /**
             An area bigger than Camera::pos, it will tell what instances can be rendered
         */
@@ -105,7 +106,7 @@ class Camera{
         static int Offset_x,Offset_y;
 
     private:
-    static RectInt RealPos;
+
     static GameObject *focus;
     static Point *focusPoint;
     static Rect *focusRect;

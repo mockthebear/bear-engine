@@ -4,7 +4,7 @@
 
 float       Camera::speed = 12;
 RectInt     Camera::pos(0,0,0,0);
-RectInt     Camera::RealPos(0,0,0,0);
+Rect        Camera::RealPos(0,0,0,0);
 RectInt     Camera::EffectArea(0,0,0,0);
 RectInt     Camera::UpdateArea(0,0,0,0);
 GameObject* Camera::focus = nullptr;
@@ -106,17 +106,17 @@ void Camera::UpdateByPos(Rect box,float dt){
     Point posCenter(RealPos.getXCenter(),RealPos.getYCenter());
     if (Smooth && toGo.getDistance(posCenter) >= speed*dt ){
         float angle = toGo.getDirection(posCenter);
-        RealPos.x += (int)(cos(angle)*dt*speed);
-        RealPos.y += (int)(sin(angle)*dt*speed);
+        RealPos.x += (cos(angle)*dt*speed);
+        RealPos.y += (sin(angle)*dt*speed);
     }else{
-        RealPos.x = (int)(box.x+box.w/2-RealPos.w/2);
-        RealPos.y = (int)(box.y+box.h/2-RealPos.h/2);
+        RealPos.x = (box.x+box.w/2-RealPos.w/2);
+        RealPos.y = (box.y+box.h/2-RealPos.h/2);
     }
     if (UseLimits){
-        RealPos.x = std::max((int)minX,RealPos.x);
-        RealPos.y = std::max((int)minY,RealPos.y);
-        RealPos.y = std::min((int)maxY,RealPos.y);
-        RealPos.x = std::min((int)maxX,RealPos.x);
+        RealPos.x = std::max(minX,RealPos.x);
+        RealPos.y = std::max(minY,RealPos.y);
+        RealPos.y = std::min(maxY,RealPos.y);
+        RealPos.x = std::min(maxX,RealPos.x);
     }
     EffectArea.x = RealPos.x-OffsetEffect;
     EffectArea.y = RealPos.y-OffsetEffect;
