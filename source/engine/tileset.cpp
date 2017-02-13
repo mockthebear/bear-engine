@@ -1,30 +1,6 @@
 #include "tileset.hpp"
 #include "gamebase.hpp"
 #include <stdio.h>
-MultiTileSet::MultiTileSet(int tileWidth2,int tileHeight2){
-    SetTileHeight(tileHeight2);
-    SetTileWidth(tileWidth2);
-
-}
-
-
-MultiTileSet::~MultiTileSet(){
-    for(int i = tileArray.size() - 1; i >= 0; --i)
-    {
-        delete tileArray[i];
-    }
-
-}
-
-void MultiTileSet::Open(const char* path){
-    Sprite *s = new Sprite(path);
-    tileArray.emplace_back(s);
-}
-
-void MultiTileSet::Render(int ind,int x,int y){
-    if (ind > -1)
-        tileArray[ind]->Render(x,y);
-}
 
 
 BlockTileSet::BlockTileSet(int tilew,int tileh,Sprite tset){

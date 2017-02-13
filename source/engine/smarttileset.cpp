@@ -181,6 +181,7 @@ void SmartTileset::ResetFocus(){
     if (!isValid)
         return;
     ScreenManager::GetInstance().SetRenderTarget(nullptr);
+    lastTarget = nullptr;
 }
 void SmartTileset::SetTileDirect(int l,int x,int y,int tile){
     if (!isValid)
@@ -205,7 +206,7 @@ void SmartTileset::SetTileDirect(int l,int x,int y,int tile){
         }
         PointInt tileOffset = PointInt((x * tileSize.x)%maxTextureSize.x,(y * tileSize.y)%maxTextureSize.y);
         SDL_SetRenderDrawBlendMode(BearEngine->GetRenderer(), SDL_BLENDMODE_NONE);
-        SDL_SetRenderDrawColor(BearEngine->GetRenderer(), 0, 0, 0, 0);
+        SDL_SetRenderDrawColor(BearEngine->GetRenderer(), 255, 255, 255, 0);
         SDL_Rect d;
         d.x = tileOffset.x;
         d.y = tileOffset.y;

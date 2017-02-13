@@ -21,16 +21,6 @@ class TileSet{
 
 };
 
-class MultiTileSet: public TileSet{
-    public:
-        MultiTileSet(int tileWidth,int tileHeight);
-        ~MultiTileSet();
-        void Open (const char*);
-        void Render (int index,int x,int y);
-    private:
-        std::vector<Sprite*> tileArray;
-};
-
 class BlockTileSet: public TileSet{
     public:
         ~BlockTileSet(){};
