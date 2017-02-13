@@ -117,7 +117,8 @@ SoundPtr AssetMannager::makeSound(bool forced,std::string str){
             return SoundPtr();
         }
         if (forced && soundMap[str].get()){
-            //todo cleanup
+            BufferData *oldC = soundMap[str].get();
+            alDeleteBuffers(1, &oldC->buffer);
             soundMap[str].reset(c);
         }else{
             soundMap[str] = chain_ptr<BufferData>::make(c);
@@ -138,8 +139,8 @@ SoundPtr AssetMannager::makeSound(bool forced,SDL_RWops* rw,std::string str){
             return SoundPtr();
         }
         if (forced && soundMap[str].get()){
-            //Mix_FreeChunk( soundMap[str].get() );
-            //todo cleanup
+            BufferData *oldC = soundMap[str].get();
+            alDeleteBuffers(1, &oldC->buffer);
             soundMap[str].reset(c);
         }else{
             soundMap[str] = chain_ptr<BufferData>::make(c);

@@ -125,6 +125,7 @@ BufferData *SoundLoader::loadOggFileRW(SDL_RWops* soundFile){
 
     alGenBuffers(1, &ret->buffer);
     alBufferData(ret->buffer, ret->format, &bufferData[0], static_cast<ALsizei>(bufferData.size()), ret->freq);
+    bufferData.clear();
     //alSourcei(sourceID, AL_BUFFER, bufferID);
     return ret;
 }
@@ -212,6 +213,7 @@ BufferData *SoundLoader::loadWavFileRW(SDL_RWops* soundFile){
     }
     alGenBuffers(1, &ret->buffer);
     alBufferData(ret->buffer, ret->format, (void*)data,size, ret->freq);
+    delete data;
     return ret;
   } catch(const char * error) {
       bear::out << "Error: " << error << "\n";
