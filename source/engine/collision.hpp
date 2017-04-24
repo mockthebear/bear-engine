@@ -71,10 +71,13 @@ namespace Collision {
             TODO: mudar saporra
         */
 
-        static inline bool IsColliding( Rect& b,Circle& a ){
-            //Closest point on collision box
+        static inline bool IsColliding( Rect b,Point a ){
+            return a.x > b.x && a.x < b.x+b.w && a.y > b.y && a.y < b.y+b.h;
+        }
+
+
+        static inline bool IsColliding( Rect b,Circle a ){
             float cX, cY;
-            //Find closest x offset
             if( a.x <= b.x )
             {
                 cX = b.x;
@@ -169,6 +172,8 @@ namespace Collision {
 
             return false;
         };
+
+
         template<typename T,typename K> static inline bool IsColliding(GenericRect<T> a,  GenericRect<K> b){
             if( a.y + a.h < b.y )
             {
@@ -188,6 +193,7 @@ namespace Collision {
             }
             return true;
         };
+
         static inline int GetCollidingSide2( Rect A,Rect B ){
             if (!IsColliding(A,B))
                 return -1;
