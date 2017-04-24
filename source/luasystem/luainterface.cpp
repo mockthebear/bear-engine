@@ -6,11 +6,18 @@
 
 
 
+
 #ifndef DISABLE_LUAINTERFACE
+#include "../engine/renderhelp.hpp"
 #include "../engine/gamebase.hpp"
+#include "../engine/bear.hpp"
 #include <iostream>
-#include "../sound/sound.hpp"
+
 #include "luaobject.hpp"
+//Bindings
+#include "../sound/sound.hpp"
+#include "../engine/timer.hpp"
+#include "../engine/sprite.hpp"
 
 LuaInterface& LuaInterface::Instance(){
     static LuaInterface S;
@@ -25,9 +32,7 @@ LuaInterface::LuaInterface(){
 }
 
 LuaInterface::~LuaInterface(){
-    if (L != NULL)
-       lua_close(L);
-    bear::out << "Closing lua\n" << std::endl;
+    Close();
 }
 
 int CallTimer(lua_State *L)
@@ -160,15 +165,25 @@ int RegisterScript(lua_State *L){
 }
 
 
+void LuaInterface::Close(){
+
+    if (L != NULL){
+        bear::out << "Closing lua...\n";
+        lua_close(L);
+        L = nullptr;
+    }
+    bear::out << "Lua is closed.\n";
+}
 void LuaInterface::Startup(){
     L = luaL_newstate();
     if (L == NULL){
-        bear::out << "Cannot start lua" << std::endl;
+        bear::out << "Cannot start lua\n";
     }else{
         Console::GetInstance().AddTextInfo("Lua started.");
+        LuaData::L = L;
         luaL_openlibs(L);
 
-        Register("playSound",playSound);
+        /*Register("playSound",playSound);
 
         Register("CallTimer",CallTimer);
         Register("RegisterScript",RegisterScript);
@@ -182,26 +197,31 @@ void LuaInterface::Startup(){
         Register("isPlayer",isPlayer);
         Register("isCreature",isCreature);
         Register("thisIs",thisIs);
-        Register("IsDead",IsDead);
+        Register("IsDead",IsDead);*/
 
         //
-        RegisterGameObjectClass();
-        RegisterParticleClass();
+        //RegisterGameObjectClass();
+        //RegisterParticleClass();
+		Console::GetInstance().AddTextInfo("Register classes...");
+        RegisterClasses();
+
+
         if ( luaL_loadfile(L, "lua/main.lua")==0 ) {
         // execute Lua program
-            std::cout << "Calling main.lua" << std::endl;
+            bear::out << "Calling main.lua\n";
            if (lua_pcall(L, 0, LUA_MULTRET, 0) != 0){
 
-                std::cout << "Lua error: " << lua_tostring(L, -1) << std::endl;
+                bear::out << "Lua error: " << lua_tostring(L, -1) << "\n";
                 lua_pop(L, 1); // remove error message
             }
         }else{
-             std::cout << "Lua error: " << lua_tostring(L, -1) << std::endl;
+             bear::out << "Lua error: " << lua_tostring(L, -1) << "\n";
              lua_pop(L, 1); // remove error message
         }
 
-             std::cout << "Lua started!" << std::endl;
+             bear::out << "Lua started!" << "\n";
     }
+
 }
 void LuaInterface::InsertInt(int n){
     parametersCount++;
@@ -246,7 +266,7 @@ bool LuaInterface::LoadPrepareC(std::string name,std::string func){
 
 bool LuaInterface::Call(){
     if (lua_pcall(L, parametersCount, 1, 0) != 0){
-            std::cout << "-- " << lua_tostring(L, -1) << std::endl;
+            bear::out << "-- " << lua_tostring(L, -1) << "\n";
             lua_pop(L, 1); // remove error message
             parametersCount = 0;
             return false;
@@ -276,43 +296,36 @@ void LuaInterface::Update(float dt){
 }
 
 
-bool LuaInterface::CallScript(std::string name){
+
+bool LuaInterface::CallScript(std::string name,std::string fName){
     if ( luaL_loadfile(L, name.c_str())==0 ) {
         if (lua_pcall(L, 0, LUA_MULTRET, 0) != 0){
-            std::cout << "Lua error: " << lua_tostring(L, -1) << std::endl;
+            bear::out << "Lua error: " << lua_tostring(L, -1) << "\n";
             lua_pop(L, 1);
             return false;
         }
+        if (fName != ""){
+            lua_getglobal(L, fName.c_str());
+            if (lua_isnil(L,-1) || !lua_isfunction(L,-1)){
+                bear::out << "Lua error: "<<fName<<" in file "<<name<<" is not a function\n";
+                lua_pop(L, 1);
+                return false;
+            }
+            if (lua_pcall(L, 0, LUA_MULTRET,0) != 0){
+                bear::out << "Lua error: " << lua_tostring(L, -1) << "\n";
+                lua_pop(L, 1);
+                return false;
+            }
+            return lua_tointeger(L, -1) != 0;
+        }
     }else{
-        std::cout << "Lua error: " << lua_tostring(L, -1) << std::endl;
+        bear::out << "Lua error: " << lua_tostring(L, -1)<< "\n";
         lua_pop(L, 1);
         return false;
     }
     return true;
 }
 
-std::vector<LuaMember> LuaInterface::ListTableFields(std::string tableName){
-    std::vector<LuaMember> members;
-    if (tableName != ""){
-        if (!GetGlobal(tableName)){
-            return members;
-        }
-    }
-    if (!lua_istable(L,-1)){
-        LuaWarningMessageF("Requesting table. The type is %s.",LuaMember::GetType(L));
-        return members;
-    }
-    lua_pushnil(L);
-    while(lua_next(L, -2) != 0)
-    {
-        LuaMember l_member;
-        l_member.field = lua_tostring(L, -2);
-        l_member.type = LuaMember::GetType(L);
-        lua_pop(L, 1);
-        members.emplace_back(l_member);
-    }
-    return members;
-}
 
 bool LuaInterface::GetGlobal(std::string global){
     lua_getglobal(L,global.c_str());
@@ -345,25 +358,25 @@ bool LuaInterface::RunTimer(std::string name){
     lua_pushnumber(L, 1);
 
     if (lua_pcall(L, 1, 0, 0) != 0){
-        std::cout << "[Lua error] " << lua_tostring(L, -1) << std::endl;
+        bear::out << "[Lua error] " << lua_tostring(L, -1) << "\n";
         lua_pop(L, 1);
         return false;
 
     }
-    //std::cout << "The return value of the function was " << lua_tostring(L, -1) << std::endl;
+    //bear::out << "The return value of the function was " << lua_tostring(L, -1) << std::endl;
     return true;
 }
 
 
 bool LuaInterface::CallClear(){
-    std::cout << "Cleaning" << std::endl;
+    bear::out << "Cleaning" << "\n";
     timers.clear();
     lua_getglobal(L, "clearCache");
    if (lua_pcall(L, 0, 1, 0) != 0){
-    std::cout << "[Lua error] " << lua_tostring(L, -1) << std::endl;
+    bear::out << "[Lua error] " << lua_tostring(L, -1) << "\n";
     lua_pop(L, 1);
    }
-   std::cout << "Clear" << std::endl;
+   bear::out << "Clear" << "\n";
     return true;
 }
 
@@ -381,212 +394,199 @@ bool LuaInterface::RunScript(std::string name){
     lua_pushnumber(L, 1);
 
     lua_pcall(L, 1, 0, 0);
-    std::cout << "The return value of the function was " << lua_tostring(L, -1) << std::endl;
+    //bear::out << "The return value of the function was " << lua_tostring(L, -1)<< "\n";
     return true;
 }
 
-int newFunction(lua_State *L)
-{
-    /*LuaObject obj;
-    GameObject *created = Game::GetCurrentState().Pool.AddInstance(obj);
-    if (created != NULL)
-        ((LuaObject*)created)->Start();
-    else
-        return 0;
-
-    LuaObject **usr = static_cast<LuaObject**>(lua_newuserdata(L, sizeof(LuaObject)));
-    *usr = &obj;
-    luaL_getmetatable(L, "LuaObject");
-	lua_setmetatable(L, -1 - 1);*/
-    return 0; // number of return values
-}
 
 
-int DeActivate(lua_State *L)
+void LuaInterface::RegisterClasses(){
+	Console::GetInstance().AddTextInfo("Start ref holder.");
+	LuaCaller::Startup(L);
+	Console::GetInstance().AddTextInfo("Reg stopwatch.");
 
-{
+    ClassRegister<Stopwatch>::RegisterClassOutside(L,"Stopwatch");
 
-    LuaObject* messagePtr = (LuaObject*)lua_touserdata(L, -1);
-	if (messagePtr) {
-        std::cout << "[LuaObject]Garbagge collector\n";
-		messagePtr->Stop();
-	}
-  return 0; // number of return values
-}
+	ClassRegister<Stopwatch>::RegisterClassOutside(LuaData::L, "Stopwatch", [](lua_State* L) {
+		return new Stopwatch();
+	});
 
-int DUIT(lua_State *L)
-{
-    std::cout << "DID IT\n";
-    lua_pushnumber(L,123);
-  return 1; // number of return values
-}
-
-void LuaInterface::RegisterGameObjectClass(){
-    //LuaObject = {}
-	lua_newtable(L);
-	lua_pushvalue(L, -1);
-	lua_setglobal(L, "LuaObject");
-	int methods = lua_gettop(L);
-
-	// methodsTable = {}
-	lua_newtable(L);
-	int methodsTable = lua_gettop(L);
-
-    // className.__call = newFunction
-    lua_pushcfunction(L, newFunction);
-    lua_setfield(L, methodsTable, "__call");
-
-	// setmetatable(className, methodsTable)
-	lua_setmetatable(L, methods);
-
-	// className.metatable = {}
-	luaL_newmetatable(L, "LuaObject");
-	int metatable = lua_gettop(L);
-
-	// className.metatable.__metatable = className
-	lua_pushvalue(L, methods);
-	lua_setfield(L, metatable, "__metatable");
-
-	// className.metatable.__index = className
-	lua_pushvalue(L, methods);
-	lua_setfield(L, metatable, "__index");
-
-	lua_pop(L, 2);
-
-	lua_getglobal(L, "LuaObject");
-	lua_pushcfunction(L, DUIT);
-	lua_setfield(L, -2, "DOIT");
-
-	luaL_getmetatable(L, "LuaObject");
-	lua_pushcfunction(L, DeActivate);
-	lua_setfield(L, -2, "__gc");
-
-	lua_pop(L, 1);
-}
-void LuaInterface::Register(std::string str,int (*F)(lua_State*)){
-    lua_register(L, str.c_str(), F);
-}
+    ClassRegister<Stopwatch>::RegisterClassMethod(L,"Stopwatch","Get",&Stopwatch::Get);
+    ClassRegister<Stopwatch>::RegisterClassMethod(L,"Stopwatch","Reset",&Stopwatch::Reset);
+    ClassRegister<Stopwatch>::RegisterClassMethod(L,"Stopwatch","Set",&Stopwatch::Set);
+    //RegisterClassMetaMethod<Stopwatch>(L,"Stopwatch","__gc");
 
 
-/**
+    ClassRegister<Sound>::RegisterClassOutside(L,"Sound");
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","Open",&Sound::Open);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","SetVolume",&Sound::SetVolume);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","Play",&Sound::Play);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","SetRepeat",&Sound::SetRepeat);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","Stop",&Sound::Stop);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","Pause",&Sound::Pause);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","Resume",&Sound::Resume);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","Toggle",&Sound::Toggle);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","GetPosition",&Sound::GetPosition);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","GetDuration",&Sound::GetDuration);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","IsOpen",&Sound::IsOpen);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","IsPlaying",&Sound::IsPlaying);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","IsPaused",&Sound::IsPaused);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","GetFileName",&Sound::GetFileName);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","SetClassType",&Sound::SetClassType);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","GetClassType",&Sound::GetClassType);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","SetPitch",&Sound::SetPitch);
+
+    static LuaCFunctionLambda sounKill = [](lua_State *L)->int{
+        Sound *snd = LuaData::GetSelf<Sound>();
+        if (snd){
+            snd->Stop();
+            delete snd;
+        }
+        return 1;
+    };
+    //RegisterClassMetaMethod<Sound>(L,"Sound","__gc",&sounKill);
 
 
-*/
 
-int newParticle(lua_State *L)
-{
-    std::cout << "criando\n";
-    float y = lua_tonumber(L,-1);
-    lua_pop(L, 1);
-    int x = lua_tonumber(L,-1);
-    lua_pop(L, 1);
-    std::cout << x << " : " << y << "\n";
-    Particle *p = Game::GetCurrentState().ParticlePool->AddInstance(Particle(x,y));
-    if (!p){
-        return 0;
-    }
-    Particle **usr = static_cast<Particle**>(lua_newuserdata(L, sizeof(Particle)));
-    *usr = p;
-    luaL_getmetatable(L, "Particle");
-	lua_setmetatable(L, -1 - 1);
-    return 1; // number of return values
-}
+    ClassRegister<Sprite>::RegisterClassOutside(LuaData::L,"Sprite",[](lua_State* L){
+        std::string name = GenericLuaGetter<std::string>::Call(L);
+        std::cout << "Loading: "<<name<<"\n";
+        Sprite *t = new Sprite(Game::GetCurrentState().Assets.make<Sprite>(name));
+        return t;
+    });
 
-
-int ParticleSetSprite(lua_State *L)
-{
-
-
-    return 0; // number of return values
-}
-
-
-int LAlphasAsDuration(lua_State *L){
-    Particle** part = (Particle**)lua_touserdata(L, -1);
-    if ((*part)){
-        (*part)->SetAlphaAsDuration();
-    }
-    return 0;
-}
-int LParticleMovementLine(lua_State *L)
-{
-    int mCount = lua_gettop(L);
-    if (mCount > 5 || mCount < 2){
-        Console::GetInstance().AddTextInfo("Error, function has too much methods");
-        return 0;
-    }
-    float ay = 0,ax=0;
-    if (mCount == 5){
-        ay = lua_tonumber(L,-1);
-        lua_pop(L, 1);
-    }
-    if (mCount >= 4){
-        ax = lua_tonumber(L,-1);
-        lua_pop(L, 1);
-    }
+    //ClassRegister<Sprite>::RegisterClassOutside(L,"Sprite");
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","Open",&Sprite::Openf);
+    //RegisterClassMethod<Sprite>(L,"Sprite","Openrw",&Sprite::Openrw);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetClip",&Sprite::SetClip);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","Render",&Sprite::Renderxy);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","RawRender",&Sprite::RawRender);
+    //RegisterClasprite>(L,"Sprite","Raw&Sprite::RawRender);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","Update",&Sprite::Update);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","ResetAnimation",&Sprite::ResetAnimation);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetFrame",&Sprite::SetFrame);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetWidth",&Sprite::GetWidth);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetHeight",&Sprite::GetHeight);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetFrameWidth",&Sprite::GetFrameWidth);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetFrameHeight",&Sprite::GetFrameHeight);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetFrameCount",&Sprite::SetFrameCount);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetFrameCount",&Sprite::GetFrameCount);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetFrameTime",&Sprite::SetFrameTime);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetFrameTime",&Sprite::GetFrameTime);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","IsLoaded",&Sprite::IsLoaded);
+    //RegisterClasprite>(L,"Sprite","Getre",&Sprite::GetSDLTexture);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetCenter",&Sprite::SetCenter);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetRepeatTimes",&Sprite::SetRepeatTimes);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","IsAnimationOver",&Sprite::IsAnimationOver);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetScaleX",&Sprite::SetScaleX);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetScaleY",&Sprite::SetScaleY);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetScale",&Sprite::SetScale);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","ReBlend",&Sprite::ReBlend);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetAlpha",&Sprite::SetAlpha);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetGrid",&Sprite::SetGrid);
+    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetFlip",&Sprite::SetFlip);
+    //RegisterClassMethod<Sprite>(L,"Sprite","Query",&Sprite::Query);
 
 
-    float sy = lua_tonumber(L,-1);
-    lua_pop(L, 1);
-    float sx = lua_tonumber(L,-1);
-    lua_pop(L,1);
-    Particle** part = (Particle**)lua_touserdata(L, -1);
-    if ((*part)){
-        (*part)->SetPatternMoveLine(Point(sx,sy),Point(ax,ay));
-    }
-    return 0; // number of return values
-}
+    LambdaRegister(LuaData::L,"GetR",std::function<uint8_t(uint32_t)>([](uint32_t col){ return RenderHelp::GetR(col);}));
+    LambdaRegister(LuaData::L,"GetG",std::function<uint8_t(uint32_t)>([](uint32_t col){ return RenderHelp::GetG(col);}));
+    LambdaRegister(LuaData::L,"GetB",std::function<uint8_t(uint32_t)>([](uint32_t col){ return RenderHelp::GetB(col);}));
+    LambdaRegister(LuaData::L,"GetA",std::function<uint8_t(uint32_t)>([](uint32_t col){ return RenderHelp::GetA(col);}));
+    LambdaRegister(LuaData::L,"DrawSquareColor",std::function<int(int x,int y,int w,int h,uint8_t r,uint8_t g,uint8_t b,uint8_t a)>([](int x,int y,int w,int h,uint8_t r,uint8_t g,uint8_t b,uint8_t a){ RenderHelp::DrawSquareColorA(x-Camera::pos.x,y-Camera::pos.y,w,h,r,g,b,a,false); return 1;}));
 
 
-void LuaInterface::RegisterParticleClass(){
-    //LuaObject = {}
-	lua_newtable(L);
-	lua_pushvalue(L, -1);
-	lua_setglobal(L, "Particle");
-	int methods = lua_gettop(L);
+    static LuaCFunctionLambda GarbageCollectorFunction = [](lua_State* L){
+        LuaObject* part = LuaData::GetSelf<LuaObject>();
+        if (part){
+            part->Destroy();
+            return 1;
+        }
+        return 1;
+    };
+    ClassRegister<LuaObject>::RegisterClassOutside(LuaData::L,"LuaObject",[](lua_State* L){
+        int y = GenericLuaGetter<int>::Call(L);
+        int x = GenericLuaGetter<int>::Call(L);
+        LuaObject *t = (LuaObject*)BearEngine->GetCurrentState().Pool.AddInstance(LuaObject(x ,y));
+        return t;
+    },&GarbageCollectorFunction);
 
-	// methodsTable = {}
-	lua_newtable(L);
-	int methodsTable = lua_gettop(L);
-
-    // className.__call = newFunction
-    lua_pushcfunction(L, newParticle);
-    lua_setfield(L, methodsTable, "__call");
-
-	// setmetatable(className, methodsTable)
-	lua_setmetatable(L, methods);
-
-	// className.metatable = {}
-	luaL_newmetatable(L, "Particle");
-	int metatable = lua_gettop(L);
-
-	// className.metatable.__metatable = className
-	lua_pushvalue(L, methods);
-	lua_setfield(L, metatable, "__metatable");
-
-	// className.metatable.__index = className
-	lua_pushvalue(L, methods);
-	lua_setfield(L, metatable, "__index");
-
-	lua_pop(L, 2);
-
-	lua_getglobal(L, "Particle");
-	lua_pushcfunction(L, ParticleSetSprite);
-	lua_setfield(L, -2, "setSprite");
-
-	lua_getglobal(L, "Particle");
-	lua_pushcfunction(L, LParticleMovementLine);
-	lua_setfield(L, -2, "setPatternMovementLine");
-
-    lua_getglobal(L, "Particle");
-	lua_pushcfunction(L, LAlphasAsDuration);
-	lua_setfield(L, -2, "setAlphaAsDuration");
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaData::L,"LuaObject","Destroy",&LuaObject::Destroy);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaData::L,"LuaObject","SetX",&LuaObject::SetX);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaData::L,"LuaObject","SetY",&LuaObject::SetY);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaData::L,"LuaObject","GetY",&LuaObject::GetY);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaData::L,"LuaObject","GetX",&LuaObject::GetX);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaData::L,"LuaObject","SetWidth",&LuaObject::SetWidth);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaData::L,"LuaObject","GetWidth",&LuaObject::GetWidth);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaData::L,"LuaObject","SetHeight",&LuaObject::SetHeight);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaData::L,"LuaObject","GetHeight",&LuaObject::GetHeight);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaData::L,"LuaObject","GetPoolIndex",&LuaObject::GetPoolIndex);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaData::L,"LuaObject","GetMyRef",&LuaObject::GetMyRef);
 
 
-	lua_setfield(L, -2, "__gc");
+    TypeObserver<LuaObject,bool>::RegisterMethod(LuaData::L,"forceUpdate",&LuaObject::forceUpdate);
+    TypeObserver<LuaObject,bool>::RegisterMethod(LuaData::L,"forceRender",&LuaObject::forceRender);
+    TypeObserver<LuaObject,int>::RegisterMethod(LuaData::L,"perspective",&LuaObject::perspective);
 
 
-	lua_pop(L, 1);
+    GlobalMethodRegister::RegisterGlobalTable(LuaData::L,"g_camera");
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_camera","GetBox",std::function<Rect()>([](){return Camera::pos;}));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_camera","GetPosition",std::function<PointInt()>([](){return Camera::pos.GetPos(); }));
+
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_camera","SetSpeed",std::function<void(float)>([](float s){ Camera::speed = s;}));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_camera","GetSpeed",std::function<float()>([](){ return Camera::speed; }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_camera","SetSmooth",std::function<void(bool)>([](bool t){ Camera::SetSmooth( t); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_camera","Resize",std::function<void(Point)>([](Point newD){ Camera::Resize( newD); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_camera","UpdateByPos",std::function<void(Rect,int)>([](Rect r,float dt){ Camera::UpdateByPos(r,dt); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_camera","UnlockLimits",std::function<void()>([](){ Camera::UnlockLimits(); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_camera","UpdateByPos",std::function<void(float,float,float,float)>([](float x,float y,float mx,float my){ Camera::LockLimits(x,y,mx,my); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_camera","SetFollowRect",std::function<void(float,float,float,float)>([](float x,float y,float w,float h){ Camera::MyFollowPos = Rect(x,y,w,h); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_camera","SetFollowRectPos",std::function<void(float,float)>([](float x,float y){ Camera::MyFollowPos.x = x; Camera::MyFollowPos.y = y; }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_camera","SetFollowOnRect",std::function<void(bool)>([](bool sm){ Camera::Follow(&Camera::MyFollowPos,sm); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_camera","SetFollowOnObject",std::function<void(GameObject *,bool)>([](GameObject *obj,bool sm){ Camera::Follow(obj,sm); }));
+
+    GlobalMethodRegister::RegisterGlobalTable(LuaData::L,"g_input");
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_input","KeyPress",std::function<bool(int)>([](int key){ return g_input.KeyPress(key); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_input","IsKeyDown",std::function<bool(int)>([](int key){ return g_input.IsKeyDown(key); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_input","KeyRelease",std::function<bool(int)>([](int key){ return g_input.KeyRelease(key); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_input","IsKeyUp",std::function<bool(int)>([](int key){ return g_input.IsKeyUp(key); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_input","IsAnyKeyPressed",std::function<bool()>([](){ return g_input.IsAnyKeyPressed(); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_input","GetMouse",std::function<Point()>([](){ return g_input.GetMouse(); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_input","MousePress",std::function<bool(int)>([](int key){ return g_input.MousePress(key); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_input","MouseRelease",std::function<bool(int)>([](int key){ return g_input.MouseRelease(key); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_input","IsMousePressed",std::function<bool(int)>([](int key){ return g_input.IsMousePressed(key); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_input","IsMouseReleased",std::function<bool(int)>([](int key){ return g_input.IsMouseReleased(key); }));
+    //GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_input","IsMouseInside",std::function<bool(Rect)>([](Rect key){ return g_input.IsMouseInside(key); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_input","IsMouseInside",std::function<int(int)>([](int key){ return (int)g_input.GetKeyState(key); }));
+
+
+    GlobalMethodRegister::RegisterGlobalTable(LuaData::L,"g_render");
+    //g_render.DrawFillSquare(rect, red, green, blue, alpha)
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_render","DrawFillSquare",std::function<void(Rect,uint8_t,uint8_t,uint8_t,uint8_t)>([](Rect rct,uint8_t r,uint8_t g,uint8_t b,uint8_t a){ RenderHelp::DrawSquareColor(rct.x,rct.y,rct.w,rct.h,r,g,b,a,false); }));
+    //g_render.DrawOutlineSquare(rect, red, green, blue, alpha)
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_render","DrawOutlineSquare",std::function<void(Rect,uint8_t,uint8_t,uint8_t,uint8_t)>([](Rect rct,uint8_t r,uint8_t g,uint8_t b,uint8_t a){ RenderHelp::DrawSquareColor(rct.x,rct.y,rct.w,rct.h,r,g,b,a,true); }));
+    //g_render.DrawOutlineSquare(point1, point2, red, green, blue, alpha)
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_render","DrawLineColor",std::function<void(Point,Point,uint8_t,uint8_t,uint8_t,uint8_t)>([](Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a){ RenderHelp::DrawLineColorA(p1.x,p1.y,p1.x,p2.y,r,g,b,a); }));
+    //g_render.FormatARGB(red, green, blue, alpha)
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_render","FormatARGB",std::function<uint32_t(uint8_t,uint8_t,uint8_t,uint8_t)>([](uint8_t r,uint8_t g,uint8_t b,uint8_t a){ return RenderHelp::FormatARGB(a,r,g,b); }));
+    //g_render.FormatRGBA(red, green, blue, alpha)
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_render","FormatRGBA",std::function<uint32_t(uint8_t,uint8_t,uint8_t,uint8_t)>([](uint8_t r,uint8_t g,uint8_t b,uint8_t a){ return RenderHelp::FormatRGBA(r,g,b,a); }));
+    //g_render.GetR(color)
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_render","GetR",std::function<uint8_t(uint32_t)>([](uint32_t c){ return RenderHelp::GetR(c); }));
+    //g_render.GetG(color)
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_render","GetG",std::function<uint8_t(uint32_t)>([](uint32_t c){ return RenderHelp::GetG(c); }));
+    //g_render.GetB(color)
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_render","GetB",std::function<uint8_t(uint32_t)>([](uint32_t c){ return RenderHelp::GetB(c); }));
+    //g_render.GetA(color)
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_render","GetA",std::function<uint8_t(uint32_t)>([](uint32_t c){ return RenderHelp::GetA(c); }));
+
+
+
+    GlobalMethodRegister::RegisterGlobalTable(LuaData::L,"g_screen");
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaData::L,"g_screen","ScreenShake",std::function<void(float,float,int,float)>([](float amountX,float amountY,int frame,float duration){  ScreenManager::GetInstance().ScreenShake(Point(amountX,amountY),frame,duration); }));
+
+
+	Console::GetInstance().AddTextInfo("Finished");
+
 }
 
 
