@@ -5,6 +5,7 @@
 float       Camera::speed = 12;
 RectInt     Camera::pos(0,0,0,0);
 Rect        Camera::RealPos(0,0,0,0);
+Rect        Camera::MyFollowPos(0,0,0,0);
 RectInt     Camera::EffectArea(0,0,0,0);
 RectInt     Camera::UpdateArea(0,0,0,0);
 GameObject* Camera::focus = nullptr;

@@ -17,7 +17,8 @@ class Camera{
             The true camera position
         */
         static RectInt pos;
-         static Rect RealPos;
+        static Rect RealPos;
+        static Rect MyFollowPos;
         /**
             An area bigger than Camera::pos, it will tell what instances can be rendered
         */
