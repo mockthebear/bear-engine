@@ -164,6 +164,7 @@ class Particle: public GameObject{
             The function used to know if is dead
         */
         bool IsDead();
+        void Kill(){Frame=0;Alpha=0;};
         /**
          Particles dont take damage
         */

@@ -3,6 +3,8 @@
 GenericState::GenericState(){
     requestDelete = requestQuit = false;
     storedUi = nullptr;
+    STATEID = -1;
+    ParticlePool = nullptr;
 }
 
 

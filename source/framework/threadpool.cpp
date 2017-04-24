@@ -94,7 +94,7 @@ bool ThreadPool::KillThreads(){
         }
         Unlock();
         for (int e=0;e<UsePThreads;e++){
-            std::cout << "Waiting "<<e<<"\n";
+            bear::out << "Waiting "<<e<<"\n";
             pthread_join(thread_pool[e], NULL);
         }
         #endif
@@ -107,9 +107,9 @@ bool ThreadPool::KillThreads(){
 ThreadPool::~ThreadPool(){
 
     if (started){
-        std::cout << "[ThreadPool] Closing threads!\n";
+        bear::out << "[ThreadPool] Closing threads!\n";
         KillThreads();
-        std::cout << "[ThreadPool] Bye!\n";
+        bear::out << "[ThreadPool] Bye!\n";
     }
 
 }
@@ -157,7 +157,7 @@ bool ThreadPool::Help(){
     if (Jobs.empty()){
         return false;
     }
-    std::cout << "Helping\n";
+    bear::out << "Helping\n";
 
     parameters Param;
     Param.id = UsePThreads;
@@ -171,7 +171,7 @@ bool ThreadPool::Help(){
 
 void ThreadPool::Lock(){
     if (!started){
-        std::cout << "[ThreadPool]Lock/Unlock with no threads running.\n";
+        bear::out << "[ThreadPool]Lock/Unlock with no threads running.\n";
         return;
     }
     Locked = true;
@@ -184,7 +184,7 @@ void ThreadPool::Lock(){
 }
 bool ThreadPool::TryLock(){
     if (!started){
-        std::cout << "[ThreadPool]Lock/Unlock with no threads running.\n";
+        bear::out << "[ThreadPool]Lock/Unlock with no threads running.\n";
         return false;
     }
     #ifndef DISABLE_THREADPOOL
@@ -202,7 +202,7 @@ bool ThreadPool::TryLock(){
 }
 void ThreadPool::Unlock(){
     if (!started){
-        std::cout << "[ThreadPool]Lock/Unlock with no threads running.\n";
+        bear::out << "[ThreadPool]Lock/Unlock with no threads running.\n";
         return;
     }
     Locked = false;
@@ -276,7 +276,7 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
                 }else if (todo.Type == JOB_KILL){
                     #ifndef DISABLE_THREADPOOL
                     pthread_mutex_lock(&This->Critical);
-                    std::cout << "[ThreadPool]{Thread:"<< P->id << "} closing.\n";
+                    bear::out << "[ThreadPool]{Thread:"<< P->id << "} closing.\n";
                     if (!P->mainThread)
                         sem_post(&This->runningM[P->id]);
                     pthread_mutex_unlock(&This->Critical);

@@ -10,6 +10,7 @@ std::unordered_map<std::string, TTF_Font*> Text::assetTable;
 std::unordered_map<std::string, CustomFont*> Text::customTable;
 
 CustomFont::CustomFont(std::string letterpositions){
+    oldAlpha = 255;
     loaded = false;
     GameFile *fp = new GameFile(letterpositions,true);
     if (fp->IsOpen()){
@@ -203,7 +204,6 @@ Text::Text(std::string fontfilep, std::string textp,int x,int y){
     text = textp;
     bg = {0,0,0,0};
     texture = NULL;
-    std::string ftnm = fontfilep;
     if (customTable[fontfilep]){
         texturespr = customTable[fontfilep];
         isWorking = true;
@@ -450,6 +450,6 @@ void Text::RemakeTexture(bool Destory){
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
         SDL_FreeSurface(surf);
     }else{
-        std::cout << "[Text:RemakeTexture] Surface not loaded "<<SDL_GetError()<<" ("<<text<<")\n";
+        bear::out << "[Text:RemakeTexture] Surface not loaded "<<SDL_GetError()<<" ("<<text<<")\n";
     }
 }

@@ -42,13 +42,18 @@ bool GameFile::Open(std::string name,bool notify){
     }else{
         name = DirManager::AdjustAssetsPath(name);
         m_filePointer = SDL_RWFromFile(name.c_str(),"rb");
+
     }
     if (m_filePointer == NULL){
-        if (notify){
-            Console::GetInstance().AddText(utils::format("Cannot locate %s", name.c_str() ) );
+        std::string fullPath = SDL_GetBasePath();
+        fullPath = fullPath + name;
+        m_filePointer = SDL_RWFromFile(fullPath.c_str(),"rb");
+        if (!m_filePointer){
+            if (notify){
+                Console::GetInstance().AddText(utils::format("Cannot locate %s", fullPath.c_str() ) );
+            }
+            return false;
         }
-
-        return false;
     }
     SDL_RWseek(m_filePointer, 0L, RW_SEEK_END);
     m_size = SDL_RWtell(m_filePointer);

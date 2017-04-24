@@ -78,13 +78,14 @@ Sound::Sound(const char *s,int classType):Sound(){
     this->classType = classType;
 }
 
-bool Sound::Open(const char *str,bool isWave){
+bool Sound::Open(std::string str){
     std::string stdnamee(str);
     if (stdnamee.find(":")!=std::string::npos){
         snd = GlobalAssetManager::GetInstance().makeSound(false,str);
     }else{
         snd = GlobalAssetManager::GetInstance().makeSound(false,str);
     }
+    file = str;
     return true;
 }
 
@@ -113,6 +114,10 @@ BufferData* Sound::Preload(std::string stdnamee){
         return NULL;
     if (stdnamee.find(":")!=std::string::npos){
         SDL_RWops* rw = ResourceManager::GetInstance().GetFile(stdnamee); //safe
+        if (!rw){
+            bear::out << "Cannot load " << stdnamee << ". file not found\n";
+            return nullptr;
+        }
         BufferData* retData = Preload(rw,stdnamee);
         SDL_RWclose(rw);
         return retData;
@@ -180,6 +185,12 @@ int Sound::PlayOnce(const char *s,bool global,int volume,Point3 pos,int classN){
     }
     return -1;
 }
+
+void Sound::Kill(){
+    Stop();
+    snd.destroy();
+}
+
 
 
 void Sound::SetVolume(int vol){
@@ -264,7 +275,7 @@ void Sound::SetRepeat(bool repeat){
         return;
     if (!checkSource())
         return;
-    alSourcei(sourceID, AL_LOOPING, AL_TRUE);
+    alSourcei(sourceID, AL_LOOPING, repeat);
     SoundLoader::ShowError("on loop");
 }
 bool Sound::Play(bool repeat){

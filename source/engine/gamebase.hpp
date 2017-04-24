@@ -129,6 +129,7 @@ class Game{
         ~Game();
         void init(const char *name);
     private:
+        bool wasLocked;
         inline void CalculateDeltaTime(){dt = SDL_GetTicks();};
         void Update();
         void Render();

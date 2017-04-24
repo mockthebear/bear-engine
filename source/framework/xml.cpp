@@ -3,6 +3,11 @@
 #include <string>
 
 
+XmlNode::~XmlNode(){
+    if (Nodes)
+        delete Nodes;
+}
+
 XmlNode * XmlNode::Next(){
    XmlNode * node = GetNode(nodePtr);
    nodePtr++;
@@ -29,6 +34,8 @@ Xml::Xml(){
 
 
 
+
+
 XmlNode *Xml::Parse(std::string fileName){
     GameFile f;
     if (!f.Open(fileName)){
@@ -47,6 +54,9 @@ XmlNode *Xml::Parse(std::string fileName){
 
     //Dispensavel
     utils::ReadUntil(data,"<");
+    if (data[1] == '!' && data[2] == '-'){
+        utils::ReadUntil(data,"-->");
+    }
 
     if (data.length() <= 0){
         return nullptr;
@@ -101,7 +111,15 @@ void Xml::ParsePartial(XmlNode *d,std::string content){
         aux->Nodes = new XmlNode*[1];
         aux->Nodes[0] = nullptr;
         aux->nodeCount = 0;
-        utils::ReadUntil(content,"<");
+        bool hasComment = true;
+        while (hasComment){
+            utils::ReadUntil(content,"<");
+            hasComment = false;
+            if (content[0] == '!' && content[1] == '-'){
+                utils::ReadUntil(content,"-->");
+                hasComment = true;
+            }
+        }
         std::string mouduleName = utils::ReadWord(content,0,' ');
         std::string internalData = utils::ReadUntil(content,">");
         bool justATag = false;

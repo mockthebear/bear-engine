@@ -97,6 +97,7 @@ class CustomFont{
         */
         CustomFont(){
             loaded = false;
+            oldAlpha = 255;
         };
         CustomFont(std::string letterpositions);
         /**
@@ -155,7 +156,7 @@ class Text{
             @param size you need a size... or not. default is 12
             @param color the default is gray r100,g100,b100
         */
-        Text(std::string text,int size=12,SDL_Color color={100,100,100});
+        Text(std::string text,int size=12,SDL_Color color={100,100,100,255});
         /**
             *The custom font thing... You should check the class CustomFont to understand
             *how custom fonts work
@@ -167,7 +168,17 @@ class Text{
         /**
             *Empty constructor is almost empty
         */
-        Text(){text="";texture=NULL;isWorking=false;};
+        Text(){
+            text="";
+            texture=NULL;
+            isWorking=false;
+            angle=0;
+            style = TEXT_SOLID;
+            scaleX = scaleY = 1;
+            alpha = 255;
+            font = nullptr;
+            texturespr = nullptr;
+        };
         /**
             *Here it just delete the texture.
         */
@@ -298,7 +309,7 @@ class Text{
         void cpy(Text& t);
         static std::unordered_map<std::string, TTF_Font*> assetTable;
         static std::unordered_map<std::string, CustomFont*> customTable;
-        bool isWorking;
+
         std::string fontfile,text;
         TextStyle style;
         int size;
@@ -310,6 +321,8 @@ class Text{
         TTF_Font* font;
         SDL_Texture* texture;
         CustomFont *texturespr;
+
+		bool isWorking;
 
 };
 

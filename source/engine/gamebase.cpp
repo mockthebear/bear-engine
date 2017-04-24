@@ -14,6 +14,9 @@
 #include "../framework/threadpool.hpp"
 #include "../framework/debughelper.hpp"
 #include "../framework/resourcemanager.hpp"
+#include "timer.hpp"
+
+#include "parallelcollisionmanager.hpp"
 
 #include "../settings/definitions.hpp"
 #include "../performance/console.hpp"
@@ -29,7 +32,7 @@
 Game g_game;
 Game* Game::instance = NULL;
 
-Game::Game(){};
+Game::Game(){isClosing=SDLStarted=canDebug=GameBegin=hasBeenClosed=HasAudio=false;};
 
 void Game::init(const char *name){
     if (instance == NULL){
@@ -39,6 +42,7 @@ void Game::init(const char *name){
         hasBeenClosed = false;
         instance = this;
         HasAudio = true;
+        wasLocked = false;
         GameBegin = false;
         dt = frameStart = 0;
         canDebug = false;
@@ -60,7 +64,6 @@ void Game::init(const char *name){
         if (window == NULL){
             Console::GetInstance().AddTextInfo("Failed creating screen");
             exit(1);
-            return;
         }
 
         renderer = ScreenManager::GetInstance().StartRenderer();
@@ -68,14 +71,12 @@ void Game::init(const char *name){
         if (!renderer){
             Console::GetInstance().AddTextInfo("Failed creating render");
             exit(1);
-            return;
         }
 
         if (!ResourceManager::GetInstance().Load("engine/enginedata.burr","engine")){
             Console::GetInstance().AddTextInfo("engine/enginedata.burr missing!!!");
             Console::GetInstance().CloseOutput();
             exit(1);
-            return;
         }
 
         if (!ResourceManager::GetInstance().Load("engine/ui.burr","ui")){
@@ -134,7 +135,9 @@ void Game::init(const char *name){
         Console::GetInstance().Begin();
 
         #ifndef DISABLE_LUAINTERFACE
+
         LuaInterface::Instance().Startup();
+
         #endif
 
         CalculateDeltaTime();
@@ -153,10 +156,13 @@ Game::~Game(){
         Close();
 }
 void Game::Close(){
-
     hasBeenClosed = true;
-    stateStack.pop();
-    //delete title;
+    #ifndef DISABLE_LUAINTERFACE
+    LuaInterface::Instance().Close();
+    #endif // DISABLE_LUAINTERFACE
+    while (!stateStack.empty()){
+        stateStack.pop();
+    }
     isClosing = true;
     if (Started)
         GameBehavior::GetInstance().OnClose();
@@ -199,7 +205,10 @@ Game *Game::GetInstance(const char *name){
     return &g_game;
 }
 void Game::Update(){
+    //
+        //
 
+    //}
     float dt = std::min(GetDeltaTime(),1.2f );
     InputManager::GetInstance().Update(dt);
     GameBehavior::GetInstance().OnUpdate(dt);
@@ -208,7 +217,20 @@ void Game::Update(){
         #ifndef DISABLE_LUAINTERFACE
         LuaInterface::Instance().Update(dt);
         #endif
+        #ifndef DISABLE_THREADPOOL
+        if (wasLocked){
+            ThreadPool::GetInstance().Lock();
+            wasLocked = false;
+        }
+        #endif // DISABLE_THREADPOOL
         stateStack.top()->Update(std::min(dt,ConfigManager::MinimumDT) );
+        #ifndef DISABLE_THREADPOOL
+        g_parallelCollision.Reset();
+        wasLocked = g_parallelCollision.MakeJobs();
+        if (wasLocked){
+            ThreadPool::GetInstance().Unlock();
+        }
+        #endif // DISABLE_THREADPOOL
         ScreenManager::GetInstance().Update(dt);
     }
 
@@ -226,8 +248,8 @@ void Game::Begin(){
         Console::GetInstance().AddText("[Game::Begin]<OnLoad> Returned false. May not continue!");
         Close();
         exit(1);
-        return;
     }
+    ThreadPool::GetInstance().Unlock();
     if (storedState != NULL){
         stateStack.emplace(storedState);
         stateStack.top()->Begin();
@@ -237,7 +259,7 @@ void Game::Begin(){
 }
 
 bool Game::CanStop(){
-    if (isClosing || (SDL_QuitRequested() || stateStack.top()->RequestedQuit())){
+    if (isClosing || (SDL_QuitRequested() || stateStack.empty() || stateStack.top() == nullptr || stateStack.top()->RequestedQuit())){
         isClosing = true;
         return true;
     }else{
@@ -246,7 +268,7 @@ bool Game::CanStop(){
 }
 
 void Game::Run(){
-
+        //Stopwatch st;
         frameStart = dt;
         CalculateDeltaTime();
 
@@ -257,6 +279,8 @@ void Game::Run(){
         #ifdef CYCLYC_DEBUG
         bear::out << "[\\Update]\n";
         #endif
+        //uint32_t tu = st.Get();
+        //st.Reset();
         if (!CanStop()){
             if (InputManager::GetInstance().KeyPress(SDLK_F3)){
                 static bool full = false;
@@ -274,8 +298,12 @@ void Game::Run(){
                     isClosing=true;
                     return;
                 }else{
+                    stateStack.top()->End();
                     delete stateStack.top();
                     stateStack.pop();
+                    if (stateStack.empty()){
+                        return;
+                    }
                     stateStack.top()->Resume(storedState);
                 }
             }
@@ -296,13 +324,15 @@ void Game::Run(){
 
             #ifdef CYCLYC_DEBUG
             bear::out << "[\\Render]\n";
+            std::cout << tu << ":"<<tr<<"\n";
             #endif
+            //unsigneduint32_t tr = st.Get();
+
             float delay = SDL_GetTicks()-dt;
 
             if ((1000.0f/ConfigManager::MaxFps) - delay > 0){
-                SDL_Delay( (1000.0f/ConfigManager::MaxFps) - delay );
+                SDL_Delay( std::max( (1000.0f/ConfigManager::MaxFps) - delay,0.0f) );
             }
-
         }
 };
 DefinedState &Game::GetCurrentState(){

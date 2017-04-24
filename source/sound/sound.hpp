@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <string>
 #include <memory>
+#include <iostream>
 #include <AL/al.h>
 #include <AL/alc.h>
 #define MAX_VOL_TYPES 16
@@ -25,7 +26,7 @@ class Sound{
         Sound(char *s,int classType=0);
         Sound(const char *s,int classType=0);
         Sound(SoundPtr snd,const char *s);
-        bool Open(const char *str,bool isWave=false);
+        bool Open(std::string str);
         void SetVolume(int vol);
         bool Play (bool repeat=false);
         void SetRepeat(bool repeat);
@@ -41,15 +42,10 @@ class Sound{
         bool IsOpen();
         bool IsPlaying();
         bool IsPaused();
-        static int PlayOnce(const char *s,bool useGlobalAssetManager=false,int volume=128,Point3 pos=Point3(),int classN=0);
 
-        static BufferData* Preload (std::string name);
-        static BufferData* Preload(SDL_RWops* file,std::string name);
+        std::string GetFileName(){ std::cout << "amostra: "<<file<<"\n"; return file;};
 
-        std::string GetFileName(){return file;};
-        void SetAssetManager(int id){};
-        static bool SetMasterVolume(uint8_t vol,int classType=0);
-        static float GetMasterVolume(int classType=0);
+
         void SetClassType(int n);
         int GetClassType(){return classType;};
         void SetPosition(Point3 p);
@@ -57,6 +53,19 @@ class Sound{
             SetPosition(Point3(x,y,z));
         }
         void SetPitch(float f);
+
+
+        static int PlayOnce(const char *s,bool useGlobalAssetManager=false,int volume=128,Point3 pos=Point3(),int classN=0);
+
+        static BufferData* Preload (std::string name);
+        static BufferData* Preload(SDL_RWops* file,std::string name);
+
+
+        static bool SetMasterVolume(uint8_t vol,int classType=0);
+        static float GetMasterVolume(int classType=0);
+
+        void Kill();
+
     protected:
         int classType;
         bool static working;

@@ -1,6 +1,7 @@
 #include "poolmanager.hpp"
 #include "../luasystem/luaobject.hpp"
 #include "../engine/bear.hpp"
+#include "../engine/timer.hpp"
 
 PoolManager::PoolManager(bool insertUnregistered){
 
@@ -70,8 +71,8 @@ GameObject *PoolManager::InternalAddInstance(GameObject *obj,bool deleteptr){
         return obj;
     }else{
         bear::out << "Cannot add object with PoolManager::insertUnregistered as false.\n";
-        int type = TypeChecker::GetInstance().getObjectType(obj);
-        bear::out << "Object typeid is "<< type << " named as " << TypeChecker::GetInstance().getTypeName(type) << "\n";
+        int type = Types::GetInstance().getObjectType(obj);
+        bear::out << "Object typeid is "<< type << " named as " << Types::GetInstance().getTypeName(type) << "\n";
         return nullptr;
     }
 }
@@ -214,13 +215,30 @@ GameObject * PoolManager::GetInstanceGlobal(int index,PoolId pool){
 }
 
 void PoolManager::Update(float dt){
+    unsigned int t = 0;
+    unsigned int id = 0;
     for(unsigned int i = 0; i< Pools.size(); ++i){
+        Stopwatch sw;
         Pools[i].Update(dt);
+        if (t < sw.Get()){
+            t = sw.Get();
+            id = i;
+        }
     }
+    Stopwatch sw;
     for (auto &it : Unregistered){
+
         it->Update(dt);
+
     }
+    if (t < sw.Get()){
+            t = sw.Get();
+            id = 1337;
+        }
+    if (t > 8)
+        bear::out << "big: " << t << " and " << id << " = "<<Types::GetInstance().getTypeName(Pools[id].Hash())<<"\n";
 }
+
 
 void PoolManager::PreRender(std::map<int,std::vector<GameObject*>> &Map){
     for(unsigned int i = 0; i< Pools.size(); ++i){

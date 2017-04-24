@@ -43,6 +43,8 @@ class ConfigManager{
         void RegisterArgs(int argc,char *argv[]);
         void DisplayArgs();
 
+        std::vector<std::string> GetArgs(){return args;};
+
         bool pause;
     private:
         ResizeBehavior m_rbheavior;

@@ -156,7 +156,7 @@ BufferData *SoundLoader::loadWavFileRW(SDL_RWops* soundFile){
   WAVE_Format wave_format;
   RIFF_Header riff_header;
   WAVE_Data wave_data;
-  unsigned char* data;
+  unsigned char* data = nullptr;
 
   try {
     SDL_RWread(soundFile,&riff_header.chunkID, 4, 1);
@@ -186,10 +186,15 @@ BufferData *SoundLoader::loadWavFileRW(SDL_RWops* soundFile){
         wave_format.subChunkID[2] != 't' ||
         wave_format.subChunkID[3] != ' ')
              throw ("Invalid Wave Format");
-    if (wave_format.subChunkSize > 16)
-        SDL_RWseek(soundFile, sizeof(short), SEEK_CUR);
+            //unix wtf dont accept this
+    if ((int32_t)wave_format.subChunkSize > 16){
+       SDL_RWseek(soundFile, sizeof(short), SEEK_CUR);
+    }
+
+    //SDL_RWseek(soundFile, -2, SEEK_CUR);
     SDL_RWread(soundFile,&wave_data.subChunkID, 4, 1);
     SDL_RWread(soundFile,&wave_data.subChunk2Size, 4, 1);
+    //bear::out << wave_data.subChunkID << "\n";
     if (wave_data.subChunkID[0] != 'd' ||
         wave_data.subChunkID[1] != 'a' ||
         wave_data.subChunkID[2] != 't' ||
@@ -216,7 +221,9 @@ BufferData *SoundLoader::loadWavFileRW(SDL_RWops* soundFile){
     delete data;
     return ret;
   } catch(const char * error) {
-      bear::out << "Error: " << error << "\n";
+    if (data != nullptr)
+        delete data;
+    bear::out << "Error: " << error << "\n";
     return nullptr;
   }
 }

@@ -4,66 +4,93 @@
 #include <stdio.h>
 #include <cstdint>
 #include <algorithm>
+#include "../settings/definitions.hpp"
+#include SDL_LIB_HEADER
+
 /**
     @brief Basic template Point class (2d vector)
 */
 template <typename T=float> class GenericPoint{
     public:
         /**
-            Constructor star all with 0
+            Constructor start all with 0
         */
         GenericPoint(){
             x = y = 0;
         };
+        /**
+            Start with the two given values
+            @param x_ the X position
+            @param y_ the Y position
+        */
         GenericPoint(T x_,T y_){
             x = x_;
             y = y_;
         };
-
-
+        /**
+            Start with the two given values
+            @param n An vector of two elements (const), and those are respectively x and y
+        */
         GenericPoint(const int n[2]){
             x = n[0];
             y = n[1];
         };
+        /**
+            Start with the two given values
+            @param n An vector of two elements (const), and those are respectively x and y
+        */
         GenericPoint(const float n[2]){
             x = n[0];
             y = n[1];
         };
+        /**
+            Start with the two given values
+            @param n An vector of two elements (const), and those are respectively x and y
+        */
         GenericPoint(const long n[2]){
             x = n[0];
             y = n[1];
         };
+        /**
+            Start with and GenericPoint
+            @param p an pointer
+        */
         GenericPoint(const GenericPoint *p){
             x = p->x;
             y = p->y;
         }
+        /**
+            Start with and GenericPoint
+            @param p an GenericPoint
+        */
         GenericPoint(const GenericPoint &p){
             x = p.x;
             y = p.y;
         }
-
-
-
         /**
             Get the distance between two points
+            @return distance between two points
         */
         T getDistance(GenericPoint *p){
             return sqrt(pow((x - p->x),(T)2) + pow((y-p->y),(T)2));
         };
-        /* mag
-
+        /**
+            *Get the magnitude of the current point
+            @return Magnitude
         */
         T Mag(){
             return sqrt(pow((x ),(T)2) + pow((y),(T)2));
         };
         /**
             Get the distance between two points
+            @return distance between two points
         */
         T getDistance(GenericPoint p){
              return sqrt(pow((x - p.x),(T)2) + pow((y-p.y),(T)2));
         };
         /**
             Get the direction in rads between two points
+            @param return in radians the angle
         */
         T getDirection(GenericPoint p){
             return atan2(y-p.y,x-p.x);
@@ -77,17 +104,24 @@ template <typename T=float> class GenericPoint{
         /**
             Sub two points p1.x - p2.x, p1.y - p2.y
         */
-
-
         GenericPoint operator-(const GenericPoint& rhs) const {
             return GenericPoint(x - rhs.x, y - rhs.y);
         }
+        /**
+            mult two points p1.x * p2.x, p1.y * p2.y
+        */
         GenericPoint operator*(T f) const {
            return GenericPoint(x*f,y*f);
         }
+        /**
+            divide two points p1.x / p2.x, p1.y / p2.y
+        */
         GenericPoint operator/(T f) const {
            return GenericPoint(x/f,y/f);
         }
+        /**
+            Module of two points p1.x % p2.x, p1.y % p2.y
+        */
         GenericPoint operator%(T f) const {
            return GenericPoint(x%f,y%f);
         }
@@ -98,11 +132,11 @@ template <typename T=float> class GenericPoint{
            return GenericPoint(x/f.x,y/f.y);
         }
         /**
-            The X;
+            The X codinate;
         */
         T x;
         /**
-            The Y;
+            The Y cordinate;
         */
         T y;
 
@@ -210,24 +244,45 @@ template <typename T=float>class GenericRect{
             y = p.y;
         };
 
-        void operator=(const GenericRect<int>& p){
+        GenericRect<T> operator=(const GenericRect<int>& p){
             x = p.x;
             y = p.y;
             w = p.w;
             h = p.h;
+            return *this;
         };
-        void operator=(const GenericRect<double>& p){
+        GenericRect<T> operator=(const GenericRect<double>& p){
             x = p.x;
             y = p.y;
             w = p.w;
             h = p.h;
+            return *this;
         };
-        void operator=(const GenericRect<float>& p){
+        GenericRect<T> operator=(const GenericRect<float>& p){
             x = p.x;
             y = p.y;
             w = p.w;
             h = p.h;
+            return *this;
         };
+
+        GenericRect<T> operator=(SDL_Rect r){
+            w = r.w;
+            x = r.x;
+            h = r.h;
+            y = r.y;
+            return *this;
+        }
+
+        SDL_Rect operator<<(const SDL_Rect& rhs) const {
+            rhs.w = w;
+            rhs.x = x;
+            rhs.h = h;
+            rhs.y = y;
+            return rhs;
+        }
+
+
         /**
             Get x,y
             @return an Point with the x,y
@@ -262,6 +317,8 @@ template <typename T=float>class GenericRect{
         bool IsInside(GenericRect<double> r){
             return r.x >= x && r.x <= x+w && r.y >= y && r.y <= y+h;
         };
+
+
 
 
         /**

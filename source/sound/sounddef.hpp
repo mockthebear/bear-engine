@@ -24,7 +24,7 @@ struct WAVE_Data {
 
 struct WAVE_Format {
   char subChunkID[4];
-  long subChunkSize;
+  uint64_t subChunkSize;
   short audioFormat;
   short numChannels;
   long sampleRate;

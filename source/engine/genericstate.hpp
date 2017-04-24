@@ -124,6 +124,7 @@ class GenericState{
             *Its always better start objects here!
         */
         virtual void Begin() =0;
+        virtual void End() =0;
 
         /**
             *Used by the engine. check if this state is dead;

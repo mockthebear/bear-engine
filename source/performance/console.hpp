@@ -134,13 +134,13 @@ class Console{
 
     private:
         std::string stackline;
-        bool logFile,failFile;
         UserFile myfile;
-        bool hasStarted;
         Rect box;
         int counter;
         int m_lines;
         Text **m_line;
+		bool hasStarted;
+		bool logFile, failFile;
 
 };
 

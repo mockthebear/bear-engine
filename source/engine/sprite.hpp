@@ -16,26 +16,54 @@
 typedef chain_ptr<SDL_Texture> TexturePtr;
 
 /**
+ * @brief Color replacing filter class to use on load
+ *
+ * This class just can be used to replace some colors
+ */
+
+class ColorReplacer{
+    public:
+        /**
+            Empty constructor
+        */
+        ColorReplacer();
+        /**
+            Clear everything
+        */
+        void clear(){
+            canReplace.clear();
+            Replace.clear();
+        }
+        /**
+            *Insert an color to be change to another one.
+            *Example:
+            @code
+            ColorReplacer replacer;
+            replacer.AddReplacer(RenderHelp::FormatRGBA(255,255,255,255),RenderHelp::FormatRGBA(0,0,0,0));
+            @endcode
+            *Should be good to check the reference of RenderHelp::FormatRGBA and RenderHelp::FormatARGB
+        */
+        void AddReplacer(uint32_t from,uint32_t to);
+        /**
+            *Get the given color that can correspond to the one you gace
+        */
+        uint32_t Get(uint32_t color);
+    private:
+        std::map<uint32_t,bool> canReplace;
+        std::map<uint32_t,uint32_t> Replace;
+};
+
+class AssetMannager;
+
+
+/**
  * @brief Sprite class plus animation
  *
  * This class hold animations and sprites
  * Some sprites textures may be shared. Check Sprite::assetTable
  */
 
-class ColorReplacer{
-    public:
-        ColorReplacer();
-        void clear(){
-            canReplace.clear();
-            Replace.clear();
-        }
-        void AddReplacer(uint32_t from,uint32_t to);
-        uint32_t Get(uint32_t color);
-    private:
-        std::map<uint32_t,bool> canReplace;
-        std::map<uint32_t,uint32_t> Replace;
-};
-class AssetMannager;
+
 class Sprite{
     public:
 
@@ -71,8 +99,18 @@ class Sprite{
             @param ftime The time between the frames
         */
         Sprite(const char *file,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
-
+        /**
+            *Create an sprite from an path to an file. The file should be SDL2_Image supported
+            *You can set the frame count and frame time to an animation
+            *When you animate an sprite, remember to call Sprite::Update on your GameActivity
+            @param file The path to an file
+            @param r An replacer filter
+            @param fcount Frame count. <b>THE FRAME MOVES ON X ONLY<b>
+            @param ftime The time between the frames
+        */
         Sprite(const char *file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
+
+
         Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
         /**
             *Create an sprite from a rwops. Also delete the RWops
@@ -117,7 +155,13 @@ class Sprite{
             @endcode
         */
         static SDL_Texture* Preload(SDL_RWops* rw,std::string name,bool HasAliasing=false);
-
+        /**
+            *Works like Sprite::Preload(char *file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false)
+            *You have to pass an RWops and set an alias to work on Sprite::assetTable
+            @param fileName file name. Accept an alias like assets:file.png
+            @param r an color replace filer.
+            @param HasAliasing mark as true to load the sprite using antialiasing.
+        */
         static SDL_Texture *Preload(std::string fileName,ColorReplacer &r,bool HasAliasing=false);
         /**
             *This dont destroy the texture!!!
@@ -130,6 +174,9 @@ class Sprite{
             @param reopen Default is false. When you call this, a new texture will be created and dont be added to the Sprite::assetTable
             @return An texture
         */
+       bool Openrw(SDL_RWops* rw,std::string name,bool HasAliasing=false){
+            return Open(rw,name,HasAliasing);
+       };
        bool Open(SDL_RWops* rw,std::string name,bool HasAliasing=false);
         /**
             *Can be used when you create an sprite with empty constructor.
@@ -138,7 +185,10 @@ class Sprite{
             @param reopen Default is false. When you call this, a new texture will be created and dont be added to the Sprite::assetTable
             @return An texture
         */
-        bool Open(char *file,bool HasAliasing=false);
+        bool Openf(std::string file,bool HasAliasing=false){
+            return Open(file.c_str(),HasAliasing);
+        }
+        bool Open(const char *file,bool HasAliasing=false);
         /**
             *Set clip on the sprite. Clipping stuff.
             *When call Sprite::Render, the rendered thing will be only the clipped area.
@@ -157,7 +207,10 @@ class Sprite{
             @param x The y
             @param angle When you need rotate the sprite
         */
+
         void Render (int x,int y,double angle=0);
+
+        void Renderxy(int x,int y,double angle=0);
         /**
             *Work as the same of Render, but without any changing by the screen scale
             *Only the transformations of this sprite
@@ -176,6 +229,17 @@ class Sprite{
             @param angle When you need rotate the sprite
         */
         void Render(PointInt pos,double angle=0);
+        /**
+            *The render function will render on the game at the position PointInt(x,y).
+            *When screne is streched or full screen, this function will take care of anything
+            *Dont worry about scaling or offsets from anything on this function.
+            *Unless you set your only offset.
+            @param pos is a PointInt (x,y)
+            @param angle When you need rotate the sprite
+        */
+        void Renderpoint(PointInt pos,double angle=0){
+            Render(pos,angle);
+        }
 
         /**
             *This should be call at each game loop only if you are animating something
@@ -185,8 +249,9 @@ class Sprite{
         /**
             *Just reset the animation to the fame 0. As you can use an grid you can
             *also reset the y axis by setting the parameter as true.
+            *
+            *This will reset only the internal counter of the repeat. See Sprite::IsAnimationOver
         */
-
         void ResetAnimation(bool changeYaxis=false){
             over = 0;
             currentFrame.x = 0;
@@ -203,25 +268,34 @@ class Sprite{
         void SetFrame(int xFrame,int yFrame=-1);
         /**
             *Get the Sprite width
+            *
+            *<b>Is affected by scaling</b>
+            @return The size
             @return The size
         */
         int GetWidth();
         /**
             *Get the Sprite height
+            *
+            *<b>Is affected by scaling</b>
+            @return The size
             @return The size
         */
         int GetHeight();
         /**
             *Get the Frame width
+            *
+            *<b>Is affected by scaling</b>
             @return The size
         */
         int GetFrameWidth();
         /**
             *Get the Frame height
+            *
+            *<b>Is affected by scaling</b>
             @return The size
         */
         int GetFrameHeight();
-
         /**
             *Change the frame amount
             @param fc The new frame count
@@ -230,18 +304,21 @@ class Sprite{
             frameCount=fc;
             over = false;
         };
-
+        /**
+            *Return the frame count
+            @return Return the frame count
+        */
         int GetFrameCount(){
             return frameCount;
         };
         /**
             *Change the frame time
+            *This also will <b>reset the current timer</b> of the current frame.
             @param ft The new frame time
         */
         void SetFrameTime(float ft){
             frameTime=ft;
             timeElapsed = 0;
-
         };
         /**
             *Get the remeaining time to the next frame
@@ -259,7 +336,7 @@ class Sprite{
         };
         /**
             *Get the texture. Note that texture can be an shared one
-            @return true if the texture
+            @return The SDL_Texture pointer;
         */
         SDL_Texture* GetSDLTexture(){
             return (textureShred.get());
@@ -274,32 +351,41 @@ class Sprite{
             center.y = (int)p.y;
         };
         /**
-            *Check if the animation have done one cycle
-            *Actually return the amount of animation cycles it have made
-            @return
+            *Set the amount of times the animation will repeat until Sprite::IsAnimationOver could return true
+            *Say you set repeat to 2, then every time it finishes the animation cycle an counter will be incremented
+            *once it reaches the same value as you set on Sprite::SetRepeatTimes it will be able to return true.
+            *This is not a trigger.
+            @param t repeat times
         */
         void SetRepeatTimes(int t){
             repeat = t;
         }
-        int IsAnimationOver(){
+        /**
+            *Check if the animation has finished
+            @param if the animation is over
+        */
+        bool IsAnimationOver(){
             return over >= repeat;
         };
         /**
             *Change the sprite scale. Its an local scale, not shared.
             @param scale the original value is 1.
         */
-        void SetScaleX(float scale){
+        void SetScaleX(float scale=1){
             scaleX=scale;
         };
         /**
             *Change the sprite scale. Its an local scale, not shared.
             @param scale the original value is 1.
         */
-        void SetScaleY(float scale){
+        void SetScaleY(float scale=1){
             scaleY=scale;
         };
-
-        void SetScale(Point scale){
+        /**
+            *Scale the texture.
+            @param scale The scale in x and y codinates. Default argument is 1,1
+        */
+        void SetScale(Point scale = Point(1,1)){
             scaleX=scale.x;
             scaleY=scale.y;
         };
@@ -323,7 +409,7 @@ class Sprite{
             *When set something here, if you use the same sprite in another place, its good to restore
             @param alpha [0-255] The default is 255 of all sprites;
         */
-        void SetAlpha(int alpha){
+        void SetAlpha(uint8_t alpha){
             SDL_SetTextureAlphaMod((textureShred.get()),alpha);
         };
         /**
@@ -333,20 +419,34 @@ class Sprite{
         SDL_Texture* CopyTexture();
         /**
             *Set a grid for animation frames
+            @param gx The grid size in x axis
+            @param gy The grid size in y axis
         */
         void SetGrid(int gx,int gy);
         /**
             Flip the current sprite locally
+            @param flipState
         */
-        void SetFlip(SDL_RendererFlip f){
-            sprFlip = f;
+        void SetFlip(SDL_RendererFlip flipState){
+            sprFlip = flipState;
         }
-        bool aliasing;
-
+        /**
+            Get the current frame in the grid
+            @return the frame on x,y position
+        */
+        PointInt GetFrame(){ return currentFrame; };
+        /**
+            Used to load texture settings from the given pointer
+            @param ptr The pointer
+        */
         void Query(TexturePtr ptr);
+        /**
+            Placeholder function. Not used
+        */
+        void Kill();
     private:
+        bool aliasing;
         TexturePtr textureShred;
-        void SetAssetManager(uint32_t id){ManagerId = id;};
         friend class AssetMannager;
         SDL_RendererFlip sprFlip;
         std::string fname;
@@ -361,8 +461,6 @@ class Sprite{
         SDL_Rect clipRect;
         SDL_Point center;
         bool hasCenter;
-
-        uint32_t ManagerId;
 };
 
 #endif

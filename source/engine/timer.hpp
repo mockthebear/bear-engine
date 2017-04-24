@@ -1,7 +1,9 @@
 #ifndef TIMERH
 #define TIMERH
 #include <stdint.h>
+#include <iostream>
 #include "../settings/definitions.hpp"
+#include "../framework/geometry.hpp"
 #include SDL_LIB_HEADER
 /**
     @brief Basic timer
@@ -80,12 +82,16 @@ class Stopwatch{
         Stopwatch(){
             Reset();
         };
+        void Set(int v){
+            begin = SDL_GetTicks()-v;
+        }
         void Reset(){
             begin = SDL_GetTicks();
         }
         uint32_t Get(){
             return SDL_GetTicks() - begin;
         };
+        void Kill(){};
     private:
         uint32_t begin;
 };

@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include <iostream>
+#include "typechecker.hpp"
 #include "../engine/bear.hpp"
 #include "../engine/object.hpp"
 #include "../engine/camera.hpp"
@@ -36,7 +37,11 @@ template <typename T> class SPP{
 
             max = size;
             pool = new T[size+1];
-            Type = TypeChecker::Get<T>();
+            if (!pool){
+                bear::out << "[Basepool:create] Error. Could not alloc "<<size<<" objects.\n";
+                return;
+            }
+            Type = Types::Get<T>();
             for (int in=0;in<=size;in++){
                 pool[in].poolIndex = in;
                 pool[in].NotifyInPool(this);
@@ -70,7 +75,7 @@ template <typename T> class SPP{
         void PreRender(std::map<int,std::vector<GameObject*>> &Map){
             for (int i=0;i<GetMaxInstances();i++){
                 if (!pool[i].IsDead()){
-                    if ( Camera::EffectArea.IsInside(pool[i].box)  ){
+                    if ( Camera::EffectArea.IsInside(pool[i].box) || pool[i].canForceRender()  ){
                         if (pool[i].hasPerspective() == 0){
                             int posy = pool[i].box.y;
                             Map[posy].emplace_back( &pool[i]);
@@ -113,7 +118,6 @@ template <typename T> class SPP{
             }else{
                 for (int e=0;e<max;e++){
                     if (pool[e].IsDead()){
-
                         pool[e] = instance;
                         pool[e].poolIndex = e;
                         pool[e].NotifyInPool(this);
@@ -129,7 +133,7 @@ template <typename T> class SPP{
                 }
             }
             if (added == false){
-                bear::out << "[ERROR] Maximum pool reached - " << sizeof(T) <<" [" << lastAdded <<":"<<max<<"]\n";
+                bear::out << "[ERROR] Maximum pool reached - " << Types::GetInstance().getTypeName(TYPEOF(T)) <<" [" << lastAdded <<":"<<max<<"]\n";
                 return NULL;
             }else{
                 return &pool[n];

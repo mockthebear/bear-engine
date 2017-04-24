@@ -5,6 +5,7 @@
 #include "../performance/console.hpp"
 #include "../framework/utils.hpp"
 #include "renderhelp.hpp"
+#include "camera.hpp"
 #include "smarttexture.hpp"
 #include "../framework/resourcemanager.hpp"
 
@@ -28,7 +29,6 @@ uint32_t ColorReplacer::Get(uint32_t color){
 
 
 Sprite::Sprite(){
-    ManagerId = 0;
     dimensions.w = dimensions.h = dimensions.x = dimensions.y = 0;
     scaleX = scaleY = 1;
     currentFrame = PointInt(0,0);
@@ -121,10 +121,14 @@ Sprite::Sprite(const char *file,int fcount,float ftime,int rep,bool hasAliasing)
     fname = file;
     frameTime = ftime;
     repeat = rep;
-    Open((char *)file,hasAliasing);
+    Open(file,hasAliasing);
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
     SetAlpha(255);
+}
+
+void Sprite::Kill(){
+    textureShred.destroy();
 }
 
 void Sprite::Update(float dt){
@@ -358,7 +362,7 @@ void Sprite::Query(TexturePtr ptr){
     }
 }
 
-bool Sprite::Open(char *file,bool HasAliasing){
+bool Sprite::Open(const char *file,bool HasAliasing){
     scaleX = scaleY = 1;
     std::string stdnamee(file);
     if (stdnamee.find(":")!=std::string::npos){
@@ -422,6 +426,9 @@ void Sprite::Render(PointInt pos,double angle){
     dimensions2.w = clipRect.w*scaleRatioW*scaleX;
     SDL_RenderCopyEx(BearEngine->GetRenderer(),textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip);
 
+}
+void Sprite::Renderxy(int x,int y,double angle){
+    Render(x-Camera::pos.x,y-Camera::pos.y,angle);
 }
 void Sprite::Render(int x,int y,double angle){
     SDL_Rect dimensions2;

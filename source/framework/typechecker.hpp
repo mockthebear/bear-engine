@@ -1,13 +1,14 @@
-#ifndef TYPECHECKERH
-#define TYPECHECKERH
+#ifndef TypesH
+#define TypesH
 
 #include <map>
 #include <iostream>
 #include <string>
 #include <typeinfo>
 #include "../engine/bear.hpp"
+#include "../engine/object.hpp"
 
-#define TYPEOF(var) TypeChecker::Get<var>()
+#define TYPEOF(var) Types::Get<var>()
 
 
 
@@ -21,15 +22,19 @@ class GameObject;
 
 
 
-
-
-class TypeChecker{
+class Types{
     public:
-        TypeChecker();
-        ~TypeChecker();
+        Types();
+        ~Types();
 
         static int typeCounter;
 
+        template<class T,class gameobj> static T *Get(gameobj *obj){
+            if (obj && obj->Is(Types::Get<T>()) ){
+                return (T*)obj;
+            }
+            return nullptr;
+        }
         template<class T> static int Get(){
             static int cnter = (typeCounter++);
             static bool registered = false;
@@ -44,7 +49,7 @@ class TypeChecker{
         /**
             Singleton
         */
-        static TypeChecker& GetInstance();
+        static Types& GetInstance();
         /**
             @brief Use as OBJ_REGISTER(type) in GameObject constructor
             *
@@ -148,4 +153,4 @@ class TypeChecker{
 };
 
 
-#endif // TYPECHECKERH
+#endif // TypesH

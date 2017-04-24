@@ -1,26 +1,26 @@
 #include "typechecker.hpp"
 #include "../engine/object.hpp"
 
-int TypeChecker::typeCounter = 0;
+int Types::typeCounter = 0;
 
-TypeChecker::TypeChecker(){
-
-}
-
-TypeChecker::~TypeChecker(){
+Types::Types(){
 
 }
 
-TypeChecker& TypeChecker::GetInstance(){
-    static TypeChecker Singleton;
+Types::~Types(){
+
+}
+
+Types& Types::GetInstance(){
+    static Types Singleton;
     return Singleton;
 }
 
-bool TypeChecker::checkType(GameObject *object1,GameObject *object2){
+bool Types::checkType(GameObject *object1,GameObject *object2){
     return object1->GetHash() == object2->GetHash();
 }
 
-bool TypeChecker::checkType(GameObject *object1,int hash){
+bool Types::checkType(GameObject *object1,int hash){
     return object1->GetHash() == hash;
 }
 

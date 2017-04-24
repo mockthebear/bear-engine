@@ -6,6 +6,7 @@
 
 class XmlNode{
     public:
+        ~XmlNode();
         XmlNode(){nodeCount=0;nodePtr=0;index=0;Nodes=nullptr;};
         std::string GetName(){return Name;};
         std::string GetValue(){return Value;};

@@ -12,6 +12,10 @@ void bear::outstream::printme(unsigned int n){
     Console::GetInstance().Store("%ud",n);
 }
 
+void bear::outstream::printme(long unsigned int n){
+    Console::GetInstance().Store("%lud",n);
+}
+
 void bear::outstream::printme(float n){
     Console::GetInstance().Store("%f",n);
 }

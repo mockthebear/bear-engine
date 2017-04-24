@@ -112,7 +112,7 @@ namespace utils {
             };
             T &at(int x,int y,int z){
                 if (Data == nullptr){
-                    std::cout << "Is null\n";
+                    bear::out << "Is null\n";
                 }
                 return Data[ x + (y*sizeX) + (z*sizeX*sizeY) ];
             }
@@ -130,15 +130,15 @@ namespace utils {
     };
     template<int N> struct expander{
         template<typename... Args>
-            static int expand(uint32_t sMax,uint32_t *addr,int v1, const Args&... args) {
+            static uint32_t expand(uint32_t sMax,uint32_t *addr, uint32_t v1, const Args&... args) {
                 addr[N] = v1;
                 return v1 * expander<N-1>::expand(sMax,addr,args...);
         }
-        static int expandOffset(uint32_t *addr) {
+        static uint32_t expandOffset(uint32_t *addr) {
                 return addr[N]*expander<N-1>::expandOffset(addr);
         }
         template<typename... Args>
-            static int expandAdderess(uint32_t *addr,int v1, const Args&... args) {
+            static uint32_t expandAdderess(uint32_t *addr, uint32_t v1, const Args&... args) {
                 if (addr[N] <= v1){
                     bear::out << "[Warning] Acessing coordinate "<<N<<" wich has size of "<<addr[N]<<" and requested position "<<v1<<"\n";
                 }
@@ -149,14 +149,16 @@ namespace utils {
     };
     template<> struct expander <0> {
         template<typename... Args>
-            static int expand(uint32_t sMax,uint32_t *addr) {
+            static uint32_t expand(uint32_t sMax,uint32_t *addr) {
                 return 1;
         }
-        static int expandAdderess(uint32_t *addr) {
-            return 0;
+        static uint32_t expandAdderess(uint32_t *addr) {
+			(void)addr;
+			return 0;
         }
-        static int expandOffset(uint32_t *addr) {
-                return 1;
+        static uint32_t expandOffset(uint32_t *addr) {
+			(void)addr;
+			return 1;
         }
     };
     template<typename T,int N> class MatN{

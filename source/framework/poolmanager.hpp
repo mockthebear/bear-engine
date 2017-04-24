@@ -56,7 +56,7 @@ typedef struct PoolGroup_{
  *
  * This class is a bit complex, about what it does.\n
  * Basically you insert static object pools, then it manages all for you, than you can work on all
- * Pools like it was only one. Consider checking GameObject and TypeChecker because this class
+ * Pools like it was only one. Consider checking GameObject and Types because this class
  * Heavly uses type cheking things.
  *
  * Every class that inherit from GenericState has on PoolManager

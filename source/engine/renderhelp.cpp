@@ -15,18 +15,30 @@ void RenderHelp::DrawSquareColorUnscaled(int x,int y,int w,int h,int r,int g,int
 
 }
 
-bool RenderHelp::RendedTexture(SDL_Texture* texture,int x,int y,int w,int h,float angle,SDL_RendererFlip flip,Point center_){
+bool RenderHelp::RendedTexture(Point texturePos,Point textureSize,SDL_Texture* texture,RectInt textureClip,float angle,SDL_RendererFlip flip,Point center_){
+    if (!texture){
+        return false;
+    }
     SDL_Point center;
+    if (textureClip.x == -1 || textureClip.y == -1){
+        textureClip.w = textureSize.x;
+        textureClip.h = textureSize.y;
+    }
+    SDL_Rect clipRect = {textureClip.x,textureClip.y,textureClip.w,textureClip.h};
     center.x = center_.x;
     center.y = center_.y;
+    if (center.x == -1 || center.y == -1){
+        center.x = textureSize.x/2.0;
+        center.y = textureSize.y/2;0;
+    }
     double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
     double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
     SDL_Rect rectangle;
-    rectangle.x = ( x*scaleRatioW  )+ ScreenManager::GetInstance().GetOffsetW();
-    rectangle.y = ( y*scaleRatioH  )+ ScreenManager::GetInstance().GetOffsetH();
-    rectangle.w = ( w*scaleRatioW  );
-    rectangle.h = ( h*scaleRatioH  );
-    return SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,NULL,&rectangle,angle,&center,flip) == 0;
+    rectangle.x = ( texturePos.x*scaleRatioW  )+ ScreenManager::GetInstance().GetOffsetW();
+    rectangle.y = ( texturePos.y*scaleRatioH  )+ ScreenManager::GetInstance().GetOffsetH();
+    rectangle.w = ( textureSize.x*scaleRatioW  );
+    rectangle.h = ( textureSize.y*scaleRatioH  );
+    return SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,&clipRect,&rectangle,angle,&center,flip) == 0;
 }
 
 void RenderHelp::DrawSquareColorA(int x,int y,int w,int h,int r,int g,int b,int a,bool outline){
@@ -102,6 +114,24 @@ SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h,std::fu
     SDL_UpdateTexture(t, NULL, pixels, w * sizeof(Uint32));
 	return new SmartTexture(t,pixels,x,y,h,w);
 }
+
+uint8_t RenderHelp::GetR(uint32_t r){
+    return r&0xff;
+}
+
+uint8_t RenderHelp::GetG(uint32_t r){
+    return (r&0xff00) >> 8;
+}
+
+uint8_t RenderHelp::GetB(uint32_t r){
+    return (r&0xff0000) >> 16;
+}
+
+uint8_t RenderHelp::GetA(uint32_t r){
+    return (r&0xff000000) >> 24;
+}
+
+
 Uint32 RenderHelp::FormatRGBA(int r,int g,int b,int a){
 
     return r+(g<<8)+(b<<16)+(a<<24);

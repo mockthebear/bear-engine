@@ -45,8 +45,8 @@ enum ObjType{
 
 };
 
-
-#define OBJ_REGISTER(Type) hashIt(TypeChecker::Get<Type>());
+#define REGISTER_GETSETTER(Nm,type,var) type Get ## Nm (){return var;}; void Set ## Nm(type arg){ var = arg;}
+#define OBJ_REGISTER(Type) hashIt(Types::Get<Type>());
 
 /**
  * @brief Basic object class
@@ -56,7 +56,7 @@ enum ObjType{
  *
  * The engine have an type checker thing. So, when you define an object of the type "Player" and a type Monster
  * with the pointer you can know what object is the player and what is the monster.\n
- * To this you may have to check the class TypeChecker and this one until the end.
+ * To this you may have to check the class Types and this one until the end.
  *
  * On your constructor you have to startup like this:
  @code
@@ -65,10 +65,10 @@ enum ObjType{
     OBJ_REGISTER(Player);
  }
  @endcode
- *This is the constructor of the local "instance" of the typechecker thing\n
+ *This is the constructor of the local "instance" of the Types thing\n
  *<b>DONT FORGET TO SET THIS IN ALL CONSTRUCTORS</b>
  *
- * To typechecker thing, you can check the fucntion GameObject::Is
+ * To Types thing, you can check the fucntion GameObject::Is
  */
 class GameObject{
     public:
@@ -92,6 +92,11 @@ class GameObject{
         @return true if is dead
     */
     virtual bool IsDead()=0;
+    /**
+        Force an object to be set as dead
+    */
+    virtual void Kill()=0;
+
     /**
         *Check if the object is inside the screen.\n
         *Used inside the engine\n

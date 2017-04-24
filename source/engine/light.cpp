@@ -108,8 +108,8 @@ void Light::Reduce(parameters *P,Job &j){
         if (LightJobs == 0){
             int pthreads = ThreadPool::GetInstance().GetPthreads();
             for (int i=0;i<pthreads;i++){
-                Job j(JOB_GEN,i * (sizeY/(float)pthreads),(i+1) * (sizeY/(float)pthreads));
-                ThreadPool::GetInstance().AddJob_(j,true);
+                Job je(JOB_GEN,i * (sizeY/(float)pthreads),(i+1) * (sizeY/(float)pthreads));
+                ThreadPool::GetInstance().AddJob_(je,true);
                 LightJobs++;
             }
         }
@@ -169,8 +169,8 @@ void Light::Shade(parameters *P,Job &j){
         LightJobs--;
         if (LightJobs == 0){
             int pthreads = ThreadPool::GetInstance().GetPthreads();
-            for (int i=0;i<pthreads;i++){
-                Job j(JOB_REDUCE,i * (sizeY/(float)pthreads),(i+1) * (sizeY/(float)pthreads));
+            for (int tIndex=0; tIndex<pthreads; tIndex++){
+                Job j(JOB_REDUCE, tIndex * (sizeY/(float)pthreads),(tIndex +1) * (sizeY/(float)pthreads));
                 ThreadPool::GetInstance().AddJob_(j,true);
                 LightJobs++;
             }
