@@ -118,7 +118,7 @@ void SmartTileset::RenderTile(int x,int y,int index){
 bool SmartTileset::MakeMap(){
     if (!isValid)
         return false;
-    Stopwatch timer;
+   // Stopwatch timer;
     bear::out << "Making the map\n";
     SDL_Texture *lastTexture = nullptr;
 
@@ -152,7 +152,7 @@ bool SmartTileset::MakeMap(){
             }
         }
     }
-    bear::out << "Finished in " << float(timer.Get()/1000.0) << "\n";
+   // bear::out << "Finished in " << float(timer.Get()/1000.0) << "\n";
     ScreenManager::GetInstance().SetRenderTarget(nullptr);
 
     return true;
