@@ -27,6 +27,7 @@
 					<Add option="-O2" />
 					<Add option="-std=c++0x" />
 					<Add option="-g" />
+					<Add option="-DIGNORESTEAM" />
 				</Compiler>
 				<Linker>
 					<Add option="-lMinGW32 -lSDL2main -lSDL2 -lSDL2_image" />
@@ -154,11 +155,15 @@
 		<Unit filename="input/touch.hpp" />
 		<Unit filename="input/touchkeys.cpp" />
 		<Unit filename="input/touchkeys.hpp" />
+		<Unit filename="luasystem/luagamestate.cpp" />
+		<Unit filename="luasystem/luagamestate.hpp" />
 		<Unit filename="luasystem/luainterface.cpp" />
 		<Unit filename="luasystem/luainterface.hpp" />
 		<Unit filename="luasystem/luaobject.cpp" />
 		<Unit filename="luasystem/luaobject.hpp" />
+		<Unit filename="luasystem/luatools.cpp" />
 		<Unit filename="luasystem/luatools.hpp" />
+		<Unit filename="luasystem/luatypewrapper.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="mobile/android/jnihelper.hpp" />
 		<Unit filename="performance/console.cpp" />
