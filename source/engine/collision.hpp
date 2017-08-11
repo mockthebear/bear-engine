@@ -233,7 +233,7 @@ namespace Collision {
             }else if (side == 3){
                 return abs(a.y + a.h - (b.y) );
             }else{
-                return 0;
+                return -1;
             }
 
         }

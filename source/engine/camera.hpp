@@ -106,13 +106,15 @@ class Camera{
         static bool UseLimits;
         static int Offset_x,Offset_y;
 
-    private:
-
-    static GameObject *focus;
+static GameObject *focus;
     static Point *focusPoint;
     static Rect *focusRect;
+     static bool Smooth;
+    private:
 
-    static bool Smooth;
+
+
+
     static int OffsetEffect,OffsetUpdate;
 
 };

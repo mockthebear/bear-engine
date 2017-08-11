@@ -102,9 +102,9 @@ void Camera::Initiate(Rect startingPos,int offsetEffect_, int offsetUpdate_){
 
 void Camera::UpdateByPos(Rect box,float dt){
     Point toGo;
-    toGo.x = floor(box.getXCenter());
-    toGo.y = floor(box.getYCenter());
-    Point posCenter(RealPos.getXCenter(),RealPos.getYCenter());
+    toGo.x = floor(box.GetXCenter());
+    toGo.y = floor(box.GetYCenter());
+    Point posCenter(RealPos.GetXCenter(),RealPos.GetYCenter());
     if (Smooth && toGo.getDistance(posCenter) >= speed*dt ){
         float angle = toGo.getDirection(posCenter);
         RealPos.x += (cos(angle)*dt*speed);

@@ -34,11 +34,11 @@
 
 
 #define POOL_DEFAULT_THREADS 2
-//#define DISABLE_THREADPOOL
+#define DISABLE_THREADPOOL
 /*
     Lua
 */
-#define DISABLE_LUAINTERFACE
+//#define DISABLE_LUAINTERFACE
 
 /*
     Android things

@@ -75,7 +75,7 @@ class GameObject{
     /**
         @brief Here you update the object
     */
-    virtual void Update(float)=0;
+    virtual void Update(float){};
     public:
     /**
         @brief Destructor
@@ -84,18 +84,18 @@ class GameObject{
     /**
         @brief Where you will render everything
     */
-    virtual void Render()=0;
+    virtual void Render(){};
     /**
         *Check if the object is dead.\n
         *Used inside the engine\n
         *<b>Must be defined<b/>
         @return true if is dead
     */
-    virtual bool IsDead()=0;
+    virtual bool IsDead(){return true;};
     /**
         Force an object to be set as dead
     */
-    virtual void Kill()=0;
+    virtual void Kill(){};
 
     /**
         *Check if the object is inside the screen.\n
@@ -103,12 +103,12 @@ class GameObject{
         *<b>Must be defined<b/>
         @return true if is dead
     */
-    virtual bool IsInScreen(Point& p)=0;
+    virtual bool IsInScreen(Point& p){return false;};
     /**
         *You can use this to say "hey, you have been touched by this object
         @param other the object who touched this one
     */
-    virtual void NotifyCollision(GameObject *other)=0;
+    virtual void NotifyCollision(GameObject *other){};
     /**
         *You can use this to say "hey, you have been touched by this object
         @param thing the parameter here is the object type HASH. Check GameObject::GetHash
@@ -139,7 +139,7 @@ class GameObject{
 
         @endcode
     */
-    virtual void NotifyDamage(GameObject *bj,int n)=0;
+    virtual void NotifyDamage(GameObject *bj,int n){};
     /**
         *The engine have an thing to dont update object that are not inside the Camera.
         *But you can force then to be updated anyway
@@ -195,6 +195,15 @@ class GameObject{
     int poolIndex;
 
     virtual void NotifyInPool(void *pool){};
+
+    uint64_t GetMyRef(){return (uint64_t)this;};
+
+    REGISTER_GETSETTER(X,float,box.x);
+    REGISTER_GETSETTER(Y,float,box.y);
+    REGISTER_GETSETTER(Width,float,box.w);
+    REGISTER_GETSETTER(Height,float,box.h);
+    REGISTER_GETSETTER(Box,Rect,box);
+    REGISTER_GETSETTER(Solid,bool,solid);
 
     protected:
         void hashIt(int var){hash = var;};

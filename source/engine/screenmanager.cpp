@@ -57,17 +57,36 @@ SDL_Window* ScreenManager::StartScreen(std::string name){
     }
     m_screen = PointInt(ConfigManager::GetInstance().GetScreenW(),ConfigManager::GetInstance().GetScreenH());
     if (m_display.x != 0 && m_display.y != 0 && (m_display.x < m_screen.x || m_display.y < m_screen.y) ){
-        bear::out << "[ScreenManager::StartScreen] Display size suported is "<<m_display.x<<"x"<<m_display.y<<".\nImpossible to create"<<m_screen.x<<"x"<<m_screen.y<<"\n";
+        bear::out << "[ScreenManager::StartScreen] Display size suported is "<<m_display.x<<"x"<<m_display.y<<".\n";
+        bear::out << "[ScreenManager::StartScreen] Impossible to create"<<m_screen.x<<"x"<<m_screen.y<<" dummy display.\n";
         return NULL;
     }
-    m_display = m_screen;
     m_originalScreen = m_screen;
-
-
 
     m_window = SDL_CreateWindow( name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screen.x, m_screen.y, SDL_WINDOW_RESIZABLE); //SDL_WINDOW_RESIZABLE
     return m_window;
 }
+
+bool ScreenManager::MakeDefaultScreenAsTexture(){
+    if (m_defaultScreen){
+        return false;
+    }
+    m_defaultScreen = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET,m_originalScreen.x,m_originalScreen.y);
+    SetRenderTarget(nullptr,true);
+    return m_defaultScreen != nullptr;
+}
+
+bool ScreenManager::ClearScreenTexture(){
+    if (m_defaultScreen){
+        SDL_DestroyTexture(m_defaultScreen);
+        m_defaultScreen = nullptr;
+        SetRenderTarget(nullptr);
+        return true;
+    }else{
+        return false;
+    }
+}
+
 SDL_Renderer* ScreenManager::StartRenderer(){
     m_renderer = SDL_CreateRenderer( m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
     SDL_RendererInfo info;
@@ -206,6 +225,12 @@ void ScreenManager::Update(float dt){
 
     }
 }
-int ScreenManager::SetRenderTarget(SDL_Texture *t){
+int ScreenManager::SetRenderTarget(SDL_Texture *t,bool trueNull){
+    if (t == nullptr && m_defaultScreen){
+        //return SDL_SetRenderTarget(m_renderer,m_defaultScreen);
+    }
+    if (trueNull){
+        return SDL_SetRenderTarget(m_renderer,m_defaultScreen);
+    }
     return SDL_SetRenderTarget(m_renderer,t);
 }

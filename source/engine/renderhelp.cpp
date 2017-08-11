@@ -29,7 +29,7 @@ bool RenderHelp::RendedTexture(Point texturePos,Point textureSize,SDL_Texture* t
     center.y = center_.y;
     if (center.x == -1 || center.y == -1){
         center.x = textureSize.x/2.0;
-        center.y = textureSize.y/2;0;
+        center.y = textureSize.y/2.0;
     }
     double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
     double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();

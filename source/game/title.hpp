@@ -14,6 +14,7 @@ class Title: public State{
         void Input();
         void Begin();
         void Resume(){};
+        void End(){};
     private:
         PathFind astar;
         std::vector<Point> path;

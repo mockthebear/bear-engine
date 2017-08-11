@@ -103,23 +103,35 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
                 if ( obj->solid ){
                     if (Collision::IsColliding(obj->box,tempY)){
                         float ax=0;
+                        bool canWarpInverted = false;
                         if (sy > 0){
-                            for (ax=0;ax<sy;ax += colSize){
-                                Rect tempY2(dis->box.x,dis->box.y+ax*dt,dis->box.w,dis->box.h);
-                                if (Collision::IsColliding(obj->box,tempY2)){
-
+                            if (canWarpInverted && Collision::IsColliding(obj->box,dis->box)){
+                                for (ax=-sy;ax<0;ax -= colSize){
+                                    Rect tempY2(dis->box.x,dis->box.y+ax*dt,dis->box.w,dis->box.h);
+                                    if (!Collision::IsColliding(obj->box,tempY2)){
                                         ax-=colSize2;
-                                    break;
+                                        break;
+                                    }
+                                }
+                            }else{
+                                for (ax=0;ax<sy;ax += colSize){
+                                    Rect tempY2(dis->box.x,dis->box.y+ax*dt,dis->box.w,dis->box.h);
+                                    if (Collision::IsColliding(obj->box,tempY2)){
+
+                                            ax-=colSize2;
+                                        break;
+                                    }
                                 }
                             }
                             sy = ax;
-                            Rect tempY2(dis->box.x,dis->box.y-sy*dt,dis->box.w,dis->box.h);
+                            Rect tempY2(dis->box.x,dis->box.y+sy*dt,dis->box.w,dis->box.h);
                             if (Collision::IsColliding(obj->box,tempY2)){
                                 sy = 0;
                             }
                             dis->NotifyCollision(obj);
 
                             ret = 0;
+
                         }else{
                             for (ax=0;ax<(sy)*-1;ax+=colSize){
                                 Rect tempY2(dis->box.x,dis->box.y-ax*dt,dis->box.w,dis->box.h);

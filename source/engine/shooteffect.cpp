@@ -10,7 +10,7 @@ ShootEffect::ShootEffect(GameObject *b,Point p2_,Sprite *spr,float timeLimit_,bo
     OH=sp->GetHeight();
     OW=sp->GetWidth();
     box = Rect(Follow->box.x,Follow->box.y,sp->GetHeight(),sp->GetWidth());
-    float angle = atan2(p2.y-box.getYCenter(),p2.x-box.getXCenter());
+    float angle = atan2(p2.y-box.GetYCenter(),p2.x-box.GetXCenter());
     distance = box.GetCenter().getDistance(&p2);
     angle = (angle > 0 ? angle : (2*PI + angle)) * 360 / (2*PI);
     rotation = 180;
@@ -25,7 +25,7 @@ ShootEffect::~ShootEffect(){
     delete sp;
 }
 void ShootEffect::Update(float dt){
-    p = Point(Follow->box.getXCenter()+8,Follow->box.getYCenter()+8);
+    p = Point(Follow->box.GetXCenter()+8,Follow->box.GetYCenter()+8);
     box.x = (p.x+p2.x)/2.0;
     box.y = (p.y+p2.y)/2.0;
 

@@ -110,6 +110,7 @@ uint32_t utils::GetAround(uint32_t**map ,int x,int y,int sx,int sy){
 int utils::GetNumber(std::string &str,bool ignoreUntilFind){
     int ret = 0;
     bool found = false;
+    bool isNegative = false;
     uint32_t pos = 0;
     while (true){
         if (pos >= str.length())
@@ -119,6 +120,11 @@ int utils::GetNumber(std::string &str,bool ignoreUntilFind){
         if (c >= '0' && c <= '9'){
             ret *= 10;
             ret += c-'0';
+            if (!found && !isNegative){
+                if (pos > 1 && str[pos-2] == '-'){
+                    isNegative = true;
+                }
+            }
             found = true;
         }else{
             if (ignoreUntilFind){
@@ -129,7 +135,7 @@ int utils::GetNumber(std::string &str,bool ignoreUntilFind){
         }
     }
     str = str.substr(pos);
-    return ret;
+    return ret * (isNegative ? -1 : 1);
 }
 int utils::TrimString(std::string &str,char tocut){
     std::string buffer = "";
@@ -181,6 +187,12 @@ std::string utils::ReadUntil(std::string &str,std::string until){
     pos = 0;
     str = str.substr(pos);
     return buffer;
+}
+char utils::ReadChar(std::string &str){
+    char c = 0;
+    c = str[1];
+    str = str.substr(1);
+    return c;
 }
 std::string utils::ReadUntil(std::string &str,char rd){
     std::string buffer = "";

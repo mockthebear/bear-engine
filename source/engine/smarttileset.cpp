@@ -153,7 +153,7 @@ bool SmartTileset::MakeMap(){
         }
     }
    // bear::out << "Finished in " << float(timer.Get()/1000.0) << "\n";
-    ScreenManager::GetInstance().SetRenderTarget(nullptr);
+    ScreenManager::GetInstance().SetRenderTarget(nullptr,true);
 
     return true;
 }
@@ -180,7 +180,7 @@ void SmartTileset::SetTile(int l,int x,int y,int tile){
 void SmartTileset::ResetFocus(){
     if (!isValid)
         return;
-    ScreenManager::GetInstance().SetRenderTarget(nullptr);
+    ScreenManager::GetInstance().SetRenderTarget(nullptr,true);
     lastTarget = nullptr;
 }
 void SmartTileset::SetTileDirect(int l,int x,int y,int tile){
@@ -241,7 +241,7 @@ void SmartTileset::Update(float dt){
     if (g_input.OnScreenResize()){
         MakeMap();
     }
-    ScreenManager::GetInstance().SetRenderTarget(nullptr);
+    ScreenManager::GetInstance().SetRenderTarget(nullptr,true);
 
 }
 

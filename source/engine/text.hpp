@@ -39,7 +39,11 @@ enum TextRenderStyle{
  */
 class Letter{
     public:
-        Letter(int xx,int yy,int ww, int hh, int ppad,int ppadin,int yffseta){
+        Letter(){
+            valid = false;
+        }
+        Letter(int xx,int yy,int ww, int hh, int ppad,int ppadin,int yffseta,bool resetX){
+            valid = true;
             x = xx;
             y = yy;
             h = hh;
@@ -47,9 +51,11 @@ class Letter{
             pad = ppad;
             padin = ppadin;
             yoffset = yffseta;
+            this->resetX = resetX;
         }
 
         int x,y,h,w,pad,padin,yoffset;
+        bool resetX,valid;
 };
 /**
  * @brief Custom frons from images
@@ -112,16 +118,21 @@ class CustomFont{
             return Render(std::string(c),x,y,alpha);
         };
         Point Render(std::string str,int x,int y,int alpha=255);
+        Point Renderl(std::string c,PointInt p,int alpha=255){
+            return Render(std::string(c),p.x,p.y,alpha);
+        }
         /**
             @return Point containing the width and height of the text
         */
         Point GetSizes(std::string str);
+        void SetSprite(Sprite spr){sp = spr;};
         Sprite sp;
-    private:
         bool loaded;
+    private:
+
 
         int oldAlpha;
-        std::unordered_map<unsigned char, std::unique_ptr<Letter>> Letters;
+        std::map<unsigned char, Letter> Letters;
 };
 
 

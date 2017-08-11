@@ -43,7 +43,7 @@ class Sound{
         bool IsPlaying();
         bool IsPaused();
 
-        std::string GetFileName(){ std::cout << "amostra: "<<file<<"\n"; return file;};
+        std::string GetFileName(){ return file;};
 
 
         void SetClassType(int n);

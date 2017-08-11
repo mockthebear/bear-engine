@@ -31,6 +31,11 @@ template <typename T=float> class GenericPoint{
             Start with the two given values
             @param n An vector of two elements (const), and those are respectively x and y
         */
+        template<typename T2> GenericPoint(GenericPoint<T2> p){
+            x = p.x;
+            x = p.y;
+        };
+
         GenericPoint(const int n[2]){
             x = n[0];
             y = n[1];
@@ -64,6 +69,11 @@ template <typename T=float> class GenericPoint{
             @param p an GenericPoint
         */
         GenericPoint(const GenericPoint &p){
+            x = p.x;
+            y = p.y;
+        }
+
+        GenericPoint(const SDL_Point &p){
             x = p.x;
             y = p.y;
         }
@@ -291,11 +301,11 @@ template <typename T=float>class GenericRect{
         /**
             @return the middle position of the rect. X axis
         */
-        T getXCenter(){return x+w/2.0;};
+        T GetXCenter(){return x+w/2.0;};
         /**
             @return the middle position of the rect. Y axis
         */
-        T getYCenter(){return y+h/2.0;};
+        T GetYCenter(){return y+h/2.0;};
         /**
             @return if the given two positions are inside the rect
         */
@@ -317,6 +327,17 @@ template <typename T=float>class GenericRect{
         bool IsInside(GenericRect<double> r){
             return r.x >= x && r.x <= x+w && r.y >= y && r.y <= y+h;
         };
+        /*
+            Given an rect, it aligns the THIS rect in the center of the parameter rect
+        */
+        void CenterRectIn(GenericRect<T> r){
+            auto oterc = r.GetCenter();
+            auto thisc = GetCenter();
+            oterc.x -= thisc.x;
+            oterc.y -= thisc.y;
+            x += oterc.x;
+            y += oterc.y;
+        }
 
 
 

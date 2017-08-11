@@ -153,7 +153,9 @@ class InputManager{
             @param rect The rect (x,y,w,h)
             @return true or false
         */
-        bool IsMouseInside (Rect rect);
+        bool IsMouseInside (Rect rect){
+            return rect.IsInside(GetMouse());
+        };
         /**
             Get the current pressed mouse button.
             @return 0-N. N means the amount of buttons in your mouse.

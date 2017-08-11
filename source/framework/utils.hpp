@@ -95,6 +95,7 @@ namespace utils {
     std::string ReadUntil(std::string &str,char rd);
     std::string ReadUntil(std::string &str,std::string until);
     std::string GetLine(std::string &str);
+    char ReadChar(std::string &str);
 
 
     template<typename T> class Mat3{
@@ -201,24 +202,30 @@ namespace utils {
 class PlainRand{
     public:
         PlainRand(){
+            last = -1;
         };
         PlainRand(int n){
             SelectorMap.clear();
             for (int i=0;i<n;i++){
                 SelectorMap[i] = 0;
             }
+            last = -1;
             Size = n;
         }
         int Generate(){
             int MinNum = 9999;
             for (int i=0;i<Size;i++){
-                if (SelectorMap[i] <= MinNum){
+                if (SelectorMap[i] < MinNum){
                     MinNum = SelectorMap[i];
                 }
             }
             while (1){
                 int Selected = rand()%Size;
+                while (Selected == last){
+                    Selected = rand()%Size;
+                }
                 if (SelectorMap[Selected] == MinNum){
+                    last = Selected;
                     SelectorMap[Selected]++;
                     return Selected;
                 }
@@ -226,6 +233,7 @@ class PlainRand{
         }
     private:
         int Size;
+        int last;
         std::map<int,int> SelectorMap;
 };
 template<typename T> class GenericIterator{

@@ -43,9 +43,20 @@ extern "C"
 
 #endif // __ANDROID__
 
+#ifndef IGNORESTEAM
+#include "steam/steam_api.h"
+#endif
 
 int main (int argc, char** argv) {
+	ConfigManager::GetInstance().RegisterArgs(argc,argv);
+	#ifndef IGNORESTEAM
+    SteamAPI_RestartAppIfNecessary(0);
+    if (!SteamAPI_Init()){
+        std::cout << "Failed steam!\n";
+		exit(0);
+    }
 
+    #endif
     g_game.init("Bear engine");
     Game::GetInstance()->Begin();
     #ifdef __EMSCRIPTEN__

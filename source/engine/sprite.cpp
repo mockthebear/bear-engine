@@ -36,6 +36,7 @@ Sprite::Sprite(){
     repeat = 1;
     hasCenter = false;
     aliasing = false;
+    m_alpha = 255;
     fname = "";
     over = 0;
     OUTR = OUTB = OUTG = 255;
@@ -128,7 +129,7 @@ Sprite::Sprite(const char *file,int fcount,float ftime,int rep,bool hasAliasing)
 }
 
 void Sprite::Kill(){
-    textureShred.destroy();
+    //textureShred.destroy();
 }
 
 void Sprite::Update(float dt){

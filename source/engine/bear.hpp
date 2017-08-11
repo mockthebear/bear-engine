@@ -5,6 +5,7 @@
 /**
     @brief Custom outstream from bear engine
 */
+
 namespace bear {
     class outstream{
         public:
@@ -90,7 +91,19 @@ namespace bear {
         }
     };
 
+    #ifdef MINGW32
+    #define lout out << "[" << utils::methodName(__PRETTY_FUNCTION__) << " " <<__LINE__ << "]"
+    #else
+    #define lout out << "[" << utils::methodName(__FUNCTION__) << " " <<__LINE__ << "]"
+    #endif
+
+
+
 }
+
+//#define bear::location "[" << utils::methodName(__FUNCTION__) << __LINE__ << "]"
+
+
 
 
 

@@ -15,38 +15,45 @@ CustomFont::CustomFont(std::string letterpositions){
     GameFile *fp = new GameFile(letterpositions,true);
     if (fp->IsOpen()){
         fp->Cache();
-        char *content = fp->GetCache();
-        char pngfile[100];
-        char data[5000];
+        char *cached = fp->GetCache();
+        std::string content = std::string(cached);
 
 
-        std::string j = content;
 
-        int m = j.find("@");
-        j = j.substr (m+1);
-        if (sscanf(j.c_str(),"<%[a-z./\\0-9 :]>:%s@",pngfile,data)){
-            sp = Game::GetCurrentState().Assets.make<Sprite>(pngfile);
-            std::string letterData = data;
-             bool find = true;
-            int m=1;
-            char letter[10];
-            int xx=0,yy=0,hh=0,ww=0,padd=0,pddin=0, xoffset = 0;
-            while (find && m > 0){
-                if ( (sscanf(letterData.c_str(),"%c=<%d,%d,%d,%d,%d,%d,%dx>",letter,&xx,&yy,&ww,&hh,&padd,&pddin,&xoffset))  ){
-					m = letterData.find(";");
-                    if (m != -1){
-                        Letters[(unsigned char)letter[0]] = std::unique_ptr<Letter>(new Letter(xx,yy,ww,hh,padd,pddin, xoffset));
-                    }else{
-                        break;
-                    }
-                    letterData = letterData.substr (m+1);
-                }else{
-                    find = 0;
+
+
+        utils::ReadUntil(content,"=>");
+        std::string spriteName = utils::ReadUntil(content,"<=");
+        std::string data = utils::ReadUntil(content,"=>end<=");
+        while (true){
+            std::string line = utils::ReadUntil(data,';');
+            if (line.size() > 3){
+                char c = utils::ReadChar(line);
+                while (c == '\n' || c == '\r'){
+                    c = utils::ReadChar(line);
                 }
+                utils::ReadChar(line);
+                if (c == '%'){
+                    //Particular case
+                    c = utils::GetNumber(line,true);
+                }
+                int xx= utils::GetNumber(line,true);
+                int yy= utils::GetNumber(line,true);
+                int ww= utils::GetNumber(line,true);
+                int hh= utils::GetNumber(line,true);
+                int padd= utils::GetNumber(line,true);
+                int pddin= utils::GetNumber(line,true);
+                int xoffset = utils::GetNumber(line,true);
+                int resetX = utils::GetNumber(line,true);
+                Letters[(unsigned char)c] = Letter(xx,yy,ww,hh,padd,pddin, xoffset,resetX);
+
+            }else{
+                break;
             }
         }
+        delete cached;
         loaded = true;
-        delete content;
+        fp->Close();
         delete fp;
     }else{
         bear::out << "[CustomFont::CustomFont] Cannot load [" <<letterpositions<< "]\n";
@@ -61,26 +68,26 @@ Point CustomFont::GetSizes(std::string str_){
     Point p;
     p.x = 0;
     p.y = 0;
+    int lineY=0;
     if (!loaded)
         return p;
 
     unsigned char *str = (unsigned char *)str_.c_str();
     int x=0,y=0;
     for (unsigned int i=0;i<str_.size();i++){
-        if (!Letters[str[i]]){
-            if (str[i] == '\n'){
-                y += 20;
-                x = 0;
-                p.x = std::max((int)p.x,x);
-            }else{
-                x += 6;
-            }
+        if (!Letters[str[i]].valid){
+            x += 6;
         }else{
-            Letter l = *Letters[str[i]].get();
-            x+= l.w + l.pad;
+            Letter l = Letters[str[i]];
+            lineY = std::max(lineY,l.h);
+            x += l.w + l.pad;
+            y += l.yoffset;
+            if (l.resetX){
+                x = 0;
+            }
         }
         p.x = std::max((int)p.x,x);
-        p.y = std::max((int)p.y,y);
+        p.y = std::max(std::max((int)p.y,y),lineY);
     }
     return p;
 }
@@ -92,34 +99,36 @@ Point CustomFont::Render(std::string str_,int x_,int y_,int alpha){
     if (!loaded)
         return p;
 
+
+
     unsigned char *str = (unsigned char *)str_.c_str();
     int beginx = x_;
     int beginy = y_;
     int x=0;
-    int y=0;
+    int y=0,lineY=0;
     if (oldAlpha != alpha){
         oldAlpha = alpha;
         sp.SetAlpha(alpha);
     }
 
     for (unsigned int i=0;i<str_.size();i++){
-        if (!Letters[str[i]]){
-            if (str[i] == '\n'){
-                y += 20;
-                p.x = std::max((int)p.x,x);
-                x = 0;
-            }else{
-                x += 6;
-            }
+        if (!Letters[str[i]].valid){
+            x += 6;
         }else{
-            Letter l = *Letters[str[i]].get();
+            Letter l = Letters[str[i]];
 
-                sp.SetClip(l.x,l.y,l.w,l.h);
-                sp.Render(beginx+x+l.padin,beginy+y+l.yoffset);
-                x+= l.w + l.pad;
+            sp.SetClip(l.x,l.y,l.w,l.h);
+            lineY = std::max(lineY,l.h);
+            sp.Render(beginx+x+l.padin,beginy+y+l.yoffset);
+            x += l.w + l.pad;
+            y += l.yoffset;
+            if (l.resetX){
+
+                x = 0;
+            }
         }
         p.x = std::max((int)p.x,x);
-        p.y = std::max((int)p.y,y);
+        p.y = std::max(std::max((int)p.y,y),lineY);
     }
     return p;
 }

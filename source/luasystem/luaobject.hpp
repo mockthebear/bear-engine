@@ -34,6 +34,7 @@ class LuaObject: public GameObject{
 
         int GetPoolIndex(){return poolIndex;};
         uint64_t GetMyRef(){return (uint64_t)this;};
+        GameObject *GetMyObj(){return this;};
 
     private:
         friend class LuaInterface;

@@ -70,10 +70,11 @@ class Timer{
             Return if is finished. If finished and is disabled, it will return false
         */
         bool HasFinished();
+        float m_time;
     private:
         bool  m_enabled;
         float m_duration;
-        float m_time;
+
         int   m_repeat;
 };
 

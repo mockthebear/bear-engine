@@ -45,7 +45,7 @@ class ColorReplacer{
         */
         void AddReplacer(uint32_t from,uint32_t to);
         /**
-            *Get the given color that can correspond to the one you gace
+            *Get the given color that can correspond to the one you gave
         */
         uint32_t Get(uint32_t color);
     private:
@@ -54,6 +54,7 @@ class ColorReplacer{
 };
 
 class AssetMannager;
+
 
 
 /**
@@ -166,6 +167,9 @@ class Sprite{
         /**
             *This dont destroy the texture!!!
         */
+        Sprite* GetMe(){
+            return this;
+        }
         ~Sprite();
         /**
             *Can be used when you create an sprite with empty constructor.
@@ -311,6 +315,10 @@ class Sprite{
         int GetFrameCount(){
             return frameCount;
         };
+
+        Point GetCurrentFrame(){
+            return Point(currentFrame);
+        };
         /**
             *Change the frame time
             *This also will <b>reset the current timer</b> of the current frame.
@@ -350,6 +358,11 @@ class Sprite{
             center.x = (int)p.x;
             center.y = (int)p.y;
         };
+
+        Point GetCenter(){
+            return Point(center);
+        }
+
         /**
             *Set the amount of times the animation will repeat until Sprite::IsAnimationOver could return true
             *Say you set repeat to 2, then every time it finishes the animation cycle an counter will be incremented
@@ -359,6 +372,9 @@ class Sprite{
         */
         void SetRepeatTimes(int t){
             repeat = t;
+        }
+        int GetRepeatTimes(){
+            return repeat;
         }
         /**
             *Check if the animation has finished
@@ -389,6 +405,10 @@ class Sprite{
             scaleX=scale.x;
             scaleY=scale.y;
         };
+
+        Point GetScale(){
+            return Point(scaleX,scaleY);
+        };
         /**
             *You can cut some color channels and reblend the sprite
             *This changes the texture, so its <b>SHARED</b>
@@ -410,7 +430,12 @@ class Sprite{
             @param alpha [0-255] The default is 255 of all sprites;
         */
         void SetAlpha(uint8_t alpha){
+            m_alpha = alpha;
             SDL_SetTextureAlphaMod((textureShred.get()),alpha);
+        };
+
+        uint8_t GetAlpha(){
+            return m_alpha;
         };
         /**
             *Duplicate the texture
@@ -423,6 +448,10 @@ class Sprite{
             @param gy The grid size in y axis
         */
         void SetGrid(int gx,int gy);
+
+        PointInt GetGrid(){
+            return grid;
+        };
         /**
             Flip the current sprite locally
             @param flipState
@@ -430,6 +459,11 @@ class Sprite{
         void SetFlip(SDL_RendererFlip flipState){
             sprFlip = flipState;
         }
+
+        SDL_RendererFlip GetFlip(){
+            return sprFlip;
+        }
+
         /**
             Get the current frame in the grid
             @return the frame on x,y position
@@ -451,6 +485,7 @@ class Sprite{
         SDL_RendererFlip sprFlip;
         std::string fname;
         uint8_t OUTR,OUTB,OUTG;
+        uint8_t m_alpha;
         float scaleX,scaleY,timeElapsed,frameTime;
         int over;
         int repeat;
@@ -461,6 +496,111 @@ class Sprite{
         SDL_Rect clipRect;
         SDL_Point center;
         bool hasCenter;
+};
+
+
+
+class Animation{
+    public:
+        Animation(){
+            sprX = sprY = sprW = sprH =0;
+            MaxFrames = 1;
+            SprDelay = SprMaxDelay = 1.0f;
+            finishedFrame = false;
+            finishedSingleFrame = false;
+            pause = false;
+            isFormated = false;
+            CanRepeat = true;
+            Loops = 0;
+        };
+        Animation(float w,float h):Animation(){
+           sprW = w;
+           sprH = h;
+        };
+        void Update(float dt){
+            if (pause){
+                return;
+            }
+            finishedFrame = finishedSingleFrame = false;
+            SprDelay -= dt;
+            if (SprDelay <= 0){
+                finishedSingleFrame = true;
+                sprX++;
+                SprDelay = SprMaxDelay;
+                if (sprX >= MaxFrames){
+                    if (CanRepeat){
+                        Loops++;
+                        sprX = 0;
+                    }else{
+                        sprX--;
+                    }
+                    finishedFrame = true;
+                }
+            }
+        }
+        void Pause(bool p){
+            pause = p;
+        }
+        bool IsAnimationEnd(){
+            return finishedFrame;
+        }
+        bool IsFrameEnd(){
+            return finishedSingleFrame;
+        }
+        void SetAnimation(int y,int maxFrames,float timer=-1){
+            if (timer >= 0){
+                SetAnimationTime(timer);
+            }
+            sprY = y;
+            MaxFrames = maxFrames;
+            ResetAnimation();
+        }
+        void ResetAnimation(){
+            sprX = 0;
+            SprDelay = SprMaxDelay;
+            finishedFrame = false;
+            finishedSingleFrame = false;
+            Loops = 0;
+        }
+        void SetAnimationTime(float time){
+            SprDelay = SprMaxDelay = time;
+        }
+
+        void FormatSprite(Sprite& sp,int dir){
+            if (!sp.IsLoaded()){
+                return;
+            }
+            if (dir == 0){
+                sp.SetFlip(SDL_FLIP_NONE);
+            }else if (dir == 1){
+                sp.SetFlip(SDL_FLIP_HORIZONTAL);
+            }else if (dir == 2){
+                sp.SetFlip(SDL_FLIP_VERTICAL);
+            }
+            sp.SetClip(sprX * sprW, sprY * sprH,sprW,sprH);
+            isFormated = true;
+        }
+        void Render(float x,float y,Sprite& sp,int dir,float angle=0){
+            if (!isFormated){
+                FormatSprite(sp,dir);
+            }
+            sp.Render(PointInt(x,y),angle);
+            isFormated = false;
+        }
+        uint32_t Loops;
+        uint32_t sprX;
+        uint32_t sprY;
+        uint32_t sprW;
+        uint32_t sprH;
+        uint32_t MaxFrames;
+        float SprDelay;
+        float SprMaxDelay;
+        bool CanRepeat;
+    private:
+        bool pause;
+        bool finishedFrame;
+        bool finishedSingleFrame;
+        bool isFormated;
 };
 
 #endif

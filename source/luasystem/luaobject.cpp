@@ -32,10 +32,10 @@ LuaObject::~LuaObject(){
 
 
 void LuaObject::Update(float dt){
-    LuaCaller::CallSelfField(LuaData::L,(uint64_t)this,"Update",dt);
+    LuaCaller::CallSelfField(LuaManager::L,this,"Update",dt);
 }
 void LuaObject::Render(){
-    LuaCaller::CallSelfField(LuaData::L,(uint64_t)this,"Render");
+    LuaCaller::CallSelfField(LuaManager::L,this,"Render");
 }
 
 bool LuaObject::IsInScreen(Point& p){
@@ -43,14 +43,18 @@ bool LuaObject::IsInScreen(Point& p){
 };
 
 bool LuaObject::Is(int is){
-    return IsHash(is) || LuaCaller::CallSelfField(LuaData::L,(uint64_t)this,"Is",is);
+    return IsHash(is) || LuaCaller::CallSelfField(LuaManager::L,this,"Is",is);
 }
 bool LuaObject::IsDead(){
-    return !Active || LuaCaller::CallSelfField(LuaData::L,(uint64_t)this,"IsDead");
+    return !Active || LuaCaller::CallSelfField(LuaManager::L,this,"IsDead");
 }
 void LuaObject::NotifyCollision(GameObject *obj){
-    LuaCaller::CallSelfField(LuaData::L,(uint64_t)this,"NotifyCollision",(uint64_t)obj);
+    std::vector<float> aaa;
+    aaa.emplace_back(123);
+    aaa.emplace_back(321);
+
+    LuaCaller::CallSelfField(LuaManager::L,this,"NotifyCollision",obj,aaa);
 }
 void LuaObject::NotifyDamage(GameObject *bj,int n){
-    LuaCaller::CallSelfField(LuaData::L,(uint64_t)this,"NotifyDamage",(uint64_t)bj,n);
+    LuaCaller::CallSelfField(LuaManager::L,this,"NotifyCollision",bj,n);
 }

@@ -74,7 +74,7 @@ void ControlableObject::NotifyCollision(GameObject *obj){
         I know this is useless because of the groups.
         But its an example of dynamic checking
     */
-    if (obj != NULL && TypeChecker::GetInstance().checkType(obj,TYPEOF(ControlableObject)) ){
+    if (obj != NULL && Types::GetInstance().checkType(obj,TYPEOF(ControlableObject)) ){
         speed.x *= -1;
         speed.y *= -1;
     }

@@ -10785,3 +10785,915 @@
 	"gamebase.hpp"
 	"sprite.hpp"
 
+1490337531 source:c:\users\usuário\documents\github\bear-engine\source\engine\assetmanager.cpp
+	"assetmanager.hpp"
+	"../performance/console.hpp"
+	"../sound/soundloader.hpp"
+	<iostream>
+
+1493015664 c:\users\usuário\documents\github\bear-engine\source\engine\assetmanager.hpp
+	<memory>
+	<unordered_map>
+	"sprite.hpp"
+	"../sound/sound.hpp"
+	"../performance/console.hpp"
+	<iostream>
+
+1502349386 c:\users\usuário\documents\github\bear-engine\source\engine\sprite.hpp
+	"../settings/definitions.hpp"
+	"../framework/geometry.hpp"
+	"../framework/chainptr.hpp"
+	<unordered_map>
+	<map>
+	<string>
+	<memory>
+
+1492999955 c:\users\usuário\documents\github\bear-engine\source\settings\definitions.hpp
+
+1502349462 c:\users\usuário\documents\github\bear-engine\source\framework\geometry.hpp
+	<math.h>
+	<stdio.h>
+	<cstdint>
+	<algorithm>
+	"../settings/definitions.hpp"
+
+1490343943 c:\users\usuário\documents\github\bear-engine\source\framework\chainptr.hpp
+
+1501786240 c:\users\usuário\documents\github\bear-engine\source\sound\sound.hpp
+	"../settings/definitions.hpp"
+	"../settings/configmanager.hpp"
+	"../framework/chainptr.hpp"
+	"sounddef.hpp"
+	<unordered_map>
+	<string>
+	<memory>
+	<iostream>
+	<AL/al.h>
+	<AL/alc.h>
+
+1492131651 c:\users\usuário\documents\github\bear-engine\source\settings\configmanager.hpp
+	"definitions.hpp"
+	"../engine/sprite.hpp"
+	"../framework/geometry.hpp"
+	<vector>
+	<string>
+
+1488803054 c:\users\usuário\documents\github\bear-engine\source\sound\sounddef.hpp
+	"../settings/configmanager.hpp"
+	"../framework/chainptr.hpp"
+	<AL/al.h>
+	<AL/alc.h>
+
+1487013435 c:\users\usuário\documents\github\bear-engine\source\performance\console.hpp
+	<string>
+	"../engine/text.hpp"
+	"../framework/utils.hpp"
+	"../framework/userfile.hpp"
+	<fstream>
+
+1493445670 c:\users\usuário\documents\github\bear-engine\source\engine\text.hpp
+	<iterator>
+	"../framework/geometry.hpp"
+	"sprite.hpp"
+	"../settings/definitions.hpp"
+	<unordered_map>
+	<string>
+	<sstream>
+	<memory>
+	<iostream>
+
+1494181783 c:\users\usuário\documents\github\bear-engine\source\framework\utils.hpp
+	"../engine/bear.hpp"
+	<string>
+	<vector>
+	<stdlib.h>
+	<stdio.h>
+	<iostream>
+	<map>
+
+1495659293 c:\users\usuário\documents\github\bear-engine\source\engine\bear.hpp
+	<string>
+	"../framework/geometry.hpp"
+
+1462246638 c:\users\usuário\documents\github\bear-engine\source\framework\userfile.hpp
+	<string>
+	<stdlib.h>
+	"../settings/definitions.hpp"
+	"../framework/utils.hpp"
+
+1480621967 c:\users\usuário\documents\github\bear-engine\source\sound\soundloader.hpp
+	"sounddef.hpp"
+
+1487604228 source:c:\users\usuário\documents\github\bear-engine\source\engine\bear.cpp
+	"bear.hpp"
+	<string.h>
+	"../performance/console.hpp"
+
+1493885651 source:c:\users\usuário\documents\github\bear-engine\source\engine\camera.cpp
+	"camera.hpp"
+	"../input/inputmanager.hpp"
+	"../settings/configmanager.hpp"
+
+1494076167 c:\users\usuário\documents\github\bear-engine\source\engine\camera.hpp
+	"../framework/geometry.hpp"
+	"object.hpp"
+	"../settings/definitions.hpp"
+	<stdio.h>
+
+1501529992 c:\users\usuário\documents\github\bear-engine\source\engine\object.hpp
+	"../framework/geometry.hpp"
+	"../framework/typechecker.hpp"
+	<string>
+	<typeinfo>
+	<iostream>
+
+1488398303 c:\users\usuário\documents\github\bear-engine\source\framework\typechecker.hpp
+	<map>
+	<iostream>
+	<string>
+	<typeinfo>
+	"../engine/bear.hpp"
+	"../engine/object.hpp"
+
+1502415583 c:\users\usuário\documents\github\bear-engine\source\input\inputmanager.hpp
+	"../settings/definitions.hpp"
+	"../framework/geometry.hpp"
+	<functional>
+	<map>
+	<queue>
+	"inputdefinitions.hpp"
+	"mouse.hpp"
+	"keyboard.hpp"
+	"touch.hpp"
+	"joystick.hpp"
+	"accelerometer.hpp"
+	"touchkeys.hpp"
+	"../input/inputmanager.hpp"
+
+1478053906 c:\users\usuário\documents\github\bear-engine\source\input\inputdefinitions.hpp
+	<map>
+
+1486809694 c:\users\usuário\documents\github\bear-engine\source\input\mouse.hpp
+	"../framework/geometry.hpp"
+	"inputdefinitions.hpp"
+	"../settings/definitions.hpp"
+
+1456851670 c:\users\usuário\documents\github\bear-engine\source\input\keyboard.hpp
+	<map>
+	"inputdefinitions.hpp"
+
+1457635752 c:\users\usuário\documents\github\bear-engine\source\input\touch.hpp
+	"inputdefinitions.hpp"
+	"../framework/geometry.hpp"
+
+1478112715 c:\users\usuário\documents\github\bear-engine\source\input\joystick.hpp
+	<unordered_map>
+	<string>
+	<functional>
+	"../settings/definitions.hpp"
+	"../framework/geometry.hpp"
+	"inputdefinitions.hpp"
+	"../input/inputmanager.hpp"
+
+1454439822 c:\users\usuário\documents\github\bear-engine\source\input\accelerometer.hpp
+	"joystick.hpp"
+
+1454183010 c:\users\usuário\documents\github\bear-engine\source\input\touchkeys.hpp
+	"../framework/geometry.hpp"
+	"../engine/text.hpp"
+	"keyboard.hpp"
+	"touch.hpp"
+	"mouse.hpp"
+	<string>
+
+1501786242 source:c:\users\usuário\documents\github\bear-engine\source\engine\collision.cpp
+	"collision.hpp"
+
+1494293478 c:\users\usuário\documents\github\bear-engine\source\engine\collision.hpp
+	<algorithm>
+	<ctgmath>
+	"object.hpp"
+	"../framework/poolmanager.hpp"
+	"../framework/geometry.hpp"
+
+1488398427 c:\users\usuário\documents\github\bear-engine\source\framework\poolmanager.hpp
+	"basepool.hpp"
+	<vector>
+	"utils.hpp"
+	<functional>
+	<map>
+
+1489010284 c:\users\usuário\documents\github\bear-engine\source\framework\basepool.hpp
+	<map>
+	<vector>
+	<iostream>
+	"typechecker.hpp"
+	"../engine/bear.hpp"
+	"../engine/object.hpp"
+	"../engine/camera.hpp"
+	"../engine/particlecreator.hpp"
+
+1452738324 c:\users\usuário\documents\github\bear-engine\source\engine\particlecreator.hpp
+	"particles.hpp"
+	"smarttexture.hpp"
+	"text.hpp"
+
+1492748791 c:\users\usuário\documents\github\bear-engine\source\engine\particles.hpp
+	"object.hpp"
+	"sprite.hpp"
+	"smarttexture.hpp"
+	"text.hpp"
+
+1487074048 c:\users\usuário\documents\github\bear-engine\source\engine\smarttexture.hpp
+	"../settings/definitions.hpp"
+	"../framework/geometry.hpp"
+	<stdint.h>
+	<functional>
+
+1499862039 source:c:\users\usuário\documents\github\bear-engine\source\engine\defaultbehavior.cpp
+	"defaultbehavior.hpp"
+	"../settings/configmanager.hpp"
+	"screenmanager.hpp"
+	"camera.hpp"
+	"../sound/sound.hpp"
+	"gamebase.hpp"
+
+1480645928 c:\users\usuário\documents\github\bear-engine\source\engine\defaultbehavior.hpp
+	"behavior.hpp"
+
+1452624370 c:\users\usuário\documents\github\bear-engine\source\engine\behavior.hpp
+
+1499863246 c:\users\usuário\documents\github\bear-engine\source\engine\screenmanager.hpp
+	"../settings/definitions.hpp"
+	<string>
+	"../framework/geometry.hpp"
+
+1502331870 c:\users\usuário\documents\github\bear-engine\source\engine\gamebase.hpp
+	<string>
+	<cstdlib>
+	<iostream>
+	<memory>
+	<vector>
+	<list>
+	<stack>
+	<string.h>
+	<stdio.h>
+	<functional>
+	"../settings/definitions.hpp"
+	<AL/al.h>
+	<AL/alc.h>
+	"../input/inputmanager.hpp"
+	"../settings/configmanager.hpp"
+	"screenmanager.hpp"
+	<android/asset_manager.h>
+	<android/asset_manager_jni.h>
+
+1487074048 source:c:\users\usuário\documents\github\bear-engine\source\engine\genericstate.cpp
+	"genericstate.hpp"
+
+1490539190 c:\users\usuário\documents\github\bear-engine\source\engine\genericstate.hpp
+	"object.hpp"
+	"../ui/base.hpp"
+	"../ui/window.hpp"
+	"../framework/basepool.hpp"
+	"../framework/poolmanager.hpp"
+	"assetmanager.hpp"
+	<cstdlib>
+	<iostream>
+	<memory>
+	<vector>
+	<list>
+
+1488398024 c:\users\usuário\documents\github\bear-engine\source\ui\base.hpp
+	<memory>
+	<vector>
+	<functional>
+	<unordered_map>
+	"../engine/text.hpp"
+	"../engine/sprite.hpp"
+	"../framework/typechecker.hpp"
+
+1463846465 c:\users\usuário\documents\github\bear-engine\source\ui\window.hpp
+	<cstdlib>
+	<iostream>
+	<list>
+	<string>
+	"base.hpp"
+
+1487014150 source:c:\users\usuário\documents\github\bear-engine\source\engine\light.cpp
+	"light.hpp"
+	"camera.hpp"
+	"screenmanager.hpp"
+	"gamebase.hpp"
+	"../framework/threadpool.hpp"
+	"renderhelp.hpp"
+	"../performance/console.hpp"
+
+1471200209 c:\users\usuário\documents\github\bear-engine\source\engine\light.hpp
+	"smarttexture.hpp"
+	"../framework/threadpool.hpp"
+	<pthread.h>
+
+1486809689 c:\users\usuário\documents\github\bear-engine\source\framework\threadpool.hpp
+	<ctime>
+	"../settings/definitions.hpp"
+	"lcokfreequeue.hpp"
+	<stack>
+	<pthread.h>
+	<semaphore.h>
+	<functional>
+	<time.h>
+
+1486053847 c:\users\usuário\documents\github\bear-engine\source\framework\lcokfreequeue.hpp
+	<iostream>
+	<atomic>
+	<thread>
+	<vector>
+	<stdlib.h>
+	<stdio.h>
+	<tuple>
+	<sstream>
+	<string>
+
+1502347749 c:\users\usuário\documents\github\bear-engine\source\engine\renderhelp.hpp
+	"smarttexture.hpp"
+	"collision.hpp"
+	"../framework/geometry.hpp"
+	"../framework/typechecker.hpp"
+	<functional>
+
+1472531664 source:c:\users\usuário\documents\github\bear-engine\source\engine\particlecreator.cpp
+	"particlecreator.hpp"
+	"gamebase.hpp"
+	"text.hpp"
+
+1502334149 source:c:\users\usuário\documents\github\bear-engine\source\engine\gamebase.cpp
+	<ctime>
+	<time.h>
+	"gamebase.hpp"
+	"../luasystem/luainterface.hpp"
+	"../framework/threadpool.hpp"
+	"../framework/debughelper.hpp"
+	"../framework/resourcemanager.hpp"
+	"timer.hpp"
+	"parallelcollisionmanager.hpp"
+	"../settings/definitions.hpp"
+	"../performance/console.hpp"
+	"../sound/soundsources.hpp"
+	"../sound/soundloader.hpp"
+	<emscripten.h>
+
+1492804631 c:\users\usuário\documents\github\bear-engine\source\luasystem\luainterface.hpp
+	"../settings/definitions.hpp"
+	"luatools.hpp"
+	<string>
+	<map>
+	<unordered_map>
+	<functional>
+	<vector>
+
+1502334141 c:\users\usuário\documents\github\bear-engine\source\luasystem\luatools.hpp
+	"../settings/definitions.hpp"
+	"../engine/gamebase.hpp"
+	"../performance/console.hpp"
+	<iostream>
+	<functional>
+	<string.h>
+	"luatypewrapper.hpp"
+
+1501533183 c:\users\usuário\documents\github\bear-engine\source\luasystem\luatypewrapper.hpp
+	"../engine/object.hpp"
+
+1502415235 c:\users\usuário\documents\github\bear-engine\source\framework\debughelper.hpp
+	<string>
+	<stdlib.h>
+
+1480613519 c:\users\usuário\documents\github\bear-engine\source\framework\resourcemanager.hpp
+	"../settings/definitions.hpp"
+	<unordered_map>
+	"resourcefiles.hpp"
+
+1486801972 c:\users\usuário\documents\github\bear-engine\source\framework\resourcefiles.hpp
+	"../settings/definitions.hpp"
+	"gamefile.hpp"
+	<string>
+	<vector>
+	<unordered_map>
+	<tuple>
+
+1486804151 c:\users\usuário\documents\github\bear-engine\source\framework\gamefile.hpp
+	<string>
+	"../settings/definitions.hpp"
+
+1497451489 c:\users\usuário\documents\github\bear-engine\source\engine\timer.hpp
+	<stdint.h>
+	<iostream>
+	"../settings/definitions.hpp"
+	"../framework/geometry.hpp"
+
+1487456190 c:\users\usuário\documents\github\bear-engine\source\engine\parallelcollisionmanager.hpp
+	"../framework/poolmanager.hpp"
+
+1486809743 c:\users\usuário\documents\github\bear-engine\source\sound\soundsources.hpp
+	<AL/al.h>
+	<AL/alc.h>
+	"sound.hpp"
+
+1480741130 source:c:\users\usuário\documents\github\bear-engine\source\engine\particles.cpp
+	"particles.hpp"
+	"camera.hpp"
+	"renderhelp.hpp"
+	<iostream>
+
+1472310778 source:c:\users\usuário\documents\github\bear-engine\source\engine\pathfind.cpp
+	"pathfind.hpp"
+	"renderhelp.hpp"
+
+1471199878 c:\users\usuário\documents\github\bear-engine\source\engine\pathfind.hpp
+	"../framework/geometry.hpp"
+	"object.hpp"
+	<queue>
+	<stack>
+
+1493465572 source:c:\users\usuário\documents\github\bear-engine\source\engine\renderhelp.cpp
+	"renderhelp.hpp"
+	"../framework/debughelper.hpp"
+	<stdio.h>
+	"gamebase.hpp"
+
+1500468122 source:c:\users\usuário\documents\github\bear-engine\source\engine\screenmanager.cpp
+	"screenmanager.hpp"
+	"../settings/configmanager.hpp"
+	"../performance/console.hpp"
+	"../framework/utils.hpp"
+	"renderhelp.hpp"
+	"camera.hpp"
+	<iostream>
+	<stdlib.h>
+
+1493885685 source:c:\users\usuário\documents\github\bear-engine\source\engine\shooteffect.cpp
+	"shooteffect.hpp"
+	"../engine/renderhelp.hpp"
+	<math.h>
+	<iostream>
+
+1449595716 c:\users\usuário\documents\github\bear-engine\source\engine\shooteffect.hpp
+	"object.hpp"
+	"sprite.hpp"
+	"timer.hpp"
+	"camera.hpp"
+
+1486807931 source:c:\users\usuário\documents\github\bear-engine\source\engine\smarttexture.cpp
+	"smarttexture.hpp"
+	"gamebase.hpp"
+
+1446746316 source:c:\users\usuário\documents\github\bear-engine\source\engine\smarttexturemanager.cpp
+	"smarttexturemanager.hpp"
+
+1446746298 c:\users\usuário\documents\github\bear-engine\source\engine\smarttexturemanager.hpp
+	"smarttexture.hpp"
+	<map>
+
+1499862941 source:c:\users\usuário\documents\github\bear-engine\source\engine\smarttileset.cpp
+	"smarttileset.hpp"
+	"screenmanager.hpp"
+	"collision.hpp"
+	"camera.hpp"
+	"bear.hpp"
+	"renderhelp.hpp"
+	"timer.hpp"
+
+1492926529 c:\users\usuário\documents\github\bear-engine\source\engine\smarttileset.hpp
+	"../framework/geometry.hpp"
+	"gamebase.hpp"
+	"sprite.hpp"
+
+1502348566 source:c:\users\usuário\documents\github\bear-engine\source\engine\sprite.cpp
+	"sprite.hpp"
+	"gamebase.hpp"
+	<math.h>
+	"../framework/dirmanager.hpp"
+	"../performance/console.hpp"
+	"../framework/utils.hpp"
+	"renderhelp.hpp"
+	"camera.hpp"
+	"smarttexture.hpp"
+	"../framework/resourcemanager.hpp"
+	"../image/stb_image.h"
+
+1455983760 c:\users\usuário\documents\github\bear-engine\source\framework\dirmanager.hpp
+	<string>
+
+1480568580 c:\users\usuário\documents\github\bear-engine\source\image\stb_image.h
+	"stb_image.h"
+	<stdio.h>
+	<stdarg.h>
+	<stddef.h>
+	<stdlib.h>
+	<string.h>
+	<math.h>
+	<stdio.h>
+	<assert.h>
+	<stdint.h>
+	<emmintrin.h>
+	<intrin.h>
+	<arm_neon.h>
+
+1493466404 source:c:\users\usuário\documents\github\bear-engine\source\engine\text.cpp
+	"text.hpp"
+	"../settings/configmanager.hpp"
+	"../framework/gamefile.hpp"
+	"../framework/dirmanager.hpp"
+	"../framework/resourcemanager.hpp"
+	"../framework/utils.hpp"
+	"../performance/console.hpp"
+	"gamebase.hpp"
+
+1480742936 source:c:\users\usuário\documents\github\bear-engine\source\engine\tilemap.cpp
+	"tilemap.hpp"
+	<stdio.h>
+
+1396632994 c:\users\usuário\documents\github\bear-engine\source\engine\tilemap.hpp
+	"tileset.hpp"
+
+1486902111 c:\users\usuário\documents\github\bear-engine\source\engine\tileset.hpp
+	"sprite.hpp"
+	<vector>
+
+1486902110 source:c:\users\usuário\documents\github\bear-engine\source\engine\tileset.cpp
+	"tileset.hpp"
+	"gamebase.hpp"
+	<stdio.h>
+
+1477529199 source:c:\users\usuário\documents\github\bear-engine\source\engine\timer.cpp
+	"timer.hpp"
+
+1472527140 source:c:\users\usuário\documents\github\bear-engine\source\framework\chainptr.cpp
+	"chainptr.hpp"
+
+1486469244 source:c:\users\usuário\documents\github\bear-engine\source\framework\debughelper.cpp
+	"debughelper.hpp"
+	"../engine/bear.hpp"
+	<iostream>
+	<stdio.h>
+
+1456601736 source:c:\users\usuário\documents\github\bear-engine\source\framework\dirmanager.cpp
+	"dirmanager.hpp"
+	<sstream>
+	"../settings/definitions.hpp"
+
+1488835441 source:c:\users\usuário\documents\github\bear-engine\source\framework\gamefile.cpp
+	"gamefile.hpp"
+	"dirmanager.hpp"
+	"resourcemanager.hpp"
+	"../performance/console.hpp"
+	"utils.hpp"
+	<iostream>
+
+1477278396 source:c:\users\usuário\documents\github\bear-engine\source\framework\geometry.cpp
+	"geometry.hpp"
+	<math.h>
+
+1490477011 source:c:\users\usuário\documents\github\bear-engine\source\framework\poolmanager.cpp
+	"poolmanager.hpp"
+	"../luasystem/luaobject.hpp"
+	"../engine/bear.hpp"
+	"../engine/timer.hpp"
+
+1501275560 c:\users\usuário\documents\github\bear-engine\source\luasystem\luaobject.hpp
+	"../engine/object.hpp"
+	"luainterface.hpp"
+
+1486811557 source:c:\users\usuário\documents\github\bear-engine\source\framework\resourcefiles.cpp
+	"resourcefiles.hpp"
+	"utils.hpp"
+	"../performance/console.hpp"
+	<iostream>
+	<string.h>
+
+1486988464 source:c:\users\usuário\documents\github\bear-engine\source\framework\resourcemanager.cpp
+	"resourcemanager.hpp"
+	"dirmanager.hpp"
+	<iostream>
+	"utils.hpp"
+	"../performance/console.hpp"
+
+1490351091 source:c:\users\usuário\documents\github\bear-engine\source\framework\threadpool.cpp
+	"../settings/definitions.hpp"
+	"threadpool.hpp"
+	"../engine/light.hpp"
+	"../framework/utils.hpp"
+	"../settings/configmanager.hpp"
+	"../performance/console.hpp"
+	"../engine/gamebase.hpp"
+	<math.h>
+	<stdlib.h>
+	<pthread.h>
+	<iostream>
+
+1488398024 source:c:\users\usuário\documents\github\bear-engine\source\framework\typechecker.cpp
+	"typechecker.hpp"
+	"../engine/object.hpp"
+
+1462246637 source:c:\users\usuário\documents\github\bear-engine\source\framework\userfile.cpp
+	"userfile.hpp"
+	"dirmanager.hpp"
+	<stdio.h>
+	<stdlib.h>
+
+1493445044 source:c:\users\usuário\documents\github\bear-engine\source\framework\utils.cpp
+	"utils.hpp"
+	<math.h>
+
+1488136883 source:c:\users\usuário\documents\github\bear-engine\source\framework\xml.cpp
+	"xml.hpp"
+	<iostream>
+	<string>
+
+1487729330 c:\users\usuário\documents\github\bear-engine\source\framework\xml.hpp
+	"gamefile.hpp"
+	"utils.hpp"
+	<map>
+
+1502415194 source:c:\users\usuário\documents\github\bear-engine\source\game\ball.cpp
+	"ball.hpp"
+	"../input/inputmanager.hpp"
+	"../engine/camera.hpp"
+	"../engine/light.hpp"
+	"../engine/gamebase.hpp"
+
+1502415192 c:\users\usuário\documents\github\bear-engine\source\game\ball.hpp
+	"../engine/object.hpp"
+	"../engine/sprite.hpp"
+
+1502415267 source:c:\users\usuário\documents\github\bear-engine\source\game\controlableobject.cpp
+	"controlableobject.hpp"
+	"../engine/light.hpp"
+	"../engine/renderhelp.hpp"
+	"../engine/gamebase.hpp"
+
+1502415187 c:\users\usuário\documents\github\bear-engine\source\game\controlableobject.hpp
+	"../engine/object.hpp"
+	"../engine/sprite.hpp"
+
+1480746660 source:c:\users\usuário\documents\github\bear-engine\source\input\accelerometer.cpp
+	"accelerometer.hpp"
+	"../engine/renderhelp.hpp"
+
+1502415185 source:c:\users\usuário\documents\github\bear-engine\source\game\gamebehavior.cpp
+	"gamebehavior.hpp"
+	"title.hpp"
+	"../engine/defaultbehavior.hpp"
+	"../engine/gamebase.hpp"
+	"../performance/console.hpp"
+	"../framework/resourcemanager.hpp"
+	"../framework/threadpool.hpp"
+	<string>
+
+1502415183 c:\users\usuário\documents\github\bear-engine\source\game\gamebehavior.hpp
+	"../engine/defaultbehavior.hpp"
+
+1502415286 c:\users\usuário\documents\github\bear-engine\source\game\title.hpp
+	"state.hpp"
+	<stack>
+	"../performance/console.hpp"
+	"../engine/pathfind.hpp"
+
+1502415173 c:\users\usuário\documents\github\bear-engine\source\game\state.hpp
+	"../engine/genericstate.hpp"
+	<cstdlib>
+	<iostream>
+	<memory>
+	<vector>
+	<list>
+	"../framework/poolmanager.hpp"
+
+1502415176 source:c:\users\usuário\documents\github\bear-engine\source\game\title.cpp
+	"title.hpp"
+	<sstream>
+	<cmath>
+	"title.hpp"
+	"../engine/bear.hpp"
+	"../engine/gamebase.hpp"
+	"../engine/particlecreator.hpp"
+	"../input/inputmanager.hpp"
+	"../framework/debughelper.hpp"
+	"../engine/renderhelp.hpp"
+	"../engine/smarttexture.hpp"
+	"../engine/smarttexturemanager.hpp"
+	"../engine/light.hpp"
+	"../framework/threadpool.hpp"
+	"../framework/gamefile.hpp"
+	"../framework/utils.hpp"
+	"../framework/resourcemanager.hpp"
+	"../framework/xml.hpp"
+	"../framework/lcokfreequeue.hpp"
+	"../mobile/android/jnihelper.hpp"
+	"controlableobject.hpp"
+	"ball.hpp"
+
+1481822843 c:\users\usuário\documents\github\bear-engine\source\mobile\android\jnihelper.hpp
+	"../../settings/definitions.hpp"
+	<tuple>
+	<iostream>
+
+1478640678 source:c:\users\usuário\documents\github\bear-engine\source\input\beinput.cpp
+	"beinput.hpp"
+	"inputmanager.hpp"
+
+1478368474 c:\users\usuário\documents\github\bear-engine\source\input\beinput.hpp
+	"inputdefinitions.hpp"
+	"joystick.hpp"
+	<map>
+	<vector>
+
+1486425112 source:c:\users\usuário\documents\github\bear-engine\source\input\inputmanager.cpp
+	"inputmanager.hpp"
+	"../engine/gamebase.hpp"
+	"../settings/configmanager.hpp"
+	"../engine/renderhelp.hpp"
+	"../performance/console.hpp"
+	"../settings/definitions.hpp"
+	<stdio.h>
+	<stdlib.h>
+	<iostream>
+
+1480742431 source:c:\users\usuário\documents\github\bear-engine\source\input\joystick.cpp
+	"joystick.hpp"
+	"../performance/console.hpp"
+	"../engine/renderhelp.hpp"
+
+1456851682 source:c:\users\usuário\documents\github\bear-engine\source\input\keyboard.cpp
+	"keyboard.hpp"
+
+1486809691 source:c:\users\usuário\documents\github\bear-engine\source\input\mouse.cpp
+	"mouse.hpp"
+	<iostream>
+
+1457635806 source:c:\users\usuário\documents\github\bear-engine\source\input\touch.cpp
+	"touch.hpp"
+	"../engine/renderhelp.hpp"
+	"../engine/screenmanager.hpp"
+
+1480744052 source:c:\users\usuário\documents\github\bear-engine\source\input\touchkeys.cpp
+	"touchkeys.hpp"
+	"inputmanager.hpp"
+	"../engine/renderhelp.hpp"
+	<iostream>
+
+1502334148 source:c:\users\usuário\documents\github\bear-engine\source\luasystem\luaobject.cpp
+	"../engine/renderhelp.hpp"
+	"../engine/gamebase.hpp"
+	"luaobject.hpp"
+
+1486808534 source:c:\users\usuário\documents\github\bear-engine\source\performance\console.cpp
+	"console.hpp"
+	"../engine/renderhelp.hpp"
+	"../engine/gamebase.hpp"
+	"../framework/dirmanager.hpp"
+	<android/log.h>
+	<iostream>
+	<sstream>
+
+1502350132 source:c:\users\usuário\documents\github\bear-engine\source\luasystem\luainterface.cpp
+	"luainterface.hpp"
+	"luatools.hpp"
+	"../performance/console.hpp"
+	"luagamestate.hpp"
+	"../engine/renderhelp.hpp"
+	"../engine/gamebase.hpp"
+	"../engine/bear.hpp"
+	<iostream>
+	"luaobject.hpp"
+	"../sound/sound.hpp"
+	"../engine/timer.hpp"
+	"../engine/sprite.hpp"
+
+1493369146 c:\users\usuário\documents\github\bear-engine\source\luasystem\luagamestate.hpp
+	"../engine/genericstate.hpp"
+	<cstdlib>
+	<iostream>
+	<memory>
+	<vector>
+	<list>
+	"../framework/poolmanager.hpp"
+
+1494772925 source:c:\users\usuário\documents\github\bear-engine\source\main.cpp
+	<stdio.h>
+	<emscripten.h>
+	"engine/gamebase.hpp"
+	"framework/gamefile.hpp"
+	"settings/configmanager.hpp"
+	<android/asset_manager.h>
+	<android/asset_manager_jni.h>
+	"steam/steam_api.h"
+
+1492998077 source:c:\users\usuário\documents\github\bear-engine\source\resource.rc
+
+1486808463 source:c:\users\usuário\documents\github\bear-engine\source\settings\configmanager.cpp
+	"configmanager.hpp"
+	"../engine/gamebase.hpp"
+	"../engine/renderhelp.hpp"
+	"../framework/resourcemanager.hpp"
+	"../performance/console.hpp"
+	"../image/stb_image.h"
+
+1492749742 source:c:\users\usuário\documents\github\bear-engine\source\sound\sound.cpp
+	"sound.hpp"
+	"../settings/definitions.hpp"
+	"../framework/resourcemanager.hpp"
+	"../framework/dirmanager.hpp"
+	"../framework/gamefile.hpp"
+	"../performance/console.hpp"
+	"../sound/soundsources.hpp"
+	"../engine/assetmanager.hpp"
+	"../engine/gamebase.hpp"
+	"soundloader.hpp"
+	<iostream>
+	<cstdio>
+	<vector>
+
+1488803220 source:c:\users\usuário\documents\github\bear-engine\source\sound\soundloader.cpp
+	"soundloader.hpp"
+	"../engine/bear.hpp"
+	<vorbis/vorbisfile.h>
+
+1486809739 source:c:\users\usuário\documents\github\bear-engine\source\sound\soundsources.cpp
+	"soundsources.hpp"
+	"soundloader.hpp"
+	"../engine/bear.hpp"
+
+1471923391 source:c:\users\usuário\documents\github\bear-engine\source\ui\base.cpp
+	"base.hpp"
+	"../input/inputmanager.hpp"
+
+1457476507 source:c:\users\usuário\documents\github\bear-engine\source\ui\button.cpp
+	"button.hpp"
+	"../engine/renderhelp.hpp"
+	"../input/inputmanager.hpp"
+
+1456854442 c:\users\usuário\documents\github\bear-engine\source\ui\button.hpp
+	"base.hpp"
+
+1472310509 source:c:\users\usuário\documents\github\bear-engine\source\ui\checkbox.cpp
+	"checkbox.hpp"
+	"../engine/renderhelp.hpp"
+	"../engine/assetmanager.hpp"
+	"../input/inputmanager.hpp"
+
+1456867128 c:\users\usuário\documents\github\bear-engine\source\ui\checkbox.hpp
+	"base.hpp"
+
+1457473048 source:c:\users\usuário\documents\github\bear-engine\source\ui\gettextwindow.cpp
+	"gettextwindow.hpp"
+	"../engine/renderhelp.hpp"
+
+1457472626 c:\users\usuário\documents\github\bear-engine\source\ui\gettextwindow.hpp
+	"base.hpp"
+	"window.hpp"
+	"label.hpp"
+	"textinput.hpp"
+	"button.hpp"
+	<functional>
+
+1463847199 c:\users\usuário\documents\github\bear-engine\source\ui\label.hpp
+	"base.hpp"
+
+1456861182 c:\users\usuário\documents\github\bear-engine\source\ui\textinput.hpp
+	"base.hpp"
+
+1456945336 source:c:\users\usuário\documents\github\bear-engine\source\ui\label.cpp
+	"label.hpp"
+	"../engine/renderhelp.hpp"
+	"../input/inputmanager.hpp"
+
+1456945362 source:c:\users\usuário\documents\github\bear-engine\source\ui\numberinput.cpp
+	"numberinput.hpp"
+	"../engine/renderhelp.hpp"
+	"../input/inputmanager.hpp"
+
+1456865180 c:\users\usuário\documents\github\bear-engine\source\ui\numberinput.hpp
+	"base.hpp"
+
+1480744050 source:c:\users\usuário\documents\github\bear-engine\source\ui\textinput.cpp
+	"textinput.hpp"
+	"../input/inputmanager.hpp"
+	"../engine/renderhelp.hpp"
+	<sstream>
+	<locale>
+
+1471199566 source:c:\users\usuário\documents\github\bear-engine\source\ui\window.cpp
+	"window.hpp"
+	"../engine/renderhelp.hpp"
+	"../input/inputmanager.hpp"
+
+1502334149 source:c:\users\usuário\documents\github\bear-engine\source\luasystem\luagamestate.cpp
+	"luagamestate.hpp"
+	"luaobject.hpp"
+	"luatools.hpp"
+	"../engine/gamebase.hpp"
+	"../settings/definitions.hpp"
+
+1502334149 source:c:\users\usuário\documents\github\bear-engine\source\luasystem\luatools.cpp
+	"luatools.hpp"
+

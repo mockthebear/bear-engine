@@ -7,8 +7,8 @@ std::string GenericLuaGetter<std::string>::Empty = "";
 float       GenericLuaGetter<float>::Empty = 0.0f;
 double       GenericLuaGetter<double>::Empty = 0.0;
 int         GenericLuaGetter<int>::Empty = 0;
-lua_State* LuaData::L = nullptr;
-bool LuaData::IsDebug = true;
+lua_State* LuaManager::L = nullptr;
+bool LuaManager::IsDebug = false;
 
 char GenericLuaGetter<char*>::transfer[512];
 
