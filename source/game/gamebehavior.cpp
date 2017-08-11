@@ -49,6 +49,9 @@ bool GameBehavior::OnLoad(){
     Console::GetInstance().AddText(utils::format("There are %d joysticks",InputManager::GetInstance().GetJoystickCount()));
 
     Console::GetInstance().AddText("Starting state.");
+
+
+
     ThreadPool::GetInstance().CreateThreads();
     Game::GetInstance()->AddState(new Title());
     return DefaultBehavior::GetInstance().OnLoad();

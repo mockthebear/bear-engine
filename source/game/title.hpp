@@ -16,6 +16,9 @@ class Title: public State{
         void Resume(){};
         void End(){};
     private:
+        /*
+            PF
+        */
         PathFind astar;
         std::vector<Point> path;
         std::vector<Rect> staticBlock;

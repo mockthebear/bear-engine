@@ -22,28 +22,54 @@
 #include "../framework/lcokfreequeue.hpp"
 
 #include "../mobile/android/jnihelper.hpp"
+#include "../luasystem/luatools.hpp"
+#include "../luasystem/luaobject.hpp"
 
 
 
 #include "controlableobject.hpp"
 #include "ball.hpp"
-Title::Title(){
-    ParticlePool = new SPP<Particle>(6000);
-    requestQuit = requestDelete = false;
 
+Title::Title(){
+    requestQuit = requestDelete = false;
+    /*
+        Creating and allocation of pools
+    */
+    ParticlePool = new SPP<Particle>(6000);
     PoolId co = Pool.Register<ControlableObject>(10);
     Pool.Register<Ball>(10);
+    Pool.Register<LuaObject>(50);
 
+    /*
+        Creating groups
+    */
     std::vector<PoolId> group;
     group.emplace_back(co);
 
     Group = Pool.CreatePoolGroup(group);
+    /*
+        Starting path find
+    */
 
     astar = PathFind(SCREEN_SIZE_W,SCREEN_SIZE_H);
 
+    /*
+        Loading background
+    */
     bg = Assets.make<Sprite>("data:wall.jpg");
 
+    /*
+        Loading main lua script
+    */
+    LuaCaller::LoadFile(LuaManager::L,"lua/test.lua");
+    LuaCaller::Pcall(LuaManager::L);
 
+
+
+
+    /*
+        Starting some text
+    */
     message = Text("data:arial.ttf",30,TEXT_SOLID,"Hello bear. FPS: ?", {10,50,255});
     char *c = ResourceManager::GetInstance().GetFileData("data","jaaj.txt");
     std::cout <<"Text is: ["<< c << "]\n";
@@ -51,29 +77,46 @@ Title::Title(){
     int s=0;
     std::cout <<"Value is: ["<< utils::GetU16c(c,s) << "]\n";
 
+    /*
+        Starting camera
+    */
+
     Camera::Initiate(Rect(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H),128,200);
     Camera::speed = 0;
 
+    /*
+        Starting Touchscreen
+    */
+
     InputManager::GetInstance().SetTouchOffset(Point(8,0));
 
-
-
-
-    //JniHelper::CallFunction<void>(std::string("kek"),std::string("kik"),123);
+    /*
+        Preload an sound
+    */
     snd2 = new Sound("data/yay3.wav");
 
 }
 
 
 void Title::Begin(){
+    /*
+        Setup instances
+    */
     Pool.AddInstance(ControlableObject(200,200));
 
     Pool.AddInstance(ControlableObject(100,100));
     Pool.AddInstance(ControlableObject(300,300));
     Pool.AddInstance(Ball(Point(200,400)));
 
+    /*
+        Callin an lua function
+    */
 
+    LuaCaller::CallGlobalField(LuaManager::L,"onLoad");
 
+    /*
+        Displaying working path
+    */
     char *msg = SDL_GetPrefPath("tutorial","game");
     if (msg != NULL)
         Console::GetInstance().AddText(msg);
@@ -83,7 +126,9 @@ void Title::Begin(){
 
 
 
-
+    /*
+        Starting light
+    */
     Light::GetInstance()->StartLights( Point(SCREEN_SIZE_W,SCREEN_SIZE_H) ,Point(160,160) ,2,6.5,90);
     Light::GetInstance()->SetLightRaysCount(220);
 
@@ -94,18 +139,21 @@ Title::~Title(){
     Pool.ErasePools();
     Assets.erase();
     Light::GetInstance()->Shutdown();
-
 }
 
 
 void Title::Update(float dt){
-
+    /*
+        Reset
+    */
     if( InputManager::GetInstance().KeyPress(SDLK_r) ){
         requestDelete = true;
         Game::GetInstance()->AddState(new Title());
         return;
     }
-
+    /*
+        Load an xml
+    */
     if( InputManager::GetInstance().KeyPress(SDLK_SPACE) ){
         Xml p;
         XmlNode *n = p.Parse("data.xml");
@@ -125,21 +173,27 @@ void Title::Update(float dt){
             }
         }
     }
+    /*
+        Clear and begin light
+    */
     ThreadPool::GetInstance().ClearJobs();
     Light::GetInstance()->Update(dt,LIGHT_BEGIN);
+    /*
+        Process some inputs
+    */
     Input();
 
-
+    /*
+        Add some blocks
+    */
     Point p = InputManager::GetInstance().GetMouse();
     if( InputManager::GetInstance().MousePress(3) ){
         astar.AddBlock(p.x,p.y);
         staticBlock.emplace_back(Rect(p.x,p.y,16,16));
-        //snd->SetPosition((rand()%100) -50,(rand()%100) -50,(rand()%100) -50);
-        //snd->SetPitch( 0.5 + (rand()%100)/100.0f );
-        //snd->Play(false);
-
     }
-
+    /*
+        Mouse handle
+    */
     if( InputManager::GetInstance().MousePress(1) ){
         snd2->SetPosition((rand()%100) -50,(rand()%100) -50,(rand()%100) -50);
         snd2->SetPitch( 0.5 + (rand()%100)/100.0f );
@@ -192,7 +246,9 @@ void Title::Update(float dt){
     ///aaaa
     message.SetText(Msg.str());
 
-
+    /*
+        Check collision
+    */
     for (int i=0;i<Pool.GetMaxInstancesGroup(Group);i++){
         GameObject *obj = Pool.GetInstanceGroup(i,Group);
         if (obj != NULL && !obj->IsDead()){

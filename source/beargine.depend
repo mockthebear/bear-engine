@@ -10915,7 +10915,7 @@
 	"../engine/bear.hpp"
 	"../engine/object.hpp"
 
-1502415583 c:\users\usuário\documents\github\bear-engine\source\input\inputmanager.hpp
+1502415629 c:\users\usuário\documents\github\bear-engine\source\input\inputmanager.hpp
 	"../settings/definitions.hpp"
 	"../framework/geometry.hpp"
 	<functional>
@@ -11440,7 +11440,7 @@
 	"accelerometer.hpp"
 	"../engine/renderhelp.hpp"
 
-1502415185 source:c:\users\usuário\documents\github\bear-engine\source\game\gamebehavior.cpp
+1502415915 source:c:\users\usuário\documents\github\bear-engine\source\game\gamebehavior.cpp
 	"gamebehavior.hpp"
 	"title.hpp"
 	"../engine/defaultbehavior.hpp"
@@ -11453,7 +11453,7 @@
 1502415183 c:\users\usuário\documents\github\bear-engine\source\game\gamebehavior.hpp
 	"../engine/defaultbehavior.hpp"
 
-1502415286 c:\users\usuário\documents\github\bear-engine\source\game\title.hpp
+1502416208 c:\users\usuário\documents\github\bear-engine\source\game\title.hpp
 	"state.hpp"
 	<stack>
 	"../performance/console.hpp"
@@ -11468,7 +11468,7 @@
 	<list>
 	"../framework/poolmanager.hpp"
 
-1502415176 source:c:\users\usuário\documents\github\bear-engine\source\game\title.cpp
+1502416131 source:c:\users\usuário\documents\github\bear-engine\source\game\title.cpp
 	"title.hpp"
 	<sstream>
 	<cmath>
@@ -11489,6 +11489,8 @@
 	"../framework/xml.hpp"
 	"../framework/lcokfreequeue.hpp"
 	"../mobile/android/jnihelper.hpp"
+	"../luasystem/luatools.hpp"
+	"../luasystem/luaobject.hpp"
 	"controlableobject.hpp"
 	"ball.hpp"
 
@@ -11555,7 +11557,7 @@
 	<iostream>
 	<sstream>
 
-1502350132 source:c:\users\usuário\documents\github\bear-engine\source\luasystem\luainterface.cpp
+1502416370 source:c:\users\usuário\documents\github\bear-engine\source\luasystem\luainterface.cpp
 	"luainterface.hpp"
 	"luatools.hpp"
 	"../performance/console.hpp"
@@ -11578,7 +11580,7 @@
 	<list>
 	"../framework/poolmanager.hpp"
 
-1494772925 source:c:\users\usuário\documents\github\bear-engine\source\main.cpp
+1502415698 source:c:\users\usuário\documents\github\bear-engine\source\main.cpp
 	<stdio.h>
 	<emscripten.h>
 	"engine/gamebase.hpp"

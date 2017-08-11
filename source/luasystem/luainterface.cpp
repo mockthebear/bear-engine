@@ -451,6 +451,10 @@ void LuaInterface::RegisterClasses(){
 
 
 
+    GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_console");
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_console","Print",std::function<void(std::string)>([](std::string str){ bear::out << "[Lua]: "<< str << "\n"; }));
+
+
     GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_collision");
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_collision","GetCollidingObjects",std::function< std::vector<GameObject*> (GameObject*,int,bool)>([](GameObject* thisObject,int poolId,bool onlySolid){ return Collision::GetCollidingObjects(thisObject,BearEngine->GetCurrentState().Pool,poolId,onlySolid);; }));
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_collision","IsColliding",std::function< bool(Rect,Rect)>([](Rect r1,Rect r2){ return Collision::IsColliding(r1,r2); }));
