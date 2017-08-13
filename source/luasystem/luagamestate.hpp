@@ -23,4 +23,5 @@ class LuaGameState: public GenericState{
         void Pause(GenericState *);
         PoolManager Pool;
         bool canClose;
+        uint64_t other;
 };

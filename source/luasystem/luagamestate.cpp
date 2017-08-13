@@ -9,6 +9,7 @@
 LuaGameState::LuaGameState(){
     requestDelete = canClose = false;
     requestQuit = false;
+    other = uint64_t(&Game::GetCurrentState()) ;
 }
 LuaGameState::~LuaGameState(){
 
@@ -18,22 +19,22 @@ void LuaGameState::Setup(){
     BearEngine->AddState((DefinedState*)this,-1);
 }
 void LuaGameState::Update(float dt){
-   LuaCaller::CallSelfField(LuaManager::L,this,"update",dt);
+   LuaCaller::CallOtherField(LuaManager::L,other,this,"update",dt);
    requestDelete = canClose;
 }
 void LuaGameState::Render(){
-    LuaCaller::CallSelfField(LuaManager::L,this,"render");
+    LuaCaller::CallOtherField(LuaManager::L,other,this,"render");
 }
 void LuaGameState::Begin(){
    Pool.Register<LuaObject>(1500);
-   LuaCaller::CallSelfField(LuaManager::L,this,"begin");
+   LuaCaller::CallOtherField(LuaManager::L,other,this,"begin");
 }
 void LuaGameState::End(){
-    LuaCaller::CallSelfField(LuaManager::L,this,"finish");
+    LuaCaller::CallOtherField(LuaManager::L,other,this,"finish");
 }
 void LuaGameState::Resume(GenericState *){
-    LuaCaller::CallSelfField(LuaManager::L,this,"resume");
+    LuaCaller::CallOtherField(LuaManager::L,other,this,"resume");
 }
 void LuaGameState::Pause(GenericState *){
-    LuaCaller::CallSelfField(LuaManager::L,this,"pause");
+    LuaCaller::CallOtherField(LuaManager::L,other,this,"pause");
 }

@@ -341,6 +341,29 @@ class LuaCaller{
             lua_pop(L,1);
             return ret;
         }
+
+        template <typename Obj,typename ... Types> static bool CallOtherField(lua_State *L,uint64_t old,Obj *obj,std::string field,Types ... args){
+            lua_getglobal(L, "CallFromField");
+            if(!lua_isfunction(L, -1) ){
+                return false;
+            }
+            uint64_t index = uint64_t(obj);
+            lua_pushinteger(L, old);
+            lua_pushinteger(L, index);
+
+            lua_pushstring(L, field.c_str());
+            pexpander::expand(L,args...);
+
+            LuaManager::Pcall(3 + (sizeof...(Types)), 1, 0);
+
+            if (lua_isnil(L, -1)){
+                return false;
+            }
+            bool ret = lua_toboolean(L,-1);
+            lua_pop(L,1);
+            return ret;
+        }
+
         template <typename Obj,typename ... Types> static bool CallSelfField(lua_State *L,Obj *obj,std::string field,Types ... args){
             lua_getglobal(L, "CallFromField");
             if(!lua_isfunction(L, -1) ){
