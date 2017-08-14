@@ -25,7 +25,7 @@ void Checkbox::Refresh(){
 }
 void Checkbox::Render(Point where){
     if (sp.IsLoaded()){
-        sp.Render(box.x,box.y);
+        sp.Render(box.x,box.y,0);
     }
     if (txt.IsWorking()){
         txt.Render(box.x + 3 + sp.GetWidth(),box.y);

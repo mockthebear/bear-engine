@@ -204,6 +204,9 @@ class Text{
             *This possition is added to the offset on constructor
         */
         void Render(int X = 0, int Y = 0,TextRenderStyle renderStyle = TEXT_RENDER_TOPLEFT);
+        void RenderLua(int X = 0, int Y = 0){
+            Render(X,Y,TEXT_RENDER_TOPLEFT);
+        }
         /**
             Render without any scaling or screen adjustment
         */

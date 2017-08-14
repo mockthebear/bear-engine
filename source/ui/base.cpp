@@ -1,5 +1,6 @@
 #include "base.hpp"
 #include "../input/inputmanager.hpp"
+#include "../framework/utils.hpp"
 
 
 UIStyle UIStyle::BaseStyle = UIStyle();
@@ -16,6 +17,8 @@ UIBase::UIBase(){
     Color[3] = 255;
     style = UIStyle::BaseStyle;
     MouseInside = false;
+    GenerateId();
+    UiName = utils::format("uiobj%.4d",ID);
 }
 
 int UIBase::g_ID = 0;
@@ -26,14 +29,14 @@ void UIBase::Render(Point where){
         return;
     for (unsigned i = 0; i < Components.size(); ++i) {
         if (!Components[i]->IsDead()){
-            Components[i]->Render(Point(where.x + box.x,where.y + box.y));
+            Components[i]->Render(Point(box.x,box.y));
         }
     }
     if (sp.IsLoaded()){
-        sp.Render(where.x +box.x,where.y +box.y);
+        sp.Render(box.x,box.y,0);
     }
     if (txt.IsWorking()){
-        txt.Render(where.x +box.x,where.y +box.y);
+        txt.Render(box.x,box.y);
     }
 }
 
@@ -47,6 +50,7 @@ void UIBase::Update(float dt){
         }
     }
     Input();
+
 }
 
 void UIBase::NotifyChildrens(){
@@ -65,8 +69,9 @@ void UIBase::Input(){
 
     int key = InputManager::GetInstance().GetMouseMousePressKey();
 
-    Point mpos = Point(InputManager::GetInstance().GetMouseX(),InputManager::GetInstance().GetMouseY());
+    Point mpos = InputManager::GetInstance().GetMouse();
     if (IsInside(mpos.x,mpos.y)){
+
         if (key != 0 && OnMousePress){
             OnMousePress(this,key,mpos);
         }
@@ -93,7 +98,26 @@ void UIBase::Input(){
     if (key != 0 && OnKeyPress){
         OnKeyPress(this,key);
     }
+
+    /*for (unsigned i = 0; i < Components.size(); ++i) {
+        if (!Components[i]->IsDead()){
+            Components[i]->Input();
+        }
+    }*/
 }
+
+UIBase *UIBase::GetChildById(std::string name){
+    for (unsigned i = 0; i < Components.size(); ++i) {
+        if (!Components[i]->IsDead()){
+            if (Components[i]->GetId() == name){
+                return Components[i].get();
+            }
+        }
+    }
+    return nullptr;
+}
+
+
 void UIBase::Refresh(){
     if (sp.IsLoaded()){
         box.w = std::max(sp.GetWidth(),(int)box.w);
@@ -103,6 +127,8 @@ void UIBase::Refresh(){
         box.w = std::max(txt.GetWidth(),box.w);
         box.h = std::max(txt.GetHeight(),box.h);
     }
+    box.x = o_pos.x + (mother ? mother->box.x : 0);
+    box.y = o_pos.y + (mother ? mother->box.y : 0);
 }
 
 

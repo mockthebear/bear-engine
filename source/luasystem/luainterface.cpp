@@ -2,6 +2,7 @@
 #include "luatools.hpp"
 #include "../performance/console.hpp"
 #include "luagamestate.hpp"
+#include "luaui.hpp"
 
 
 
@@ -65,7 +66,6 @@ void LuaInterface::Startup(){
 
         if ( luaL_loadfile(L, "lua/main.lua")==0 ) {
         // execute Lua program
-            bear::out << "Calling main.lua\n";
            if (lua_pcall(L, 0, LUA_MULTRET, 0) != 0){
 
                 bear::out << "Lua error: " << lua_tostring(L, -1) << "\n";
@@ -75,8 +75,7 @@ void LuaInterface::Startup(){
              bear::out << "Lua error: " << lua_tostring(L, -1) << "\n";
              lua_pop(L, 1); // remove error message
         }
-
-             bear::out << "Lua started!" << "\n";
+        bear::out << "[lua] Lua started!" << "\n";
     }
 
 }
@@ -315,6 +314,38 @@ void LuaInterface::RegisterClasses(){
     ClassRegister<ColorReplacer>::RegisterClassMethod(L,"ColorReplacer","AddReplacer",&ColorReplacer::AddReplacer);
     ClassRegister<ColorReplacer>::RegisterClassMethod(L,"ColorReplacer","Get",&ColorReplacer::Get);
 
+    ClassRegister<Text>::RegisterClassOutside(LuaManager::L,"Text",[](lua_State* L){
+        std::string name;
+        int size = 12;
+        SDL_Color color = {100,100,100,255};
+        if (lua_gettop(L) >= 4){
+            color = GenericLuaGetter<SDL_Color>::Call(L);
+        }
+        if (lua_gettop(L) >= 3){
+            size = GenericLuaGetter<int>::Call(L);
+        }
+
+        name = GenericLuaGetter<std::string>::Call(L);
+
+        Text *t = LuaReferenceCounter<Text>::makeReference(Text(name,size,color));
+        return t;
+    });
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","Close",&Text::Close);
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","SetText",&Text::SetText);
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","SetColor",&Text::SetColor);
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","SetStyle",&Text::SetStyle);
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","SetAlpha",&Text::SetAlpha);
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","GetText",&Text::GetText);
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","GetHeight",&Text::GetHeight);
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","GetWidth",&Text::GetWidth);
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","SetScaleX",&Text::SetScaleX);
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","SetScaleY",&Text::SetScaleY);
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","RemakeTexture",&Text::RemakeTexture);
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","IsWorking",&Text::IsWorking);
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","SetRotation",&Text::SetRotation);
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","Render",&Text::RenderLua);
+
+
 
     ClassRegister<Sprite>::RegisterClassOutside(LuaManager::L,"Sprite",[](lua_State* L){
         std::string name;
@@ -516,6 +547,61 @@ void LuaInterface::RegisterClasses(){
 
     GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_screen");
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_screen","ScreenShake",std::function<void(float,float,int,float)>([](float amountX,float amountY,int frame,float duration){  ScreenManager::GetInstance().ScreenShake(Point(amountX,amountY),frame,duration); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_screen","GetFps",std::function<float()>([](){  return ScreenManager::GetInstance().GetFps(); }));
+
+
+
+    static LuaCFunctionLambda DeleteGCF = [](lua_State* L){
+        std::cout << "Calling gc to delete\n";
+        return 1;
+    };
+    ClassRegister<LuaUi>::RegisterClassOutside(LuaManager::L,"LuaUi",[](lua_State* L){
+        LuaUi *t = new LuaUi();
+        //BearEngine->GetCurrentState().AddWindow(t);
+        return t;
+    });
+
+    GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_ui");
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_ui","AddWindow",std::function<void(LuaUi *)>([](LuaUi *ui){ BearEngine->GetCurrentState().AddWindow(ui); }));
+
+
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetFocused",&LuaUi::SetFocused);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetAlpha",&LuaUi::SetAlpha);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","Close",&LuaUi::Close);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetPosition",&LuaUi::SetPosition);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetText",&LuaUi::SetTextStr);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetTextObj",&LuaUi::SetTextObj);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetText",&LuaUi::GetText);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","IsDead",&LuaUi::IsDead);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","Is",&LuaUi::Is);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","IsInside",&LuaUi::IsInside);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","Hide",&LuaUi::Hide);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","Show",&LuaUi::Show);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","Refresh",&LuaUi::Refresh);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetFocused",&LuaUi::SetFocused);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","AddComponent",&LuaUi::AddComponent2);
+
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetX",&LuaUi::GetX);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetY",&LuaUi::GetY);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetX",&LuaUi::SetX);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetY",&LuaUi::SetY);
+
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetScreenY",&LuaUi::GetScreenY);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetScreenX",&LuaUi::GetScreenX);
+
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetWidth",&LuaUi::SetWidth);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetWidth",&LuaUi::GetWidth);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetHeight",&LuaUi::SetHeight);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetHeight",&LuaUi::GetHeight);
+
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetId",&LuaUi::SetId);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetId",&LuaUi::GetId);
+
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetLastComponent",&LuaUi::GetLastComponent_Lua);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetChildById",&LuaUi::GetChildById_Lua);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetMother",&LuaUi::GetMother);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetChilds",&LuaUi::GetChilds);
+
 
 
 	Console::GetInstance().AddTextInfo("Finished");

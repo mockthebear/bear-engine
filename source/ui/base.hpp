@@ -20,7 +20,7 @@ enum TypeComponent{
 };
 
 #define UI_REGISTER(tc) hashIt(Types::Get<tc>()); GenerateId()
-
+#define REGISTER_GETSETTEROBJ(Nm,type,var) type Get ## Nm (){return var;}; void Set ## Nm(type arg){ var = arg;}
 
 class UIStyle{
     public:
@@ -50,7 +50,7 @@ class UIStyle{
 class UIBase{
     public:
         UIBase();
-        ~UIBase(){};
+        virtual ~UIBase(){};
 
 
 
@@ -74,12 +74,21 @@ class UIBase{
             box.y = p.y + (mother ? mother->box.y : 0);
         }
 
+        bool SetTextStr(std::string str){
+            return SetText(str);
+        }
+
+        void SetTextObj(Text o){
+            SetText(o);
+        }
+
         bool SetText(std::string str){
             if (txt.IsWorking()){
-                txt.SetStyle(style.txtstyle);
-                txt.SetColor({style.fg[0],style.fg[1],style.fg[2]});
+                //txt.SetStyle(style.txtstyle);
+                //txt.SetColor({style.fg[0],style.fg[1],style.fg[2]});
                 txt.SetText(str);
                 Refresh();
+                return false;
             }
             return false;
         }
@@ -106,6 +115,15 @@ class UIBase{
             sp = sp_;
             Refresh();
         };
+
+        void SetId(std::string nm){
+            UiName = nm;
+        }
+        std::string GetId(){
+            return UiName;
+        }
+
+
         void SetSprite(std::string path){
             SetSprite(Sprite(path.c_str()));
         };
@@ -123,7 +141,7 @@ class UIBase{
         }
         void Refresh();
         void AddComponent(UIBase *ui);
-        virtual int GetY(){return box.y;};
+
         Rect box;
 
         virtual void NotifyChildrens();
@@ -133,7 +151,14 @@ class UIBase{
         std::function<void(UIBase*,int,Point)> OnMousePress;
         std::function<void(UIBase*,int,Point)> OnMouseRelease;
         std::function<void(UIBase*,int)> OnKeyPress;
+
+        UIBase *GetChildById(std::string name);
+
+
         UIBase *GetLastComponent(){
+            if (Components.size() == 0){
+                return nullptr;
+            }
             return Components.back().get();
         }
 
@@ -143,7 +168,7 @@ class UIBase{
 
         uint8_t Color[4];
     protected:
-
+        std::string UiName;
         Point o_pos;
         bool hidden,close,MouseInside;
         static int g_ID;
