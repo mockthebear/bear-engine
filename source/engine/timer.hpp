@@ -62,6 +62,7 @@ class Timer{
             When disabled the timer will count.
         */
         void Enable(){m_enabled=true;};
+        void Finish(){m_time=0;};
         /**
             Check if the timer is enabled
         */

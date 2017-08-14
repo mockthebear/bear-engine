@@ -20,9 +20,9 @@ void GenericState::UpdateWindowses(float dt){
 
 }
 void GenericState::RenderWindowses(){
-    for (unsigned i = 0; i < GameWindows.size(); ++i) {
-        if (!GameWindows[i]->IsDead())
-            GameWindows[i]->Render();
+    for (auto & w : GameWindows) {
+        if (!w->IsDead())
+            w->Render();
     }
 }
 

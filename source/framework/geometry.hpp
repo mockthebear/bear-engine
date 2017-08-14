@@ -18,6 +18,8 @@ template <typename T=float> class GenericPoint{
         GenericPoint(){
             x = y = 0;
         };
+
+        ~GenericPoint(){};
         /**
             Start with the two given values
             @param x_ the X position
@@ -32,8 +34,13 @@ template <typename T=float> class GenericPoint{
             @param n An vector of two elements (const), and those are respectively x and y
         */
         template<typename T2> GenericPoint(GenericPoint<T2> p){
-            x = p.x;
-            x = p.y;
+            x = (T)p.x;
+            y = (T)p.y;
+        };
+
+        GenericPoint(double angle){
+            x = cos(angle);
+            y = sin(angle);
         };
 
         GenericPoint(const int n[2]){
@@ -84,6 +91,9 @@ template <typename T=float> class GenericPoint{
         T getDistance(GenericPoint *p){
             return sqrt(pow((x - p->x),(T)2) + pow((y-p->y),(T)2));
         };
+        T GetDistance(GenericPoint *p){
+            return sqrt(pow((x - p->x),(T)2) + pow((y-p->y),(T)2));
+        };
         /**
             *Get the magnitude of the current point
             @return Magnitude
@@ -98,12 +108,19 @@ template <typename T=float> class GenericPoint{
         T getDistance(GenericPoint p){
              return sqrt(pow((x - p.x),(T)2) + pow((y-p.y),(T)2));
         };
+        T GetDistance(GenericPoint p){
+             return sqrt(pow((x - p.x),(T)2) + pow((y-p.y),(T)2));
+        };
         /**
             Get the direction in rads between two points
             @param return in radians the angle
         */
         T getDirection(GenericPoint p){
             return atan2(y-p.y,x-p.x);
+        };
+
+        T GetDirection(GenericPoint to){
+            return atan2(to.y-y,to.x-x);
         };
         /**
             Sum two points p1.x + p2.x, p1.y + p2.y
@@ -140,6 +157,11 @@ template <typename T=float> class GenericPoint{
         }
         GenericPoint operator/(GenericPoint& f) const {
            return GenericPoint(x/f.x,y/f.y);
+        }
+
+        void GridSnap(int gridSize){
+            x -= (int)x%gridSize;
+            y -= (int)y%gridSize;
         }
         /**
             The X codinate;
@@ -330,16 +352,27 @@ template <typename T=float>class GenericRect{
         /*
             Given an rect, it aligns the THIS rect in the center of the parameter rect
         */
-        void CenterRectIn(GenericRect<T> r){
-            auto oterc = r.GetCenter();
+        void CenterRectIn(GenericPoint<T> center){
             auto thisc = GetCenter();
-            oterc.x -= thisc.x;
-            oterc.y -= thisc.y;
-            x += oterc.x;
-            y += oterc.y;
+            center.x -= thisc.x;
+            center.y -= thisc.y;
+            x += center.x;
+            y += center.y;
         }
 
+        void CenterRectIn(GenericRect<T> r){
+            GenericPoint<T> oterc = r.GetCenter();
+            CenterRectIn(oterc);
+        }
 
+        void GridSnap(int gridSize,bool onSize=true){
+            x -= (int)x%gridSize;
+            y -= (int)y%gridSize;
+            if (onSize){
+                w -= (int)x%gridSize;
+                h -= (int)y%gridSize;
+            }
+        }
 
 
         /**

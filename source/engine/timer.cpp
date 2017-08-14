@@ -9,12 +9,15 @@ Timer::Timer(){
 Timer::Timer(float duration,int repeat){
     m_duration = duration;
     m_time = 0;
-    m_repeat = 0;
+    m_repeat = repeat;
     m_enabled = true;
 }
 void Timer::Update(float dt){
     if (!m_enabled)
         return;
+    if ( (m_repeat > 0 || m_repeat == -1) && HasFinished()){
+        Restart();
+    }
     m_time -= dt;
 };
 
@@ -25,7 +28,8 @@ void Timer::SetDuration(float duration){
 void Timer::Restart(){
     m_time = m_duration;
     m_enabled = true;
-    m_repeat = 0;
+    if (m_repeat > 0)
+        m_repeat--;
 };
 
 float Timer::Get(){

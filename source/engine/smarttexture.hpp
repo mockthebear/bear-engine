@@ -18,7 +18,7 @@ class SmartTexture{
         SDL_Texture * GetTexture(){return t;};
         int getW(){return w;};
         int getH(){return h;};
-        int FormatXY(int x_,int y_){return y_*w + x_; };
+        inline int FormatXY(int x_,int y_){return y_*w + x_; };
         Uint32 &At(int x_,int y_){return pixels[y_*w + x_]; };
         //SmartTexture& operator=(SmartTexture T) = 0;
     private:
