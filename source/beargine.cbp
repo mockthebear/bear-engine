@@ -155,6 +155,8 @@
 		<Unit filename="input/touch.hpp" />
 		<Unit filename="input/touchkeys.cpp" />
 		<Unit filename="input/touchkeys.hpp" />
+		<Unit filename="luasystem/luacaller.cpp" />
+		<Unit filename="luasystem/luacaller.hpp" />
 		<Unit filename="luasystem/luagamestate.cpp" />
 		<Unit filename="luasystem/luagamestate.hpp" />
 		<Unit filename="luasystem/luainterface.cpp" />
@@ -164,6 +166,8 @@
 		<Unit filename="luasystem/luatools.cpp" />
 		<Unit filename="luasystem/luatools.hpp" />
 		<Unit filename="luasystem/luatypewrapper.hpp" />
+		<Unit filename="luasystem/luaui.cpp" />
+		<Unit filename="luasystem/luaui.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="mobile/android/jnihelper.hpp" />
 		<Unit filename="performance/console.cpp" />
