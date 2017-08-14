@@ -130,34 +130,50 @@ void Light::Shade(parameters *P,Job &j){
     max = (dis+1) * (MaxCycles/Threads);
     for (;i<max;i++){
         float STR = (strenght&127)*2;
+        float OSTR = (strenght&127)*2;
+        float removal = 1.0f;
         int lsx=0,lsy=0;
         j.vect[y][x] = 0;
-        for (float step=0;STR>0;step += 0.5){
+        /*
+            step means the distance for each iteration
+            Stops when the strenght of the light is less or equal 0
+        */
+        for (float step= 0.0f;STR >= 0.0f;step += 0.5f){
             int sx = sin(i * (360.0f/(float)MaxCycles) * M_PI / 180.0f)*step;
             int sy = cos(i * (360.0f/(float)MaxCycles) * M_PI / 180.0f)*step;
+            /*
+                If the last step is the same position of the last iteration
+                skip one step.
+            */
             if (lsx == (int)sx && lsy == (int)sy){
-                STR -= Permissive;
+                STR = (OSTR - step*Permissive*removal);
                 continue;
             }
             lsx = sx;
             lsy = sy;
+            /*
+                If is inside the limits
+            */
             if (IsInLimits(x+sx,y+sy)){
+                /*
+                    If there is something to block
+                */
                 if (DataMap[y+sy][x+sx]){
                     //Block
                     unsigned char Lum = MaxDarkness;
 
                     Lum = std::max(0,  (Lum)-(int)(STR));
                     j.vect[y+sy][x+sx] = Lum;
-                    STR -= STR* ( (float)DataMap[y+sy][x+sx] /255.0f);
-                }else{
-                    unsigned char Lum = MaxDarkness;
-                    Lum = std::max(0,  (Lum)-(int)(STR));
-                    j.vect[y+sy][x+sx] = Lum;
-                    //ShadeMap[y+sy][x+sx] = Lum;
+                    OSTR -= OSTR* ( (float)DataMap[y+sy][x+sx] /255.0f);
 
+                }else{
+                    uint16_t Lum = MaxDarkness;
+
+                    Lum = std::max(0,  (Lum)-(int)(STR));
+                    j.vect[y+sy][x+sx] = (Lum);
                 }
             }
-            STR -= Permissive;
+            STR = (OSTR - step*Permissive*removal);
 
         }
     }
