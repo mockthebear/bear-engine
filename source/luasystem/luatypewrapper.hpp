@@ -2,6 +2,9 @@
 #pragma once
 #include LUA_INCLUDE
 #include "../engine/object.hpp"
+#include "luacaller.hpp"
+#include "luaui.hpp"
+
 #define isthis(type,arg) if (type == arg) vaav = #arg;
 
 struct QuickDebug{
@@ -9,7 +12,7 @@ struct QuickDebug{
         lua_Debug ar;
         lua_getstack(L, 1, &ar);
         lua_getinfo(L, "nSl", &ar);
-        Console::GetInstance().AddText("At %s line %d ",ar.source, ar.currentline  );
+        Console::GetInstance().AddText("At %s line %d %s",ar.source, ar.currentline,LuaManager::lastCalled.c_str()  );
     };
     static void DumpLua(lua_State *L){
         for (int i=0;i<10;i++){
@@ -39,7 +42,30 @@ template<typename T1> struct MakeLuaObject{
             lua_pushnil(L);
             return 1;
         }
+        bool isNil = false;
+        lua_getglobal(L, "__REFS"); // insert
+        lua_pushnumber(L, 0);
+        lua_gettable(L, -2 );
+        lua_pushnumber(L,(uint64_t)obj);
+        lua_gettable(L, -2 );
+        if (lua_isnil(L,-1)){
+            isNil = true;
+        }else{
+            return 1;
+        }
+        //QuickDebug::DumpLua(L);
+
+
+
+
         if (lua_istable(L,1) && forceOutside == false){
+            if (isNil){
+                lua_getglobal(L, "__REFS"); // insert
+                lua_pushnumber(L, 0);
+                lua_gettable(L, -2 );
+                lua_pushnumber(L,(uint64_t)obj);
+            }
+
             luaL_checktype(L, 1, LUA_TTABLE);
             lua_newtable(L);
             lua_pushstring(L,"id");
@@ -61,8 +87,25 @@ template<typename T1> struct MakeLuaObject{
             lua_getglobal(L, name.c_str());
             lua_setmetatable(L, -2);
             lua_setfield(L, -2, "__self");
+
+            if (isNil){
+                lua_settable(L, -3 );
+                lua_pop(L,1);
+                lua_getglobal(L, "__REFS"); // request to return
+                lua_pushnumber(L, 0);
+                lua_gettable(L, -2 );
+                lua_pushnumber(L,(uint64_t)obj);
+                lua_gettable(L, -2);
+            }
+
             return 1;
         }else{
+            if (isNil){
+                lua_getglobal(L, "__REFS"); // insert
+                lua_pushnumber(L, 0);
+                lua_gettable(L, -2 );
+                lua_pushnumber(L,(uint64_t)obj);
+            }
 
             lua_newtable(L);
             lua_pushstring(L,"id");
@@ -95,6 +138,16 @@ template<typename T1> struct MakeLuaObject{
             lua_setmetatable(L, -2);
 
 
+            if (isNil){
+                lua_settable(L, -3 );
+                lua_pop(L,1);
+                lua_getglobal(L, "__REFS"); // request to return
+                lua_pushnumber(L, 0);
+                lua_gettable(L, -2 );
+                lua_pushnumber(L,(uint64_t)obj);
+                lua_gettable(L, -2);
+            }
+
 
             return 1;
         }
@@ -112,17 +165,68 @@ template<typename T1> struct GenericLuaType{
     };
 };
 
-/*
-    Function used to get values
-*/
+
 template<typename T1> struct GenericLuaGetter{
      static T1 Call(lua_State *L,int stackPos = -1,bool pop=true){
-        QuickDebug::DisplayCurrent(L);
-        Console::GetInstance().AddText("[GenericLuaGetter] unresolved type %s return as integer\n",(typeid(T1).name()));
-        return T1();//lua_tonumber(L,stackPos);
+        T1 pt;
+        if (lua_isnil(L,stackPos)){
+            Console::GetInstance().AddText("[LuaBase][Warning]Argument %d is nil",lua_gettop(L));
+        }else{
+             if (!lua_istable(L,stackPos)){
+                QuickDebug::DisplayCurrent(L);
+                Console::GetInstance().AddText("[LuaBase][Warning][%s->%s]Undefined type. Returning as number.",LuaManager::lastCalled.c_str(),typeid(T1).name(),lua_gettop(L));
+                int ret = lua_tonumber(L,stackPos);
+                T1 *pt2 = &pt;
+                *((int*)pt2) = ret;
+                return pt;
+            }else{
+                std::string disName = typeid(T1).name();
+                bool typeFine = false;
+                std::string otherType = "?";
+                T1** sp = nullptr;
+                lua_pushnil(L);
+                while(lua_next(L, -2) != 0)
+                {
+                    if (std::string(lua_tostring(L, -2)) == "__self"){
+                        sp = (T1**)lua_touserdata(L,-1);
+                        if (!sp){
+                            bear::out << "No obj\n";
+                        }
+                    }
+                    if (std::string(lua_tostring(L, -2)) == "type"){
+                        otherType = std::string(lua_tostring(L, -1));
+                        if (otherType == typeid(T1).name()){
+                            typeFine = true;
+                        }
+                    }
+                    lua_pop(L,1);
+                }
+                if (!sp){
+                    Console::GetInstance().AddText("[LuaBase][Warning] __self is not in the table");
+                    return T1();
+                }
+
+                if (!typeFine){
+                    disName = disName + " Instead is " + otherType;
+                    Console::GetInstance().AddText("[LuaBase][Warning] Type is not %s.",disName);
+                    return T1();
+                }
+                pt = *(*sp);
+                if (pop)
+                    lua_pop(L,1);
+                return pt;
+            }
+        }
+        if (pop)
+            lua_pop(L,1);
+        return T1();
+
     };
+
     static T1 Empty;
 };
+
+
 
 
 /*
@@ -403,6 +507,45 @@ template<>
     static Point Empty;
 };
 
+template<>
+    struct GenericLuaGetter<SDL_Color> {
+     static SDL_Color Call(lua_State *L,int stackPos = -1,bool pop=true){
+        SDL_Color pt = {0,0,0,255};
+        if (lua_isnil(L,-1)){
+            QuickDebug::DisplayCurrent(L);
+            Console::GetInstance().AddText("[LuaBase][Warning][SDL_Color]Argument %d is nil",lua_gettop(L));
+        }else{
+            if (!lua_istable(L,-1)){
+                QuickDebug::DisplayCurrent(L);
+                Console::GetInstance().AddText("[LuaBase][Warning][SDL_Color]Argument %d is not a table",lua_gettop(L));
+            }else{
+                lua_pushnil(L);
+                while(lua_next(L, stackPos-1) != 0)
+                {
+                    if (std::string(lua_tostring(L, -2)) == "r"){
+                        pt.r = lua_tonumber(L, -1);
+                    }
+                    if (std::string(lua_tostring(L, -2)) == "g"){
+                        pt.g = lua_tonumber(L, -1);
+                    }
+                    if (std::string(lua_tostring(L, -2)) == "b"){
+                        pt.b = lua_tonumber(L, -1);
+                    }
+                    if (std::string(lua_tostring(L, -2)) == "a"){
+                        pt.a = lua_tonumber(L, -1);
+                    }
+
+                    lua_pop(L,1);
+                }
+            }
+        }
+        if (pop)
+            lua_pop(L,1);
+        return pt;
+    };
+    static SDL_Color Empty;
+};
+
 
 template<>
     struct GenericLuaType<Point>{
@@ -437,6 +580,14 @@ template<> struct GenericLuaReturner<GameObject*>{
         MakeLuaObject<GameObject>::Make(L,vr,"GameObject",forceTable);
     };
 };
+
+template<> struct GenericLuaReturner<LuaUi*>{
+    static void Ret(LuaUi* vr,lua_State *L,bool forceTable = false){
+        MakeLuaObject<LuaUi>::Make(L,vr,"LuaUi",forceTable);
+    };
+};
+
+
 
 template<typename T> struct GenericLuaReturner<std::vector<T>>{
      static void Ret(std::vector<T> vr,lua_State *L){
@@ -562,7 +713,7 @@ template<>
     static bool Empty;
 };
 
-
+/*
 template<>
     struct GenericLuaGetter<Sprite> {
      static Sprite Call(lua_State *L,int stackPos = -1,bool pop=true){
@@ -612,33 +763,34 @@ template<>
     };
     static bool Empty;
 };
+*/
 
-
-template<>
-    struct GenericLuaGetter<GameObject*> {
-     static GameObject* Call(lua_State *L,int stackPos = -1,bool pop=true){
-        GameObject* pt=nullptr;
+template<class T>
+    struct GenericLuaGetter<T*> {
+     static T* Call(lua_State *L,int stackPos = -1,bool pop=true){
+        T* pt=nullptr;
         if (lua_isnil(L,stackPos)){
             Console::GetInstance().AddText("[LuaBase][Warning]Argument %d is nil",lua_gettop(L));
         }else{
             if (!lua_istable(L,stackPos)){
-                Console::GetInstance().AddText("[LuaBase][Warning][GameObject]Argument %d is not a table",lua_gettop(L));
+                Console::GetInstance().AddText("[LuaBase][Warning][%s]Argument %d is not a table",typeid(T).name(),lua_gettop(L));
             }else{
+                std::string disName = typeid(T).name();
                 bool typeFine = false;
                 std::string otherType = "?";
-                GameObject** sp = nullptr;
+                T** sp = nullptr;
                 lua_pushnil(L);
                 while(lua_next(L, -2) != 0)
                 {
                     if (std::string(lua_tostring(L, -2)) == "__self"){
-                        sp = (GameObject**)lua_touserdata(L,-1);
+                        sp = (T**)lua_touserdata(L,-1);
                         if (!sp){
                             bear::out << "No obj\n";
                         }
                     }
                     if (std::string(lua_tostring(L, -2)) == "type"){
                         otherType = std::string(lua_tostring(L, -1));
-                        if (otherType == typeid(GameObject).name()){
+                        if (otherType == typeid(T).name()){
                             typeFine = true;
                         }
                     }
@@ -650,7 +802,8 @@ template<>
                 }
 
                 if (!typeFine){
-                    Console::GetInstance().AddText("[LuaBase][Warning] Type is not GameObject. Instead is %s.",otherType);
+                    disName = disName + " Instead is " + otherType;
+                    Console::GetInstance().AddText("[LuaBase][Warning] Type is not %s.",disName);
                     return pt;
                 }
                 pt = (*sp);
@@ -662,8 +815,7 @@ template<>
     };
     static bool Empty;
 };
-
-
+/*
 template<>
     struct GenericLuaGetter<CustomFont> {
      static CustomFont Call(lua_State *L,int stackPos = -1,bool pop=true){
@@ -702,6 +854,57 @@ template<>
 
                 if (!typeFine){
                     Console::GetInstance().AddText("[LuaBase][Warning] Type is not CustomFont. Instead is %s.",otherType);
+                    return pt;
+                }
+                pt = *(*sp);
+            }
+        }
+        if (pop)
+            lua_pop(L,1);
+        return pt;
+    };
+    static bool Empty;
+};
+
+
+template<>
+    struct GenericLuaGetter<Text> {
+     static Text Call(lua_State *L,int stackPos = -1,bool pop=true){
+        Text pt;
+        if (lua_isnil(L,stackPos)){
+            Console::GetInstance().AddText("[LuaBase][Warning]Argument %d is nil",lua_gettop(L));
+        }else{
+            if (!lua_istable(L,stackPos)){
+
+                Console::GetInstance().AddText("[LuaBase][Warning][Text]Argument %d is not a table",lua_gettop(L));
+            }else{
+                bool typeFine = false;
+                std::string otherType = "?";
+                Text** sp = nullptr;
+                lua_pushnil(L);
+                while(lua_next(L, -2) != 0)
+                {
+                    if (std::string(lua_tostring(L, -2)) == "__self"){
+                        sp = (Text**)lua_touserdata(L,-1);
+                        if (!sp){
+                                bear::out << "No CustomFont\n";
+                        }
+                    }
+                    if (std::string(lua_tostring(L, -2)) == "type"){
+                        otherType = std::string(lua_tostring(L, -1));
+                        if (otherType == typeid(Text).name()){
+                            typeFine = true;
+                        }
+                    }
+                    lua_pop(L,1);
+                }
+                if (!sp){
+                    Console::GetInstance().AddText("[LuaBase][Warning] __self is not in the table");
+                    return pt;
+                }
+
+                if (!typeFine){
+                    Console::GetInstance().AddText("[LuaBase][Warning] Type is not Text. Instead is %s.",otherType);
                     return pt;
                 }
                 pt = *(*sp);
@@ -764,7 +967,7 @@ template<>
     };
     static bool Empty;
 };
-
+*/
 
 template<>
     struct GenericLuaGetter<PointInt> {

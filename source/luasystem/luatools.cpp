@@ -4,6 +4,7 @@
 bool        GenericLuaGetter<bool>::Empty = false;
 std::string GenericLuaGetter<std::string>::Empty = "";
 
+
 float       GenericLuaGetter<float>::Empty = 0.0f;
 double       GenericLuaGetter<double>::Empty = 0.0;
 int         GenericLuaGetter<int>::Empty = 0;

@@ -11,6 +11,7 @@
     #define LUATOOLSBEH
     #include LUA_INCLUDE
 #include "luatypewrapper.hpp"
+#include "luacaller.hpp"
 
 typedef std::function<int(lua_State*)> LuaCFunctionLambda;
 
@@ -59,41 +60,6 @@ template<class T> class LuaReferenceCounter{
             return ref.internal_counter;
         }
         std::map<uint64_t,std::pair<uint64_t,bool>> internal_counter;
-};
-
-
-/*
-    Function used to store/get self and lua state
-*/
-
-class LuaManager{
-    public:
-        template <typename T> static T* GetSelf(){
-            lua_getfield(L, 1, "__self");
-            T** data = (T**)lua_touserdata(LuaManager::L, -1);
-            if (!data){
-                return nullptr;
-            }
-            return (*data);
-        }
-        template <typename T> static T** GetSelfReference(){
-            lua_getfield(L, 1, "__self");
-            T** data = (T**)lua_touserdata(LuaManager::L, -1);
-            if (!data){
-                return nullptr;
-            }
-            return (data);
-        }
-        static bool Pcall(int arg = 0,int returns = 0,int ext = 0){
-            if (lua_pcall(L, arg, returns,  ext) != 0) {
-                Console::GetInstance().AddTextInfo(utils::format("Lua error: :c %s",lua_tostring(L, -1)));
-                lua_pop(L,1);
-                return false;
-            }
-            return true;
-        }
-    static bool IsDebug;
-    static lua_State *L;
 };
 
 
@@ -270,7 +236,8 @@ class LuaCaller{
                                 "function ClearInstances(state)\n"
                                 "   __REFS[state] = nil\n"
                                 "   collectgarbage()\n"
-                                "end\n";
+                                "end\n"
+                                "__REFS[0] = {}\n";
             luaL_loadstring(L, baseMaker);
             lua_pcall(L, 0, LUA_MULTRET, 0);
 
@@ -366,6 +333,7 @@ class LuaCaller{
 
         template <typename Obj,typename ... Types> static bool CallSelfField(lua_State *L,Obj *obj,std::string field,Types ... args){
             lua_getglobal(L, "CallFromField");
+
             if(!lua_isfunction(L, -1) ){
                 return false;
             }
@@ -399,6 +367,7 @@ class LuaCaller{
 template<typename T1,typename ... Types> void FunctionRegister(lua_State *L,std::string str,T1 func(Types ... args) ){
 
     LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
+        LuaManager::lastCalled = str;
         int argCount = sizeof...(Types);
         if (argCount > lua_gettop(L2)){
             Console::GetInstance().AddTextInfo(utils::format("[LUA][1]Too few arguments on function %s. Expected %d got %d",str,argCount,lua_gettop(L2)));
@@ -421,6 +390,7 @@ template<typename T1,typename ... Types> void FunctionRegister(lua_State *L,std:
 template<typename T1,typename ClassObj,typename ... Types> struct internal_register{
      static void LambdaRegisterStack(lua_State *L,std::string str,int stackPos,T1 (ClassObj::*func)(Types ... args) ){
         LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
+            LuaManager::lastCalled = str;
             int argCount = sizeof...(Types);
             int argNecessary = lua_gettop(L2)-2;
             if (argCount < argNecessary){
@@ -449,6 +419,7 @@ template<typename T1,typename ClassObj,typename ... Types> struct internal_regis
 template<typename ClassObj,typename ... Types> struct internal_register<void,ClassObj,Types...>{
      static void LambdaRegisterStack(lua_State *L,std::string str,int stackPos,void (ClassObj::*func)(Types ... args) ){
         LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
+            LuaManager::lastCalled = str;
             int argCount = sizeof...(Types);
             int argNecessary = lua_gettop(L2)-2;
             if (argCount < argNecessary){
@@ -477,6 +448,7 @@ template<typename ClassObj,typename ... Types> struct internal_register<void,Cla
 
 template<typename T1,typename ... Types> void LambdaClassRegister(lua_State *L,std::string str,int stackPos,std::function<T1(Types ... args)> func){
     LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
+        LuaManager::lastCalled = str;
         int argCount = sizeof...(Types);
         if (argCount > lua_gettop(L2)){
             Console::GetInstance().AddTextInfo(utils::format("[LUA][4]Too few arguments on function %s. Expected %d got %d",str,argCount,lua_gettop(L2)));
@@ -498,6 +470,7 @@ template<typename T1,typename ... Types> void LambdaClassRegister(lua_State *L,s
 
 template<typename ... Types> void LambdaClassRegister(lua_State *L,std::string str,int stackPos,std::function<void(Types ... args)> func){
     LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
+        LuaManager::lastCalled = str;
         int argCount = sizeof...(Types);
         if (argCount > lua_gettop(L2)){
             Console::GetInstance().AddTextInfo(utils::format("[LUA][5]Too few arguments on function %s. Expected %d got %d",str,argCount,lua_gettop(L2)));
@@ -519,6 +492,7 @@ template<typename ... Types> void LambdaClassRegister(lua_State *L,std::string s
 
 template<typename T1,typename ... Types> void LambdaRegister(lua_State *L,std::string str,std::function<T1(Types ... args)> func){
     LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
+        LuaManager::lastCalled = str;
         int argCount = sizeof...(Types);
         if (argCount > lua_gettop(L2)){
             Console::GetInstance().AddTextInfo(utils::format("[LUA][6]Too few arguments on function %s. Expected %d got %d",str,argCount,lua_gettop(L2)));
@@ -794,7 +768,7 @@ template<typename T1> struct ClassRegister{
 
         lua_settable(L,-3);
 
-        lua_getglobal(L, "__REFS"); // insert
+        lua_getglobal(L, "__REFS"); // request to return
         lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
         lua_gettable(L, -2 );
         lua_pushnumber(L,(uint64_t)obj);
