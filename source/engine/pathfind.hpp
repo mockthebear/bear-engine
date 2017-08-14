@@ -45,7 +45,7 @@ class PathFind{
         int &at(int x,int y){return m_map[x][y];};
         bool AddBlock(int x,int y,bool block=true);
 
-        std::stack<Point> Find(PointInt A,PointInt B);
+        std::stack<Point> Find(PointInt From,PointInt To);
 
         void Render();
 

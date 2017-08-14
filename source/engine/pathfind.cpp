@@ -91,7 +91,7 @@ bool PathFind::AddBlock(int bx,int by,bool block){
     m_map[pf_pos.x][pf_pos.y] = block;
     return true;
 }
-std::stack<Point> PathFind::Find(PointInt A,PointInt B){
+std::stack<Point> PathFind::Find(PointInt B,PointInt A){
     pf_start = PointInt( floor( A.x - (int)A.x%(int)cellSize ), floor( A.y - (int)A.y%(int)cellSize ));
     PointInt pf_end = PointInt( floor( B.x - (int)B.x%(int)cellSize ), floor( B.y - (int)B.y%(int)cellSize ));
 
@@ -113,7 +113,7 @@ std::stack<Point> PathFind::Find(PointInt A,PointInt B){
     n0  = PFNode(pf_start.x, pf_start.y, 0, 0);
     n0.updatePriority(pf_end.x, pf_end.x);
     pq[pqi].push(n0);
-    int steps = size.y*size.x/10.0;
+    int steps = size.y*size.x/2.0;
 
     while(!pq[pqi].empty()){
         steps--;
