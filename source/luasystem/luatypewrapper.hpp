@@ -44,7 +44,7 @@ template<typename T1> struct MakeLuaObject{
         }
         bool isNil = false;
         lua_getglobal(L, "__REFS"); // insert
-        lua_pushnumber(L, 0);
+        lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
         lua_gettable(L, -2 );
         lua_pushnumber(L,(uint64_t)obj);
         lua_gettable(L, -2 );
@@ -61,7 +61,7 @@ template<typename T1> struct MakeLuaObject{
         if (lua_istable(L,1) && forceOutside == false){
             if (isNil){
                 lua_getglobal(L, "__REFS"); // insert
-                lua_pushnumber(L, 0);
+                lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
                 lua_gettable(L, -2 );
                 lua_pushnumber(L,(uint64_t)obj);
             }
@@ -92,7 +92,7 @@ template<typename T1> struct MakeLuaObject{
                 lua_settable(L, -3 );
                 lua_pop(L,1);
                 lua_getglobal(L, "__REFS"); // request to return
-                lua_pushnumber(L, 0);
+                lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
                 lua_gettable(L, -2 );
                 lua_pushnumber(L,(uint64_t)obj);
                 lua_gettable(L, -2);
@@ -142,7 +142,7 @@ template<typename T1> struct MakeLuaObject{
                 lua_settable(L, -3 );
                 lua_pop(L,1);
                 lua_getglobal(L, "__REFS"); // request to return
-                lua_pushnumber(L, 0);
+                lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
                 lua_gettable(L, -2 );
                 lua_pushnumber(L,(uint64_t)obj);
                 lua_gettable(L, -2);

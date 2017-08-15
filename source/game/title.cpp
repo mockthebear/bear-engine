@@ -264,7 +264,7 @@ void Title::Update(float dt){
     }
 
 
-
+    UpdateWindowses(dt);
 
 
 }
@@ -292,6 +292,7 @@ void Title::Render(){
 
 
     // ThreadPool::GetInstance().Help();
+
     ThreadPool::GetInstance().Lock();
 
 

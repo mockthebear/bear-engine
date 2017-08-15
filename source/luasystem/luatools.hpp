@@ -13,6 +13,8 @@
 #include "luatypewrapper.hpp"
 #include "luacaller.hpp"
 
+#define LUA_LAYER_UI 0
+
 typedef std::function<int(lua_State*)> LuaCFunctionLambda;
 
 template<class T> class LuaReferenceCounter{

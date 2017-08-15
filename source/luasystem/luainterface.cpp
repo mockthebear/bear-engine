@@ -559,7 +559,7 @@ void LuaInterface::RegisterClasses(){
         LuaUi *t = new LuaUi();
         //BearEngine->GetCurrentState().AddWindow(t);
         return t;
-    });
+    },nullptr);
 
     GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_ui");
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_ui","AddWindow",std::function<void(LuaUi *)>([](LuaUi *ui){ BearEngine->GetCurrentState().AddWindow(ui); }));
