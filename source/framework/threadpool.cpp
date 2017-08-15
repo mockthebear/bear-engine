@@ -228,6 +228,17 @@ bool ThreadPool::IsDone(){
 }
 void ThreadPool::Update(float dt){}
 
+void ThreadPool::CriticalLock(){
+    #ifndef DISABLE_THREADPOOL
+    pthread_mutex_lock(&Critical);
+    #endif // DISABLE_THREADPOOL
+}
+void ThreadPool::CriticalUnLock(){
+    #ifndef DISABLE_THREADPOOL
+    pthread_mutex_unlock(&Critical);
+    #endif // DISABLE_THREADPOOL
+}
+
 void *ThreadPool::thread_pool_worker(void *OBJ){
     parameters *P = (parameters*)OBJ;
     ThreadPool *This = (ThreadPool*)P->me;
@@ -243,17 +254,15 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
         Job todo;
         while (P->working){
             todo.Type = JOB_NOTHING;
-            #ifdef USE_LOCK_FREE_STACK
-            todo = This->Jobs.Get(P->id);
-            if (!todo.empty){
-            #else
+
             #ifndef DISABLE_THREADPOOL
             pthread_mutex_lock(&This->Critical);
             #endif // DISABLE_THREADPOOL
+
             if (This->Jobs.size() > 0){
                 todo = This->Jobs.top();
                 This->Jobs.pop();
-            #endif
+
                 P->working = true;
             }else{
                 P->working = false;
@@ -261,11 +270,10 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
                     return nullptr;
                 }
             }
-            #ifndef USE_LOCK_FREE_STACK
+
             #ifndef DISABLE_THREADPOOL
             pthread_mutex_unlock(&This->Critical);
             #endif // DISABLE_THREADPOOL
-            #endif
 
             if (todo.Type != JOB_NOTHING){
                 if (todo.Type == JOB_LAMBDA){

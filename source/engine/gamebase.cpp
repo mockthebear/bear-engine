@@ -248,23 +248,9 @@ void Game::Update(){
         if (startFlags&BEAR_FLAG_START_LUA)
             LuaInterface::Instance().Update(dt);
         #endif
-        #ifndef DISABLE_THREADPOOL
-        if (startFlags&BEAR_FLAG_START_THREADS)
-            if (wasLocked){
-                ThreadPool::GetInstance().Lock();
-                wasLocked = false;
-            }
-        #endif // DISABLE_THREADPOOL
+
         stateStack.top()->Update(std::min(dt,ConfigManager::MinimumDT) );
-        #ifndef DISABLE_THREADPOOL
-        if (startFlags&BEAR_FLAG_START_THREADS){
-            g_parallelCollision.Reset();
-            wasLocked = g_parallelCollision.MakeJobs();
-            if (wasLocked){
-                ThreadPool::GetInstance().Unlock();
-            }
-        }
-        #endif // DISABLE_THREADPOOL
+
         if (startFlags&BEAR_FLAG_START_SCREEN)
             ScreenManager::GetInstance().Update(dt);
     }
@@ -286,8 +272,6 @@ void Game::Begin(){
         Close();
         exit(1);
     }
-    if (startFlags&BEAR_FLAG_START_THREADS)
-        ThreadPool::GetInstance().Unlock();
     if (storedState != NULL){
         stateStack.emplace(storedState);
         stateStack.top()->Begin();

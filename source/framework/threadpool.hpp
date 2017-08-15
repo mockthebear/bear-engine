@@ -2,10 +2,11 @@
 #include <ctime>
 // *** END ***
 #include "../settings/definitions.hpp"
-#include "lcokfreequeue.hpp"
+
 #ifndef SHADER_
 #define SHADER_
 #include <stack>
+#include <queue>
 #ifndef DISABLE_THREADPOOL
 #include <pthread.h>
 #include <semaphore.h>
@@ -13,12 +14,13 @@
 #include <functional>
 #include <time.h>
 
-//#define USE_LOCK_FREE_STACK
+
 typedef struct{
     int id;
     int Threads;
     void *me;
     bool working;
+    bool Begin;
     bool mainThread;
 } parameters;
 
@@ -183,6 +185,9 @@ class ThreadPool{
         */
         void ClearJobs();
 
+        void CriticalLock();
+        void CriticalUnLock();
+
         /**
             Dont do anything yet
         */
@@ -255,11 +260,7 @@ class ThreadPool{
     private:
         bool Locked;
         void AddPriorityJob(Job &j,int threadId);
-        #ifdef USE_LOCK_FREE_STACK
-        LockFreeQueue<Job> Jobs;
-        #else
         std::stack<Job> Jobs;
-        #endif
         Job *fastJobs;
 
         static void *thread_pool_worker(void *OBJ);
