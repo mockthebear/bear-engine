@@ -6,22 +6,18 @@
 LuaUi::LuaUi():UIBase(){
     UI_REGISTER(LuaUi);
     other = 0;
-
+    MainWidget = false;
 
    OnMouseRelease = [=](UIBase* obj,int i,Point p){
-        LuaCaller::CallSelfField(LuaManager::L,this,"OnMouseRelease",i,p);
+        LuaCaller::CallSelfField(LuaManager::L,obj,"OnMouseRelease",i,p);
    };
 
    OnMouseEnter = [=](UIBase* obj,Point p){
-        LuaCaller::CallSelfField(LuaManager::L,this,"OnMouseEnter",p);
+        LuaCaller::CallSelfField(LuaManager::L,obj,"OnMouseEnter",p);
    };
 
    OnMouseLeave = [=](UIBase* obj,Point p){
-        LuaCaller::CallSelfField(LuaManager::L,this,"OnMouseLeave",p);
-   };
-
-   OnMouseRelease = [=](UIBase* obj,int i,Point p){
-        LuaCaller::CallSelfField(LuaManager::L,this,"OnMouseRelease",i,p);
+        LuaCaller::CallSelfField(LuaManager::L,obj,"OnMouseLeave",p);
    };
 
    OnMousePress = [=](UIBase* obj,int i,Point p){
@@ -69,8 +65,6 @@ std::vector<LuaUi*> LuaUi::GetChilds(){
 void LuaUi::AddComponent2(LuaUi *ui){
     UIBase::AddComponent(ui);
 }
-
-
 
 void LuaUi::NotifyChildrens(){
     box.x = o_pos.x + (mother ? mother->box.x : 0);

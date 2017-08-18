@@ -13,10 +13,18 @@ class LuaUi : public UIBase{
         void Update(float dt);
         void ClearChildrens();
         void Refresh();
+
+        void SetAsMain(bool tf){ MainWidget = tf;};
+
+
         void AddComponent2(LuaUi *ui);
 
-        float GetY(){return o_pos.y;};
-        float GetX(){return o_pos.x;};
+        float GetY(){return MainWidget ? 0.0f : o_pos.y;};
+        float GetX(){return MainWidget ? 0.0f : o_pos.x;};
+
+        float GetTrueY(){return o_pos.y;};
+        float GetTrueX(){return o_pos.x;};
+
         void SetX(float x){
             o_pos.x = x;
             NotifyChildrens();
@@ -55,6 +63,7 @@ class LuaUi : public UIBase{
         std::function<void(UIBase*,int)> OnKeyPress;*/
     private:
         uint64_t other;
+        bool MainWidget;
 
 };
 /*

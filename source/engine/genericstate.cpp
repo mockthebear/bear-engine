@@ -9,10 +9,6 @@ GenericState::GenericState(){
 
 
 void GenericState::UpdateWindowses(float dt){
-    if (storedUi != nullptr){
-        GameWindows.emplace_back(storedUi);
-        storedUi = nullptr;
-    }
     for (unsigned i = 0; i < GameWindows.size(); ++i) {
         if (!GameWindows[i]->IsDead())
             GameWindows[i]->Update(dt);
@@ -34,5 +30,5 @@ void GenericState::RenderInstances(){
     }
 }
 void GenericState::AddWindow(UIBase *b){
-    storedUi = b;
+    GameWindows.emplace_back(b);
 }

@@ -113,7 +113,7 @@ void SelectionWindow::Render(Point where){
     where.x = box.x;
     where.y = box.y;
     UIBase::Render(where);
-    if (selectedOption != -1){
-        arrow.Render(option[selectedOption]->box.x-arrow.GetWidth(),option[selectedOption]->GetY());
-    }
+    //if (selectedOption != -1){
+    //    arrow.Render(option[selectedOption]->box.x-arrow.GetWidth(),option[selectedOption]->GetY());
+   // }
 }
