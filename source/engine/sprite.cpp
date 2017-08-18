@@ -39,6 +39,7 @@ Sprite::Sprite(){
     m_alpha = 255;
     fname = "";
     over = 0;
+    scaleCentered = false;
     OUTR = OUTB = OUTG = 255;
     timeElapsed = 0;
     frameTime = 0;
@@ -433,9 +434,27 @@ void Sprite::Renderxy(int x,int y,double angle){
 }
 void Sprite::Render(int x,int y,double angle){
     SDL_Rect dimensions2;
-
     double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1
     double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1
+
+    if (scaleCentered){
+        Rect adj(x,y,clipRect.w*scaleX,clipRect.h*scaleY);
+        Point c;
+        if (hasCenter){
+            c.x = center.x;
+            c.y = center.y;
+        }else{
+            Rect aux(x,y,clipRect.w,clipRect.h);
+            c = aux.GetCenter();
+        }
+        adj.CenterRectIn(c);
+        x = (adj.x);
+        y = (adj.y);
+        //x -= (widSize.x - scaleX*widSize.x)/2;
+        //y -= (widSize.y - scaleY*widSize.y)/2;
+
+    }
+
     dimensions2.x = x*scaleRatioW + ScreenManager::GetInstance().GetOffsetW();
     dimensions2.y = y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH();
     dimensions2.h = clipRect.h*scaleRatioH*scaleY;
@@ -461,9 +480,9 @@ int Sprite::GetHeight(){
     return dimensions.h*scaleY;
 }
 int Sprite::GetFrameHeight(){
-    return dimensions.h*scaleY/frameCount;
+    return clipRect.h*scaleY;
 }
 
 int Sprite::GetFrameWidth(){
-    return dimensions.w*scaleX/frameCount;
+    return clipRect.w*scaleX;
 }

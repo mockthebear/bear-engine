@@ -394,6 +394,12 @@ class Sprite{
             *Change the sprite scale. Its an local scale, not shared.
             @param scale the original value is 1.
         */
+
+        void SetCenteredScale(bool set,Point sprSize){
+            scaleCentered = set;
+            widSize = sprSize;
+        }
+
         void SetScaleY(float scale=1){
             scaleY=scale;
         };
@@ -495,7 +501,8 @@ class Sprite{
         SDL_Rect dimensions;
         SDL_Rect clipRect;
         SDL_Point center;
-        bool hasCenter;
+        Point widSize;
+        bool hasCenter,scaleCentered;
 };
 
 
