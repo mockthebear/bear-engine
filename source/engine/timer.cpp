@@ -16,7 +16,7 @@ void Timer::Update(float dt){
     if (!m_enabled)
         return;
     if ( (m_repeat > 0 || m_repeat == -1) && HasFinished()){
-        Restart();
+        //Restart();
     }
     m_time -= dt;
 };

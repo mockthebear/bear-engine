@@ -46,6 +46,7 @@ class Timer{
             Define an duration
         */
         void SetDuration(float duration);
+        float GetDuration(){ return std::max(0.0f,m_duration);};
         /**
             Reset the timer
         */
