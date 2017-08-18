@@ -132,6 +132,7 @@ void InputManager::Vibrate(uint32_t milis){
 }
 
 void InputManager::Update(float dt){
+    halt = false;
     SDL_Event event;
     mouse.Update(dt);
     keyboard.Update(dt);

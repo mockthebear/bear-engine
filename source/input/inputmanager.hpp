@@ -256,6 +256,8 @@ class InputManager{
         Joystick* GetJoystick(int id);
 
         bool OnScreenResize(){return onResize;};
+        bool IsHalted(){return halt;};
+        void HaltInput(){halt = true;};
 
         /**
             *Wip
@@ -292,6 +294,7 @@ class InputManager{
         Touch touchscreen;
         bool quitGame;
         bool onResize;
+        bool halt;
 
 };
 
