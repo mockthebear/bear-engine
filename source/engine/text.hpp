@@ -189,6 +189,7 @@ class Text{
             alpha = 255;
             font = nullptr;
             texturespr = nullptr;
+            aliasing = false;
         };
         /**
             *Here it just delete the texture.
@@ -204,8 +205,8 @@ class Text{
             *This possition is added to the offset on constructor
         */
         void Render(int X = 0, int Y = 0,TextRenderStyle renderStyle = TEXT_RENDER_TOPLEFT);
-        void RenderLua(int X = 0, int Y = 0){
-            Render(X,Y,TEXT_RENDER_TOPLEFT);
+        void RenderLua(Point p){
+            Render(p.x,p.y,TEXT_RENDER_TOPLEFT);
         }
         /**
             Render without any scaling or screen adjustment
@@ -255,6 +256,19 @@ class Text{
             *Dont work with custom fonts
         */
         void SetFontSize(int size);
+
+        void SetFont(std::string stra){
+            InternalSetFont(stra);
+            RemakeTexture();
+        }
+
+        void InternalSetFont(std::string fnt);
+
+        void SetAliasign(bool al){
+            aliasing = al;
+            RemakeTexture();
+        }
+
         /**
             *Clear assetTable
         */
@@ -336,7 +350,7 @@ class Text{
         SDL_Texture* texture;
         CustomFont *texturespr;
 
-		bool isWorking;
+		bool isWorking,aliasing;
 
 };
 

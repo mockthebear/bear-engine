@@ -140,7 +140,7 @@ Point CustomFont::Render(std::string str_,int x_,int y_,int alpha){
 Text::Text(std::string text,int size,SDL_Color color):Text("engine:default.ttf", size,TEXT_SOLID,text, color){
 
 }
-Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string textp, SDL_Color colot,int x,int y){
+Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string textp, SDL_Color colot,int x,int y):Text(){
     angle = 0;
     font = NULL;
     texturespr = NULL;
@@ -154,40 +154,11 @@ Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string tex
     texture = NULL;
     alpha=255;
     std::string ftnm = fontfilep;
-    char buff[20];
-	sprintf(buff,"%d",fontsize);
-    ftnm = ftnm+buff;
+
+    InternalSetFont(ftnm);
     //Not resource tweaks
-    bool tweaks = true;
-    if (fontfilep.find(":")==std::string::npos){
-
-        isWorking = false;
-
-        fontfilep = DirManager::AdjustAssetsPath(fontfilep);
-        fontfile = fontfilep;
-        tweaks = false;
-    }
 
 
-    if (assetTable[ftnm]){
-        font =assetTable[ftnm];
-        isWorking = true;
-    }else{
-        if (tweaks){
-            SDL_RWops* rw = ResourceManager::GetInstance().GetFile(fontfilep);
-            font = TTF_OpenFontRW(rw,1,fontsize);
-            //SDL_RWclose(rw);
-        }else{
-            font = TTF_OpenFont(fontfilep.c_str(), fontsize);
-        }
-        isWorking = true;
-        if (font != NULL){
-            assetTable[ftnm] = font;
-        }else{
-            Console::GetInstance().AddTextInfo(utils::format("Cannot load font [%s] because %s",ftnm.c_str(),SDL_GetError()));
-            isWorking = false;
-        }
-    }
 
 
     scaleY=scaleX=1;
@@ -196,13 +167,51 @@ Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string tex
 
 }
 
+void Text::InternalSetFont(std::string ftnm){
+    bool tweaks = true;
+    char buff[20];
+    int fontsize = size;
+
+	sprintf(buff,"%d",fontsize);
+    if (ftnm.find(":")==std::string::npos){
+
+        isWorking = false;
+
+        ftnm = DirManager::AdjustAssetsPath(ftnm);
+        tweaks = false;
+    }
+    std::string oName = ftnm;
+    ftnm = ftnm+buff;
+
+
+    if (assetTable[ftnm]){
+        font =assetTable[ftnm];
+        isWorking = true;
+    }else{
+        if (tweaks){
+            SDL_RWops* rw = ResourceManager::GetInstance().GetFile(oName);
+            font = TTF_OpenFontRW(rw,1,fontsize);
+            //SDL_RWclose(rw);
+        }else{
+            font = TTF_OpenFont(oName.c_str(), fontsize);
+        }
+        isWorking = true;
+        fontfile = ftnm;
+        if (font != NULL){
+            assetTable[ftnm] = font;
+        }else{
+            Console::GetInstance().AddTextInfo(utils::format("Cannot load font [%s] because %s",ftnm.c_str(),SDL_GetError()));
+            isWorking = false;
+        }
+    }
+}
 SDL_Texture* Text::CopyTexture(){
     SDL_Texture* ret = texture;
     RemakeTexture(false);
     return ret;
 }
 
-Text::Text(std::string fontfilep, std::string textp,int x,int y){
+Text::Text(std::string fontfilep, std::string textp,int x,int y):Text(){
     angle = 0;
     isWorking = false;
     font = NULL;
@@ -440,7 +449,8 @@ void Text::RemakeTexture(bool Destory){
     }
 
     if (surf){
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
+        if (aliasing)
+            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
         texture = SDL_CreateTextureFromSurface(BearEngine->GetRenderer(),surf);
         Uint32 format;
         int acess,w,h;
@@ -456,7 +466,8 @@ void Text::RemakeTexture(bool Destory){
         if (SDL_RenderCopy(BearEngine->GetRenderer(),texture,NULL,&dimensions2) < 0){
             bear::out << "[TXT:RemakeTexture] Failed to render, SDL reason["<<SDL_GetError()<<"]:"<<"|"<<text.size()<<"{"<<text<<"}\n";
         }
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+        if (aliasing)
+            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
         SDL_FreeSurface(surf);
     }else{
         bear::out << "[Text:RemakeTexture] Surface not loaded "<<SDL_GetError()<<" ("<<text<<")\n";
