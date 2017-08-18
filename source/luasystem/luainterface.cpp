@@ -274,12 +274,15 @@ void LuaInterface::RegisterClasses(){
     ClassRegister<Timer>::RegisterClassMethod(L,"Timer","Set",&Timer::SetDuration);
     ClassRegister<Timer>::RegisterClassMethod(L,"Timer","Restart",&Timer::Restart);
     ClassRegister<Timer>::RegisterClassMethod(L,"Timer","Reset",&Timer::Restart);
+    ClassRegister<Timer>::RegisterClassMethod(L,"Timer","Start",&Timer::Restart);
     ClassRegister<Timer>::RegisterClassMethod(L,"Timer","Get",&Timer::Get);
     ClassRegister<Timer>::RegisterClassMethod(L,"Timer","Disable",&Timer::Disable);
     ClassRegister<Timer>::RegisterClassMethod(L,"Timer","Enable",&Timer::Enable);
     ClassRegister<Timer>::RegisterClassMethod(L,"Timer","IsEnabled",&Timer::IsEnabled);
     ClassRegister<Timer>::RegisterClassMethod(L,"Timer","HasFinished",&Timer::HasFinished);
     ClassRegister<Timer>::RegisterClassMethod(L,"Timer","Update",&Timer::Update);
+
+    ClassRegister<Timer>::RegisterClassMethod(L,"Timer","GetDuration",&Timer::GetDuration);
 
     TypeObserver<Timer,float>::RegisterMethod(LuaManager::L,"m_time",&Timer::m_time);
 
@@ -328,6 +331,7 @@ void LuaInterface::RegisterClasses(){
         name = GenericLuaGetter<std::string>::Call(L);
 
         Text *t = LuaReferenceCounter<Text>::makeReference(Text(name,size,color));
+        t->RemakeTexture();
         return t;
     });
     ClassRegister<Text>::RegisterClassMethod(L,"Text","Close",&Text::Close);
@@ -344,6 +348,8 @@ void LuaInterface::RegisterClasses(){
     ClassRegister<Text>::RegisterClassMethod(L,"Text","IsWorking",&Text::IsWorking);
     ClassRegister<Text>::RegisterClassMethod(L,"Text","SetRotation",&Text::SetRotation);
     ClassRegister<Text>::RegisterClassMethod(L,"Text","Render",&Text::RenderLua);
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","SetAliasign",&Text::SetAliasign);
+    ClassRegister<Text>::RegisterClassMethod(L,"Text","SetFont",&Text::SetFont);
 
 
 
@@ -521,6 +527,7 @@ void LuaInterface::RegisterClasses(){
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_input","IsMouseReleased",std::function<bool(int)>([](int key){ return g_input.IsMouseReleased(key); }));
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_input","IsMouseInside",std::function<bool(Rect)>([](Rect key){ return g_input.IsMouseInside(key); }));
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_input","GetKeyState",std::function<int(int)>([](int key){ return (int)g_input.GetKeyState(key); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_input","HaltInput",std::function<void()>([](){ g_input.HaltInput(); }));
 
 
     GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_render");
@@ -529,7 +536,8 @@ void LuaInterface::RegisterClasses(){
     //g_render.DrawOutlineSquare(rect, red, green, blue, alpha)
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","DrawOutlineSquare",std::function<void(Rect,uint8_t,uint8_t,uint8_t,uint8_t)>([](Rect rct,uint8_t r,uint8_t g,uint8_t b,uint8_t a){ RenderHelp::DrawSquareColor(rct.x,rct.y,rct.w,rct.h,r,g,b,a,true); }));
     //g_render.DrawOutlineSquare(point1, point2, red, green, blue, alpha)
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","DrawLineColor",std::function<void(Point,Point,uint8_t,uint8_t,uint8_t,uint8_t)>([](Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a){ RenderHelp::DrawLineColorA(p1.x,p1.y,p1.x,p2.y,r,g,b,a); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","DrawLineColor",std::function<void(Point,Point,uint8_t,uint8_t,uint8_t,uint8_t)>([](Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a){
+                                                                                                                                                              RenderHelp::DrawLineColorA(p1.x,p1.y,p2.x,p2.y,r,g,b,a); }));
     //g_render.FormatARGB(red, green, blue, alpha)
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","FormatARGB",std::function<uint32_t(uint8_t,uint8_t,uint8_t,uint8_t)>([](uint8_t r,uint8_t g,uint8_t b,uint8_t a){ return RenderHelp::FormatARGB(a,r,g,b); }));
     //g_render.FormatRGBA(red, green, blue, alpha)
@@ -548,6 +556,7 @@ void LuaInterface::RegisterClasses(){
     GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_screen");
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_screen","ScreenShake",std::function<void(float,float,int,float)>([](float amountX,float amountY,int frame,float duration){  ScreenManager::GetInstance().ScreenShake(Point(amountX,amountY),frame,duration); }));
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_screen","GetFps",std::function<float()>([](){  return ScreenManager::GetInstance().GetFps(); }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_screen","GetScreenSize",std::function<Point()>([](){  return Point(ScreenManager::GetInstance().GetScreenSize()); }));
 
 
 
@@ -583,6 +592,11 @@ void LuaInterface::RegisterClasses(){
 
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetX",&LuaUi::GetX);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetY",&LuaUi::GetY);
+
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetTrueX",&LuaUi::GetTrueX);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetTrueY",&LuaUi::GetTrueY);
+
+
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetX",&LuaUi::SetX);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetY",&LuaUi::SetY);
 
@@ -601,6 +615,7 @@ void LuaInterface::RegisterClasses(){
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetChildById",&LuaUi::GetChildById_Lua);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetMother",&LuaUi::GetMother);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetChilds",&LuaUi::GetChilds);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetAsMain",&LuaUi::SetAsMain);
 
 
 
