@@ -125,7 +125,7 @@ class RenderHelp{
         static void DrawCollisionBox(Rect &box,int r_color,int g_color,int b_color,int alpha=100){
             RenderHelp::DrawSquareColorA(box.x-Camera::pos.x,box.y-Camera::pos.y,box.w,box.h,r_color,g_color,b_color,alpha);
         }
-        /*template<class Te> static void DrawCollisionBox(Te &cb,Point offset,int r_color,int g,int b,int alpha=100){
+        template<class Te> static void DrawCollisionBox2(Te &cb,Point offset,int r_color,int g,int b,int alpha=100){
             int maxSize = cb.GetSize();
 
             SmartTexture T(0,0,maxSize,maxSize,true);
@@ -147,7 +147,7 @@ class RenderHelp{
             T.UpdateTexture();
             T.Render(PointInt(cb.x-Camera::pos.x-T.getW()/2 + offset.x,cb.y-Camera::pos.y-T.getW()/2 + offset.y));
         };
-        */
+
 };
 
 
