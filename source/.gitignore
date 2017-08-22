@@ -1,2 +1,3 @@
-*.depend
-*.layout
+beargine.depend
+beargine.layout
+!.gitignore
