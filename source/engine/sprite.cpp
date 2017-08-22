@@ -178,7 +178,7 @@ SDL_Texture* Sprite::CopyTexture(){
 }
 
 
-SDL_Texture* Sprite::Preload(char *file,bool adjustDir,bool HasAliasing){
+SDL_Texture* Sprite::Preload(const char *file,bool adjustDir,bool HasAliasing){
     std::string stdnamee(file);
     if (stdnamee.find(":")!=std::string::npos){
         SDL_RWops *rw = ResourceManager::GetInstance().GetFile(stdnamee); //Safe
@@ -438,7 +438,7 @@ void Sprite::Render(int x,int y,double angle){
     double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1
 
     if (scaleCentered){
-        Rect adj(x,y,clipRect.w*scaleX,clipRect.h*scaleY);
+        /*Rect adj(x,y,clipRect.w*scaleX,clipRect.h*scaleY);
         Point c;
         if (hasCenter){
             c.x = center.x;
@@ -449,7 +449,27 @@ void Sprite::Render(int x,int y,double angle){
         }
         adj.CenterRectIn(c);
         x = (adj.x);
-        y = (adj.y);
+        y = (adj.y);*/
+        Point c;
+        if (hasCenter){
+            c.x = center.x;
+            c.y = center.y;
+            Rect aux(x,y,clipRect.w,clipRect.h);
+            aux.CenterRectIn(c);
+            c = aux.GetCenter();
+        }else{
+            Rect aux(x,y,clipRect.w,clipRect.h);
+            c = aux.GetCenter();
+        }
+
+
+        //Point r2 = foodRect.GetCenter();
+        //smol.Render(r2.x - (sc.x * 50 )  +50/2.0   + 22,r2.y - (sc.y * 50)   + (50/2.0) - 4,0);
+
+        x = c.x - (scaleX * clipRect.w) + clipRect.w*scaleX/2.0f;
+        y = c.y - (scaleY * clipRect.h) + clipRect.h*scaleY/2.0f;
+
+
         //x -= (widSize.x - scaleX*widSize.x)/2;
         //y -= (widSize.y - scaleY*widSize.y)/2;
 

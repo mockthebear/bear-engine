@@ -141,7 +141,7 @@ class Sprite{
             @param file The path or the asset tweak asset:file
         */
 
-        static SDL_Texture* Preload(char *file,bool adjustDir=true,bool HasAliasing=false);
+        static SDL_Texture* Preload(const char *file,bool adjustDir=true,bool HasAliasing=false);
         /**
             *Works like Sprite::Preload(char *file)
             *You have to pass an RWops and set an alias to work on Sprite::assetTable
@@ -395,9 +395,13 @@ class Sprite{
             @param scale the original value is 1.
         */
 
-        void SetCenteredScale(bool set,Point sprSize){
+        void SetCenteredScale(bool set,Point sprSize=Point(0,0)){
             scaleCentered = set;
-            widSize = sprSize;
+            if (sprSize.x == 0 || sprSize.y == 0){
+                widSize = Point(clipRect.w,clipRect.h);
+            }else{
+                widSize = sprSize;
+            }
         }
 
         void SetScaleY(float scale=1){
