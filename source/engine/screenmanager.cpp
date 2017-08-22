@@ -22,6 +22,7 @@ ScreenManager::ScreenManager(){
     m_frameDelay = 11.0f;
     m_window = NULL;
     m_window = NULL;
+    MinimumScale = Point(1,1);
 }
 
 ScreenManager& ScreenManager::GetInstance(){
@@ -116,7 +117,14 @@ SDL_Renderer* ScreenManager::StartRenderer(){
 }
 
 void ScreenManager::RenderPresent(){
+
+    int w = ConfigManager::GetInstance().GetScreenW();
+    int h = ConfigManager::GetInstance().GetScreenH();
+    RenderHelp::DrawSquareColorA(w,0,w/2.0,h + w/2.0,0,0,0,255);
+    RenderHelp::DrawSquareColorA(-w/2.0,0,w/2.0,h + w/2.0,0,0,0,255);
+    RenderHelp::DrawSquareColorA(-w/2.0,h,w*2,h/2.0,0,0,0,255);
     SDL_RenderPresent(m_renderer);
+
 }
 void ScreenManager::PreRender(){
     if (m_defaultScreen){
@@ -169,8 +177,8 @@ void ScreenManager::Resize(int w,int h){
     SDL_SetWindowSize(m_window,w,h);
 }
 void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
-    if (w < ConfigManager::GetInstance().GetScreenW() || h < ConfigManager::GetInstance().GetScreenH()){
-        Resize(ConfigManager::GetInstance().GetScreenW(),ConfigManager::GetInstance().GetScreenH());
+    if (w < ConfigManager::GetInstance().GetScreenW()*MinimumScale.x || h < ConfigManager::GetInstance().GetScreenH()*MinimumScale.y){
+        Resize(ConfigManager::GetInstance().GetScreenW()*MinimumScale.x,ConfigManager::GetInstance().GetScreenH()*MinimumScale.y);
         return;
     }
     m_scaleRatio.x =  ( (double)w / (double)m_originalScreen.x);
