@@ -218,11 +218,11 @@ BufferData *SoundLoader::loadWavFileRW(SDL_RWops* soundFile){
     }
     alGenBuffers(1, &ret->buffer);
     alBufferData(ret->buffer, ret->format, (void*)data,size, ret->freq);
-    delete data;
+    delete []data;
     return ret;
   } catch(const char * error) {
     if (data != nullptr)
-        delete data;
+        delete []data;
     bear::out << "Error: " << error << "\n";
     return nullptr;
   }

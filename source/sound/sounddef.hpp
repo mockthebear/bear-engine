@@ -18,7 +18,7 @@ typedef chain_ptr<BufferData> SoundPtr;
 
 struct WAVE_Data {
   char subChunkID[4];
-  long subChunk2Size;
+  uint32_t subChunk2Size;
 };
 
 
@@ -27,15 +27,15 @@ struct WAVE_Format {
   uint64_t subChunkSize;
   short audioFormat;
   short numChannels;
-  long sampleRate;
-  long byteRate;
+  uint32_t sampleRate;
+  uint32_t byteRate;
   short blockAlign;
   short bitsPerSample;
 };
 
 struct RIFF_Header {
   char chunkID[4];
-  long chunkSize;
+  uint32_t chunkSize;
   char format[4];
 };
 
