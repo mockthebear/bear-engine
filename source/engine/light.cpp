@@ -13,6 +13,7 @@ pthread_mutex_t Light::GCritical;
 
 Light::Light(){
     out = NULL;
+    onAutomatic = false;
     #ifndef DISABLE_THREADPOOL
     pthread_mutex_init(&Critical,NULL);
     pthread_mutex_init(&CanRender,NULL);
@@ -44,25 +45,30 @@ Light* Light::GetInstance(){
 }
 
 
-int Light::GetAround(unsigned char** map,int x,int y){
+int Light::GetAround(unsigned char* map,int x,int y){
 
     float n = 0;
     double k = 0;
-
+    uint32_t auxV = 0;
     for (int ay=-1;ay<=1;ay++){
          for (int ax=-1;ax<=1;ax++){
             if (IsInLimits(x+ax,y+ay)){
-                n += map[y+ay][x+ax]*map[y+ay][x+ax];
+                auxV = map[(y+ay) * sizeX + x+ax];
+                n += auxV*auxV;
                 k++;
             }
         }
     }
-    return (int)sqrt(n/k);
+    return sqrt(n/k);
 }
 void Light::Gen(parameters *P,Job &j){
     for (int y=j.from;y<j.to;y++){
         for (int x=0;x<sizeX;x++){
-            pix[y*sizeX + x ] = RenderHelp::FormatARGB(GetAround(ShadeMap,x,y),0,0,0);
+                    // A B R G
+            uint8_t shaded = GetAround(ShadeMap,x,y);
+            float yellowish = (255-shaded)/4.0;
+
+            pix[y*sizeX + x ] = RenderHelp::FormatRGBA2(yellowish,yellowish,190-yellowish/2,shaded);
         }
     }
      if (onAutomatic){
@@ -85,18 +91,18 @@ void Light::Reduce(parameters *P,Job &j){
 
     for (int y=j.from;y<j.to;y++){
         for (int x=0;x<sizeX;x++){
-            unsigned char MPP = ShadeMap[y][x];
+            unsigned char MPP = ShadeMap[y * sizeX+  x];
             unsigned char K;
             for (int i=0;i<CurrentAlloc;i++){
-                K =  MapMap[i][y][x]; //Segundo borramento!
+                K =  MapMap[i][y * sizeX+  x]; //Segundo borramento!
                 if (MPP < MaxDarkness){
                     int offset = MaxDarkness-MPP;
                     K = std::max(K-offset,0);
                 }
                 MPP = std::min(MPP,K);
             }
-            ShadeMap[y][x] = MPP;
-            pix[y*sizeX + x ] = ShadeMap[y][x];
+            ShadeMap[y * sizeX+  x] = MPP;
+            pix[y*sizeX + x ] = ShadeMap[y * sizeX+  x];
 
         }
     }
@@ -126,57 +132,78 @@ void Light::Shade(parameters *P,Job &j){
     int x = j.from;
     int y = j.to;
     int i,max;
+    int sx;
+    int sy;
+
+
+    float STR;
+    float OSTR;
+    float removal;
+    int lsx,lsy;
+
+    uint8_t val;
+
+    uint16_t Lum;
+
+    uint8_t *vec = j.vect;
+
+    const float AngularConstant = (360.0f/(float)MaxCycles) * M_PI / 180.0f;
+
     i = dis * (MaxCycles/Threads);
     max = (dis+1) * (MaxCycles/Threads);
+    int process = 0;
     for (;i<max;i++){
-        float STR = (strenght&127)*2;
-        float OSTR = (strenght&127)*2;
-        float removal = 1.0f;
-        int lsx=0,lsy=0;
-        j.vect[y][x] = 0;
-        /*
-            step means the distance for each iteration
-            Stops when the strenght of the light is less or equal 0
-        */
+        STR = (strenght&127)*2;
+        OSTR = (strenght&127)*2;
+        removal = 1.0f;
+        lsx=0;
+        lsy=0;
+        vec[y * sizeX+  x] = 0;
+
+        //  step means the distance for each iteration
+        //  Stops when the strenght of the light is less or equal 0
+
         for (float step= 0.0f;STR >= 0.0f;step += 0.5f){
-            int sx = sin(i * (360.0f/(float)MaxCycles) * M_PI / 180.0f)*step;
-            int sy = cos(i * (360.0f/(float)MaxCycles) * M_PI / 180.0f)*step;
-            /*
-                If the last step is the same position of the last iteration
-                skip one step.
-            */
-            if (lsx == (int)sx && lsy == (int)sy){
+            sx = sin(i * AngularConstant)*step;
+            sy = cos(i * AngularConstant)*step;
+
+
+            //    If the last step is the same position of the last iteration
+            //    skip one step.
+
+            if (lsx == sx && lsy == sy){
                 STR = (OSTR - step*Permissive*removal);
                 continue;
             }
             lsx = sx;
             lsy = sy;
-            /*
-                If is inside the limits
-            */
+
+            //    If is inside the limits
+
             if (IsInLimits(x+sx,y+sy)){
-                /*
-                    If there is something to block
-                */
-                if (DataMap[y+sy][x+sx]){
+                process++;
+                val = DataMap[ (y+sy)*sizeX + x+sx];
+                //    If there is something to block
+                if (val){
                     //Block
-                    unsigned char Lum = MaxDarkness;
-
-                    Lum = std::max(0,  (Lum)-(int)(STR));
-                    j.vect[y+sy][x+sx] = Lum;
-                    OSTR -= OSTR* ( (float)DataMap[y+sy][x+sx] /255.0f);
-
+                    Lum = MaxDarkness;
+                    Lum = std::max(0.0f,  (Lum)-(STR));
+                    vec[(y+sy)*sizeX +x+sx] = uint8_t(Lum);
+                    OSTR -= OSTR* ( val /255.0f);
                 }else{
-                    uint16_t Lum = MaxDarkness;
-
-                    Lum = std::max(0,  (Lum)-(int)(STR));
-                    j.vect[y+sy][x+sx] = (Lum);
+                    Lum = MaxDarkness;
+                    Lum = std::max(0.0f,  (Lum)-(STR));
+                    vec[(y+sy)*sizeX +x+sx] = uint8_t(Lum);
                 }
             }
-            STR = (OSTR - step*Permissive*removal);
 
+
+            STR = (OSTR - step*Permissive*removal);
         }
     }
+    //pthread_mutex_lock(&Critical);
+    //std::cout << process << "\n";
+    //pthread_mutex_unlock(&Critical);
 
     if (onAutomatic){
         #ifndef DISABLE_THREADPOOL
@@ -204,16 +231,11 @@ bool Light::Shutdown(){
     }
     Console::GetInstance().AddTextInfo("Deleting light.");
     delete out;
-    for (int y=0;y<sizeY;y++){
-        delete []ShadeMap[y];
-        delete []DataMap[y];
-    }
-    delete ShadeMap;
-    delete DataMap;
+
+    delete []ShadeMap;
+    delete []DataMap;
+
     for (int i=0;i<maxAlloc;i++){
-        for (int y=0;y<sizeY;y++){
-            delete []MapMap[i][y];
-        }
         delete []MapMap[i];
     }
     delete []MapMap;
@@ -236,15 +258,16 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float perm
     blockSize = dotSize;
     MaxDarkness = maxDarkness;
     out = new SmartTexture(0,0,sizeX,sizeY,true,true);
-    ShadeMap = new uint8_t*[sizeY];
-    DataMap = new uint8_t*[sizeY];
+    ShadeMap = new uint8_t[sizeY*sizeX];
+    DataMap = new uint8_t[sizeY*sizeX];
     pix = out->GetPixels();
     for (int y=0;y<sizeY;y++){
-        ShadeMap[y] = new uint8_t[sizeX];
+        /*ShadeMap[y] = new uint8_t[sizeX];
         DataMap[y] = new uint8_t[sizeX];
+        */
         for (int x=0;x<sizeX;x++){
-            ShadeMap[y][x] = MaxDarkness;
-            DataMap[y][x] = 0;
+            ShadeMap[x + y * sizeX] = MaxDarkness;
+            DataMap[x + y * sizeX] = 0;
             pix[y * (sizeX) + x] = RenderHelp::FormatRGBA(255,0,0,0);
         }
     }
@@ -254,13 +277,12 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float perm
 
     if (MapMap == nullptr){
         maxAlloc=2;
-        MapMap = new uint8_t**[2];
+        MapMap = new uint8_t*[2];
         for (int i=0;i<2;i++){
-            MapMap[i] = new uint8_t*[sizeY];
+            MapMap[i] = new uint8_t[sizeY*sizeX];
             for (int y=0;y<sizeY;y++){
-                MapMap[i][y] = new uint8_t[sizeX];
                 for (int x=0;x<sizeX;x++){
-                    MapMap[i][y][x] = MaxDarkness;
+                    MapMap[i][y * sizeX+  x] = MaxDarkness;
                 }
             }
         }
@@ -288,8 +310,8 @@ void Light::AddBlockM(int x,int y,unsigned char strenght){
         }
         x = ( (x-floor(((int)Camera::pos.x/blockSize)*blockSize) + ExtraSize.x/2 -blockSize)/blockSize );
         y = ( (y-floor(((int)Camera::pos.y/blockSize)*blockSize) + ExtraSize.y/2 -blockSize)/blockSize );
-        if (IsInLimits(x,y) && DataMap[y][x] == 0){
-            DataMap[y][x] = strenght;
+        if (IsInLimits(x,y) && DataMap[y * sizeX+  x] == 0){
+            DataMap[y * sizeX+  x] = strenght;
         }
 
 }
@@ -304,8 +326,8 @@ void Light::AddBlock(Rect r,uint8_t strenght){
     r.h /= blockSize;
     for (int w = 0;w<r.w;w++){
         for (int h = 0;h<r.h;h++){
-            if (IsInLimits(x+w,y+h) && DataMap[y+h][x+w] == 0){
-                DataMap[y+h][x+w] = strenght;
+            if (IsInLimits(x+w,y+h) && DataMap[(y+h)*sizeX +  x+w] == 0){
+                DataMap[(y+h)*sizeX +  x+w] = strenght;
             }
         }
     }
@@ -319,8 +341,8 @@ bool Light::AddLightM(int x, int y,uint8_t strenght){
 
         if (IsInLimits(x,y)){
             strenght = ( (strenght/2) & 127) -1;;
-            uint8_t** VartoRet = GiveAnAdderess();
-            VartoRet[y][x] = VartoRet[y][x] - strenght*2;
+                uint8_t* VartoRet = GiveAnAdderess();
+            VartoRet[y * sizeX+  x] = VartoRet[y * sizeX+  x] - strenght*2;
             Job j1(JOB_SHADE,x,y,0,2,VartoRet,strenght);
             Job j2(JOB_SHADE,x,y,1,2,VartoRet,strenght);
             LightJobs += 2;
@@ -331,27 +353,26 @@ bool Light::AddLightM(int x, int y,uint8_t strenght){
     return false;
 }
 
-uint8_t **Light::GiveAnAdderess(bool clear){
+uint8_t *Light::GiveAnAdderess(bool clear){
     if(!IsStarted()){
         return nullptr;
     }
-    uint8_t** VartoRet= MapMap[CurrentAlloc];
+    uint8_t* VartoRet= MapMap[CurrentAlloc];
     CurrentAlloc++;
 
     if (CurrentAlloc >= maxAlloc){
         int addSize = 4;
-        uint8_t *** MAux = new uint8_t **[maxAlloc + addSize];
+        uint8_t ** MAux = new uint8_t *[maxAlloc + addSize];
         for (int i=0;i<maxAlloc;i++){
             MAux[i] = MapMap[i];
         }
-        delete MapMap;
+        delete [] MapMap;
         MapMap = MAux;
         for (int i=maxAlloc;i<maxAlloc+addSize;i++){
-            MAux[i] = new uint8_t*[sizeY];
+            MAux[i] = new uint8_t[sizeY*sizeX];
             for (int y=0;y<sizeY;y++){
-                MAux[i][y] = new uint8_t[sizeX];
                 for (int x=0;x<sizeX;x++){
-                    MAux[i][y][x] = 0;
+                    MAux[i][y * sizeX+  x] = 0;
                 }
             }
         }
@@ -360,9 +381,10 @@ uint8_t **Light::GiveAnAdderess(bool clear){
     }
     for (int y=0;y<sizeY;y++){
         for (int x=0;x<sizeX;x++){
-            VartoRet[y][x] = MaxDarkness;
+            VartoRet[y * sizeX+  x] = MaxDarkness;
         }
     }
+
     return VartoRet;
 }
 
@@ -395,8 +417,8 @@ void Light::Update(float dt,LightStep step){
         pix = out->GetPixels();
         for (int y=0;y<sizeY;y++){
             for (int x=0;x<sizeX;x++){
-                ShadeMap[y][x] = MaxDarkness;
-                DataMap[y][x] = 0;
+                ShadeMap[y * sizeX+  x] = MaxDarkness;
+                DataMap[y * sizeX+  x] = 0;
             }
         }
     }else if (step == LIGHT_SHADE){

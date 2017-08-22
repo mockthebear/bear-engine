@@ -70,6 +70,7 @@ class RenderHelp{
             @param b blue
             @param a alpha
         */
+        static Uint32 FormatRGBA2(int r,int g,int b,int a);
         static Uint32 FormatRGBA(int r,int g,int b,int a);
 
         /**

@@ -131,6 +131,13 @@ uint8_t RenderHelp::GetA(uint32_t r){
     return (r&0xff000000) >> 24;
 }
 
+Uint32 RenderHelp::FormatRGBA2(int r,int g,int b,int a){
+
+    return a+(b<<8)+(g<<16)+(r<<24);
+
+}
+
+
 
 Uint32 RenderHelp::FormatRGBA(int r,int g,int b,int a){
 

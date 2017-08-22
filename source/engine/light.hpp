@@ -45,10 +45,10 @@ class Light{
     private:
         bool AutoFinished;
         uint8_t MaxDarkness;
-        uint8_t **ShadeMap;
-        uint8_t **DataMap;
-        uint8_t ***MapMap;
-        uint8_t **GiveAnAdderess(bool clear=false);
+        uint8_t *ShadeMap;
+        uint8_t *DataMap;
+        uint8_t **MapMap;
+        uint8_t *GiveAnAdderess(bool clear=false);
         bool IsInLimits(int,int);
         int sizeX,sizeY;
         int blockSize;
@@ -62,7 +62,7 @@ class Light{
         pthread_mutex_t JobInterval;
         #endif
 
-        int GetAround(unsigned char**,int x,int y);
+        int GetAround(unsigned char*,int x,int y);
         GenericPoint3<int> Lights[128];
         int LightPoints;
         static Light *Slight;
