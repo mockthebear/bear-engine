@@ -69,13 +69,13 @@ class Job{
         };
 
         Job(JOBTYPE t,int i,int b):Job(){Type = t;from = i;to = b;};
-        Job(JOBTYPE t, int i, int b, int d,int ts, uint8_t** V, unsigned char br):Job(){Type = t;from = i;to = b;me=d;vect=V;bright=br;tsize=ts;};
+        Job(JOBTYPE t, int i, int b, int d,int ts, uint8_t* V, unsigned char br):Job(){Type = t;from = i;to = b;me=d;vect=V;bright=br;tsize=ts;};
         bool empty;
         JOBTYPE Type;
         std::function<void(int,int,void*)> lambda;
         void *Parameter;
         int min, max;
-        uint8_t** vect;
+        uint8_t* vect;
         int from,to,me,tsize;
         uint8_t bright;
 };

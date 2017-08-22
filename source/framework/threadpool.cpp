@@ -94,7 +94,9 @@ bool ThreadPool::KillThreads(){
         }
         Unlock();
         for (int e=0;e<UsePThreads;e++){
+            pthread_mutex_lock(&Critical);
             bear::out << "Waiting "<<e<<"\n";
+            pthread_mutex_unlock(&Critical);
             pthread_join(thread_pool[e], NULL);
         }
         #endif
