@@ -21,6 +21,7 @@ PoolManager::~PoolManager(){
         if (Pools[i].Drop)
             Pools[i].Delete();
     }
+    EraseGroups();
     bear::out << "Pools deleted.\n";
 }
 
@@ -47,6 +48,13 @@ PoolId PoolManager::RegisterPool(std::function<int(void)> maxFuncion,
     indexCounter++;
     GenerateInternalPool();
     return indexCounter-1;
+}
+
+void PoolManager::EraseGroups(){
+     for(unsigned int i = 0; i< Groups.size(); ++i){
+        delete []Groups[i].Objects;
+    }
+    Groups.clear();
 }
 
 void PoolManager::ErasePools(){

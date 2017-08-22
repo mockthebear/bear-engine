@@ -71,7 +71,7 @@ bool ResourceFile::Open(std::string dir){
         m_header += nameSize;
         name[nameSize] = '\0';
         std::string lName(name);
-        delete name;
+        delete [] name;
         m_fileData[lName] = std::tuple<uint32_t,uint32_t>(filePos,fileSize);
 
     }
@@ -122,7 +122,7 @@ SDL_RWops* ResourceFile::GetFile(std::string name){
         rw->close = [](SDL_RWops * me) -> int{
             char *ptr = (char*)me->hidden.unknown.data1;
             if (ptr)
-                delete ptr;
+                delete []ptr;
                 return 0;
         };
         return rw;

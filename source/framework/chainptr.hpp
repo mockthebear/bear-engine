@@ -22,8 +22,10 @@ template <typename T> class chain_ptr{
 
         void destroy(){
             if (myHolder){
-                delete myHolder[0];
-                delete myHolder;
+                //Maybe unsafe
+                delete [] myHolder[0];
+                delete [] myHolder;
+                myHolder = nullptr;
             }
         }
 

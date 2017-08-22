@@ -9,6 +9,12 @@ std::unordered_map<std::string, ResourceFile*> ResourceManager::resources;
 ResourceManager::ResourceManager(){
 
 }
+void ResourceManager::ClearAll(){
+    for (auto &it : resources){
+       delete it.second;
+    }
+    resources.clear();
+}
 
 ResourceManager& ResourceManager::GetInstance(){
     static ResourceManager Singleton;

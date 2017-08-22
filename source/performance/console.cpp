@@ -10,6 +10,7 @@
 #include <sstream>
 
 
+
 Console& Console::GetInstance(bool writeFile){
     std::string name = writeFile ? "console.txt" : "";
     static Console teste(25,300,name);
@@ -36,7 +37,7 @@ Console::~Console(){
     for (int i=0;i<m_lines;i++){
         delete m_line[i];
     }
-    delete m_line;
+    delete [] m_line;
     }
     myfile << "Engine closed\n";
     CloseOutput();

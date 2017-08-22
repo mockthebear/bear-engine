@@ -190,7 +190,7 @@ void Text::InternalSetFont(std::string ftnm){
     }else{
         if (tweaks){
             SDL_RWops* rw = ResourceManager::GetInstance().GetFile(oName);
-            font = TTF_OpenFontRW(rw,1,fontsize);
+            font = TTF_OpenFontRW(rw,true,fontsize);
             //SDL_RWclose(rw);
         }else{
             font = TTF_OpenFont(oName.c_str(), fontsize);
@@ -440,6 +440,10 @@ void Text::RemakeTexture(bool Destory){
 
     texture = NULL;
     SDL_Surface *surf=NULL;
+    if (!font){
+        bear::out << "[TXT:RemakeTexture] there is no font\n";
+        return;
+    }
     if (style == TEXT_SOLID){
         surf = TTF_RenderText_Solid(font,text.c_str(),color);
     }else if(style == TEXT_SHADED){
@@ -463,9 +467,9 @@ void Text::RemakeTexture(bool Destory){
         dimensions2.h = box.h;
         dimensions2.w = box.w;
 
-        if (SDL_RenderCopy(BearEngine->GetRenderer(),texture,NULL,&dimensions2) < 0){
-            bear::out << "[TXT:RemakeTexture] Failed to render, SDL reason["<<SDL_GetError()<<"]:"<<"|"<<text.size()<<"{"<<text<<"}\n";
-        }
+        //if (SDL_RenderCopy(BearEngine->GetRenderer(),texture,NULL,&dimensions2) < 0){
+        //    bear::out << "[TXT:RemakeTexture] Failed to render, SDL reason["<<SDL_GetError()<<"]:"<<"|"<<text.size()<<"{"<<text<<"}\n";
+        //}
         if (aliasing)
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
         SDL_FreeSurface(surf);

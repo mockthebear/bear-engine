@@ -62,15 +62,15 @@ PathFind::PathFind(int sizeX,int sizeY,int dirs,int cells):PathFind(){
 void PathFind::Close(){
     if (m_map != nullptr){
         for (int y=0;y<size.x;y++){
-            delete m_map[y];
-            delete m_dir[y];
-            delete m_close[y];
-            delete m_open[y];
+            delete []m_map[y];
+            delete []m_dir[y];
+            delete []m_close[y];
+            delete []m_open[y];
         }
-        delete m_map;
-        delete m_dir;
-        delete m_close;
-        delete m_open;
+        delete []m_map;
+        delete []m_dir;
+        delete []m_close;
+        delete []m_open;
     }
     m_map = nullptr;
 }

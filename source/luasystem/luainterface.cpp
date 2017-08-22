@@ -34,7 +34,9 @@ LuaInterface::LuaInterface(){
 }
 
 LuaInterface::~LuaInterface(){
-    Close();
+    if (L != NULL){
+        Close();
+    }
 }
 
 
@@ -42,13 +44,26 @@ LuaInterface::~LuaInterface(){
 
 
 void LuaInterface::Close(){
+    bear::out << "Called lua close.\n";
+    //if (L != NULL){
+        bear::out << "Closing function references\n";
+        LuaManager::ClearRegisteredReferences();
+        bear::out << "Closing saved object references\n";
+        LuaManager::ClearReferences();
+        bear::out << "Closing lua remains.\n";
 
-    if (L != NULL){
-        bear::out << "Closing lua...\n";
+
+        const char closeCode[] = "__REFS = nil;\n"
+        "local bytes = collectgarbage('count');\n"
+        "collectgarbage('collect');\n"
+        "print( ( (bytes-collectgarbage('count'))  * 1024 ) .. ' bytes where released.');\n";
+
+        luaL_loadstring(L, closeCode);
+        lua_pcall(L, 0, LUA_MULTRET, 0);
         lua_close(L);
         L = nullptr;
-    }
-    bear::out << "Lua is closed.\n";
+    //
+    bear::out << "[Close] Lua is closed.\n";
 }
 void LuaInterface::Startup(){
     L = luaL_newstate();

@@ -187,7 +187,7 @@ class PoolManager{
             *Get the maximum number of instances in the current generated local pool
         */
         int GetMaxInstances();
-
+        void EraseGroups();
         /**
             * This will get an object inside the internal optimized vector
         */

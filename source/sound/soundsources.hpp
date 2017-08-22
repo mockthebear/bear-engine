@@ -10,6 +10,7 @@ class SoundPool{
     public:
         static SoundPool& GetInstance(bool autoQuantity=true);
         ~SoundPool();
+        void Close();
         ALuint GetSource(int soundClass=0);
         void UpdateClassType(ALuint src,int classType);
     private:

@@ -29,6 +29,7 @@ class ResourceManager{
             *LEL, dont waste your time on this constructor. srsly
         */
         ResourceManager();
+        void ClearAll();
         /**
             *Meyer's singleton.
             *@code

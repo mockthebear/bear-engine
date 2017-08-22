@@ -43,11 +43,16 @@ ALuint SoundPool::GetSource(int thisClass){
     SoundLoader::ShowError();
     return 0;
 }
-
-SoundPool::~SoundPool(){
+void SoundPool::Close(){
     for (int i=0;i<count;i++){
         alDeleteSources(1, &sources[i]);
     }
     SoundLoader::ShowError();
     delete [] sources;
+    sources = nullptr;
+}
+SoundPool::~SoundPool(){
+    if (sources){
+        Close();
+    }
 }

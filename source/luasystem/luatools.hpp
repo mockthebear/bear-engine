@@ -15,7 +15,7 @@
 
 #define LUA_LAYER_UI 0
 
-typedef std::function<int(lua_State*)> LuaCFunctionLambda;
+
 
 template<class T> class LuaReferenceCounter{
     public:
@@ -43,6 +43,15 @@ template<class T> class LuaReferenceCounter{
             counters[ref].first = 1;
             counters[ref].second = true;
             return retObj;
+        }
+        static void ClearData(){
+            std::map<uint64_t,std::pair<uint64_t,bool>> &counters = Get();
+            for (auto &it : counters){
+                if (it.second.second){
+                    T* ptr = (T*)it.first;
+                    delete ptr;
+                }
+            }
         }
         static uint64_t ReleaseReference(T *obj,bool allowDelete=true){
             uint64_t ref = (uint64_t)obj;
@@ -385,6 +394,7 @@ template<typename T1,typename ... Types> void FunctionRegister(lua_State *L,std:
     };
     LuaCFunctionLambda** baseF = static_cast<LuaCFunctionLambda**>(lua_newuserdata(L, sizeof(LuaCFunctionLambda) ));
     (*baseF) = new LuaCFunctionLambda(f);
+    LuaManager::AddReference((*baseF));
     lua_pushcclosure(L, LuaCaller::BaseEmpty<1>,1);
     lua_setglobal(L, str.c_str());
 };
@@ -411,7 +421,7 @@ template<typename T1,typename ClassObj,typename ... Types> struct internal_regis
         };
         LuaCFunctionLambda** baseF = static_cast<LuaCFunctionLambda**>(lua_newuserdata(L, sizeof(LuaCFunctionLambda) ));
         (*baseF) = new LuaCFunctionLambda(f);
-
+        LuaManager::AddReference((*baseF));
         lua_pushcclosure(L, LuaCaller::Base<1>,1);
         lua_setfield(L, stackPos,  str.c_str());
 
@@ -440,6 +450,7 @@ template<typename ClassObj,typename ... Types> struct internal_register<void,Cla
         };
         LuaCFunctionLambda** baseF = static_cast<LuaCFunctionLambda**>(lua_newuserdata(L, sizeof(LuaCFunctionLambda) ));
         (*baseF) = new LuaCFunctionLambda(f);
+        LuaManager::AddReference((*baseF));
         lua_pushcclosure(L, LuaCaller::Base<1>,1);
         lua_setfield(L, stackPos,  str.c_str());
 
@@ -466,6 +477,7 @@ template<typename T1,typename ... Types> void LambdaClassRegister(lua_State *L,s
     };
     LuaCFunctionLambda** baseF = static_cast<LuaCFunctionLambda**>(lua_newuserdata(L, sizeof(LuaCFunctionLambda) ));
     (*baseF) = new LuaCFunctionLambda(f);
+    LuaManager::AddReference((*baseF));
     lua_pushcclosure(L, LuaCaller::BaseEmpty<1>,1);
     lua_setfield(L, stackPos,  str.c_str());
 }
@@ -488,6 +500,7 @@ template<typename ... Types> void LambdaClassRegister(lua_State *L,std::string s
     };
     LuaCFunctionLambda** baseF = static_cast<LuaCFunctionLambda**>(lua_newuserdata(L, sizeof(LuaCFunctionLambda) ));
     (*baseF) = new LuaCFunctionLambda(f);
+    LuaManager::AddReference((*baseF));
     lua_pushcclosure(L, LuaCaller::BaseEmpty<1>,1);
     lua_setfield(L, stackPos,  str.c_str());
 }
@@ -510,6 +523,7 @@ template<typename T1,typename ... Types> void LambdaRegister(lua_State *L,std::s
     };
     LuaCFunctionLambda** baseF = static_cast<LuaCFunctionLambda**>(lua_newuserdata(L, sizeof(LuaCFunctionLambda) ));
     (*baseF) = new LuaCFunctionLambda(f);
+    LuaManager::AddReference((*baseF));
     lua_pushcclosure(L, LuaCaller::BaseEmpty<1>,1);
     lua_setglobal(L, str.c_str());
 };
@@ -520,6 +534,7 @@ class MasterGC{
         lua_getfield(L, 1, "__self");
         T** part = (T**)lua_touserdata(L, -1);
         if (part){
+            LuaReferenceCounter<T>::ReleaseReference(*part);
             (*part) = nullptr;
             //delete part;
         }
@@ -532,6 +547,7 @@ class MasterGC{
         if (part){
             LuaCaller::CallSelfField(LuaManager::L,(*part),"Close");
             LuaCaller::DeleteField(L,(*part));
+            LuaReferenceCounter<T>::ReleaseReference(*part);
             //(*part)->Kill();
             /*
                 Erase reference
@@ -566,6 +582,7 @@ class MasterGC{
         if (LuaManager::IsDebug)
             Console::GetInstance().AddTextInfo(utils::format("[LUA][MasterGC]PTR: %d",part));
         if (part && *part){
+            LuaReferenceCounter<T>::ReleaseReference(*part);
             (*part) = nullptr;
             //delete part;
             return 1;
@@ -805,6 +822,9 @@ template<typename T1> struct ClassRegister{
             return 1;
         };
 
+        LuaManager::eraseLambdas.emplace_back([](){
+               LuaReferenceCounter<T1>::ClearData();
+        });
         LuaCFunctionLambda** baseF = static_cast<LuaCFunctionLambda**>(lua_newuserdata(L, sizeof(LuaCFunctionLambda) ));
         (*baseF) = &Flambb;
         lua_pushcclosure(L, LuaCaller::BaseEmpty<1>,1);
@@ -897,6 +917,8 @@ template<typename T1> struct ClassRegister{
         lua_setmetatable(L, -2);
         lua_settable(L,-3);
     }
+
+
 };
 
 

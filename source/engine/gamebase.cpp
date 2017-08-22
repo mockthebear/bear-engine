@@ -184,11 +184,8 @@ Game::~Game(){
 }
 void Game::Close(){
     hasBeenClosed = true;
-    #ifndef DISABLE_LUAINTERFACE
-    if (startFlags&BEAR_FLAG_START_LUA)
-        LuaInterface::Instance().Close();
-    #endif // DISABLE_LUAINTERFACE
     while (!stateStack.empty()){
+        delete stateStack.top();
         stateStack.pop();
     }
     isClosing = true;
@@ -202,6 +199,15 @@ void Game::Close(){
             ThreadPool::GetInstance().KillThreads();
     #endif
     ResourceManager::GetInstance().Erase("engine");
+
+    Console::GetInstance().AddTextInfo("Closing lua");
+    #ifndef DISABLE_LUAINTERFACE
+    if (startFlags&BEAR_FLAG_START_LUA)
+        LuaInterface::Instance().Close();
+    #endif
+    Console::GetInstance().AddTextInfo("Resourcefiles");
+    ResourceManager::GetInstance().ClearAll();
+
     Console::GetInstance().AddTextInfo("Closing screen");
     if (startFlags&BEAR_FLAG_START_SCREEN)
         ScreenManager::GetInstance().TerminateScreen();
@@ -209,11 +215,15 @@ void Game::Close(){
     if (startFlags&BEAR_FLAG_START_SOUND)
         if (HasAudio){
             Console::GetInstance().AddTextInfo("Closing audio");
+
+            SoundPool::GetInstance().Close();
+            Console::GetInstance().AddTextInfo("Closing OpenAl");
+            alcMakeContextCurrent(NULL);
             alcDestroyContext(ctx);
             alcCloseDevice(device);
 
         }
-    //    Mix_CloseAudio();
+
     Console::GetInstance().AddTextInfo("Closing text");
     if (startFlags&BEAR_FLAG_START_TTF)
     TTF_Quit();

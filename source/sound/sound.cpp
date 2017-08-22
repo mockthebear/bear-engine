@@ -53,7 +53,7 @@ Sound::Sound(){
     volume = MAX_VOL_SIZE;
     classType = 0;
     pitch = 1.0;
-
+    sourceID = 0;
 }
 
 Sound::Sound(SoundPtr snda,const char *s):Sound(){

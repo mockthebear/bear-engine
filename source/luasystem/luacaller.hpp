@@ -12,9 +12,19 @@
 /*
     Function used to store/get self and lua state
 */
+typedef std::function<int(lua_State*)> LuaCFunctionLambda;
 
 class LuaManager{
     public:
+        void static ClearRegisteredReferences(){
+            for (auto &it : ptrs){
+                delete it;
+            }
+            ptrs.clear();
+        };
+        static void AddReference(LuaCFunctionLambda *v){
+            ptrs.emplace_back(v);
+        }
         template <typename T> static T* GetSelf(){
             lua_getfield(L, 1, "__self");
             T** data = (T**)lua_touserdata(LuaManager::L, -1);
@@ -39,9 +49,19 @@ class LuaManager{
             }
             return true;
         }
+    static std::vector<LuaCFunctionLambda*> ptrs;
     static std::string lastCalled;
     static bool IsDebug;
     static lua_State *L;
+    static std::vector<std::function<void()>> eraseLambdas;
+
+    static void ClearReferences(){
+        for (auto &it : eraseLambdas){
+            it();
+        }
+    }
 };
+
+
 
 #endif // DISABLE_LUAINTERFACE
