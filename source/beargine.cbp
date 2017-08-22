@@ -6,16 +6,6 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
-				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../game/" />
-				<Option object_output="../obj/Debug/" />
-				<Option type="0" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-g" />
-				</Compiler>
-			</Target>
 			<Target title="Release">
 				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../game/" />
@@ -26,12 +16,20 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++0x" />
-					<Add option="-g" />
 					<Add option="-DIGNORESTEAM" />
 				</Compiler>
 				<Linker>
-					<Add option="-lMinGW32 -lSDL2main -lSDL2 -lSDL2_image" />
-					<Add option="-lSDL2_ttf -lopenal32 -lvorbisfile -llua51 -pthread" />
+					<Add option="-pg" />
+					<Add option="-Wl,-Bstatic" />
+					<Add option="-llua51" />
+					<Add option="-Wl,-Bdynamic" />
+					<Add option="-lMinGW32" />
+					<Add option="-lSDL2main" />
+					<Add option="-lSDL2" />
+					<Add option="-lSDL2_ttf" />
+					<Add option="-lopenal32" />
+					<Add option="-lvorbisfile" />
+					<Add option="-pthread" />
 				</Linker>
 			</Target>
 			<Target title="unix release">
@@ -47,8 +45,46 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-lSDL2main -lSDL2 -lSDL2_image" />
-					<Add option="-lSDL2_ttf -lSDL2_mixer -pthread -llua5.1" />
+					<Add option="-pg" />
+					<Add option="-Wl,-Bstatic" />
+					<Add option="-llua5.1" />
+					<Add option="-Wl,-Bdynamic" />
+					<Add option="-ldl" />
+					<Add option="-lSDL2main" />
+					<Add option="-lSDL2" />
+					<Add option="-lSDL2_ttf" />
+					<Add option="-lopenal" />
+					<Add option="-lvorbisfile" />
+					<Add option="-pthread" />
+				</Linker>
+			</Target>
+			<Target title="Debug windows">
+				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../game/" />
+				<Option object_output="../obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-std=c++0x" />
+					<Add option="-pg" />
+					<Add option="-g" />
+					<Add option="-DIGNORESTEAM" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg -lgmon" />
+					<Add option="-pg" />
+					<Add option="-Wl,-Bstatic" />
+					<Add option="-llua51" />
+					<Add option="-Wl,-Bdynamic" />
+					<Add option="-lMinGW32" />
+					<Add option="-lSDL2main" />
+					<Add option="-lSDL2" />
+					<Add option="-lSDL2_ttf" />
+					<Add option="-lopenal32" />
+					<Add option="-lvorbisfile" />
+					<Add option="-pthread" />
 				</Linker>
 			</Target>
 		</Build>

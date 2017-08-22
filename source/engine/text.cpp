@@ -461,11 +461,11 @@ void Text::RemakeTexture(bool Destory){
         SDL_QueryTexture(texture, &format,&acess,&w,&h);
         box.h=h;
         box.w=w;
-        SDL_Rect dimensions2;
+        /*SDL_Rect dimensions2;
         dimensions2.x = -box.w;
         dimensions2.y = -box.h;
         dimensions2.h = box.h;
-        dimensions2.w = box.w;
+        dimensions2.w = box.w;*/
 
         //if (SDL_RenderCopy(BearEngine->GetRenderer(),texture,NULL,&dimensions2) < 0){
         //    bear::out << "[TXT:RemakeTexture] Failed to render, SDL reason["<<SDL_GetError()<<"]:"<<"|"<<text.size()<<"{"<<text<<"}\n";
