@@ -43,7 +43,7 @@ class LuaManager{
         }
         static bool Pcall(int arg = 0,int returns = 0,int ext = 0){
             if (lua_pcall(L, arg, returns,  ext) != 0) {
-                Console::GetInstance().AddTextInfo(utils::format("Lua error: :c %s",lua_tostring(L, -1)));
+                Console::GetInstance().AddTextInfo(utils::format("Lua error: :c %s -> [%s]",lua_tostring(L, -1),lastCalled.c_str()));
                 lua_pop(L,1);
                 return false;
             }

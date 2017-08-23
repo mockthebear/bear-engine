@@ -241,8 +241,11 @@ class LuaCaller{
                                 "    end\n"
                                 "    return false\n"
                                 "end\n"
-                                "function MakeState(state)\n"
+                                "function MakeState(state,masterState)\n"
                                 "   __REFS[state] = {}\n"
+                                "   if __REFS[masterState] and __REFS[masterState][state] then\n"
+                                "   __REFS[state][state] = __REFS[masterState][state];\n"
+                                "   end\n"
                                 "end\n"
                                 "function ClearInstances(state)\n"
                                 "   __REFS[state] = nil\n"
@@ -263,13 +266,16 @@ class LuaCaller{
         }
 
 
-        template <typename LState> static bool StartupState(lua_State *L,LState *state){
+        template <typename LState> static bool StartupState(lua_State *L,LState *state,DefinedState *s2){
             lua_getglobal(L, "MakeState");
             if(!lua_isfunction(L, -1) ){
                 return false;
             }
+            //
             lua_pushinteger(L, uint64_t(state));
-            return LuaManager::Pcall(1);
+            lua_pushinteger(L, uint64_t(s2));
+
+            return LuaManager::Pcall(2);
         }
         static bool LoadFile(lua_State *L,std::string name){
             if ( luaL_loadfile(L, name.c_str()) != 0 ) {
@@ -291,6 +297,7 @@ class LuaCaller{
                 lua_pop(L, 1);
                 return false;
             }
+            LuaManager::lastCalled = field;
             pexpander::expand(L,args...);
             LuaManager::Pcall(sizeof...(Types), 1);
             bool ret = lua_toboolean(L,-1);
@@ -304,6 +311,7 @@ class LuaCaller{
             if(!lua_isfunction(L, -1) ){
                 return false;
             }
+            LuaManager::lastCalled = field;
             uint64_t index = uint64_t(obj);
             lua_pushinteger(L, uint64_t(&Game::GetCurrentState()));
             lua_pushinteger(L, index);
@@ -325,6 +333,7 @@ class LuaCaller{
             if(!lua_isfunction(L, -1) ){
                 return false;
             }
+            LuaManager::lastCalled = field;
             uint64_t index = uint64_t(obj);
             lua_pushinteger(L, old);
             lua_pushinteger(L, index);
@@ -348,6 +357,7 @@ class LuaCaller{
             if(!lua_isfunction(L, -1) ){
                 return false;
             }
+            LuaManager::lastCalled = field;
             uint64_t index = uint64_t(obj);
             lua_pushinteger(L, uint64_t(&Game::GetCurrentState()));
             lua_pushinteger(L, index);

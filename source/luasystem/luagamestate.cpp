@@ -9,7 +9,9 @@
 LuaGameState::LuaGameState(){
     requestDelete = canClose = false;
     requestQuit = false;
+    //This state belongs to the previous state!
     other = uint64_t(&Game::GetCurrentState()) ;
+
 }
 LuaGameState::~LuaGameState(){
 
@@ -17,6 +19,7 @@ LuaGameState::~LuaGameState(){
 
 void LuaGameState::Setup(){
     BearEngine->AddState((DefinedState*)this,-1);
+    other = uint64_t(this) ;
 }
 void LuaGameState::Update(float dt){
    LuaCaller::CallOtherField(LuaManager::L,other,this,"update",dt);
