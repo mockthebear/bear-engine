@@ -31,19 +31,23 @@ GameBehavior::~GameBehavior(){
 
 
 void GameBehavior::Begin(){
-    std::cout << "owo\n";
     Game::startFlags = 0;
     Game::startFlags |= BEAR_FLAG_START_LUA;
     Game::startFlags |= BEAR_FLAG_START_THREADS;
+    Game::startFlags |= BEAR_FLAG_START_SDL;
+    Game::startFlags |= BEAR_FLAG_START_SCREEN;
+    Game::startFlags |= BEAR_FLAG_LOAD_BASEFILES;
+    Game::startFlags |= BEAR_FLAG_START_CONSOLE;
+    Game::startFlags |= BEAR_FLAG_START_TTF;
 }
 bool GameBehavior::OnLoad(){
     PointInt P = ScreenManager::GetInstance().GetDisplaySize();
     PointInt P2 = ConfigManager::GetInstance().GetScreenSize();
 
-    Console::GetInstance().AddText(utils::format("Started with display %d x %d",(int)P.x,(int)P.y));
-    Console::GetInstance().AddText(utils::format("Started with screen %d x %d",(int)P2.x,(int)P2.y));
+    bear::out << "Supported main display is "<< P.x << " x "<< P.y << "\n";
+    bear::out << "Started with screen "<< P2.x << " x "<< P2.y << "\n";
 
-    Console::GetInstance().AddText("Starting state.");
+    bear::out << "Starting state.\n";
 
 
     Game::GetInstance()->AddState(new Title());

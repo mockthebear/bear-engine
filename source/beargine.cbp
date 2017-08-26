@@ -16,9 +16,12 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++0x" />
+					<Add option="-pg" />
+					<Add option="-g" />
 					<Add option="-DIGNORESTEAM" />
 				</Compiler>
 				<Linker>
+					<Add option="-pg -lgmon" />
 					<Add option="-pg" />
 					<Add option="-Wl,-Bstatic" />
 					<Add option="-llua51" />
@@ -165,10 +168,6 @@
 		<Unit filename="framework/utils.hpp" />
 		<Unit filename="framework/xml.cpp" />
 		<Unit filename="framework/xml.hpp" />
-		<Unit filename="game/ball.cpp" />
-		<Unit filename="game/ball.hpp" />
-		<Unit filename="game/controlableobject.cpp" />
-		<Unit filename="game/controlableobject.hpp" />
 		<Unit filename="game/gamebehavior.cpp" />
 		<Unit filename="game/gamebehavior.hpp" />
 		<Unit filename="game/state.hpp" />

@@ -268,11 +268,7 @@ bool LuaInterface::RunScript(std::string name){
 
 
 void LuaInterface::RegisterClasses(){
-	Console::GetInstance().AddTextInfo("Start ref holder.");
 	LuaCaller::Startup(L);
-	Console::GetInstance().AddTextInfo("Reg stopwatch.");
-
-
 
 	ClassRegister<Stopwatch>::RegisterClassOutside(LuaManager::L, "Stopwatch", [](lua_State* L) {
 		return LuaReferenceCounter<Stopwatch>::makeReference(Stopwatch());
@@ -633,9 +629,6 @@ void LuaInterface::RegisterClasses(){
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetChilds",&LuaUi::GetChilds);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetAsMain",&LuaUi::SetAsMain);
 
-
-
-	Console::GetInstance().AddTextInfo("Finished");
 
 }
 

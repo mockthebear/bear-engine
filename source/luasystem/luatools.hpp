@@ -187,6 +187,9 @@ template<typename Ret> struct expander <0,Ret> {
 class LuaCaller{
     public:
         template <int N> static int BaseEmpty(lua_State *L){
+            if (!L){
+                return 0;
+            }
             LuaCFunctionLambda **v = (LuaCFunctionLambda **)lua_touserdata(L, lua_upvalueindex(N));
             if (!v || !(*v)){
                 Console::GetInstance().AddTextInfo(utils::format("[LuaCaller][LUA]could not call closure %d because null reference",v));
@@ -224,6 +227,9 @@ class LuaCaller{
         }
 
         static void Startup(lua_State *L){
+            if (!L){
+                return;
+            }
             lua_newtable(L);
             lua_setglobal(L, "__REFS");
             char baseMaker[] =  "function New(state,objtype,...)\n"
@@ -264,6 +270,9 @@ class LuaCaller{
 
         };
         template <typename LState> static bool CallClear(lua_State *L, LState *state){
+            if (!L){
+                return false;
+            }
             lua_getglobal(L, "ClearInstances");
             if(!lua_isfunction(L, -1) ){
                 return false;
@@ -274,6 +283,9 @@ class LuaCaller{
 
 
         template <typename LState> static bool StartupState(lua_State *L,LState *state,DefinedState *s2){
+            if (!L){
+                return false;
+            }
             lua_getglobal(L, "MakeState");
             if(!lua_isfunction(L, -1) ){
                 return false;
@@ -285,6 +297,9 @@ class LuaCaller{
             return LuaManager::Pcall(2);
         }
         static bool LoadFile(lua_State *L,std::string name){
+            if (!L){
+                return false;
+            }
             if ( luaL_loadfile(L, name.c_str()) != 0 ) {
                 Console::GetInstance().AddTextInfo(utils::format("[Lua error]: %s",lua_tostring(L, -1)));
                 lua_pop(L, 1);
@@ -293,12 +308,18 @@ class LuaCaller{
             return true;
         }
         template <typename ... Types> static bool Pcall(lua_State *L,Types ... args){
+            if (!L){
+                return false;
+            }
             pexpander::expand(L,args...);
             return LuaManager::Pcall(sizeof...(Types), LUA_MULTRET);
         }
 
 
         template <typename ... Types> static bool CallGlobalField(lua_State *L,std::string field,Types ... args){
+            if (!L){
+                return false;
+            }
             lua_getglobal(L, field.c_str());
             if(!lua_isfunction(L, -1) ){
                 lua_pop(L, 1);
@@ -314,6 +335,9 @@ class LuaCaller{
 
 
         template <typename Obj,typename ... Types> static bool CallField(lua_State *L,Obj *obj,std::string field,Types ... args){
+            if (!L){
+                return false;
+            }
             lua_getglobal(L, "CallOnField");
             if(!lua_isfunction(L, -1) ){
                 return false;
@@ -336,6 +360,9 @@ class LuaCaller{
         }
 
         template <typename Obj,typename ... Types> static bool CallOtherField(lua_State *L,uint64_t old,Obj *obj,std::string field,Types ... args){
+            if (!L){
+                return false;
+            }
             lua_getglobal(L, "CallFromField");
             if(!lua_isfunction(L, -1) ){
                 return false;
@@ -359,6 +386,9 @@ class LuaCaller{
         }
 
         template <typename Obj,typename ... Types> static bool CallSelfField(lua_State *L,Obj *obj,std::string field,Types ... args){
+            if (!L){
+                return false;
+            }
             lua_getglobal(L, "CallFromField");
 
             if(!lua_isfunction(L, -1) ){
@@ -382,6 +412,9 @@ class LuaCaller{
             return ret;
         }
         static void DeleteField(lua_State *L,uint64_t obj){
+            if (!L){
+                return;
+            }
             lua_getglobal(L, "__REFS"); // insert
             lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
             lua_gettable(L, -2 );
