@@ -41,11 +41,11 @@ class Camera{
         /**
             Used to move the camera only in its position
         */
-        void operator=(const RectInt& b){ pos = b;};
+        Camera &operator=(const RectInt& b){ pos = b; return *this;};
         /**
             Used to move the camera only in its position
         */
-        void operator=(const Point& b){ pos.x = int(b.x); pos.y=int(b.y);};
+        Camera &operator=(const Point& b){ pos.x = int(b.x); pos.y=int(b.y); return *this;};
         /**
             Camera speed
         */

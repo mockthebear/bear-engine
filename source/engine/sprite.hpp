@@ -513,17 +513,9 @@ class Sprite{
 
 class Animation{
     public:
-        Animation(){
-            sprX = sprY = sprW = sprH =0;
-            MaxFrames = 1;
-            SprDelay = SprMaxDelay = 1.0f;
-            finishedFrame = false;
-            finishedSingleFrame = false;
-            pause = false;
-            isFormated = false;
-            CanRepeat = true;
-            Loops = 0;
-        };
+
+        Animation():Loops(0),sprX(0),sprY(0),sprW(0),sprH(0),MaxFrames(01),SprDelay(1.0f),SprMaxDelay(1.0f),CanRepeat(true),
+        pause(false),finishedFrame(false),finishedSingleFrame(false),isFormated(false){};
         Animation(float w,float h):Animation(){
            sprW = w;
            sprH = h;

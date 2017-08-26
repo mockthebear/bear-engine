@@ -20,13 +20,7 @@ enum InputState{
  */
 class TouchInfo{
     public:
-        TouchInfo(){
-            x = y = 0;
-            finger = -1;
-            state = RELEASED;
-            pressure = 0;
-            x_f = y_f = 0;
-        }
+        TouchInfo():state(RELEASED),pressure(0.0f),finger(-1),x(0),y(0),x_f(0.0f),y_f(0.0f){};
         /**
             *Current InputManager from the touch
         */

@@ -41,11 +41,12 @@ CustomFont::CustomFont(std::string letterpositions){
                 int yy= utils::GetNumber(line,true);
                 int ww= utils::GetNumber(line,true);
                 int hh= utils::GetNumber(line,true);
-                int padd= utils::GetNumber(line,true);
+                int paddX= utils::GetNumber(line,true);
+                int paddY= utils::GetNumber(line,true);
                 int pddin= utils::GetNumber(line,true);
                 int xoffset = utils::GetNumber(line,true);
                 int resetX = utils::GetNumber(line,true);
-                Letters[(unsigned char)c] = Letter(xx,yy,ww,hh,padd,pddin, xoffset,resetX);
+                Letters[(unsigned char)c] = Letter(xx,yy,ww,hh,paddX,paddY,pddin, xoffset,resetX);
 
             }else{
                 break;
@@ -80,8 +81,8 @@ Point CustomFont::GetSizes(std::string str_){
         }else{
             Letter l = Letters[str[i]];
             lineY = std::max(lineY,l.h);
-            x += l.w + l.pad;
-            y += l.yoffset;
+            x += l.w + l.padx;
+            y += l.pady;
             if (l.resetX){
                 x = 0;
             }
@@ -119,9 +120,9 @@ Point CustomFont::Render(std::string str_,int x_,int y_,int alpha){
 
             sp.SetClip(l.x,l.y,l.w,l.h);
             lineY = std::max(lineY,l.h);
-            sp.Render(beginx+x+l.padin,beginy+y+l.yoffset);
-            x += l.w + l.pad;
-            y += l.yoffset;
+            sp.Render(beginx+x+l.xoffset,beginy+y+l.yoffset);
+            x += l.w + l.padx;
+            y += l.pady;
             if (l.resetX){
 
                 x = 0;

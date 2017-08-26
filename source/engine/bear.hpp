@@ -85,9 +85,8 @@ namespace bear {
     */
     class randomStuff{
         bear::outstream out2;
-        randomStuff(int a){
+        randomStuff(int a):out2(out){
 			(void)a;
-			out2 = out;
         }
     };
 

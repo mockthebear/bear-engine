@@ -39,22 +39,21 @@ enum TextRenderStyle{
  */
 class Letter{
     public:
-        Letter(){
-            valid = false;
-        }
-        Letter(int xx,int yy,int ww, int hh, int ppad,int ppadin,int yffseta,bool resetX){
+        Letter():x(0),y(0),w(0),h(0),padx(0),pady(0),xoffset(0),yoffset(0),resetX(false),valid(false){}
+        Letter(int xx,int yy,int ww, int hh, int ppadX,int ppadY,int ppadin,int yffseta,bool resetX):Letter(){
             valid = true;
             x = xx;
             y = yy;
             h = hh;
             w = ww;
-            pad = ppad;
-            padin = ppadin;
+            padx = ppadX;
+            pady = ppadY;
+            xoffset = ppadin;
             yoffset = yffseta;
             this->resetX = resetX;
         }
 
-        int x,y,h,w,pad,padin,yoffset;
+        int x,y,w,h,padx,pady,xoffset,yoffset;
         bool resetX,valid;
 };
 /**
@@ -101,10 +100,7 @@ class CustomFont{
         /**
             *Constructor
         */
-        CustomFont(){
-            loaded = false;
-            oldAlpha = 255;
-        };
+        CustomFont():sp(),loaded(false),oldAlpha(255),Letters(){};
         CustomFont(std::string letterpositions);
         /**
             *BYE
@@ -175,27 +171,23 @@ class Text{
             *
             *This creator simply get an path to a custom font, then uses it on a given text
         */
+        /*Text(Text &t):Text(){
+            cpy(t);
+            texture = NULL;
+        };*/
         Text(std::string customfontfile, std::string text,int x=0,int y=0);
         /**
             *Empty constructor is almost empty
         */
-        Text(){
-            text="";
-            texture=NULL;
-            isWorking=false;
-            angle=0;
-            style = TEXT_SOLID;
-            scaleX = scaleY = 1;
-            alpha = 255;
-            font = nullptr;
-            texturespr = nullptr;
-            aliasing = false;
-        };
+        Text():box(),bg({100,100,120,255}),angle(0),fontfile(""),text(""),style(TEXT_SOLID),size(),scaleY(1.0f),scaleX(1.0f),
+        color({255,255,255,255}),alpha(255),font(nullptr),texture(nullptr),texturespr(nullptr),isWorking(false),aliasing(false){};
+
+
         /**
             *Here it just delete the texture.
         */
 
-        ~Text();
+        virtual ~Text();
         /**
             *Close everything from the text manually for future reuse
         */

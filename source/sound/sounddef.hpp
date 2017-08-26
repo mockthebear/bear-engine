@@ -5,10 +5,7 @@
 #include <AL/alc.h>
 class BufferData{
     public:
-    BufferData(){
-        buffer = 0;
-        freq = 0;
-    };
+    BufferData():buffer(0),format(0),freq(0){};
     ALuint buffer;
     ALenum format;
     ALsizei freq;

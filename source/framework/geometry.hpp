@@ -15,20 +15,15 @@ template <typename T=float> class GenericPoint{
         /**
             Constructor start all with 0
         */
-        GenericPoint(){
-            x = y = 0;
-        };
+        GenericPoint():x(0),y(0){};
 
-        ~GenericPoint(){};
+        virtual ~GenericPoint() = default;
         /**
             Start with the two given values
             @param x_ the X position
             @param y_ the Y position
         */
-        GenericPoint(T x_,T y_){
-            x = x_;
-            y = y_;
-        };
+        GenericPoint(T x_,T y_):x(x_),y(y_){};
         /**
             Start with the two given values
             @param n An vector of two elements (const), and those are respectively x and y
@@ -180,9 +175,11 @@ template <typename T=float> class GenericPoint{
 */
 template <typename T=float> class GenericPoint3{
     public:
-        GenericPoint3(){
-            x = y = z = 0;
-        };
+        GenericPoint3():x(0),y(0),z(0){};
+        GenericPoint3(T x_,T y_,T z_):x(x_),y(y_),z(z_){};
+
+        virtual ~GenericPoint3() = default;
+
         GenericPoint3(const int n[3]){
             x = n[0];
             y = n[1];
@@ -199,11 +196,6 @@ template <typename T=float> class GenericPoint3{
             z = n[2];
         };
 
-        GenericPoint3(T x_,T y_,T z_){
-            x = x_;
-            y = y_;
-            z = z_;
-        };
         T x,y,z;
         uint32_t GetSize(){return 1;};
 };
@@ -271,9 +263,10 @@ template <typename T=float>class GenericRect{
             Update only the x,y
             @param p Get a point then apply Point x and y to the cordinates of the Rect
         */
-        void operator=(const Point& p){
+        GenericRect<T> operator=(const Point& p){
             x = p.x;
             y = p.y;
+            return *this;
         };
 
         GenericRect<T> operator=(const GenericRect<int>& p){
@@ -410,13 +403,15 @@ class Geometry{
 
 class Circle{
     public:
+        Circle();
         Circle(float,float,float);
-        Circle(const float n[3]){
+        virtual ~Circle()=default;
+        Circle(const float n[3]):Circle(){
             x = n[0];
             y = n[1];
             r = n[2];
         }
-        Circle();
+
         Point GetPoint(){return Point(x,y);};
         float x,y,r;
         float GetSize(){return r;};
@@ -424,6 +419,7 @@ class Circle{
 
 class Cone : public Circle{
     public:
+        Cone():Circle(),start_angle(0.0f),opening(0.0f){};
         /**
             @param x_ the X position
             @param y_ the Y position
@@ -431,20 +427,14 @@ class Cone : public Circle{
             @param start_angle_ The angle of the begin
             @param opening_ the amount of angles in degree of opening
         */
-        Cone(float x_,float y_,float radius_,float start_angle_,float opening_){
+        Cone(float x_,float y_,float radius_,float start_angle_,float opening_):Cone(){
             x = x_;
             y = y_;
             r = radius_;
-            start_angle= start_angle_;
-            opening = opening_;
+            opening =opening_;
+            start_angle = start_angle_;
         };
-        Cone(){
-            x = 0;
-            y = 0;
-            r = 1;
-            start_angle= 0;
-            opening = 0;
-        };
+
         float start_angle,opening;
 		float GetSize(){return r;};
 };

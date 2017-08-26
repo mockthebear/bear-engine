@@ -7,5 +7,6 @@ Circle::Circle(float xx,float yy,float rr){
     r = rr;
 }
 Circle::Circle(){
-    x = y = r = 0;
+    x = y = 0;
+    r = 1;
 }

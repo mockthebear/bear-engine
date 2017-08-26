@@ -103,12 +103,12 @@ class GameObject{
         *<b>Must be defined<b/>
         @return true if is dead
     */
-    virtual bool IsInScreen(Point& p){return false;};
+    virtual bool IsInScreen(Point&){return false;};
     /**
         *You can use this to say "hey, you have been touched by this object
         @param other the object who touched this one
     */
-    virtual void NotifyCollision(GameObject *other){};
+    virtual void NotifyCollision(GameObject *){};
     /**
         *You can use this to say "hey, you have been touched by this object
         @param thing the parameter here is the object type HASH. Check GameObject::GetHash
