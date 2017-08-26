@@ -34,6 +34,8 @@ Game* Game::instance = NULL;
 
 Game::Game(){isClosing=SDLStarted=canDebug=GameBegin=hasBeenClosed=HasAudio=false;};
 
+uint32_t Game::startFlags = BEAR_FLAG_START_EVERYTHING;
+
 void Game::init(const char *name){
     if (instance == NULL){
         SDLStarted = false;
@@ -47,7 +49,11 @@ void Game::init(const char *name){
         dt = frameStart = 0;
         canDebug = false;
 
-        startFlags = BEAR_FLAG_START_EVERYTHING;
+
+
+        GameBehavior::GetInstance().Begin();
+
+
         if (startFlags&BEAR_FLAG_START_CONSOLE){
             Console::GetInstance(true);
             Console::GetInstance().AddTextInfo("Starting...");
@@ -200,19 +206,27 @@ void Game::Close(){
     isClosing = true;
     if (Started)
         GameBehavior::GetInstance().OnClose();
-    Console::GetInstance().AddTextInfo("Closing engine assets");
+
     #ifndef DISABLE_THREADPOOL
-    Console::GetInstance().AddTextInfo("Closing threads");
-    if (startFlags&BEAR_FLAG_START_THREADS)
+
+    if (startFlags&BEAR_FLAG_START_THREADS){
+        Console::GetInstance().AddTextInfo("Closing threads...");
         if (Started)
             ThreadPool::GetInstance().KillThreads();
+        Console::GetInstance().AddTextInfo("Threads closed...");
+    }
     #endif
-    ResourceManager::GetInstance().Erase("engine");
+    if (startFlags&BEAR_FLAG_LOAD_BASEFILES){
+        Console::GetInstance().AddTextInfo("Closing engine assets");
+        ResourceManager::GetInstance().Erase("engine");
+    }
 
-    Console::GetInstance().AddTextInfo("Closing lua");
+
     #ifndef DISABLE_LUAINTERFACE
-    if (startFlags&BEAR_FLAG_START_LUA)
+    if (startFlags&BEAR_FLAG_START_LUA){
+        Console::GetInstance().AddTextInfo("Closing lua");
         LuaInterface::Instance().Close();
+    }
     #endif
     Console::GetInstance().AddTextInfo("Resourcefiles");
     ResourceManager::GetInstance().ClearAll();

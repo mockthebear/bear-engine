@@ -30,29 +30,22 @@ GameBehavior::~GameBehavior(){
 }
 
 
+void GameBehavior::Begin(){
+    std::cout << "owo\n";
+    Game::startFlags = 0;
+    Game::startFlags |= BEAR_FLAG_START_LUA;
+    Game::startFlags |= BEAR_FLAG_START_THREADS;
+}
 bool GameBehavior::OnLoad(){
-    //Console::GetInstance().Begin();
-    if (!ResourceManager::GetInstance().Load("data/test.burr","data")){
-        Console::GetInstance().AddText("Failed to load assets");
-    }
-
-    if (!ResourceManager::GetInstance().Load("snd.burr","snd")){
-        Console::GetInstance().AddText("Failed to load snd");
-    }
-
-
     PointInt P = ScreenManager::GetInstance().GetDisplaySize();
     PointInt P2 = ConfigManager::GetInstance().GetScreenSize();
 
     Console::GetInstance().AddText(utils::format("Started with display %d x %d",(int)P.x,(int)P.y));
     Console::GetInstance().AddText(utils::format("Started with screen %d x %d",(int)P2.x,(int)P2.y));
-    Console::GetInstance().AddText(utils::format("There are %d joysticks",InputManager::GetInstance().GetJoystickCount()));
 
     Console::GetInstance().AddText("Starting state.");
 
 
-
-    ThreadPool::GetInstance().CreateThreads();
     Game::GetInstance()->AddState(new Title());
     return DefaultBehavior::GetInstance().OnLoad();
 }

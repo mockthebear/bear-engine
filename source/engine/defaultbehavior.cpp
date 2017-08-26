@@ -30,6 +30,9 @@ void DefaultBehavior::OnUpdate(float dt){
 }
 
 
+void DefaultBehavior::Begin(){
+
+}
 void DefaultBehavior::OnClose(){
     Text::Clear();
     //Music::Clear();

@@ -10,7 +10,7 @@
 
 int ConfigManager::MaxFps = MAXFPS;
 
-int ConfigManager::MinFps = MINFPS;
+int ConfigManager::MinFps = 20;
 
 float ConfigManager::MinimumDT = 10.32f;
 ConfigManager::ConfigManager(){

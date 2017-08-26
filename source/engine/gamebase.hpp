@@ -49,12 +49,12 @@
 */
 
 enum SFlags{
-    BEAR_FLAG_START_NOTHING         =0,
-    BEAR_FLAG_START_SDL             =1,
+    BEAR_FLAG_START_NOTHING         = 0,
+    BEAR_FLAG_START_SDL             = 1,
     BEAR_FLAG_START_TTF             = 2,
     BEAR_FLAG_START_SOUND           = 4,
     BEAR_FLAG_START_SCREEN          = 8,
-    BEAR_FLAG_LOAD_BASEFILES  = 16,
+    BEAR_FLAG_LOAD_BASEFILES        = 16,
     BEAR_FLAG_START_INPUT           = 32,
     BEAR_FLAG_START_CONSOLE         = 64,
     BEAR_FLAG_START_LUA             = 128,
@@ -136,9 +136,12 @@ class Game{
         Game();
         ~Game();
         void init(const char *name);
+
+        static uint32_t startFlags;
+
     private:
 
-        uint32_t startFlags;
+
 
         bool wasLocked;
         inline void CalculateDeltaTime(){dt = SDL_GetTicks();};

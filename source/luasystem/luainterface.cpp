@@ -46,12 +46,6 @@ LuaInterface::~LuaInterface(){
 void LuaInterface::Close(){
     bear::out << "Called lua close.\n";
     //if (L != NULL){
-        bear::out << "Closing function references\n";
-        LuaManager::ClearRegisteredReferences();
-        bear::out << "Closing saved object references\n";
-        LuaManager::ClearReferences();
-        bear::out << "Closing lua remains.\n";
-
 
         const char closeCode[] = "__REFS = nil;\n"
         "local bytes = collectgarbage('count');\n"
@@ -60,6 +54,13 @@ void LuaInterface::Close(){
 
         luaL_loadstring(L, closeCode);
         lua_pcall(L, 0, LUA_MULTRET, 0);
+
+        bear::out << "Closing function references\n";
+        LuaManager::ClearRegisteredReferences();
+        bear::out << "Closing saved object references\n";
+        LuaManager::ClearReferences();
+        bear::out << "Closing lua remains.\n";
+
         lua_close(L);
         L = nullptr;
     //
