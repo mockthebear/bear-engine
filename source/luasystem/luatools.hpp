@@ -207,12 +207,19 @@ class LuaCaller{
                 return 0;
             }
             int **self = LuaManager::GetSelfReference<int>();
+            /*
             if (!self){
+				//std::cout << "[LuaCaller][LUA]could not call function because of an deleted reference "<< v << " : "<< N << " \n";
                 Console::GetInstance().AddTextInfo(utils::format("[LuaCaller][LUA]could not call function because of an deleted reference[addr %d] %d",v,N));
-                lua_pushnil(L);
-                return 1;
+                //lua_pushnil(L);
+                //return 1;
             }
+            */
             (*(*v))(L);
+            if (!self){
+
+                Console::GetInstance().AddTextInfo(utils::format("[LuaCaller][LUA]could not call function because of an deleted reference[addr %d] %d -> %s",v,N,LuaManager::lastCalled.c_str()));
+            }
             return 1;
         }
 

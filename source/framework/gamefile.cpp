@@ -45,12 +45,12 @@ bool GameFile::Open(std::string name,bool notify){
 
     }
     if (m_filePointer == NULL){
-        std::string fullPath = SDL_GetBasePath();
-        fullPath = fullPath + name;
-        m_filePointer = SDL_RWFromFile(fullPath.c_str(),"rb");
+		char str[180];
+		sprintf(str, "%s%s", SDL_GetBasePath(), name.c_str());
+        m_filePointer = SDL_RWFromFile(str,"rb");
         if (!m_filePointer){
             if (notify){
-                Console::GetInstance().AddText(utils::format("Cannot locate %s", fullPath.c_str() ) );
+                Console::GetInstance().AddText(utils::format("Cannot locate %s", str ) );
             }
             return false;
         }

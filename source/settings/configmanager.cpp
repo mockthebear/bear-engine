@@ -9,6 +9,9 @@
 
 
 int ConfigManager::MaxFps = MAXFPS;
+
+int ConfigManager::MinFps = MINFPS;
+
 float ConfigManager::MinimumDT = 10.32f;
 ConfigManager::ConfigManager(){
     m_screenSize.x=SCREEN_SIZE_W;
@@ -16,7 +19,7 @@ ConfigManager::ConfigManager(){
     pause = false;
     m_rbheavior = RESIZE_BEHAVIOR_SCALE;
 
-    MinimumDT = 10.33f;
+    MinimumDT = 1000.0f/(float)MinFps;
 
 }
 
@@ -34,10 +37,11 @@ void ConfigManager::SetWindowIcon(std::string icon){
             char *res = ResourceManager::GetFileBuffer(rw,rsize);
             imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
             ResourceManager::ClearFileBuffer(res);
+            SDL_RWclose(rw);
         }else{
             Console::GetInstance().AddTextInfo(utils::format("Cannot open the rw file %s",icon));
         }
-        SDL_RWclose(rw);
+
 
     }else{
         SDL_RWops* rw = SDL_RWFromFile(icon.c_str(), "rb");

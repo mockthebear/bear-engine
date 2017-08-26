@@ -18,14 +18,14 @@ namespace utils {
     template<typename... arg> inline std::string format(const std::string& txt) { return txt; }
 
     template<typename... arg> std::string format(const std::string& txt, const arg&... a ) {
-        char Buffer[100];
+        char Buffer[400];
         sprintf(Buffer,txt.c_str(),a...);
         return std::string(Buffer);
     }
 
 
     template<typename... arg> std::string format(const std::string& txt,std::string str, const arg&... a ) {
-        char Buffer[100];
+        char Buffer[400];
         sprintf(Buffer,txt.c_str(),str.c_str(),a...);
         return std::string(Buffer);
     }
@@ -201,10 +201,8 @@ namespace utils {
 }
 class PlainRand{
     public:
-        PlainRand(){
-            last = -1;
-        };
-        PlainRand(int n){
+        PlainRand():Size(1),last(-1),SelectorMap(){};
+        PlainRand(int n):PlainRand(){
             SelectorMap.clear();
             for (int i=0;i<n;i++){
                 SelectorMap[i] = 0;

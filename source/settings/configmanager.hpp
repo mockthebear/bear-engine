@@ -9,7 +9,7 @@
 #include <string>
 
 enum ResizeBehavior{
-    RESIZE_BEHAVIOR_NORESIZE,
+    RESIZE_BEHAVIOR_NORESIZE=0,
     RESIZE_BEHAVIOR_SCALE,
     RESIZE_BEHAVIOR_SCALE_FREE,
     RESIZE_BEHAVIOR_INCREASE,
@@ -35,6 +35,7 @@ class ConfigManager{
         ResizeBehavior GetResizeAction(){return m_rbheavior;};
         void SetResizeAction(ResizeBehavior action){m_rbheavior=action;};
         static int MaxFps;
+        static int MinFps;
         static float MinimumDT;
         static ConfigManager& GetInstance();
         ConfigManager();

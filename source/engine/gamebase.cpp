@@ -58,11 +58,16 @@ void Game::init(const char *name){
         if (startFlags&BEAR_FLAG_START_SDL){
             if (SDL_Init(BEAR_SDL_CONST_INIT) != 0){
                 Console::GetInstance().AddTextInfo( utils::format("SDL may nor work because [%s]",SDL_GetError()) );
+            }else{
+                Console::GetInstance().AddTextInfo("SDL is on!");
             }
         }
+
         if (startFlags&BEAR_FLAG_START_TTF){
             if (TTF_Init()  == -1 ){
                 Console::GetInstance().AddTextInfo("TTF not working");
+            }else{
+                Console::GetInstance().AddTextInfo("TTF is on!");
             }
         }
         if (startFlags&BEAR_FLAG_START_SOUND){
@@ -74,6 +79,8 @@ void Game::init(const char *name){
             if (window == NULL){
                 Console::GetInstance().AddTextInfo("Failed creating screen");
                 exit(1);
+            }else{
+                Console::GetInstance().AddTextInfo("Screen is on!");
             }
 
             renderer = ScreenManager::GetInstance().StartRenderer();
@@ -81,6 +88,8 @@ void Game::init(const char *name){
             if (!renderer){
                 Console::GetInstance().AddTextInfo("Failed creating render");
                 exit(1);
+            }else{
+                Console::GetInstance().AddTextInfo("Renderer is on!");
             }
         }
         if (startFlags&BEAR_FLAG_LOAD_BASEFILES){
@@ -335,8 +344,8 @@ void Game::Run(){
                     isClosing=true;
                     return;
                 }else{
-                    LuaCaller::CallClear(LuaManager::L,stateStack.top());
                     stateStack.top()->End();
+                    LuaCaller::CallClear(LuaManager::L,stateStack.top());
                     delete stateStack.top();
                     stateStack.pop();
                     if (stateStack.empty()){
@@ -388,8 +397,13 @@ void Game::AddState(DefinedState *s,int forcedId){
         storedState->STATEID = Ids++;
     }
     #ifndef DISABLE_LUAINTERFACE
-    if (startFlags&BEAR_FLAG_START_LUA)
-        LuaCaller::StartupState(LuaManager::L,s);
+    DefinedState *MainState = nullptr;
+    if (startFlags&BEAR_FLAG_START_LUA){
+        if (stateStack.size() > 0){
+            MainState = stateStack.top();
+        }
+        LuaCaller::StartupState(LuaManager::L,s,MainState);
+    }
     #endif // DISABLE_LUAINTERFACE
     Ids++;
 };
