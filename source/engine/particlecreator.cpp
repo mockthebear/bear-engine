@@ -29,7 +29,7 @@ Particle* ParticleCreator::CreateAnimatedSprite(int x,int y,float mx,float my,st
     Particle *p = Game::GetCurrentState().ParticlePool->AddInstance(Particle(x,y,sp,repeat));
     if (p != NULL){
        p->SetPatternMoveLine(Point(mx,my),Point(0,0));
-       p->Depth = 0;
+       p->Depth = 99999;
     }
     return p;
 }

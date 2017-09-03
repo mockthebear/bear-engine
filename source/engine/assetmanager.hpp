@@ -119,7 +119,7 @@ class AssetMannager{
         SoundPtr makeSound(bool forced,std::string fileName);
         SoundPtr makeSound(bool forced,SDL_RWops* rw,std::string str);
 
-        std::vector<std::string> getAssetNamesInternal(Sprite t){
+        std::vector<std::string> getAssetNamesInternal(Sprite){
             std::vector<std::string> stuff;
             for (auto &it : spriteMap){
                 stuff.emplace_back(it.first);
@@ -127,7 +127,7 @@ class AssetMannager{
             return stuff;
         }
 
-        std::vector<std::string> getAssetNamesInternal(Sound t){
+        std::vector<std::string> getAssetNamesInternal(Sound){
             std::vector<std::string> stuff;
             for (auto &it : soundMap){
                 stuff.emplace_back(it.first);

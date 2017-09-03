@@ -40,7 +40,7 @@ enum TextRenderStyle{
 class Letter{
     public:
         Letter():x(0),y(0),w(0),h(0),padx(0),pady(0),xoffset(0),yoffset(0),resetX(false),valid(false){}
-        Letter(int xx,int yy,int ww, int hh, int ppadX,int ppadY,int ppadin,int yffseta,bool resetX):Letter(){
+        Letter(int xx,int yy,int ww, int hh, int ppadX,int ppadY,int ppadin,int yffseta,bool resetXa):Letter(){
             valid = true;
             x = xx;
             y = yy;
@@ -50,7 +50,7 @@ class Letter{
             pady = ppadY;
             xoffset = ppadin;
             yoffset = yffseta;
-            this->resetX = resetX;
+            this->resetX = resetXa;
         }
 
         int x,y,w,h,padx,pady,xoffset,yoffset;
@@ -316,7 +316,7 @@ class Text{
         */
         Text& operator=(Text T){
             cpy(T);
-            texture = NULL;
+            texture = nullptr;
             return *this;
         }
 

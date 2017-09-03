@@ -45,6 +45,21 @@ class LuaManager{
             if (lua_pcall(L, arg, returns,  ext) != 0) {
                 Console::GetInstance().AddTextInfo(utils::format("Lua error: :c %s -> [%s]",lua_tostring(L, -1),lastCalled.c_str()));
                 lua_pop(L,1);
+                lua_getfield(L, LUA_GLOBALSINDEX, "debug");
+                if (!lua_istable(L, -1)) {
+                    lua_pop(L, 1);
+                    return false;
+                }
+                lua_getfield(L, -1, "traceback");
+                if (!lua_isfunction(L, -1)) {
+                    lua_pop(L, 2);
+                    return false;
+                }
+                lua_pushvalue(L, 1);  /* pass error message */
+                lua_pushinteger(L, 2);  /* skip this function and traceback */
+                lua_call(L, 2, 1);  /* call debug.traceback */
+                Console::GetInstance().AddTextInfo(utils::format("Trace: %s",lua_tostring(L, -1)));
+
                 return false;
             }
             return true;

@@ -397,7 +397,7 @@ class Sprite{
 
         void SetCenteredScale(bool set,Point sprSize=Point(0,0)){
             scaleCentered = set;
-            if (sprSize.x == 0 || sprSize.y == 0){
+            if (sprSize.x == 0.0f || sprSize.y == 0.0f){
                 widSize = Point(clipRect.w,clipRect.h);
             }else{
                 widSize = sprSize;

@@ -138,13 +138,13 @@ Point CustomFont::Render(std::string str_,int x_,int y_,int alpha){
 
 
 
-Text::Text(std::string text,int size,SDL_Color color):Text("engine:default.ttf", size,TEXT_SOLID,text, color){
+Text::Text(std::string textArg,int sizeArg,SDL_Color colorArg):Text("engine:default.ttf", sizeArg,TEXT_SOLID,textArg, colorArg){
 
 }
 Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string textp, SDL_Color colot,int x,int y):Text(){
     angle = 0;
-    font = NULL;
-    texturespr = NULL;
+    font = nullptr;
+    texturespr = nullptr;
     box.x = x;
     box.y = y;
     text = textp.c_str();
@@ -152,7 +152,7 @@ Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string tex
     size = fontsize;
     style = stylep;
     color = colot;
-    texture = NULL;
+    texture = nullptr;
     alpha=255;
     std::string ftnm = fontfilep;
 
@@ -215,14 +215,14 @@ SDL_Texture* Text::CopyTexture(){
 Text::Text(std::string fontfilep, std::string textp,int x,int y):Text(){
     angle = 0;
     isWorking = false;
-    font = NULL;
-    texturespr = NULL;
+    font = nullptr;
+    texturespr = nullptr;
     box.x = x;
     alpha=255;
     box.y = y;
     text = textp;
     bg = {0,0,0,0};
-    texture = NULL;
+    texture = nullptr;
     if (customTable[fontfilep]){
         texturespr = customTable[fontfilep];
         isWorking = true;
@@ -242,17 +242,17 @@ Text::Text(std::string fontfilep, std::string textp,int x,int y):Text(){
 Text::~Text(){
     if (texture){
         SDL_DestroyTexture(texture);
-        texture = NULL;
+        texture = nullptr;
     }
 }
 
 void Text::Close(){
     if (texture){
         SDL_DestroyTexture(texture);
-        texture = NULL;
-        isWorking = NULL;
-        font = NULL;
-        texturespr = NULL;
+        texture = nullptr;
+        isWorking = nullptr;
+        font = nullptr;
+        texturespr = nullptr;
     }
 }
 void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
@@ -290,7 +290,7 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
         }
         if (texture){
             SDL_SetTextureAlphaMod(texture,alpha);
-            if (SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,NULL,&dimensions2,static_cast<double>(angle),nullptr,SDL_FLIP_NONE)){
+            if (SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,nullptr,&dimensions2,static_cast<double>(angle),nullptr,SDL_FLIP_NONE)){
 
                 RemakeTexture();
             }
@@ -331,7 +331,7 @@ void Text::RenderRS(int cameraX,int cameraY,TextRenderStyle renderStyle){
         }
         if (texture){
             SDL_SetTextureAlphaMod(texture,alpha);
-            if (SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,NULL,&dimensions2,static_cast<double>(angle),nullptr,SDL_FLIP_NONE)){
+            if (SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,nullptr,&dimensions2,static_cast<double>(angle),nullptr,SDL_FLIP_NONE)){
                 RemakeTexture();
             }
         }
@@ -439,8 +439,8 @@ void Text::RemakeTexture(bool Destory){
         SDL_DestroyTexture( texture );
     }
 
-    texture = NULL;
-    SDL_Surface *surf=NULL;
+    texture = nullptr;
+    SDL_Surface *surf=nullptr;
     if (!font){
         bear::out << "[TXT:RemakeTexture] there is no font\n";
         return;

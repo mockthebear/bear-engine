@@ -39,7 +39,7 @@ TexturePtr AssetMannager::resource(std::string str,bool hasAntiAliasign){
 }
 */
 
-TexturePtr AssetMannager::makeTexture(bool forced,std::string str,int fcount,float ftime,int rep,bool hasAliasing) {
+TexturePtr AssetMannager::makeTexture(bool forced,std::string str,int ,float,int,bool hasAliasing) {
     if (!spriteMap[str] || forced){
         SDL_Texture* c =Sprite::Preload((char*)str.c_str(),true,hasAliasing);
         if (!c){

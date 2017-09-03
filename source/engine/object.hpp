@@ -139,7 +139,7 @@ class GameObject{
 
         @endcode
     */
-    virtual void NotifyDamage(GameObject *bj,int n){};
+    virtual void NotifyDamage(GameObject *object,int damage){(void)object; (void)damage;};
     /**
         *The engine have an thing to dont update object that are not inside the Camera.
         *But you can force then to be updated anyway
@@ -194,7 +194,7 @@ class GameObject{
     */
     int poolIndex;
 
-    virtual void NotifyInPool(void *pool){};
+    virtual void NotifyInPool(void *pool){(void)pool;};
 
     uint64_t GetMyRef(){return (uint64_t)this;};
 

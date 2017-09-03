@@ -172,14 +172,16 @@ template<typename Ret> struct expander <0,Ret> {
     }
 };
  struct pexpander {
-    template<typename R,typename... Args> static void expand(lua_State *L,R r,const Args&... args) {
+    template<typename R,typename... Args> static int expand(lua_State *L,R r,const Args&... args) {
         GenericLuaReturner<R>::Ret(r,L);
-        pexpander::expand(L,args...);
+        return 1 + pexpander::expand(L,args...);
     };
-    static void expand(lua_State *L) {
+    static int expand(lua_State *L) {
+        return 0;
     }
-    template<typename R> static void expand(lua_State *L,R r) {
+    template<typename R> static int expand(lua_State *L,R r) {
         GenericLuaReturner<R>::Ret(r,L);
+        return 1;
     };
 };
 
@@ -238,15 +240,16 @@ class LuaCaller{
                                 "   return obj\n"
                                 "end\n"
                                 "function CallFromField(state,index,str,...)\n"
+                                "    if not __REFS[state] then print('No such state inserted'); return false; end \n"
                                 "    if __REFS[state][index] then\n"
-                                "        if __REFS[state][index][str] then\n"
+                                "        if __REFS[state][index][str] ~= nil then\n"
                                 "            return __REFS[state][index][str](__REFS[state][index],...)\n"
                                 "        end\n"
                                 "    end\n"
                                 "    return false\n"
                                 "end\n"
                                 "function CallOnField(state,index,str,...)\n"
-                                "    assert(__REFS[state])\n"
+                                "    if not __REFS[state] then print('No such state inserted'); return false; end \n"
                                 "    if __REFS[state][index] then\n"
                                 "        if _G[str] and type(_G[str]) == \"function\" then\n"
                                 "            _G[str](__REFS[state][index],...)\n"
@@ -411,6 +414,7 @@ class LuaCaller{
             lua_pop(L,1);
             return ret;
         }
+
         static void DeleteField(lua_State *L,uint64_t obj){
             if (!L){
                 return;
@@ -858,17 +862,17 @@ template<typename T1> struct ClassRegister{
         lua_newtable(L);
         int methodsTable = lua_gettop(L);
 
-        static LuaCFunctionLambda Flambb = [name,makerF](lua_State* L) -> int{
+        static LuaCFunctionLambda Flambb = [name,makerF](lua_State* Ls) -> int{
 			T1 *obj;
 			if (makerF) {
-				obj = makerF(L);
+				obj = makerF(Ls);
 			}else{
 				obj = new T1();
 			}
 			if (!obj){
                 return 0;
 			}
-			RegisterObject(L,name,obj,false);
+			RegisterObject(Ls,name,obj,false);
             return 1;
         };
 
@@ -889,7 +893,7 @@ template<typename T1> struct ClassRegister{
         lua_pop(L, 2);
         lua_getglobal(L, name.c_str());
         if (gc_func && *gc_func){
-            LuaCFunctionLambda** baseF = static_cast<LuaCFunctionLambda**>(lua_newuserdata(L, sizeof(LuaCFunctionLambda) ));
+            baseF = static_cast<LuaCFunctionLambda**>(lua_newuserdata(L, sizeof(LuaCFunctionLambda) ));
             (*baseF) = &(*gc_func);
             lua_pushcclosure(L, LuaCaller::Base<1>,1);
         }else{
@@ -915,12 +919,12 @@ template<typename T1> struct ClassRegister{
         lua_newtable(L);
         int methodsTable = lua_gettop(L);
 
-        static LuaCFunctionLambda Flambb = [name,makerF](lua_State* L) -> int{
+        static LuaCFunctionLambda Flambb = [name,makerF](lua_State* Ls) -> int{
 			T1 *obj = nullptr;
 			if (makerF) {
-				obj = makerF(L);
+				obj = makerF(Ls);
 			}
-			RegisterObject(L,name,obj,false);
+			RegisterObject(Ls,name,obj,false);
             return 1;
         };
 

@@ -23,11 +23,11 @@ PathFind::PathFind(int sizeX,int sizeY,int dirs,int cells):PathFind(){
     m_dir   = new int*[sizeX];
     m_close = new int*[sizeX];
     m_open  = new int*[sizeX];
-    for (int y=0;y<sizeX;y++){
-        m_map[y] = new int[sizeY];
-        m_dir[y] = new int[sizeY];
-        m_close[y] = new int[sizeY];
-        m_open[y] = new int[sizeY];
+    for (int yaux=0;yaux<sizeX;yaux++){
+        m_map[yaux] = new int[sizeY];
+        m_dir[yaux] = new int[sizeY];
+        m_close[yaux] = new int[sizeY];
+        m_open[yaux] = new int[sizeY];
     }
     size.x = sizeX;
     size.y = sizeY;
@@ -36,36 +36,36 @@ PathFind::PathFind(int sizeX,int sizeY,int dirs,int cells):PathFind(){
     if (directions == 4){
         int cx[] = PF_DIR4X;
         int cy[] = PF_DIR4Y;
-        for (int i=0;i<directions;i++){
-            dx[i] = cx[i];
-            dy[i] = cy[i];
+        for (int ind=0;ind<directions;ind++){
+            dx[i] = cx[ind];
+            dy[i] = cy[ind];
         }
     }else{
         directions = 8;
         int cx[] = PF_DIR8X;
         int cy[] = PF_DIR8Y;
-        for (int i=0;i<directions;i++){
-            dx[i] = cx[i];
-            dy[i] = cy[i];
+        for (int ind=0;ind<directions;ind++){
+            dx[i] = cx[ind];
+            dy[i] = cy[ind];
         }
     }
-    for(y=0;y<size.y;y++){
-        for(x=0;x<size.x;x++){
-            m_close[x][y]   =0;
-            m_open[x][y]    =0;
-            m_dir[x][y]    = 0;
-            m_map[x][y]    = 0;
+    for(int yaux=0;yaux<size.y;yaux++){
+        for(int xaux=0;xaux<size.x;xaux++){
+            m_close[xaux][yaux]   =0;
+            m_open[xaux][yaux]    =0;
+            m_dir[xaux][yaux]    = 0;
+            m_map[xaux][yaux]    = 0;
         }
     }
 }
 
 void PathFind::Close(){
     if (m_map != nullptr){
-        for (int y=0;y<size.x;y++){
-            delete []m_map[y];
-            delete []m_dir[y];
-            delete []m_close[y];
-            delete []m_open[y];
+        for (int yaux=0;yaux<size.x;yaux++){
+            delete []m_map[yaux];
+            delete []m_dir[yaux];
+            delete []m_close[yaux];
+            delete []m_open[yaux];
         }
         delete []m_map;
         delete []m_dir;

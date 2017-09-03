@@ -42,18 +42,32 @@ template<typename T1> struct MakeLuaObject{
             lua_pushnil(L);
             return 1;
         }
+
         bool isNil = false;
         lua_getglobal(L, "__REFS"); // insert
         lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
         lua_gettable(L, -2 );
+        lua_remove(L, -2);
+
+
+
+
+        if (lua_isnil(L,-1)){
+            std::cout << "errrrr\n";
+        }
         lua_pushnumber(L,(uint64_t)obj);
         lua_gettable(L, -2 );
+        lua_remove(L, -2);
+
         if (lua_isnil(L,-1)){
             isNil = true;
+            //Pop the table and the nil value that is the top
+            lua_pop(L,1);
+
         }else{
             return 1;
         }
-        //QuickDebug::DumpLua(L);
+
 
 
 
@@ -89,20 +103,25 @@ template<typename T1> struct MakeLuaObject{
             lua_setfield(L, -2, "__self");
 
             if (isNil){
+                std::cout << "Made reference, getting stuff 2\n";
                 lua_settable(L, -3 );
                 lua_pop(L,1);
+
+
                 lua_getglobal(L, "__REFS"); // request to return
                 lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
                 lua_gettable(L, -2 );
+                lua_remove(L, -2);
                 lua_pushnumber(L,(uint64_t)obj);
                 lua_gettable(L, -2);
+                lua_remove(L, -2);
             }
 
             return 1;
         }else{
             if (isNil){
                 lua_getglobal(L, "__REFS"); // insert
-                lua_pushnumber(L, 0);
+                lua_pushnumber(L, uint64_t(&Game::GetCurrentState()) );
                 lua_gettable(L, -2 );
                 lua_pushnumber(L,(uint64_t)obj);
             }
@@ -138,14 +157,20 @@ template<typename T1> struct MakeLuaObject{
             lua_setmetatable(L, -2);
 
 
+
+
             if (isNil){
                 lua_settable(L, -3 );
-                lua_pop(L,1);
+                lua_pop(L,2);
+
                 lua_getglobal(L, "__REFS"); // request to return
                 lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
                 lua_gettable(L, -2 );
+                lua_remove(L, -2);
                 lua_pushnumber(L,(uint64_t)obj);
                 lua_gettable(L, -2);
+                lua_remove(L, -2);
+
             }
 
 
@@ -208,8 +233,11 @@ template<typename T1> struct GenericLuaGetter{
 
                 if (!typeFine){
                     disName = disName + " Instead is " + otherType;
-                    Console::GetInstance().AddText("[LuaBase][Warning] Type is not %s.",disName);
-                    return T1();
+                    Console::GetInstance().AddText("[LuaBase][Warning] Type base is not %s.",disName);
+                    /*
+                        TODO: check if conversion is valid or not.
+                    */
+                    //return T1();
                 }
                 pt = *(*sp);
                 if (pop)
@@ -802,9 +830,23 @@ template<class T>
                 }
 
                 if (!typeFine){
-                    disName = disName + " Instead is " + otherType;
-                    Console::GetInstance().AddText("[LuaBase][Warning] Type is not %s.",disName);
+                    //disName = disName + " Instead is " + otherType;
+                    //Console::GetInstance().AddText("[LuaBase][Warning] Type is not %s.",disName);
+                    /*lua_getfield(L, LUA_GLOBALSINDEX, "debug");
+                    if (!lua_istable(L, -1)) {
+                        lua_pop(L, 1);
+                    }
+                    lua_getfield(L, -1, "traceback");
+                    if (!lua_isfunction(L, -1)) {
+                        lua_pop(L, 2);
+                    }
+                    lua_pushvalue(L, 1);
+                    lua_pushinteger(L, 2);
+                    lua_call(L, 2, 1);
+                    Console::GetInstance().AddTextInfo(utils::format("Trace: %s",lua_tostring(L, -1)));
                     return pt;
+                    */
+
                 }
                 pt = (*sp);
             }
