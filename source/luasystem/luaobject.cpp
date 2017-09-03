@@ -49,12 +49,10 @@ bool LuaObject::IsDead(){
     return !Active || LuaCaller::CallSelfField(LuaManager::L,this,"IsDead");
 }
 void LuaObject::NotifyCollision(GameObject *obj){
-    std::vector<float> aaa;
-    aaa.emplace_back(123);
-    aaa.emplace_back(321);
-
-    LuaCaller::CallSelfField(LuaManager::L,this,"NotifyCollision",obj,aaa);
+    LuaCaller::CallSelfField(LuaManager::L,this,"NotifyCollision",obj);
 }
 void LuaObject::NotifyDamage(GameObject *bj,int n){
-    LuaCaller::CallSelfField(LuaManager::L,this,"NotifyCollision",bj,n);
+
+    LuaCaller::CallSelfField(LuaManager::L,this,"NotifyDamage",bj);
+
 }
