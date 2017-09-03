@@ -21,6 +21,11 @@ namespace MovementSet{
         Point aux = speed;
         speed.x += Acceleration.x;
         speed.y += Acceleration.y;
+        /*
+            todo:
+
+            wtf is this?
+        */
         if ((aux.x/aux.x) != (speed.x/speed.x)){
             Acceleration.x = 0;
             speed.x = 0;
