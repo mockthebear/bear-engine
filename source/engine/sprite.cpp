@@ -364,9 +364,9 @@ void Sprite::Query(TexturePtr ptr){
     }
 }
 
-bool Sprite::Open(const char *file,bool HasAliasing){
+bool Sprite::Open(const char *filepath,bool HasAliasing){
     scaleX = scaleY = 1;
-    std::string stdnamee(file);
+    std::string stdnamee(filepath);
     if (stdnamee.find(":")!=std::string::npos){
         SDL_RWops* file = ResourceManager::GetInstance().GetFile(stdnamee); //safe
         bool ret = Open(file,stdnamee,HasAliasing);

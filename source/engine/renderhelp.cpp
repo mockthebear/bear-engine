@@ -88,12 +88,12 @@ SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h){
     DebugHelper::AssertAlloc(pixels,WHERE_ARG);
     SDL_SetTextureBlendMode( t, SDL_BLENDMODE_BLEND );
 
-    for (int y = 0;y < h;y++){
-        for (int x=0;x<w;x++){
-             pixels[y * h + x] = RenderHelp::FormatRGBA(rand()%255,rand()%255,rand()%255, rand()%255);
+    for (int ya = 0;ya < h;ya++){
+        for (int xa=0;x<w;xa++){
+             pixels[ya * h + xa] = RenderHelp::FormatRGBA(rand()%255,rand()%255,rand()%255, rand()%255);
         }
     }
-    SDL_UpdateTexture(t, NULL, pixels, w * sizeof(Uint32));
+    SDL_UpdateTexture(t, nullptr, pixels, w * sizeof(Uint32));
 	return new SmartTexture(t,pixels,x,y,h,w);
 
 }
@@ -101,14 +101,14 @@ SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h){
 SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h,std::function<Uint32 (Uint32 , int, int)> F){
     SDL_Texture *t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, w, h);
     Uint32 * pixels = new Uint32[w * h];
-    if (pixels == NULL){
-        return NULL;
+    if (pixels == nullptr){
+        return nullptr;
     }
 
     SDL_SetTextureBlendMode( t, SDL_BLENDMODE_BLEND );
-    for (int y = 0;y < h;y++){
-        for (int x=0;x<w;x++){
-             pixels[y * h + x] = F(pixels[y * h + x],x,y);
+    for (int ya = 0;ya < h;ya++){
+        for (int xa=0;xa<w;xa++){
+             pixels[ya * h + xa] = F(pixels[ya * h + xa],xa,ya);
         }
     }
     SDL_UpdateTexture(t, NULL, pixels, w * sizeof(Uint32));

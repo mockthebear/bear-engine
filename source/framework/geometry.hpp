@@ -75,10 +75,7 @@ template <typename T=float> class GenericPoint{
             y = p.y;
         }
 
-        GenericPoint(const SDL_Point &p){
-            x = p.x;
-            y = p.y;
-        }
+        GenericPoint(const SDL_Point &p):x(p.x),y(p.y){}
         /**
             Get the distance between two points
             @return distance between two points
@@ -221,12 +218,7 @@ template <typename T=float>class GenericRect{
         /**
             Constructor
         */
-        GenericRect(T xx,T yy ,T ww,T hh){
-            x = xx;
-            y = yy;
-            h = hh;
-            w = ww;
-        }
+        GenericRect(T xx,T yy ,T ww,T hh):x(xx),y(yy),w(ww),h(hh){}
         /**
             Empty constructor start all components with 0
         */
@@ -256,9 +248,7 @@ template <typename T=float>class GenericRect{
             h = n[3];
         };
 
-        GenericRect(){
-            x = y = h = w = 0;
-        };
+        GenericRect():x(0),y(0),w(0),h(0){};
         /**
             Update only the x,y
             @param p Get a point then apply Point x and y to the cordinates of the Rect
@@ -372,7 +362,7 @@ template <typename T=float>class GenericRect{
             @return A Point containing in x,y the middle position of the rect
         */
         GenericPoint<T> GetCenter(){return GenericPoint<T>(x+(w/2.0),y+(h/2.0));}
-        T x,y,h,w;
+        T x,y,w,h;
 
         uint32_t GetSize(){return std::max(w,h);};
 };

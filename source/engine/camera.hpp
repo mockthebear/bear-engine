@@ -58,7 +58,7 @@ class Camera{
         /**
             Disabled following
         */
-        static void Unfollow(){focus = NULL;focusPoint=nullptr;focusRect=nullptr;};
+        static void Unfollow(){focus = nullptr;focusPoint=nullptr;focusRect=nullptr;};
         /**
             Set an offset to following thing
         */

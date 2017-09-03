@@ -42,8 +42,8 @@ class PathFind{
         void Close();
         PathFind();
         PathFind(int sizeX,int sizeY,int directions=8,int cellSize=16);
-        int &at(int x,int y){return m_map[x][y];};
-        bool AddBlock(int x,int y,bool block=true);
+        int &at(int xarg,int yarg){return m_map[xarg][yarg];};
+        bool AddBlock(int xarg,int yarg,bool block=true);
 
         std::stack<Point> Find(PointInt From,PointInt To);
 

@@ -25,7 +25,7 @@ Particle::Particle(){
     currentFrame=Frame=0;
     currentDelay=Delay=0;
     HasSprite = false;
-    textures = NULL;
+    textures = nullptr;
     Alpha = 255;
     Scale = 1;
     Scaling = 0;
@@ -45,7 +45,7 @@ Particle::Particle(int x,int y){
     currentFrame=Frame=0;
     currentDelay=Delay=0;
     HasSprite = false;
-    textures = NULL;
+    textures = nullptr;
     Alpha = 255;
     AlphaDegen = 0;
 
@@ -98,7 +98,7 @@ Particle::Particle(int x,int y,Text txt_,float duration){
     Frame = 1;
     Delay = duration;
     HasSprite = false;
-    textures = NULL;
+    textures = nullptr;
     txt = txt_;
     Alpha = 255;
     Depth = PARTICLE_DEPTH;
@@ -123,7 +123,7 @@ Particle::Particle(int x,int y,Sprite sp_,float duration,int rep){
 
     Alpha = 255;
     Depth = PARTICLE_DEPTH;
-    textures = NULL;
+    textures = nullptr;
     PatternMove = MOVE_SET_NONE;
     Speed = Point(0,0);
     createdPosition = Point(x,y);
@@ -138,14 +138,15 @@ Particle::~Particle(){
 
 
 
-void Particle::SetSprite(Sprite sp_,float duration,int repeat){
-    sp = sp_;
-    HasSprite = true;
+void Particle::SetSprite(Sprite sp_,float duration,int repeats){
+    sp              =   sp_;
+    HasSprite       =   true;
+    repeat          =   repeats;
     currentFrame    =   0;
     Frame           =   sp.GetFrameCount();
     currentDelay    =   std::max(sp_.GetFrameTime(),duration);
     Delay           =   std::max(sp_.GetFrameTime(),duration);
-    textures        =   NULL;
+    textures        =   nullptr;
 }
 
 void Particle::SetPatternMoveLine(Point p,Point accel){

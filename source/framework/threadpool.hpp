@@ -51,7 +51,7 @@ class Job{
         Job(){
             lambda = [](int,int,void*){};
             Type = JOB_NOTHING;
-            Parameter=NULL;
+            Parameter=nullptr;
             min=max=0;
             vect=nullptr;
             from=to=0;
@@ -59,11 +59,11 @@ class Job{
             empty = false;
         };
         Job(JOBTYPE t):Job(){Type = t;};
-        Job(std::function<void(int,int,void*)> F):Job(){Type = JOB_LAMBDA;lambda=F;Parameter=NULL;};
+        Job(std::function<void(int,int,void*)> F):Job(){Type = JOB_LAMBDA;lambda=F;Parameter=nullptr;};
         Job(std::function<void(int,int,void*)> Reduce,int min_p,int max_p):Job(){
             Type = JOB_FOR;
             lambda=Reduce;
-            Parameter=NULL;
+            Parameter=nullptr;
             min = min_p;
             max = max_p;
         };

@@ -129,11 +129,11 @@ void Game::init(const char *name){
         ConfigManager::GetInstance().DisplayArgs();
         if (startFlags&BEAR_FLAG_START_SOUND){
             Console::GetInstance().AddText("Opening audio");
-            device = alcOpenDevice(NULL);
+            device = alcOpenDevice(nullptr);
             if (device){
                 SoundLoader::ShowError("on make");
                 HasAudio = true;
-                ctx = alcCreateContext(device,NULL);
+                ctx = alcCreateContext(device,nullptr);
                 if (!alcMakeContextCurrent(ctx)){
                    SoundLoader::ShowError("on device");
                    Console::GetInstance().AddText("Some error on audio!");
@@ -156,7 +156,7 @@ void Game::init(const char *name){
         skipRender = 1;
         nextUpdate =  1000;
 
-        srand(time(NULL));
+        srand(time(nullptr));
         if (startFlags&BEAR_FLAG_START_THREADS){
             ThreadPool::GetInstance(POOL_DEFAULT_THREADS);
         }
@@ -227,7 +227,7 @@ void Game::Close(){
 
             SoundPool::GetInstance().Close();
             Console::GetInstance().AddTextInfo("Closing OpenAl");
-            alcMakeContextCurrent(NULL);
+            alcMakeContextCurrent(nullptr);
             alcDestroyContext(ctx);
             alcCloseDevice(device);
 
@@ -294,7 +294,7 @@ void Game::Begin(){
     if (storedState != NULL){
         stateStack.emplace(storedState);
         stateStack.top()->Begin();
-        storedState =NULL;
+        storedState =nullptr;
     }
     GameBegin = true;
 }
@@ -358,12 +358,12 @@ void Game::Run(){
                 }
             }
 
-            if (storedState != NULL){
+            if (storedState != nullptr){
                 if (!justDeleted)
                     stateStack.top()->Pause(storedState);
                 stateStack.emplace(storedState);
                 stateStack.top()->Begin();
-                storedState =NULL;
+                storedState =nullptr;
                 return;
             }
 

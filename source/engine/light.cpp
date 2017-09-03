@@ -6,18 +6,18 @@
 #include "renderhelp.hpp"
 #include "../performance/console.hpp"
 
-Light* Light::Slight = NULL;
+Light* Light::Slight = nullptr;
 #ifndef DISABLE_THREADPOOL
 pthread_mutex_t Light::GCritical;
 #endif
 
 Light::Light(){
-    out = NULL;
+    out = nullptr;
     onAutomatic = false;
     #ifndef DISABLE_THREADPOOL
-    pthread_mutex_init(&Critical,NULL);
-    pthread_mutex_init(&CanRender,NULL);
-    pthread_mutex_init(&JobInterval,NULL);
+    pthread_mutex_init(&Critical,nullptr);
+    pthread_mutex_init(&CanRender,nullptr);
+    pthread_mutex_init(&JobInterval,nullptr);
     pthread_mutex_lock(&CanRender);
     #endif
     LightJobs = 0;
@@ -27,7 +27,7 @@ Light::Light(){
 }
 Light* Light::Startup(){
     #ifndef DISABLE_THREADPOOL
-    pthread_mutex_init(&GCritical,NULL);
+    pthread_mutex_init(&GCritical,nullptr);
     #endif // DISABLE_THREADPOOL
     return GetInstance();
 }
@@ -35,7 +35,7 @@ Light* Light::GetInstance(){
     #ifndef DISABLE_THREADPOOL
     pthread_mutex_lock(&GCritical);
     #endif
-    if (Slight == NULL){
+    if (Slight == nullptr){
         Slight = new Light();
     }
     #ifndef DISABLE_THREADPOOL
@@ -213,8 +213,8 @@ void Light::Shade(parameters *P,Job &j){
         if (LightJobs == 0){
             int pthreads = ThreadPool::GetInstance().GetPthreads();
             for (int tIndex=0; tIndex<pthreads; tIndex++){
-                Job j(JOB_REDUCE, tIndex * (sizeY/(float)pthreads),(tIndex +1) * (sizeY/(float)pthreads));
-                ThreadPool::GetInstance().AddJob_(j,true);
+                Job jnew(JOB_REDUCE, tIndex * (sizeY/(float)pthreads),(tIndex +1) * (sizeY/(float)pthreads));
+                ThreadPool::GetInstance().AddJob_(jnew,true);
                 LightJobs++;
             }
         }
@@ -474,6 +474,6 @@ void Light::Render(Point pos){
 
     dimensions2.h = size.y*scaleRatioH;
     dimensions2.w = size.x*scaleRatioW;
-    SDL_RenderCopyEx(BearEngine->GetRenderer(),out->GetTexture(),NULL,&dimensions2,0,nullptr,SDL_FLIP_NONE);
+    SDL_RenderCopyEx(BearEngine->GetRenderer(),out->GetTexture(),nullptr,&dimensions2,0,nullptr,SDL_FLIP_NONE);
 
 }
