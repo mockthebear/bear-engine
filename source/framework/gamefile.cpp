@@ -11,6 +11,7 @@ GameFile::GameFile(){
     m_size = 0;
     m_filePos = 0;
     m_filePointer = NULL;
+    fromResource = false;
 }
 
 GameFile::GameFile(std::string name,bool notify){
@@ -18,6 +19,7 @@ GameFile::GameFile(std::string name,bool notify){
     m_size = 0;
     m_filePos = 0;
     m_filePointer = NULL;
+    fromResource = false;
     Open(name,notify);
 }
 
@@ -28,6 +30,7 @@ GameFile::GameFile(const char *name,bool notify){
     m_size = 0;
     m_filePos = 0;
     m_filePointer = NULL;
+    fromResource = false;
     Open(name,notify);
 }
 GameFile::~GameFile(){
@@ -55,13 +58,22 @@ bool GameFile::Open(std::string name,bool notify){
             return false;
         }
     }
-    SDL_RWseek(m_filePointer, 0L, RW_SEEK_END);
-    m_size = SDL_RWtell(m_filePointer);
-    SDL_RWseek(m_filePointer, 0L, RW_SEEK_SET);
-    m_filePos = 0;
+    fromResource = false;
+    ParseFile();
+
 
     return true;
 }
+
+void GameFile::ParseFile(){
+    if (m_filePointer){
+        SDL_RWseek(m_filePointer, 0L, RW_SEEK_END);
+        m_size = SDL_RWtell(m_filePointer);
+        SDL_RWseek(m_filePointer, 0L, RW_SEEK_SET);
+        m_filePos = 0;
+    }
+}
+
 bool GameFile::ClearCache(){
     if (!IsCached()){
         return false;
@@ -213,9 +225,11 @@ bool GameFile::GetLine(std::string &line){
     std::string buffer = "";
     bool finished = false;
     while (!finished){
-        if (m_filePos > m_size)
-            return false;
         char c = ReadByte();
+        if (m_filePos > m_size){
+            line = buffer;
+            return false;
+        }
         if ((int)c == 13){
             continue;
         }
