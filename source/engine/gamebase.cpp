@@ -166,8 +166,8 @@ void Game::init(const char *name){
         if (startFlags&BEAR_FLAG_START_THREADS){
             ThreadPool::GetInstance(POOL_DEFAULT_THREADS);
         }
-        if (startFlags&BEAR_FLAG_START_CONSOLE){
-            Console::GetInstance().AddText("Opening console");
+        if (startFlags&BEAR_FLAG_START_CONSOLEGRAPHICAL){
+            Console::GetInstance().AddText("Opening console graphical");
             Console::GetInstance().Begin();
         }
 
@@ -305,10 +305,10 @@ void Game::Begin(){
         Close();
         exit(1);
     }
-    if (storedState != NULL){
-        stateStack.emplace(storedState);
+    if (!preStored.empty()){
+        stateStack.emplace(preStored.front());
+        preStored.pop();
         stateStack.top()->Begin();
-        storedState =nullptr;
     }
     GameBegin = true;
 }
@@ -327,13 +327,6 @@ void Game::Run(){
         frameStart = dt;
         CalculateDeltaTime();
 
-        #ifdef CYCLYC_DEBUG
-        bear::out << "[Update]";
-        #endif
-        Update();
-        #ifdef CYCLYC_DEBUG
-        bear::out << "[\\Update]\n";
-        #endif
         //uint32_t tu = st.Get();
         //st.Reset();
         if (!CanStop()){
@@ -354,32 +347,43 @@ void Game::Run(){
 
             bool justDeleted = false;
             if (stateStack.top()->RequestedDeleted()){
-                if (stateStack.empty() && storedState == NULL){
+                if (stateStack.empty() && preStored.empty()){
+                    std::cout << "Is closing\n";
                     isClosing=true;
                     return;
                 }else{
                     stateStack.top()->End();
                     LuaCaller::CallClear(LuaManager::L,stateStack.top());
+
+
+                    justDeleted = true;
+                    if (!stateStack.empty() && preStored.empty()){
+                        stateStack.top()->Resume(stateStack.top());
+                    }
                     delete stateStack.top();
                     stateStack.pop();
-                    if (stateStack.empty()){
-                        return;
-                    }
-                    justDeleted = true;
-                    if (storedState == nullptr){
-                        stateStack.top()->Resume(storedState);
-                    }
+                    return;
                 }
             }
 
-            if (storedState != nullptr){
+            if (!preStored.empty()){
                 if (!justDeleted)
-                    stateStack.top()->Pause(storedState);
-                stateStack.emplace(storedState);
+                    stateStack.top()->Pause(preStored.front());
+                stateStack.emplace(preStored.front());
+                preStored.pop();
                 stateStack.top()->Begin();
-                storedState =nullptr;
                 return;
             }
+            if (stateStack.empty()){
+                return;
+            }
+            #ifdef CYCLYC_DEBUG
+            bear::out << "[Update]";
+            #endif
+            Update();
+            #ifdef CYCLYC_DEBUG
+            bear::out << "[\\Update]\n";
+            #endif
 
             #ifdef CYCLYC_DEBUG
             bear::out << "[Render]";
@@ -405,11 +409,14 @@ DefinedState &Game::GetCurrentState(){
 }
 
 void Game::AddState(DefinedState *s,int forcedId){
-    storedState = s;
     static int Ids = 0;
+
     if (forcedId == -1){
-        storedState->STATEID = Ids++;
+        s->STATEID = Ids++;
     }
+    preStored.emplace(s);
+
+
     #ifndef DISABLE_LUAINTERFACE
     DefinedState *MainState = nullptr;
     if (startFlags&BEAR_FLAG_START_LUA){

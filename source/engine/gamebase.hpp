@@ -9,6 +9,7 @@
 #include <vector>
 #include <list>
 #include <stack>
+#include <queue>
 #include <string.h>
 #include <stdio.h>
 #include <functional>
@@ -49,17 +50,18 @@
 */
 
 enum SFlags{
-    BEAR_FLAG_START_NOTHING         = 0,
-    BEAR_FLAG_START_SDL             = 1,
-    BEAR_FLAG_START_TTF             = 2,
-    BEAR_FLAG_START_SOUND           = 4,
-    BEAR_FLAG_START_SCREEN          = 8,
-    BEAR_FLAG_LOAD_BASEFILES        = 16,
-    BEAR_FLAG_START_INPUT           = 32,
-    BEAR_FLAG_START_CONSOLE         = 64,
-    BEAR_FLAG_START_LUA             = 128,
-    BEAR_FLAG_START_THREADS         = 256,
-    BEAR_FLAG_START_EVERYTHING      = 65536 - 1,
+    BEAR_FLAG_START_NOTHING             = 0,
+    BEAR_FLAG_START_SDL                 = 1,
+    BEAR_FLAG_START_TTF                 = 2,
+    BEAR_FLAG_START_SOUND               = 4,
+    BEAR_FLAG_START_SCREEN              = 8,
+    BEAR_FLAG_LOAD_BASEFILES            = 16,
+    BEAR_FLAG_START_INPUT               = 32,
+    BEAR_FLAG_START_CONSOLE             = 64,
+    BEAR_FLAG_START_CONSOLEGRAPHICAL    = 128,
+    BEAR_FLAG_START_LUA                 = 256,
+    BEAR_FLAG_START_THREADS             = 512,
+    BEAR_FLAG_START_EVERYTHING          = 65536 - 1,
 };
 
 class Game{
@@ -149,13 +151,13 @@ class Game{
         void Render();
         static Game* instance;
 
+        std::queue<DefinedState*> preStored;
         std::stack<DefinedState*> stateStack;
         bool hasBeenClosed;
         int skipRender;
         bool Started;
         bool HasAudio;
         bool GameBegin;
-        DefinedState *storedState;
         void UpdateTitleAsFps(float);
 
         unsigned int nextUpdate;
