@@ -314,7 +314,8 @@ void Game::Begin(){
 }
 
 bool Game::CanStop(){
-    if (isClosing || (SDL_QuitRequested() || stateStack.empty() || stateStack.top() == nullptr || stateStack.top()->RequestedQuit())){
+    if (isClosing || ((SDL_QuitRequested() || stateStack.empty() || stateStack.top() == nullptr || stateStack.top()->RequestedQuit()) && preStored.empty())) {
+        std::cout << "AAAAAAAAAAAAAAAAAAAAAA\n";
         isClosing = true;
         return true;
     }else{
@@ -346,37 +347,37 @@ void Game::Run(){
 
 
             bool justDeleted = false;
-            if (stateStack.top()->RequestedDeleted()){
-                if (stateStack.empty() && preStored.empty()){
-                    std::cout << "Is closing\n";
-                    isClosing=true;
-                    return;
-                }else{
+            if (!stateStack.empty()){
+
+                if (stateStack.top()->RequestedDeleted()){
                     stateStack.top()->End();
                     LuaCaller::CallClear(LuaManager::L,stateStack.top());
 
-
                     justDeleted = true;
-                    if (!stateStack.empty() && preStored.empty()){
+                    if (stateStack.empty()){
                         stateStack.top()->Resume(stateStack.top());
                     }
                     delete stateStack.top();
                     stateStack.pop();
-                    return;
                 }
             }
 
             if (!preStored.empty()){
-                if (!justDeleted)
+                if (!justDeleted && !stateStack.empty())
                     stateStack.top()->Pause(preStored.front());
                 stateStack.emplace(preStored.front());
                 preStored.pop();
                 stateStack.top()->Begin();
                 return;
             }
-            if (stateStack.empty()){
+            if (stateStack.empty() ){
+                if (preStored.empty()){
+                    isClosing = true;
+                }
                 return;
             }
+
+
             #ifdef CYCLYC_DEBUG
             bear::out << "[Update]";
             #endif
@@ -410,7 +411,7 @@ DefinedState &Game::GetCurrentState(){
 
 void Game::AddState(DefinedState *s,int forcedId){
     static int Ids = 0;
-
+    std::cout << "Added an state :D\n";
     if (forcedId == -1){
         s->STATEID = Ids++;
     }
