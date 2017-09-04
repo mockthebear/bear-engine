@@ -317,6 +317,7 @@ class Text{
         Text& operator=(Text T){
             cpy(T);
             texture = nullptr;
+            RemakeTexture();
             return *this;
         }
 

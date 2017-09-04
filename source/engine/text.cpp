@@ -344,7 +344,7 @@ void Text::RenderRS(int cameraX,int cameraY,TextRenderStyle renderStyle){
 
 
 void Text::SetText(std::string str){
-    if (!font){
+    if (!font && texturespr){
         text = str;
         Point p =  texturespr->GetSizes(str);
         box.w = p.x;
