@@ -13,6 +13,8 @@
 
 #include "../tests/testthread.hpp"
 #include "../tests/testfiles.hpp"
+#include "../tests/testsprite.hpp"
+#include "../tests/testlua.hpp"
 
 
 
@@ -37,7 +39,7 @@ GameBehavior::~GameBehavior(){
 
 void GameBehavior::Begin(){
     Game::startFlags = 0;
-    Game::startFlags |= BEAR_FLAG_START_LUA;
+    //Game::startFlags |= BEAR_FLAG_START_LUA;
     Game::startFlags |= BEAR_FLAG_START_SDL;
     Game::startFlags |= BEAR_FLAG_START_SCREEN;
     Game::startFlags |= BEAR_FLAG_START_INPUT;
@@ -56,10 +58,14 @@ bool GameBehavior::OnLoad(){
     bear::out << "Starting state.\n";*/
 
 
+
     #ifdef THREADPOOLTEST
     Game::GetInstance()->AddState(new Test_Threadpool());
     #endif // THREADPOOLTEST
-
+    #ifdef LUATESTSUITE
+    Game::GetInstance()->AddState(new Test_Lua());
+    #endif // LUATESTSUITE
+    Game::GetInstance()->AddState(new Test_Sprite());
     Game::GetInstance()->AddState(new Test_Files());
 
     return DefaultBehavior::GetInstance().OnLoad();
