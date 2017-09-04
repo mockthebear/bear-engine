@@ -8,7 +8,8 @@
 #endif
 
 #define AssertE(ptr) AssertAlloc(ptr,WHERE_ARG)
-#define Bearssert(ptr) Assert(ptr,WHERE_ARG)
+#define Bearssert(ptr) DebugHelper::Assert(ptr,WHERE_ARG,"")
+#define Bearssertc(ptr,com) DebugHelper::Assert(ptr,WHERE_ARG,com)
 
 #include <string>
 #include <stdlib.h>
@@ -21,9 +22,9 @@
 */
 class DebugHelper{
     public:
-        static void AssertAlloc(void *,std::string file,std::string func,int line);
-        static void Assert(bool p,std::string file,std::string func,int line){
-            AssertAlloc((void*)p,file,func,line);
+        static void AssertAlloc(void *,std::string file,std::string func,int line,std::string msg="");
+        static void Assert(bool p,std::string file,std::string func,int line,std::string msg){
+            AssertAlloc((void*)p,file,func,line,msg);
         }
 };
 #endif // DEBUGHELPERBE
