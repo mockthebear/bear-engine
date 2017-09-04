@@ -12,7 +12,6 @@
 				<Option object_output="../obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option use_console_runner="0" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++0x" />
@@ -207,6 +206,8 @@
 		<Unit filename="mobile/android/jnihelper.hpp" />
 		<Unit filename="performance/console.cpp" />
 		<Unit filename="performance/console.hpp" />
+		<Unit filename="performance/graph.cpp" />
+		<Unit filename="performance/graph.hpp" />
 		<Unit filename="resource.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
@@ -220,6 +221,8 @@
 		<Unit filename="sound/soundloader.hpp" />
 		<Unit filename="sound/soundsources.cpp" />
 		<Unit filename="sound/soundsources.hpp" />
+		<Unit filename="tests/testfiles.hpp" />
+		<Unit filename="tests/testthread.hpp" />
 		<Unit filename="ui/base.cpp" />
 		<Unit filename="ui/base.hpp" />
 		<Unit filename="ui/button.cpp" />

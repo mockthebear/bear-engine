@@ -9,6 +9,9 @@
 #include "../engine/renderhelp.hpp"
 
 
+#include "../tests/testthread.hpp"
+#include "../tests/testfiles.hpp"
+
 
 Title::Title(){
     requestQuit = requestDelete = false;
@@ -24,6 +27,7 @@ Title::Title(){
 
     Camera::Initiate(Rect(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H),128,200);
     Camera::speed = 0;
+
 }
 
 
@@ -33,6 +37,8 @@ void Title::Begin(){
     */
 
     LuaCaller::CallGlobalField(LuaManager::L,"onLoad");
+
+
 
 }
 
@@ -45,14 +51,19 @@ void Title::Update(float dt){
     /*
         Reset
     */
-    if( InputManager::GetInstance().KeyPress(SDLK_r) ){
-        requestDelete = true;
-        Game::GetInstance()->AddState(new Title());
+    if( InputManager::GetInstance().KeyPress(SDLK_t) ){
+
+        #ifdef THREADPOOLTEST
+        Game::GetInstance()->AddState(new Test_Threadpool());
+        #endif // THREADPOOLTEST
+
+        Game::GetInstance()->AddState(new Test_Files());
+
+
+        //requestDelete = true;
         return;
     }
-    /*
-        Process some inputs
-    */
+
     Input();
 
     Pool.Update(dt);
@@ -76,6 +87,7 @@ void Title::Render(){
     RenderWindowses();
     Console::GetInstance().Render();
 
+
 }
 
 void Title::Input(){
@@ -87,6 +99,6 @@ void Title::Input(){
 
     if( InputManager::GetInstance().KeyPress(SDLK_ESCAPE) ) {
         Console::GetInstance().AddText("SCAPE");
-        requestQuit = true;
+        requestDelete = true;
     }
 }
