@@ -314,11 +314,19 @@ class Text{
             *
             *CRYSIS AVOIDED
         */
-        Text& operator=(Text T){
-            cpy(T);
+        /*Text& operator=(Text T){
+            cpy(&T);
+            texture = nullptr;
+            RemakeTexture();
+            return *this;
+        }*/
+        Text operator=(Text const &T){
+            cpy((Text*)(&T));
             texture = nullptr;
             return *this;
         }
+
+
 
 
     private:
@@ -326,7 +334,7 @@ class Text{
         SDL_Color bg;
         float angle;
 
-        void cpy(Text& t);
+        void cpy(Text *t);
         static std::unordered_map<std::string, TTF_Font*> assetTable;
         static std::unordered_map<std::string, CustomFont*> customTable;
 

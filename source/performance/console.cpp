@@ -52,22 +52,31 @@ void Console::Begin(){
     for (int i=0;i<m_lines;i++){
         m_line[i] = new Text("engine:default.ttf",16,TEXT_SOLID," ", {255,255,255});
     }
+
+
     box.h = m_line[0]->GetHeight()*m_lines;
     hasStarted = true;
+    for (auto &it : StoredLines){
+        AddText(it,true);
+    }
+    StoredLines.clear();
     if (failFile){
         failFile = false;
         AddText("Failed to openwrite the file");
     }
-}
-bool Console::AddText(std::string str){
-    if (hasStarted){
-        if (logFile)
-            myfile << str << "\r\n";
-        std::cout << str<<"\n";
 
-        #ifdef __ANDROID__
-        __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s\n",str.c_str());
-        #endif
+}
+bool Console::AddText(std::string str,bool onlyGraphic){
+    if (hasStarted){
+        if (!onlyGraphic){
+            if (logFile)
+                myfile << str << "\r\n";
+            std::cout << str<<"\n";
+
+            #ifdef __ANDROID__
+            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s\n",str.c_str());
+            #endif
+        }
         if (m_lines <= counter){
             for (int i=0;i<m_lines;i++){
                 std::string str = " ";
@@ -82,6 +91,9 @@ bool Console::AddText(std::string str){
             counter++;
         }
     }else{
+        if (onlyGraphic)
+            return false;
+        StoredLines.emplace_back("[N.S] " + str);
         std::cout << "[Console:Not started] "<<str<<"\n";
         if (logFile)
             myfile << "[Console:Not started] "<<str<<"\r\n";
@@ -95,9 +107,11 @@ bool Console::AddText(std::string str){
 
 void Console::Render(Point pos){
     RenderHelp::DrawSquareColorA(pos.x+box.x,pos.y+box.y,box.w,box.h,0,0,0,100);
+    box.w = 100;
     if (hasStarted){
         for (int i=0;i<m_lines;i++){
             m_line[i]->Render(pos.x+box.x,pos.y+box.y + m_line[0]->GetHeight()*i);
+            box.w = std::max(box.w, m_line[i]->GetWidth());
         }
     }
 }

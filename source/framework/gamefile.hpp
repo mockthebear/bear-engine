@@ -171,13 +171,19 @@ class GameFile{
 
         int FindInt();
 
-    private:
+        void SetFilePointer(SDL_RWops * rw){
+            m_filePointer = rw;
+            ParseFile();
+        }
 
+    private:
+        void ParseFile();
 
         char *m_cache;
         uint32_t m_size;
         uint32_t m_filePos;
         SDL_RWops *m_filePointer;
+        bool fromResource;
 
 
 };

@@ -34,6 +34,8 @@ Game* Game::instance = NULL;
 
 Game::Game(){isClosing=SDLStarted=canDebug=GameBegin=hasBeenClosed=HasAudio=false;};
 
+uint32_t Game::startFlags = BEAR_FLAG_START_EVERYTHING;
+
 void Game::init(const char *name){
     if (instance == NULL){
         SDLStarted = false;
@@ -47,7 +49,11 @@ void Game::init(const char *name){
         dt = frameStart = 0;
         canDebug = false;
 
-        startFlags = BEAR_FLAG_START_EVERYTHING;
+
+
+        GameBehavior::GetInstance().Begin();
+
+
         if (startFlags&BEAR_FLAG_START_CONSOLE){
             Console::GetInstance(true);
             Console::GetInstance().AddTextInfo("Starting...");
@@ -160,8 +166,8 @@ void Game::init(const char *name){
         if (startFlags&BEAR_FLAG_START_THREADS){
             ThreadPool::GetInstance(POOL_DEFAULT_THREADS);
         }
-        if (startFlags&BEAR_FLAG_START_CONSOLE){
-            Console::GetInstance().AddText("Opening console");
+        if (startFlags&BEAR_FLAG_START_CONSOLEGRAPHICAL){
+            Console::GetInstance().AddText("Opening console graphical");
             Console::GetInstance().Begin();
         }
 
@@ -200,19 +206,27 @@ void Game::Close(){
     isClosing = true;
     if (Started)
         GameBehavior::GetInstance().OnClose();
-    Console::GetInstance().AddTextInfo("Closing engine assets");
+
     #ifndef DISABLE_THREADPOOL
-    Console::GetInstance().AddTextInfo("Closing threads");
-    if (startFlags&BEAR_FLAG_START_THREADS)
+
+    if (startFlags&BEAR_FLAG_START_THREADS){
+        Console::GetInstance().AddTextInfo("Closing threads...");
         if (Started)
             ThreadPool::GetInstance().KillThreads();
+        Console::GetInstance().AddTextInfo("Threads closed...");
+    }
     #endif
-    ResourceManager::GetInstance().Erase("engine");
+    if (startFlags&BEAR_FLAG_LOAD_BASEFILES){
+        Console::GetInstance().AddTextInfo("Closing engine assets");
+        ResourceManager::GetInstance().Erase("engine");
+    }
 
-    Console::GetInstance().AddTextInfo("Closing lua");
+
     #ifndef DISABLE_LUAINTERFACE
-    if (startFlags&BEAR_FLAG_START_LUA)
+    if (startFlags&BEAR_FLAG_START_LUA){
+        Console::GetInstance().AddTextInfo("Closing lua");
         LuaInterface::Instance().Close();
+    }
     #endif
     Console::GetInstance().AddTextInfo("Resourcefiles");
     ResourceManager::GetInstance().ClearAll();
@@ -291,16 +305,17 @@ void Game::Begin(){
         Close();
         exit(1);
     }
-    if (storedState != NULL){
-        stateStack.emplace(storedState);
-        stateStack.top()->Begin();
-        storedState =nullptr;
+    if (!preStored.empty()){
+        stateStack.emplace(preStored.front());
+        preStored.pop();
+        stateStack.top()->p_StateTicks = 0;
     }
     GameBegin = true;
 }
 
 bool Game::CanStop(){
-    if (isClosing || (SDL_QuitRequested() || stateStack.empty() || stateStack.top() == nullptr || stateStack.top()->RequestedQuit())){
+    if (isClosing || ((SDL_QuitRequested() || stateStack.empty() || stateStack.top() == nullptr || stateStack.top()->RequestedQuit()) && preStored.empty())) {
+        std::cout << "AAAAAAAAAAAAAAAAAAAAAA\n";
         isClosing = true;
         return true;
     }else{
@@ -313,13 +328,6 @@ void Game::Run(){
         frameStart = dt;
         CalculateDeltaTime();
 
-        #ifdef CYCLYC_DEBUG
-        bear::out << "[Update]";
-        #endif
-        Update();
-        #ifdef CYCLYC_DEBUG
-        bear::out << "[\\Update]\n";
-        #endif
         //uint32_t tu = st.Get();
         //st.Reset();
         if (!CanStop()){
@@ -339,33 +347,47 @@ void Game::Run(){
 
 
             bool justDeleted = false;
-            if (stateStack.top()->RequestedDeleted()){
-                if (stateStack.empty() && storedState == NULL){
-                    isClosing=true;
-                    return;
-                }else{
+            if (!stateStack.empty()){
+
+                if (stateStack.top()->RequestedDeleted()){
                     stateStack.top()->End();
                     LuaCaller::CallClear(LuaManager::L,stateStack.top());
+
+                    justDeleted = true;
+                    if (stateStack.empty()){
+                        stateStack.top()->Resume(stateStack.top());
+                    }
                     delete stateStack.top();
                     stateStack.pop();
-                    if (stateStack.empty()){
-                        return;
-                    }
-                    justDeleted = true;
-                    if (storedState == nullptr){
-                        stateStack.top()->Resume(storedState);
-                    }
                 }
             }
 
-            if (storedState != nullptr){
-                if (!justDeleted)
-                    stateStack.top()->Pause(storedState);
-                stateStack.emplace(storedState);
-                stateStack.top()->Begin();
-                storedState =nullptr;
+            if (!preStored.empty()){
+                if (!justDeleted && !stateStack.empty())
+                    stateStack.top()->Pause(preStored.front());
+                stateStack.emplace(preStored.front());
+                preStored.pop();
+                stateStack.top()->p_StateTicks = 0;
                 return;
             }
+            if (stateStack.empty() ){
+                if (preStored.empty()){
+                    isClosing = true;
+                }
+                return;
+            }
+            if (stateStack.top()->p_StateTicks == 0){
+                 stateStack.top()->Begin();
+            }
+
+
+            #ifdef CYCLYC_DEBUG
+            bear::out << "[Update]";
+            #endif
+            Update();
+            #ifdef CYCLYC_DEBUG
+            bear::out << "[\\Update]\n";
+            #endif
 
             #ifdef CYCLYC_DEBUG
             bear::out << "[Render]";
@@ -383,6 +405,7 @@ void Game::Run(){
             if ((1000.0f/ConfigManager::MaxFps) - delay > 0){
                 SDL_Delay( std::max( (1000.0f/ConfigManager::MaxFps) - delay,0.0f) );
             }
+            stateStack.top()->p_StateTicks++;
         }
 };
 DefinedState &Game::GetCurrentState(){
@@ -391,11 +414,14 @@ DefinedState &Game::GetCurrentState(){
 }
 
 void Game::AddState(DefinedState *s,int forcedId){
-    storedState = s;
     static int Ids = 0;
+    std::cout << "Added an state :D\n";
     if (forcedId == -1){
-        storedState->STATEID = Ids++;
+        s->STATEID = Ids++;
     }
+    preStored.emplace(s);
+
+
     #ifndef DISABLE_LUAINTERFACE
     DefinedState *MainState = nullptr;
     if (startFlags&BEAR_FLAG_START_LUA){

@@ -15,14 +15,7 @@
 #include <time.h>
 
 
-typedef struct{
-    int id;
-    int Threads;
-    void *me;
-    bool working;
-    bool Begin;
-    bool mainThread;
-} parameters;
+
 
 enum JOBTYPE{
     JOB_NOTHING, //0
@@ -79,6 +72,18 @@ class Job{
         int from,to,me,tsize;
         uint8_t bright;
 };
+
+typedef struct{
+    int id;
+    int Threads;
+    void *me;
+    bool working;
+    bool Begin;
+    bool mainThread;
+    Job todo;
+    std::stack<Job> MyJobs;
+} parameters;
+
 /**
  * @brief Singleton Thread pool implementation
  *
@@ -151,6 +156,8 @@ class ThreadPool{
 
         */
         ThreadPool(int threads);
+
+        bool Begin(int threads);
         /**
             Auto
         */
@@ -179,7 +186,7 @@ class ThreadPool{
             },0,20);
             @endcode
         */
-        void AddParallelFor(std::function<void(int,int,void*)> lamba,int min,int max);
+        void AddParallelFor(std::function<void(int,int,void*)> lamba,int min,int max,int jobs=-1);
         /**
             @brief If there is any job undone yet, it removes.
         */
@@ -257,8 +264,15 @@ class ThreadPool{
 
         static void sleep(float milliseconds);
 
+        bool SpreadJobs();
+
+        uint32_t CountJobs();
+
     private:
+        bool Echo;
+        bool DynamicJobs;
         bool Locked;
+        int scalonator;
         void AddPriorityJob(Job &j,int threadId);
         std::stack<Job> Jobs;
         Job *fastJobs;

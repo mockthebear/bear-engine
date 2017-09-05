@@ -4,6 +4,7 @@
 #include "state.hpp"
 #include <stack>
 #include "../performance/console.hpp"
+#include "../performance/graph.hpp"
 #include "../engine/pathfind.hpp"
 class Title: public State{
     public:
@@ -13,20 +14,9 @@ class Title: public State{
         void Render();
         void Input();
         void Begin();
-        void Resume(){};
-        void End(){};
+        void Resume(GenericState *s){std::cout << "Resumed\n\n";};
+        void End(){std::cout << "End\n\n";};
+        void Pause(GenericState *s){std::cout << "Paused\n\n";};
     private:
-        /*
-            PF
-        */
-        PathFind astar;
-        std::vector<Point> path;
-        std::vector<Rect> staticBlock;
-        float volume;
-        Sprite bg;
-        Text message;
-        Sound *snd;
-        Sound *snd2;
-        int Group;
 };
 #endif

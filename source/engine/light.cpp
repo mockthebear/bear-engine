@@ -47,13 +47,16 @@ Light* Light::GetInstance(){
 
 int Light::GetAround(unsigned char* map,int x,int y){
 
-    float n = 0;
-    double k = 0;
+    uint32_t n = 0;
+    uint32_t k = 0;
     uint32_t auxV = 0;
-    for (int ay=-1;ay<=1;ay++){
-         for (int ax=-1;ax<=1;ax++){
-            if (IsInLimits(x+ax,y+ay)){
-                auxV = map[(y+ay) * sizeX + x+ax];
+    int ay,ax;
+    int auxY;
+    for (ay=-1;ay<=1;ay++){
+         auxY = (y+ay) * sizeX;
+         for (ax=-1;ax<=1;ax++){
+            if (!(x+ax < 0 || x+ax >= sizeX || y+ay < 0 || y+ay >= sizeY)){
+                auxV = map[auxY + x+ax];
                 n += auxV*auxV;
                 k++;
             }
@@ -62,30 +65,21 @@ int Light::GetAround(unsigned char* map,int x,int y){
     return sqrt(n/k);
 }
 void Light::Gen(parameters *P,Job &j){
-    for (int y=j.from;y<j.to;y++){
-        for (int x=0;x<sizeX;x++){
-                    // A B R G
-            uint8_t shaded = GetAround(ShadeMap,x,y);
-            float yellowish = (255-shaded)/4.0;
+    uint8_t shaded;
+    float yellowish;
+    int y;
+    int x;
+    int yoff;
+    for (y=j.from;y<j.to;y++){
+        yoff = y*sizeX;
+        for (x=0;x<sizeX;x++){
+            shaded = GetAround(ShadeMap,x,y);
+            yellowish = (255-shaded)/4.0;
 
-            pix[y*sizeX + x ] = RenderHelp::FormatRGBA2(yellowish,yellowish,190-yellowish/2,shaded);
+            pix[yoff + x ] = RenderHelp::FormatRGBA2(yellowish,yellowish,190-yellowish/2,shaded);
+
         }
     }
-     if (onAutomatic){
-        #ifndef DISABLE_THREADPOOL
-        pthread_mutex_lock(&Critical);
-        #endif
-        LightJobs--;
-        if (LightJobs == 0){
-            #ifndef DISABLE_THREADPOOL
-            pthread_mutex_unlock(&CanRender);
-            #endif
-        }
-        #ifndef DISABLE_THREADPOOL
-        pthread_mutex_unlock(&Critical);
-        #endif
-    }
-
 }
 void Light::Reduce(parameters *P,Job &j){
 
@@ -102,26 +96,9 @@ void Light::Reduce(parameters *P,Job &j){
                 MPP = std::min(MPP,K);
             }
             ShadeMap[y * sizeX+  x] = MPP;
-            pix[y*sizeX + x ] = ShadeMap[y * sizeX+  x];
+            //pix[y*sizeX + x ] = ShadeMap[y * sizeX+  x];
 
         }
-    }
-    if (onAutomatic){
-        #ifndef DISABLE_THREADPOOL
-        pthread_mutex_lock(&Critical);
-        #endif
-        LightJobs--;
-        if (LightJobs == 0){
-            int pthreads = ThreadPool::GetInstance().GetPthreads();
-            for (int i=0;i<pthreads;i++){
-                Job je(JOB_GEN,i * (sizeY/(float)pthreads),(i+1) * (sizeY/(float)pthreads));
-                ThreadPool::GetInstance().AddJob_(je,true);
-                LightJobs++;
-            }
-        }
-        #ifndef DISABLE_THREADPOOL
-        pthread_mutex_unlock(&Critical);
-        #endif
     }
 }
 void Light::Shade(parameters *P,Job &j){
@@ -200,28 +177,6 @@ void Light::Shade(parameters *P,Job &j){
 
             STR = (OSTR - step*Permissive*removal);
         }
-    }
-    //pthread_mutex_lock(&Critical);
-    //std::cout << process << "\n";
-    //pthread_mutex_unlock(&Critical);
-
-    if (onAutomatic){
-        #ifndef DISABLE_THREADPOOL
-        pthread_mutex_lock(&Critical);
-        #endif
-        LightJobs--;
-        if (LightJobs == 0){
-            int pthreads = ThreadPool::GetInstance().GetPthreads();
-            for (int tIndex=0; tIndex<pthreads; tIndex++){
-                Job jnew(JOB_REDUCE, tIndex * (sizeY/(float)pthreads),(tIndex +1) * (sizeY/(float)pthreads));
-                ThreadPool::GetInstance().AddJob_(jnew,true);
-                LightJobs++;
-            }
-        }
-        #ifndef DISABLE_THREADPOOL
-        pthread_mutex_unlock(&Critical);
-        #endif
-
     }
 }
 
@@ -422,6 +377,7 @@ void Light::Update(float dt,LightStep step){
             }
         }
     }else if (step == LIGHT_SHADE){
+        ThreadPool::GetInstance().SpreadJobs();
         ThreadPool::GetInstance().Unlock();
     }else if (step == LIGHT_REDUCE){
         int pthreads = ThreadPool::GetInstance().GetPthreads();
@@ -431,6 +387,7 @@ void Light::Update(float dt,LightStep step){
             Job j(JOB_REDUCE,i * (sizeY/(float)pthreads),(i+1) * (sizeY/(float)pthreads));
             ThreadPool::GetInstance().AddJob_(j);
         }
+        ThreadPool::GetInstance().SpreadJobs();
         ThreadPool::GetInstance().Unlock();
 
     }else if(step == LIGHT_GEN){
@@ -442,6 +399,7 @@ void Light::Update(float dt,LightStep step){
             ThreadPool::GetInstance().AddJob_(j);
             LightJobs++;
        }
+       ThreadPool::GetInstance().SpreadJobs();
        ThreadPool::GetInstance().Unlock();
        CurrentAlloc = 0;
     }else if(step == LIGHT_AUTO){

@@ -46,12 +46,6 @@ LuaInterface::~LuaInterface(){
 void LuaInterface::Close(){
     bear::out << "Called lua close.\n";
     //if (L != NULL){
-        bear::out << "Closing function references\n";
-        LuaManager::ClearRegisteredReferences();
-        bear::out << "Closing saved object references\n";
-        LuaManager::ClearReferences();
-        bear::out << "Closing lua remains.\n";
-
 
         const char closeCode[] = "__REFS = nil;\n"
         "local bytes = collectgarbage('count');\n"
@@ -60,6 +54,13 @@ void LuaInterface::Close(){
 
         luaL_loadstring(L, closeCode);
         lua_pcall(L, 0, LUA_MULTRET, 0);
+
+        bear::out << "Closing function references\n";
+        LuaManager::ClearRegisteredReferences();
+        bear::out << "Closing saved object references\n";
+        LuaManager::ClearReferences();
+        bear::out << "Closing lua remains.\n";
+
         lua_close(L);
         L = nullptr;
     //
@@ -70,6 +71,7 @@ void LuaInterface::Startup(){
     if (L == NULL){
         bear::out << "Cannot start lua\n";
     }else{
+        Game::startFlags |= BEAR_FLAG_START_LUA;
         Console::GetInstance().AddTextInfo("Lua started.");
         LuaManager::L = L;
         luaL_openlibs(L);
@@ -267,11 +269,7 @@ bool LuaInterface::RunScript(std::string name){
 
 
 void LuaInterface::RegisterClasses(){
-	Console::GetInstance().AddTextInfo("Start ref holder.");
 	LuaCaller::Startup(L);
-	Console::GetInstance().AddTextInfo("Reg stopwatch.");
-
-
 
 	ClassRegister<Stopwatch>::RegisterClassOutside(LuaManager::L, "Stopwatch", [](lua_State* L) {
 		return LuaReferenceCounter<Stopwatch>::makeReference(Stopwatch());
@@ -332,6 +330,7 @@ void LuaInterface::RegisterClasses(){
     ClassRegister<ColorReplacer>::RegisterClassMethod(L,"ColorReplacer","AddReplacer",&ColorReplacer::AddReplacer);
     ClassRegister<ColorReplacer>::RegisterClassMethod(L,"ColorReplacer","Get",&ColorReplacer::Get);
 
+    // Text("str",[12,[{r=255,g=255,b=255,a=255}]])   -> Text
     ClassRegister<Text>::RegisterClassOutside(LuaManager::L,"Text",[](lua_State* L){
         std::string name;
         int size = 12;
@@ -349,19 +348,32 @@ void LuaInterface::RegisterClasses(){
         t->RemakeTexture();
         return t;
     });
+    //  text:Close()
     ClassRegister<Text>::RegisterClassMethod(L,"Text","Close",&Text::Close);
+    //  text:SetText("text")
     ClassRegister<Text>::RegisterClassMethod(L,"Text","SetText",&Text::SetText);
+    //  text:SetColor({r=255,g=255,b=255,a=255})
     ClassRegister<Text>::RegisterClassMethod(L,"Text","SetColor",&Text::SetColor);
     ClassRegister<Text>::RegisterClassMethod(L,"Text","SetStyle",&Text::SetStyle);
+    //  text:SetAlpha(255)
     ClassRegister<Text>::RegisterClassMethod(L,"Text","SetAlpha",&Text::SetAlpha);
+    //  text:GetText() -> string
     ClassRegister<Text>::RegisterClassMethod(L,"Text","GetText",&Text::GetText);
+    //  text:GetHeight() -> number
     ClassRegister<Text>::RegisterClassMethod(L,"Text","GetHeight",&Text::GetHeight);
+    //  text:GetHeight() -> number
     ClassRegister<Text>::RegisterClassMethod(L,"Text","GetWidth",&Text::GetWidth);
+    //  text:SetScaleX(0.5)
     ClassRegister<Text>::RegisterClassMethod(L,"Text","SetScaleX",&Text::SetScaleX);
+    //  text:SetScaleX(0.5)
     ClassRegister<Text>::RegisterClassMethod(L,"Text","SetScaleY",&Text::SetScaleY);
+    //  text:RemakeTexture() -> boolean
     ClassRegister<Text>::RegisterClassMethod(L,"Text","RemakeTexture",&Text::RemakeTexture);
+    //  text:IsWorking() -> boolean
     ClassRegister<Text>::RegisterClassMethod(L,"Text","IsWorking",&Text::IsWorking);
+    //  text:SetRotation(90)
     ClassRegister<Text>::RegisterClassMethod(L,"Text","SetRotation",&Text::SetRotation);
+    //  text:Render({x=10,y=10})
     ClassRegister<Text>::RegisterClassMethod(L,"Text","Render",&Text::RenderLua);
     ClassRegister<Text>::RegisterClassMethod(L,"Text","SetAliasign",&Text::SetAliasign);
     ClassRegister<Text>::RegisterClassMethod(L,"Text","SetFont",&Text::SetFont);
@@ -514,6 +526,9 @@ void LuaInterface::RegisterClasses(){
 
 
     GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_camera");
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_camera","Initiate",std::function<void()>([](){
+        Camera::Initiate(Rect(0,0,ScreenManager::GetInstance().GetScreenSize().x,ScreenManager::GetInstance().GetScreenSize().y));
+    }));
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_camera","GetBox",std::function<Rect()>([](){return Camera::pos;}));
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_camera","GetPosition",std::function<PointInt()>([](){return Camera::pos.GetPos(); }));
 
@@ -632,9 +647,6 @@ void LuaInterface::RegisterClasses(){
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetChilds",&LuaUi::GetChilds);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetAsMain",&LuaUi::SetAsMain);
 
-
-
-	Console::GetInstance().AddTextInfo("Finished");
 
 }
 

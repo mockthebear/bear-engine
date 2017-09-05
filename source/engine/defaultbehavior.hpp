@@ -67,5 +67,7 @@ class DefaultBehavior: public Behavior{
             @brief Empty Can be used on android to know if the game came to background or left background
         */
         void OnMinimized();
+
+        virtual void Begin();
 };
 #endif // DEFBEHAVRIORH

@@ -11,6 +11,18 @@
 #include <string>
 
 
+#include "../tests/testthread.hpp"
+#include "../tests/testfiles.hpp"
+#include "../tests/testsprite.hpp"
+#include "../tests/testlua.hpp"
+#include "../tests/testlight.hpp"
+
+
+
+#include "../tests/testblank.hpp"
+
+
+
 
 GameBehavior& GameBehavior::GetInstance(){
     static GameBehavior teste;
@@ -30,30 +42,38 @@ GameBehavior::~GameBehavior(){
 }
 
 
+void GameBehavior::Begin(){
+    Game::startFlags = 0;
+    //Game::startFlags |= BEAR_FLAG_START_LUA;
+    Game::startFlags |= BEAR_FLAG_START_SDL;
+    Game::startFlags |= BEAR_FLAG_START_SCREEN;
+    Game::startFlags |= BEAR_FLAG_START_INPUT;
+    //Game::startFlags |= BEAR_FLAG_LOAD_BASEFILES;
+    Game::startFlags |= BEAR_FLAG_START_CONSOLE;
+    //Game::startFlags |= BEAR_FLAG_START_CONSOLEGRAPHICAL;
+    Game::startFlags |= BEAR_FLAG_START_TTF;
+}
 bool GameBehavior::OnLoad(){
-    //Console::GetInstance().Begin();
-    if (!ResourceManager::GetInstance().Load("data/test.burr","data")){
-        Console::GetInstance().AddText("Failed to load assets");
-    }
-
-    if (!ResourceManager::GetInstance().Load("snd.burr","snd")){
-        Console::GetInstance().AddText("Failed to load snd");
-    }
-
-
-    PointInt P = ScreenManager::GetInstance().GetDisplaySize();
+    /*PointInt P = ScreenManager::GetInstance().GetDisplaySize();
     PointInt P2 = ConfigManager::GetInstance().GetScreenSize();
 
-    Console::GetInstance().AddText(utils::format("Started with display %d x %d",(int)P.x,(int)P.y));
-    Console::GetInstance().AddText(utils::format("Started with screen %d x %d",(int)P2.x,(int)P2.y));
-    Console::GetInstance().AddText(utils::format("There are %d joysticks",InputManager::GetInstance().GetJoystickCount()));
+    bear::out << "Supported main display is "<< P.x << " x "<< P.y << "\n";
+    bear::out << "Started with screen "<< P2.x << " x "<< P2.y << "\n";
 
-    Console::GetInstance().AddText("Starting state.");
+    bear::out << "Starting state.\n";*/
+     Game::GetInstance()->AddState(new Test_());
 
+    Game::GetInstance()->AddState(new Test_Light());
+    #ifdef THREADPOOLTEST
+    Game::GetInstance()->AddState(new Test_Threadpool());
+    #endif // THREADPOOLTEST
+    #ifdef LUATESTSUITE
+    Game::GetInstance()->AddState(new Test_Lua());
+    #endif // LUATESTSUITE
 
+    Game::GetInstance()->AddState(new Test_Sprite());
+    Game::GetInstance()->AddState(new Test_Files());
 
-    ThreadPool::GetInstance().CreateThreads();
-    Game::GetInstance()->AddState(new Title());
     return DefaultBehavior::GetInstance().OnLoad();
 }
 

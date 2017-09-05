@@ -10,6 +10,9 @@ LuaGameState::LuaGameState(){
     requestDelete = canClose = false;
     requestQuit = false;
     //This state belongs to the previous state!
+
+    //Pool.Register<LuaObject>(1000);
+
     other = uint64_t(&Game::GetCurrentState()) ;
 
 }
@@ -24,9 +27,20 @@ void LuaGameState::Setup(){
 void LuaGameState::Update(float dt){
    LuaCaller::CallOtherField(LuaManager::L,other,this,"update",dt);
    requestDelete = canClose;
+
+   Pool.Update(dt);
+   Map.clear();
+   Pool.PreRender(Map);
+
+   UpdateWindowses(dt);
+
 }
 void LuaGameState::Render(){
+
     LuaCaller::CallOtherField(LuaManager::L,other,this,"render");
+    RenderInstances();
+
+    RenderWindowses();
 }
 void LuaGameState::Begin(){
    Pool.Register<LuaObject>(1500);

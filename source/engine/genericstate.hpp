@@ -190,6 +190,9 @@ class GenericState{
         void AddWindow(UIBase *b);
     protected:
         friend class Game;
+
+
+
         virtual void Pause(GenericState *){};
         virtual void Resume(GenericState *){};
 
@@ -200,6 +203,7 @@ class GenericState{
         std::vector<std::unique_ptr<UIBase>> GameWindows;
     private:
         UIBase *storedUi;
+        uint64_t p_StateTicks;
 
 };
 #endif // STATEH

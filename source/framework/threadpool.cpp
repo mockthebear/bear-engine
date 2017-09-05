@@ -30,13 +30,12 @@ void ThreadPool::sleep(float milliseconds) // cross-platform sleep function
     time_end = clock() + milliseconds * CLOCKS_PER_SEC/1000;
     while (clock() < time_end){}
 }
-ThreadPool::ThreadPool(int threads)
-#ifdef USE_LOCK_FREE_STACK
-    :Jobs(threads,16)
-#endif
-{
 
-    Light::Startup();
+bool ThreadPool::Begin(int threads){
+    if (started){
+        bear::out << "[ThreadPool] Attempt to create thread when there are already threads!\n";
+        return false;
+    }
     #ifndef DISABLE_THREADPOOL
     UsePThreads=threads;
     thread_pool = new  pthread_t[UsePThreads];
@@ -69,17 +68,36 @@ ThreadPool::ThreadPool(int threads)
     #endif
 
     CreateThreads();
+    return true;
+}
+
+
+ThreadPool::ThreadPool(int threads)
+#ifdef USE_LOCK_FREE_STACK
+    :Jobs(threads,16)
+#endif
+{
+    Echo = false;
+    DynamicJobs = false;
+    scalonator = 0;
+    Light::Startup();
+    Begin(threads);
 
 }
 bool ThreadPool::CreateThreads(){
     if (!started){
         started = true;
         #ifndef DISABLE_THREADPOOL
+        if (Echo)
+            bear::out << "[ThreadPool] Creating "<<UsePThreads<<" threads.\n";
         for (int i=0;i<UsePThreads;i++){
             pthread_create(&thread_pool[i], NULL, &ThreadPool::thread_pool_worker, (void*)&Params[i]);
+            //sem_wait(&runningM[i]);
         }
 
         Lock();
+        if (Echo)
+            bear::out << "[ThreadPool] Done.\n";
         #endif
         return true;
     }
@@ -87,6 +105,9 @@ bool ThreadPool::CreateThreads(){
 }
 bool ThreadPool::KillThreads(){
     if (started){
+        DynamicJobs = true;
+        if (Echo)
+            bear::out << "Killing threads\n";
         #ifndef DISABLE_THREADPOOL
         Job kill = Job(JOB_KILL);
         for (int i=0;i<UsePThreads;i++){
@@ -95,7 +116,8 @@ bool ThreadPool::KillThreads(){
         Unlock();
         for (int e=0;e<UsePThreads;e++){
             pthread_mutex_lock(&Critical);
-            bear::out << "Waiting "<<e<<"\n";
+            if (Echo)
+                bear::out << "Waiting "<<e<<"\n";
             pthread_mutex_unlock(&Critical);
             pthread_join(thread_pool[e], NULL);
         }
@@ -139,9 +161,12 @@ void ThreadPool::AddJob_(Job &j,bool ignoreFast){
 }
 
 
-void ThreadPool::AddParallelFor(std::function<void(int,int,void*)> F,int min,int max){
-    for (int i=0;i<UsePThreads;i++){
-       Job newJ(F,min + ((max/UsePThreads)*i),min + ((max/UsePThreads)*(i+1)) );
+void ThreadPool::AddParallelFor(std::function<void(int,int,void*)> F,int min,int max,int jobs){
+    if (jobs <= 0){
+        jobs = UsePThreads;
+    }
+    for (int i=0;i<jobs;i++){
+       Job newJ(F,min + (((float)max/(float)jobs)*(float)i),min + (((float)max/(float)jobs)*(float)(i+1)) );
        AddJob_(newJ);
     }
 }
@@ -241,11 +266,28 @@ void ThreadPool::CriticalUnLock(){
     #endif // DISABLE_THREADPOOL
 }
 
+bool ThreadPool::SpreadJobs(){
+    #ifndef DISABLE_THREADPOOL
+    pthread_mutex_lock(&Critical);
+
+    while (Jobs.size() > 0){
+        int t = scalonator%UsePThreads;
+        scalonator++;
+        Params[t].MyJobs.emplace(Jobs.top());
+        Jobs.pop();
+    }
+
+    pthread_mutex_unlock(&Critical);
+    #endif // DISABLE_THREADPOOL
+    return true;
+}
+
 void *ThreadPool::thread_pool_worker(void *OBJ){
     parameters *P = (parameters*)OBJ;
     ThreadPool *This = (ThreadPool*)P->me;
     Light *luz = Light::GetInstance();
     P->working = false;
+    unsigned long int iteration = 0;
     while(true){
         //Call once
         #ifndef DISABLE_THREADPOOL
@@ -253,40 +295,50 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
             sem_wait (&This->mutexes[P->id]);
         #endif
         P->working = true;
-        Job todo;
+
         while (P->working){
-            todo.Type = JOB_NOTHING;
+            Job &todo = P->todo;
+            if (todo.Type == JOB_NOTHING){
+                iteration++;
+                if (P->MyJobs.size() > 0){
+                    todo = P->MyJobs.top();
+                    P->MyJobs.pop();
+                    P->working = true;
+                }else if (This->DynamicJobs){
+                    #ifndef DISABLE_THREADPOOL
+                    pthread_mutex_lock(&This->Critical);
+                    #endif // DISABLE_THREADPOOL
+                    if (todo.Type == JOB_NOTHING){
+                        if (This->Jobs.size() > 0){
+                            todo = This->Jobs.top();
+                            This->Jobs.pop();
 
-            #ifndef DISABLE_THREADPOOL
-            pthread_mutex_lock(&This->Critical);
-            #endif // DISABLE_THREADPOOL
-
-            if (This->Jobs.size() > 0){
-                todo = This->Jobs.top();
-                This->Jobs.pop();
-
-                P->working = true;
-            }else{
-                P->working = false;
-                if (P->mainThread){
-                    return nullptr;
+                            P->working = true;
+                        }else{
+                            P->working = false;
+                            if (P->mainThread){
+                                return nullptr;
+                            }
+                        }
+                    }
+                    #ifndef DISABLE_THREADPOOL
+                    pthread_mutex_unlock(&This->Critical);
+                    #endif // DISABLE_THREADPOOL
+                }else{
+                    P->working = false;
                 }
             }
-
-            #ifndef DISABLE_THREADPOOL
-            pthread_mutex_unlock(&This->Critical);
-            #endif // DISABLE_THREADPOOL
 
             if (todo.Type != JOB_NOTHING){
                 if (todo.Type == JOB_LAMBDA){
                     todo.lambda(P->id,P->Threads,NULL);
                 }else if (todo.Type == JOB_FOR){
-                    for (int i=todo.min;i<todo.max;i++)
-                        todo.lambda(P->id,P->Threads,&i);
+                    todo.lambda(todo.min,todo.max,This);
                 }else if (todo.Type == JOB_KILL){
                     #ifndef DISABLE_THREADPOOL
                     pthread_mutex_lock(&This->Critical);
-                    bear::out << "[ThreadPool]{Thread:"<< P->id << "} closing.\n";
+                    if (This->Echo)
+                        bear::out << "[ThreadPool]{Thread:"<< P->id << "} closing.\n";
                     if (!P->mainThread)
                         sem_post(&This->runningM[P->id]);
                     pthread_mutex_unlock(&This->Critical);
@@ -302,6 +354,7 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
                 }else if (todo.Type == JOB_GEN){
                     luz->Gen(P,todo);
                 }
+                todo.Type = JOB_NOTHING;
             }else{
                 #ifdef DISABLE_THREADPOOL
                     return NULL;
@@ -309,8 +362,9 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
             }
         }
         #ifndef DISABLE_THREADPOOL
-        if (!P->mainThread)
+        if (!P->mainThread){
             sem_post(&This->runningM[P->id]);
+        }
         #endif
     }
     return NULL;
