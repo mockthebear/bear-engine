@@ -295,7 +295,7 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
                 RemakeTexture();
             }
         }
-    }else{
+    }else if (texturespr){
         Point p = texturespr->Render(text,box.x+cameraX,box.y+cameraY,alpha);
         box.w = p.x;
         box.h = p.y;
@@ -395,20 +395,20 @@ void Text::SetFontSize(int ftsz){
     }
 }
 
-void Text::cpy(Text& t){
-    text        = t.GetText();
-    font        = t.font;
-    texturespr  = t.texturespr;
-    box         = t.box;
-    isWorking   = t.isWorking;
-    alpha       = t.alpha;
-    angle       = t.angle;
-    bg          = t.bg;
-    size        = t.size;
-    style       = t.style;
-    color       = t.color;
-    scaleY      = t.scaleY;
-    scaleX      = t.scaleX;
+void Text::cpy(Text *t){
+    text        = t->GetText();
+    font        = t->font;
+    texturespr  = t->texturespr;
+    box         = t->box;
+    isWorking   = t->isWorking;
+    alpha       = t->alpha;
+    angle       = t->angle;
+    bg          = t->bg;
+    size        = t->size;
+    style       = t->style;
+    color       = t->color;
+    scaleY      = t->scaleY;
+    scaleX      = t->scaleX;
 
 
 
