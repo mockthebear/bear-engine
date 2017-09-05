@@ -32,21 +32,22 @@ bool GraphBar::isValid(){
     return created;
 }
 
-void GraphBar::Render(Point pos,Point size,float max){
+void GraphBar::Render(Point pos,Point size,float max,int width){
     if (!created){
         return;
     }
     float barSize = (value / max)*size.y;
-    RenderHelp::DrawSquareColor(pos.x + id * 34 ,pos.y+size.y-barSize,32,barSize, color.r,color.g,color.b,color.a);
-    textContent.Render(pos.x + id * 34,pos.y+size.y,TEXT_RENDER_TOPLEFT);
+    RenderHelp::DrawSquareColor(pos.x + id * (width +4) ,pos.y+size.y-barSize,width,barSize, color.r,color.g,color.b,color.a);
+    textContent.Render(pos.x + id * (width +4),pos.y+size.y,TEXT_RENDER_TOPLEFT);
     if (barSize > valueContent.GetWidth()){
-        valueContent.Render(pos.x + id * 34,pos.y+size.y-barSize + valueContent.GetWidth()/2,TEXT_RENDER_TOPLEFT);
+        valueContent.Render(pos.x + id * (width +4),pos.y+size.y-barSize + valueContent.GetWidth()/2,TEXT_RENDER_TOPLEFT);
     }
 }
 
 
 Graph::Graph(){
     clear();
+    width = 32;
 
 }
 
@@ -57,14 +58,20 @@ void Graph::clear(){
 }
 
 
-void Graph::Start(Point argSize,float maxV){
+void Graph::Start(Point argSize,float maxV,bool avg){
     size = argSize;
+    width = maxV;
+    useAvg = avg;
 }
 
 
 bool Graph::UpdateBar(uint32_t id,float value){
     if (!bars[id].isValid()){
          return false;
+    }
+
+    if (useAvg){
+        value = (bars[id].value+value)/2.0f;
     }
     bars[id].SetValue(value);
         UpdateUi();
@@ -86,7 +93,7 @@ uint32_t Graph::AddBar(std::string name,SDL_Color color,float value){
     bar.id = barCounter;
     bars[barCounter] = bar;
     UpdateUi();
-    size.x = std::max(size.x,36.0f + barCounter * 34.0f);
+    size.x = std::max(size.x,width + barCounter * (width+4.0f));
     barCounter++;
     return barCounter-1;
 }
@@ -98,7 +105,7 @@ void Graph::Render(Point pos){
 
 
     for (auto &it : bars){
-        it.second.Render(pos,size,maxValue);
+        it.second.Render(pos,size,maxValue,width);
     }
 
 

@@ -147,6 +147,11 @@ function MakeLuaStateWithComplexObjects()
 				local gObj = self:GetMyObj()
 
 				gObj:SetX( gObj:GetX() + self.speed * dt)
+
+				if self:GetX() >= 200 then
+					self:Destroy()
+					collectgarbage()
+				end
 			end
 
 			Obj.Render = function(self)

@@ -19,14 +19,19 @@ class Test_Sprite: public State{
 
         };
         void Begin(){
-            bear::out << "Testing sprites\n";
+            ScreenManager::GetInstance().SetScreenName("Test sprite");
+            bear::out << "Testing Load sprite from an direct file:\n";
+            raccoonHead = Assets.make<Sprite>("data/raccoon.png");
+
+            bear::out << "Opening resources\n";
             if (!ResourceManager::GetInstance().Load("test.burr","test")){
                 bear::out << "Could not find test.burr\n";
+                getchar();
             }
+            bear::out << "Load right from resources\n";
             background = Assets.make<Sprite>("test:wall.jpg");
             bearHead = Assets.make<Sprite>("test:bear.png");
             bear::out << "Sprites loaded.\n";
-
 
 
 
@@ -44,6 +49,7 @@ class Test_Sprite: public State{
         void Render(){
             background.Render(0,0);
             bearHead.Render(Point(64,64),duration * 3.6f * 2.0f);
+            raccoonHead.Render(Point(120,64),0);
         };
         void Input();
         void Resume(){};
@@ -53,6 +59,7 @@ class Test_Sprite: public State{
     private:
         Sprite background;
         Sprite bearHead;
+        Sprite raccoonHead;
         float duration;
 };
 

@@ -308,7 +308,7 @@ void Game::Begin(){
     if (!preStored.empty()){
         stateStack.emplace(preStored.front());
         preStored.pop();
-        stateStack.top()->Begin();
+        stateStack.top()->p_StateTicks = 0;
     }
     GameBegin = true;
 }
@@ -367,7 +367,7 @@ void Game::Run(){
                     stateStack.top()->Pause(preStored.front());
                 stateStack.emplace(preStored.front());
                 preStored.pop();
-                stateStack.top()->Begin();
+                stateStack.top()->p_StateTicks = 0;
                 return;
             }
             if (stateStack.empty() ){
@@ -375,6 +375,9 @@ void Game::Run(){
                     isClosing = true;
                 }
                 return;
+            }
+            if (stateStack.top()->p_StateTicks == 0){
+                 stateStack.top()->Begin();
             }
 
 
@@ -402,6 +405,7 @@ void Game::Run(){
             if ((1000.0f/ConfigManager::MaxFps) - delay > 0){
                 SDL_Delay( std::max( (1000.0f/ConfigManager::MaxFps) - delay,0.0f) );
             }
+            stateStack.top()->p_StateTicks++;
         }
 };
 DefinedState &Game::GetCurrentState(){

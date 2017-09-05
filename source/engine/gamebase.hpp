@@ -143,8 +143,6 @@ class Game{
 
     private:
 
-
-
         bool wasLocked;
         inline void CalculateDeltaTime(){dt = SDL_GetTicks();};
         void Update();

@@ -21,6 +21,7 @@ class Test_Lua: public State{
         };
         void Begin(){
             bear::out << "Start lua\n";
+            ScreenManager::GetInstance().SetScreenName("Test lua");
             LuaInterface::Instance().Startup();
             /*
                 On normal cases, the engine would register the current

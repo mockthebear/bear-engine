@@ -15,6 +15,11 @@
 #include "../tests/testfiles.hpp"
 #include "../tests/testsprite.hpp"
 #include "../tests/testlua.hpp"
+#include "../tests/testlight.hpp"
+
+
+
+#include "../tests/testblank.hpp"
 
 
 
@@ -56,15 +61,16 @@ bool GameBehavior::OnLoad(){
     bear::out << "Started with screen "<< P2.x << " x "<< P2.y << "\n";
 
     bear::out << "Starting state.\n";*/
+     Game::GetInstance()->AddState(new Test_());
 
-
-
+    Game::GetInstance()->AddState(new Test_Light());
     #ifdef THREADPOOLTEST
     Game::GetInstance()->AddState(new Test_Threadpool());
     #endif // THREADPOOLTEST
     #ifdef LUATESTSUITE
     Game::GetInstance()->AddState(new Test_Lua());
     #endif // LUATESTSUITE
+
     Game::GetInstance()->AddState(new Test_Sprite());
     Game::GetInstance()->AddState(new Test_Files());
 

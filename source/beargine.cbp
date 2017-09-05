@@ -221,7 +221,11 @@
 		<Unit filename="sound/soundloader.hpp" />
 		<Unit filename="sound/soundsources.cpp" />
 		<Unit filename="sound/soundsources.hpp" />
+		<Unit filename="tests/testblank.hpp" />
 		<Unit filename="tests/testfiles.hpp" />
+		<Unit filename="tests/testlight.hpp" />
+		<Unit filename="tests/testlua.hpp" />
+		<Unit filename="tests/testsprite.hpp" />
 		<Unit filename="tests/testthread.hpp" />
 		<Unit filename="ui/base.cpp" />
 		<Unit filename="ui/base.hpp" />

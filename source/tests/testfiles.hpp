@@ -13,6 +13,7 @@
 class Test_Files: public State{
     public:
         Test_Files(){
+            ScreenManager::GetInstance().SetScreenName("Test file");
             requestQuit = requestDelete = false;
             bear::out << "Loading a simple file.\n";
             duration = 10.0f;

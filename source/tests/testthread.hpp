@@ -25,9 +25,9 @@ class Test_Threadpool: public State{
 
         };
         void Begin(){
+            ScreenManager::GetInstance().SetScreenName("Test thread");
             bear::out << "[Threadpool test]\n";
-            timer = new Graph();
-            timer->Start(Point(400,400),0);
+            timer.Start(Point(400,400),32,false);
 
 
             ThreadPool::GetInstance().KillThreads();
@@ -65,7 +65,7 @@ class Test_Threadpool: public State{
                 job(0,iterations,nullptr);
                 float dur = sw.Get();
                 std::cout << dur << "\n";
-                timer->AddBar("1",{255,0,0,255},dur);
+                timer.AddBar("1",{255,0,0,255},dur);
                 state = 1;
             }else if(state == 1){
                 bear::out << "[2] Threads.\n";
@@ -77,7 +77,7 @@ class Test_Threadpool: public State{
                 ThreadPool::GetInstance().Unlock();
                 ThreadPool::GetInstance().Lock();
                 float dur = sw.Get();
-                timer->AddBar("2",{255,100,0,255},dur);
+                timer.AddBar("2",{255,100,0,255},dur);
                 ThreadPool::GetInstance().KillThreads();
                 state = 2;
             }else if(state == 2){
@@ -89,8 +89,7 @@ class Test_Threadpool: public State{
                 ThreadPool::GetInstance().Unlock();
                 ThreadPool::GetInstance().Lock();
                 float dur = sw.Get();
-                std::cout << dur << "\n";
-                timer->AddBar("4",{255,200,0,255},dur);
+                timer.AddBar("4",{255,200,0,255},dur);
                 ThreadPool::GetInstance().KillThreads();
 
                 state = 3;
@@ -103,8 +102,7 @@ class Test_Threadpool: public State{
                 ThreadPool::GetInstance().Unlock();
                 ThreadPool::GetInstance().Lock();
                 float dur = sw.Get();
-                std::cout << dur << "\n";
-                timer->AddBar("8",{255,200,0,255},dur);
+                timer.AddBar("8",{255,200,0,255},dur);
                 ThreadPool::GetInstance().KillThreads();
 
                 state = 4;
@@ -117,8 +115,7 @@ class Test_Threadpool: public State{
                 ThreadPool::GetInstance().Unlock();
                 ThreadPool::GetInstance().Lock();
                 float dur = sw.Get();
-                std::cout << dur << "\n";
-                timer->AddBar("16",{0,200,0,255},dur);
+                timer.AddBar("16",{0,200,0,255},dur);
                 ThreadPool::GetInstance().KillThreads();
 
                 state = 5;
@@ -131,23 +128,30 @@ class Test_Threadpool: public State{
                 ThreadPool::GetInstance().Unlock();
                 ThreadPool::GetInstance().Lock();
                 float dur = sw.Get();
-                std::cout << dur << "\n";
-                timer->AddBar("32",{0,200,0,255},dur);
+                timer.AddBar("32",{0,200,0,255},dur);
                 ThreadPool::GetInstance().KillThreads();
-
+                duration = 10.0f;
                 state = 6;
+            }else if(state == 6){
+                duration -= dt;
+                if( InputManager::GetInstance().IsAnyKeyPressed() || duration <= 0 ) {
+                    requestDelete = true;
+                }
             }
         };
         void Render(){
-            timer->Render(Point(132,32));
+            timer.Render(Point(132,32));
         };
         void Input();
 
         void Resume(){};
-        void End(){};
+        void End(){
+
+        };
     private:
         Stopwatch sw;
-        Graph *timer;
+        Graph timer;
+        float duration;
         int iterations;
         int state;
 };
