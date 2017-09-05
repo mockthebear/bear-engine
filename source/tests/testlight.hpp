@@ -16,8 +16,6 @@ class Test_Light: public State{
             duration = 200.0f;
         };
         ~Test_Light(){
-            Light::GetInstance()->Shutdown();
-            ResourceManager::GetInstance().Erase("light");
         };
         void Begin(){
             ScreenManager::GetInstance().SetScreenName("Test light");
@@ -139,7 +137,10 @@ class Test_Light: public State{
         };
         void Input();
         void Resume(){};
-        void End(){};
+        void End(){
+            Light::GetInstance()->Shutdown();
+            ResourceManager::GetInstance().Erase("light");
+        };
     private:
         Timer makeB;
         Timer makeL;

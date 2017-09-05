@@ -16,6 +16,7 @@
 #include "../tests/testsprite.hpp"
 #include "../tests/testlua.hpp"
 #include "../tests/testlight.hpp"
+#include "../tests/testpathfind.hpp"
 
 
 
@@ -71,6 +72,7 @@ bool GameBehavior::OnLoad(){
     Game::GetInstance()->AddState(new Test_Lua());
     #endif // LUATESTSUITE
 
+    Game::GetInstance()->AddState(new Test_PathFind());
     Game::GetInstance()->AddState(new Test_Sprite());
     Game::GetInstance()->AddState(new Test_Files());
 
