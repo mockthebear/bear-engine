@@ -37,16 +37,16 @@ PathFind::PathFind(int sizeX,int sizeY,int dirs,int cells):PathFind(){
         int cx[] = PF_DIR4X;
         int cy[] = PF_DIR4Y;
         for (int ind=0;ind<directions;ind++){
-            dx[i] = cx[ind];
-            dy[i] = cy[ind];
+            dx[ind] = cx[ind];
+            dy[ind] = cy[ind];
         }
     }else{
         directions = 8;
         int cx[] = PF_DIR8X;
         int cy[] = PF_DIR8Y;
         for (int ind=0;ind<directions;ind++){
-            dx[i] = cx[ind];
-            dy[i] = cy[ind];
+            dx[ind] = cx[ind];
+            dy[ind] = cy[ind];
         }
     }
     for(int yaux=0;yaux<size.y;yaux++){
@@ -88,6 +88,9 @@ bool PathFind::AddBlock(int bx,int by,bool block){
     PointInt pf_pos = PointInt( floor( bx - (int)bx%(int)cellSize ), floor( by - (int)by%(int)cellSize ));
     pf_pos.x /= cellSize;
     pf_pos.y /= cellSize;
+    if (pf_pos.x >= size.x || pf_pos.y >= size.y){
+        return false;
+    }
     m_map[pf_pos.x][pf_pos.y] = block;
     return true;
 }
