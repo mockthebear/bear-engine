@@ -308,7 +308,9 @@ class PoolManager{
             GenericIterator<GameObject> Iterator(Groups[group].Objects,Groups[group].Max);
             return Iterator;
         }
+        void SetSilentMode(bool s){silent = s;};
     private:
+        bool silent;
         bool insertUnregistered;
         PoolId nextPoolGroup;
         void RemakeGroups();

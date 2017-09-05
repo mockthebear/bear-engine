@@ -16,13 +16,15 @@ PoolManager::PoolManager(bool insertUnregistered){
 
 PoolManager::~PoolManager(){
     delete []contentList;
-    bear::out << "Erasing pools.\n";
+    if (!silent)
+        bear::out << "Erasing pools.\n";
     for(unsigned int i = 0; i< Pools.size(); ++i){
         if (Pools[i].Drop)
             Pools[i].Delete();
     }
     EraseGroups();
-    bear::out << "Pools deleted.\n";
+    if (!silent)
+        bear::out << "Pools deleted.\n";
 }
 
 PoolId PoolManager::RegisterPool(std::function<int(void)> maxFuncion,
