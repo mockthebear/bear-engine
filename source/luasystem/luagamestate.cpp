@@ -28,9 +28,7 @@ void LuaGameState::Update(float dt){
    LuaCaller::CallOtherField(LuaManager::L,other,this,"update",dt);
    requestDelete = canClose;
 
-   Pool.Update(dt);
-   Map.clear();
-   Pool.PreRender(Map);
+   UpdateInstances(dt);
 
    UpdateWindowses(dt);
 

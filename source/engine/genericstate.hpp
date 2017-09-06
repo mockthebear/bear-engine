@@ -185,6 +185,7 @@ class GenericState{
         bool gameStarted;
         bool requestDelete,requestQuit;
 
+        void UpdateInstances(float dt);
         void UpdateWindowses(float dt);
         void RenderWindowses();
         void AddWindow(UIBase *b);

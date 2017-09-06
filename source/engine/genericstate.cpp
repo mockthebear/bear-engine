@@ -22,6 +22,11 @@ void GenericState::RenderWindowses(){
     }
 }
 
+void GenericState::UpdateInstances(float dt){
+   Pool.Update(dt);
+   Map.clear();
+   Pool.PreRender(Map);
+}
 void GenericState::RenderInstances(){
     for (auto &it : Map){
         for (auto &k : it.second){
