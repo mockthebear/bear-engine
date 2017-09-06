@@ -142,7 +142,7 @@ typedef struct PoolGroup_{
 
 class PoolManager{
     public:
-        PoolManager(bool insertUnregistered=false);
+        PoolManager(bool insertUnregistered=true,bool silentMode=false);
         /**
             @brief This wont delete the pools!
         */
@@ -214,6 +214,16 @@ class PoolManager{
                     added = Pools[i].Add(&object);
                     GenerateInternalPool();
                     return added;
+                }
+            }
+            if (insertUnregistered){
+                T *nObj = new T(object);
+                if (nObj){
+                    Unregistered.emplace_back(nObj);
+                    GenerateInternalPool();
+                    added = nObj;
+                    added->poolIndex = -1;
+                    added->NotifyInPool(nullptr);
                 }
             }
             return added;

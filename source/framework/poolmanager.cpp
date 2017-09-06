@@ -3,12 +3,13 @@
 #include "../engine/bear.hpp"
 #include "../engine/timer.hpp"
 
-PoolManager::PoolManager(bool insertUnregistered){
+PoolManager::PoolManager(bool insertUnregistered,bool silentMode){
 
     LuaPool = -1;
     contentList = new GameObject*[10];
     localMaximum = 0;
     GroupsCount = 0;
+    silent = true;
     nextPoolGroup = 255;
     this->insertUnregistered = true;
     indexCounter = insertUnregistered ? 1 : 0;
