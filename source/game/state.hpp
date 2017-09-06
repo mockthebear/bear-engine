@@ -9,9 +9,6 @@
 #ifndef STATEHH
 #define STATEHH
 
-
-#include "../framework/poolmanager.hpp"
-
 class State: public GenericState{
     public:
         State(){};
@@ -19,9 +16,9 @@ class State: public GenericState{
         virtual void Update(float dt) =0;
         virtual void Render() =0;
         virtual void Begin() =0;
-        PoolManager Pool;
         float PlayerSpeed;
         int currentLevel;
+
 };
 
 #endif // STATEH

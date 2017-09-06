@@ -175,16 +175,6 @@ class Particle: public GameObject{
         */
         void NotifyDamage(GameObject *o,int nothing){};
         /**
-            Particles are always on the screen
-            @return always true
-        */
-        bool IsInScreen(Point& p){return true;};
-        /**
-            Particles are always on the screen
-            @return always true
-        */
-        bool IsInScreen(){return true;};
-        /**
             Empty. There is no collision
         */
         void NotifyCollision(GameObject *p){};

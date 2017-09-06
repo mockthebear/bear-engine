@@ -20,8 +20,6 @@ class LuaObject: public GameObject{
         void Update(float dt);
         void Render();
         bool IsDead();
-        bool IsInScreen(Point& p);
-        bool IsInScreen();
         void NotifyCollision(GameObject *p);
         bool Is(int i);
         void NotifyDamage(GameObject *bj,int n);

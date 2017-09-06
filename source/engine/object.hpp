@@ -98,13 +98,6 @@ class GameObject{
     virtual void Kill(){};
 
     /**
-        *Check if the object is inside the screen.\n
-        *Used inside the engine\n
-        *<b>Must be defined<b/>
-        @return true if is dead
-    */
-    virtual bool IsInScreen(Point&){return false;};
-    /**
         *You can use this to say "hey, you have been touched by this object
         @param other the object who touched this one
     */
@@ -156,11 +149,11 @@ class GameObject{
     /**
         *<b>DONT REPLACE THIS</b>
     */
-    bool IsHash(int i){return i == GetHash_internal();};
+    bool IsHash(int i) {return i == GetHash_internal();};
     /**
         *<b>DONT REPLACE THIS</b>
     */
-    int GetHash(){return GetHash_internal();};
+    int GetHash() {return GetHash_internal();};
 
     /**
         *Can be used as an depth var. Use as you wish

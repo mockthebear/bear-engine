@@ -15,7 +15,6 @@ class ShootEffect: public GameObject{
         void Render();
         bool IsDead();
         void Shoot(float x, float y);
-        bool IsInScreen(Point& p);
         void NotifyCollision(GameObject *p){};
         void NotifyDamage(GameObject *p,int n){};
         bool Is(int);

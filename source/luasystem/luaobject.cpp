@@ -38,9 +38,6 @@ void LuaObject::Render(){
     LuaCaller::CallSelfField(LuaManager::L,this,"Render");
 }
 
-bool LuaObject::IsInScreen(Point& p){
-    return true;
-};
 
 bool LuaObject::Is(int is){
     return IsHash(is) || LuaCaller::CallSelfField(LuaManager::L,this,"Is",is);

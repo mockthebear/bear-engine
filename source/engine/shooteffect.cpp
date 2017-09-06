@@ -54,7 +54,3 @@ bool ShootEffect::IsDead(){
 bool ShootEffect::Is(int p){
     return p == OBJ_STILLANIMATION;
 }
-bool ShootEffect::IsInScreen(Point& p){
-    return !box.IsInside(p.x,p.y);
-}
-
