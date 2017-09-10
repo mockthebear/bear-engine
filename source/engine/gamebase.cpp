@@ -315,7 +315,6 @@ void Game::Begin(){
 
 bool Game::CanStop(){
     if (isClosing || ((SDL_QuitRequested() || stateStack.empty() || stateStack.top() == nullptr || stateStack.top()->RequestedQuit()) && preStored.empty())) {
-        std::cout << "AAAAAAAAAAAAAAAAAAAAAA\n";
         isClosing = true;
         return true;
     }else{
@@ -354,11 +353,13 @@ void Game::Run(){
                     LuaCaller::CallClear(LuaManager::L,stateStack.top());
 
                     justDeleted = true;
-                    if (stateStack.empty()){
-                        stateStack.top()->Resume(stateStack.top());
-                    }
-                    delete stateStack.top();
+
+                    DefinedState *oldState = stateStack.top();
                     stateStack.pop();
+                    if (!stateStack.empty()){
+                        stateStack.top()->Resume(oldState);
+                    }
+                    delete oldState;
                 }
             }
 
@@ -415,7 +416,6 @@ DefinedState &Game::GetCurrentState(){
 
 void Game::AddState(DefinedState *s,int forcedId){
     static int Ids = 0;
-    std::cout << "Added an state :D\n";
     if (forcedId == -1){
         s->STATEID = Ids++;
     }
