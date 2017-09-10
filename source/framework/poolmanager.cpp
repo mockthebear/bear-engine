@@ -3,7 +3,7 @@
 #include "../engine/bear.hpp"
 #include "../engine/timer.hpp"
 
-PoolManager::PoolManager(bool insertUnregistered,bool silentMode){
+PoolManager::PoolManager(bool insertUnregisteredArg,bool silentMode){
 
     LuaPool = -1;
     contentList = new GameObject*[10];
@@ -11,8 +11,8 @@ PoolManager::PoolManager(bool insertUnregistered,bool silentMode){
     GroupsCount = 0;
     silent = true;
     nextPoolGroup = 255;
-    this->insertUnregistered = true;
-    indexCounter = insertUnregistered ? 1 : 0;
+    insertUnregistered = true;
+    indexCounter = 0;
 }
 
 PoolManager::~PoolManager(){
@@ -229,25 +229,26 @@ void PoolManager::Update(float dt){
     unsigned int t = 0;
     unsigned int id = 0;
     for(unsigned int i = 0; i< Pools.size(); ++i){
-        Stopwatch sw;
+        //Stopwatch sw;
         Pools[i].Update(dt);
-        if (t < sw.Get()){
+        /*if (t < sw.Get()){
             t = sw.Get();
             id = i;
-        }
+        }*/
     }
-    Stopwatch sw;
+    //Stopwatch sw;
     for (auto &it : Unregistered){
 
         it->Update(dt);
 
     }
-    if (t < sw.Get()){
+    /*if (t < sw.Get()){
             t = sw.Get();
             id = 1337;
         }
     if (t > 8)
         bear::out << "big: " << t << " and " << id << " = "<<Types::GetInstance().getTypeName(Pools[id].Hash())<<"\n";
+        */
 }
 
 

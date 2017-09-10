@@ -142,7 +142,7 @@ typedef struct PoolGroup_{
 
 class PoolManager{
     public:
-        PoolManager(bool insertUnregistered=true,bool silentMode=false);
+        PoolManager(bool insertUnregistered=false,bool silentMode=true);
         /**
             @brief This wont delete the pools!
         */
