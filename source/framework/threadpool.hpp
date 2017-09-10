@@ -182,7 +182,7 @@ class ThreadPool{
             @code
             ThreadPool::GetInstance().AddParallelFor([=](int t,int mt,void *index){
                 int i = *index;
-                std::cout << "Hi! this is iteration "<<i<<" from thread "<<t << "\n";
+                bear::out << "Hi! this is iteration "<<i<<" from thread "<<t << "\n";
             },0,20);
             @endcode
         */
@@ -221,7 +221,7 @@ class ThreadPool{
             @code
             ThreadPool::GetInstance().AddParallelFor([=](int t,int mt,void *index){
                 int i = *index;
-                std::cout << "Hi! this is iteration "<<i<<" from thread "<<t << "\n";
+                bear::out << "Hi! this is iteration "<<i<<" from thread "<<t << "\n";
             },0,20);
             ThreadPool::GetInstance().Unlock();
             makeStuff();

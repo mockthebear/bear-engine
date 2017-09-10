@@ -446,7 +446,7 @@ void LuaInterface::RegisterClasses(){
 
 
     static LuaCFunctionLambda GarbageCollectorFunction = [](lua_State* L){
-        std::cout << "Calling gc\n";
+        bear::out << "Calling gc\n";
         return 1;
     };
     ClassRegister<LuaObject>::RegisterClassOutside(LuaManager::L,"LuaObject",[](lua_State* L){
@@ -591,7 +591,7 @@ void LuaInterface::RegisterClasses(){
 
 
     static LuaCFunctionLambda DeleteGCF = [](lua_State* L){
-        std::cout << "Calling gc to delete\n";
+        bear::out << "Calling gc to delete\n";
         return 1;
     };
     ClassRegister<LuaUi>::RegisterClassOutside(LuaManager::L,"LuaUi",[](lua_State* L){

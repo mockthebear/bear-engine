@@ -126,7 +126,7 @@ class GameObject{
         @code
             void NotifyDamage(GameObject *other,int damage){
                 if (!other)
-                    std::cout << "Ouch! i have been damaged by an object at pos "<< other->box.x << "\n";
+                    bear::out << "Ouch! i have been damaged by an object at pos "<< other->box.x << "\n";
                 health -= damage;
             }
 

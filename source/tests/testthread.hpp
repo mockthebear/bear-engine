@@ -54,7 +54,7 @@ class Test_Threadpool: public State{
                 }
                 std::stringstream S;
                 S << "From ["<<from<<":"<<to<<"] i got " << inside << "\n";
-                std::cout << S.str();
+                bear::out << S.str();
 
 
             };
@@ -64,7 +64,6 @@ class Test_Threadpool: public State{
                 bear::out << "[1] Threads.\n";
                 job(0,iterations,nullptr);
                 float dur = sw.Get();
-                std::cout << dur << "\n";
                 timer.AddBar("1",{255,0,0,255},dur);
                 state = 1;
             }else if(state == 1){
@@ -72,7 +71,6 @@ class Test_Threadpool: public State{
                 ThreadPool::GetInstance().Begin(2);
                 ThreadPool::GetInstance().AddParallelFor(job,0,iterations);
                 ThreadPool::GetInstance().SpreadJobs();
-                std::cout << "Start!\n";
                 sw.Reset();
                 ThreadPool::GetInstance().Unlock();
                 ThreadPool::GetInstance().Lock();

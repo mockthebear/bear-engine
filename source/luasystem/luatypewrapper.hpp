@@ -53,7 +53,7 @@ template<typename T1> struct MakeLuaObject{
 
 
         if (lua_isnil(L,-1)){
-            std::cout << "errrrr\n";
+            bear::out << "errrrr\n";
         }
         lua_pushnumber(L,(uint64_t)obj);
         lua_gettable(L, -2 );
@@ -103,7 +103,7 @@ template<typename T1> struct MakeLuaObject{
             lua_setfield(L, -2, "__self");
 
             if (isNil){
-                std::cout << "Made reference, getting stuff 2\n";
+                bear::out << "Made reference, getting stuff 2\n";
                 lua_settable(L, -3 );
                 lua_pop(L,1);
 

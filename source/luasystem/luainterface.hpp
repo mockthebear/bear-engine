@@ -34,7 +34,7 @@ class LuaInterface{
             if(GenericLuaType<Type>::Is(L,stack)){
                 return GenericLuaGetter<Type>::Call(L,false);
             }else{
-                std::cout << "Lua error. requested as string, but type not match.\n";
+                bear::out << "Lua error. requested as string, but type not match.\n";
                 return GenericLuaGetter<Type>::Empty;
             }
         }
