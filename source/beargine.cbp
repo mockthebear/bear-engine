@@ -208,6 +208,8 @@
 		<Unit filename="performance/console.hpp" />
 		<Unit filename="performance/graph.cpp" />
 		<Unit filename="performance/graph.hpp" />
+		<Unit filename="performance/linegrap.cpp" />
+		<Unit filename="performance/linegrap.hpp" />
 		<Unit filename="resource.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
@@ -226,6 +228,7 @@
 		<Unit filename="tests/testlight.hpp" />
 		<Unit filename="tests/testlua.hpp" />
 		<Unit filename="tests/testpathfind.hpp" />
+		<Unit filename="tests/testpool.hpp" />
 		<Unit filename="tests/testsprite.hpp" />
 		<Unit filename="tests/testthread.hpp" />
 		<Unit filename="ui/base.cpp" />

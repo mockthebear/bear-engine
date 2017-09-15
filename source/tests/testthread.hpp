@@ -18,7 +18,7 @@ class Test_Threadpool: public State{
         Test_Threadpool(){
             requestQuit = requestDelete = false;
             state = 0;
-            iterations = 80000000;
+            iterations = 50000000;
 
         };
         ~Test_Threadpool(){
@@ -52,19 +52,26 @@ class Test_Threadpool: public State{
                     if (sq <= 1)
                         inside++;
                 }
+                ThreadPool::GetInstance().CriticalLock();
                 std::stringstream S;
                 S << "From ["<<from<<":"<<to<<"] i got " << inside << "\n";
                 bear::out << S.str();
+                ThreadPool::GetInstance().CriticalUnLock();
 
 
             };
 
             if (state == 0){
-                sw.Reset();
                 bear::out << "[1] Threads.\n";
-                job(0,iterations,nullptr);
+                ThreadPool::GetInstance().Begin(1);
+                ThreadPool::GetInstance().AddParallelFor(job,0,iterations);
+                ThreadPool::GetInstance().SpreadJobs();
+                sw.Reset();
+                ThreadPool::GetInstance().Unlock();
+                ThreadPool::GetInstance().Lock();
                 float dur = sw.Get();
                 timer.AddBar("1",{255,0,0,255},dur);
+                ThreadPool::GetInstance().KillThreads();
                 state = 1;
             }else if(state == 1){
                 bear::out << "[2] Threads.\n";
