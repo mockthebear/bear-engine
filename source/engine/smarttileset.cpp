@@ -107,8 +107,14 @@ void SmartTileset::SetSprite(Sprite spr){
     sp = spr;
     sheetSizes.x = sp.GetWidth()/tileSize.x;
     sheetSizes.y = sp.GetHeight()/tileSize.y;
+    if (sp.IsLoaded()){
+        bear::out << "Sprite from the tile was not loaded.\n";
+    }
 }
 void SmartTileset::RenderTile(int x,int y,int index){
+    if (sheetSizes.x == 0 || sheetSizes.y == 0){
+        return;
+    }
     int cx = index%sheetSizes.x;
     int cy = index/sheetSizes.x;
     sp.SetClip(tileSize.x*cx,tileSize.y*cy,tileSize.x,tileSize.y);

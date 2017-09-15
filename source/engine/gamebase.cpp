@@ -290,7 +290,7 @@ void Game::Update(){
 
 }
 void Game::Render(){
-    if (!startFlags&BEAR_FLAG_START_SCREEN)
+    if ( (startFlags&BEAR_FLAG_START_SCREEN) == 0)
         return;
     stateStack.top()->Render();
     ScreenManager::GetInstance().Render();
@@ -354,12 +354,14 @@ void Game::Run(){
 
                     justDeleted = true;
 
+
                     DefinedState *oldState = stateStack.top();
                     stateStack.pop();
                     if (!stateStack.empty()){
                         stateStack.top()->Resume(oldState);
                     }
                     delete oldState;
+                    return;
                 }
             }
 
@@ -377,9 +379,12 @@ void Game::Run(){
                 }
                 return;
             }
-            if (stateStack.top()->p_StateTicks == 0){
+            stateStack.top()->p_StateTicks++;
+            if (stateStack.top()->p_StateTicks == 1){
                  stateStack.top()->Begin();
+                 return;
             }
+
 
 
             #ifdef CYCLYC_DEBUG
@@ -389,6 +394,9 @@ void Game::Run(){
             #ifdef CYCLYC_DEBUG
             bear::out << "[\\Update]\n";
             #endif
+            if (stateStack.top()->RequestedDeleted()){
+                return;
+            }
 
             #ifdef CYCLYC_DEBUG
             bear::out << "[Render]";
@@ -406,7 +414,7 @@ void Game::Run(){
             if ((1000.0f/ConfigManager::MaxFps) - delay > 0){
                 SDL_Delay( std::max( (1000.0f/ConfigManager::MaxFps) - delay,0.0f) );
             }
-            stateStack.top()->p_StateTicks++;
+
         }
 };
 DefinedState &Game::GetCurrentState(){

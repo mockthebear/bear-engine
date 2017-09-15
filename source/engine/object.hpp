@@ -137,14 +137,14 @@ class GameObject{
         *The engine have an thing to dont update object that are not inside the Camera.
         *But you can force then to be updated anyway
     */
-    bool canForceUpdate(){return false;};
+    virtual bool canForceUpdate(){return false;};
     /**
         *More about the perspegtive/depth can be explained here: GenericState::Map\n
         *The thing you need to know about the perspective here, is when set to 0, the depth will be the
         * equal to box.y.
     */
-    int hasPerspective(){return 0;};
-    bool canForceRender(){return false;};
+    virtual int hasPerspective(){return 0;};
+    virtual bool canForceRender(){return false;};
 
     /**
         *<b>DONT REPLACE THIS</b>
