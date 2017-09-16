@@ -43,13 +43,13 @@ extern "C"
 
 #endif // __ANDROID__
 
-#ifndef IGNORESTEAM
+#ifdef USESTEAM
 #include "steam/steam_api.h"
 #endif
 
 int main (int argc, char** argv) {
 	ConfigManager::GetInstance().RegisterArgs(argc,argv);
-	#ifndef IGNORESTEAM
+	#ifdef USESTEAM
     SteamAPI_RestartAppIfNecessary(0);
     if (!SteamAPI_Init()){
         std::cout << "Failed steam!\n";

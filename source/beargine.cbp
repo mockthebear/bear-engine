@@ -230,6 +230,7 @@
 		<Unit filename="tests/testpathfind.hpp" />
 		<Unit filename="tests/testpool.hpp" />
 		<Unit filename="tests/testsprite.hpp" />
+		<Unit filename="tests/testthread.cpp" />
 		<Unit filename="tests/testthread.hpp" />
 		<Unit filename="ui/base.cpp" />
 		<Unit filename="ui/base.hpp" />
