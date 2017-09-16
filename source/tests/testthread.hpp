@@ -18,7 +18,7 @@ class Test_Threadpool: public State{
         Test_Threadpool(){
             requestQuit = requestDelete = false;
             state = 0;
-            iterations = 80000000;
+            iterations = 5000000;
 
         };
         ~Test_Threadpool(){

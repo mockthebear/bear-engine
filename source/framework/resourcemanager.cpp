@@ -48,8 +48,9 @@ bool ResourceManager::Load(std::string file,std::string alias){
         alias = file;
 
     if (resources[alias]){
-        Console::GetInstance().AddTextInfo(utils::format("Not loading [%s] because alias already in use.",file.c_str()));
-        return false;
+        Console::GetInstance().AddTextInfo(utils::format("Loading [%s] already in use. Droping",file.c_str()));
+        //return false;
+        Erase(alias);
 
     }
 
