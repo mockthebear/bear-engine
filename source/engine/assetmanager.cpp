@@ -10,7 +10,7 @@ std::map<uint32_t,AssetMannager*> AssetMannager::AssetMannagerMap;
 
 GlobalAssetManager &GlobalAssetManager::GetInstance(){
     static GlobalAssetManager mngr;
-    return mngr;
+    return mngr ;
 }
 UIAssetManager &UIAssetManager::GetInstance(){
     static UIAssetManager mngr;

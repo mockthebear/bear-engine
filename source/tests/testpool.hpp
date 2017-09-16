@@ -31,6 +31,7 @@ class Test_Pool: public State{
 
 
 
+
             Pool.AddInstance(TestObject(Point(32,32)));
             TestObject obj = TestObject({55,55});
             Pool.AddInstance(obj);

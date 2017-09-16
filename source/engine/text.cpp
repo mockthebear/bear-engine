@@ -80,10 +80,13 @@ Point CustomFont::GetSizes(std::string str_){
             x += 6;
         }else{
             Letter l = Letters[str[i]];
+
+            sp.SetClip(l.x,l.y,l.w,l.h);
             lineY = std::max(lineY,l.h);
             x += l.w + l.padx;
             y += l.pady;
             if (l.resetX){
+
                 x = 0;
             }
         }
