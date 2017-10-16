@@ -16,6 +16,8 @@ typedef struct{
     std::string name;
 } luaTimer;
 
+
+
 class LuaInterface{
     public:
         ~LuaInterface();
@@ -94,7 +96,7 @@ class LuaInterface{
         void Close();
 
 
-
+        static int AddEvent(lua_State *L);
 
     private:
         void RegisterClasses();
