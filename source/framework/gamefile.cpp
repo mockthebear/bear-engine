@@ -78,7 +78,7 @@ bool GameFile::ClearCache(){
     if (!IsCached()){
         return false;
     }
-    delete m_cache;
+    delete []m_cache;
     m_cache = NULL;
     return true;
 }

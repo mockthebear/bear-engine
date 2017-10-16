@@ -60,7 +60,6 @@ BufferData *SoundLoader::loadOggFileRW(SDL_RWops* soundFile){
     int endian = 0;                         // 0 for Little-Endian, 1 for Big-Endian
     int bitStream;
     long bytes;
-    char array[BUFFER_SIZE];                // Local fixed size array
     std::vector<char> bufferData;
 
     if (soundFile == NULL)
@@ -69,6 +68,7 @@ BufferData *SoundLoader::loadOggFileRW(SDL_RWops* soundFile){
         delete ret;
         return nullptr;
     }
+	char *array = new char[BUFFER_SIZE];                // Local fixed size array
     // end if
 
     vorbis_info *pInfo;
@@ -83,6 +83,7 @@ BufferData *SoundLoader::loadOggFileRW(SDL_RWops* soundFile){
     if (ov_open_callbacks((void *)soundFile, &oggFile, NULL, -1, callbacks) != 0){
         bear::out << "Error opening rw for decoding...\n";
         delete ret;
+		delete[] array;
         return nullptr;
     }
     // end if
@@ -126,6 +127,7 @@ BufferData *SoundLoader::loadOggFileRW(SDL_RWops* soundFile){
     alGenBuffers(1, &ret->buffer);
     alBufferData(ret->buffer, ret->format, &bufferData[0], static_cast<ALsizei>(bufferData.size()), ret->freq);
     bufferData.clear();
+	delete[] array;
     //alSourcei(sourceID, AL_BUFFER, bufferID);
     return ret;
 }

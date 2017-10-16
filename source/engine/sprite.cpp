@@ -484,11 +484,7 @@ void Sprite::Render(int x,int y,double angle){
 
 
 void Sprite::RawRender(int x,int y,double angle){
-    SDL_Rect dimensions2;
-    dimensions2.x = x;
-    dimensions2.y = y;
-    dimensions2.h = clipRect.h*scaleY;
-    dimensions2.w = clipRect.w*scaleX;
+    SDL_Rect dimensions2 = {x,y,int(clipRect.h*scaleY),int(clipRect.w*scaleX)};
     SDL_RenderCopyEx(BearEngine->GetRenderer(),textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
 }
 

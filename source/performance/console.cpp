@@ -3,7 +3,7 @@
 #include "../engine/gamebase.hpp"
 #include "../framework/dirmanager.hpp"
 #ifdef __ANDROID__
-#define APPNAME "SnakeScape"
+#define APPNAME "BearEngine"
 #include <android/log.h>
 #endif
 #include <iostream>

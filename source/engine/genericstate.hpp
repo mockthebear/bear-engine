@@ -189,6 +189,8 @@ class GenericState{
         void UpdateWindowses(float dt);
         void RenderWindowses();
         void AddWindow(UIBase *b);
+
+        uint64_t GetTicks(){ return p_StateTicks;};
     protected:
         friend class Game;
 

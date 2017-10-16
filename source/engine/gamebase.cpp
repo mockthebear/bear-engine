@@ -14,6 +14,7 @@
 #include "../framework/threadpool.hpp"
 #include "../framework/debughelper.hpp"
 #include "../framework/resourcemanager.hpp"
+#include "../framework/schedule.hpp"
 #include "timer.hpp"
 
 #include "parallelcollisionmanager.hpp"
@@ -200,8 +201,11 @@ Game::~Game(){
 void Game::Close(){
     hasBeenClosed = true;
     while (!stateStack.empty()){
-        delete stateStack.top();
-        stateStack.pop();
+        if (stateStack.top() != nullptr){
+            stateStack.top()->End();
+            delete stateStack.top();
+            stateStack.pop();
+        }
     }
     isClosing = true;
     if (Started)
@@ -273,16 +277,20 @@ void Game::Update(){
 
     GameBehavior::GetInstance().OnUpdate(dt);
 
+
     if (startFlags&BEAR_FLAG_START_SCREEN)
         ScreenManager::GetInstance().PreRender();
 
     if (!CanStop()){
+        Scheduler::GetInstance().Update(dt);
         #ifndef DISABLE_LUAINTERFACE
         if (startFlags&BEAR_FLAG_START_LUA)
             LuaInterface::Instance().Update(dt);
         #endif
 
         stateStack.top()->Update(std::min(dt,ConfigManager::MinimumDT) );
+
+
 
         if (startFlags&BEAR_FLAG_START_SCREEN)
             ScreenManager::GetInstance().Update(dt);
@@ -410,10 +418,8 @@ void Game::Run(){
             //unsigneduint32_t tr = st.Get();
 
             float delay = SDL_GetTicks()-dt;
-
             if ((1000.0f/ConfigManager::MaxFps) - delay > 0){
                 SDL_Delay( std::max( (1000.0f/ConfigManager::MaxFps) - delay,0.0f) );
-            }
 
         }
 };

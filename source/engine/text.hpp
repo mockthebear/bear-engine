@@ -324,9 +324,10 @@ class Text{
             RemakeTexture();
             return *this;
         }*/
-        Text operator=(Text const &T){
+        Text& operator=(Text const &T){
             cpy((Text*)(&T));
             texture = nullptr;
+            RemakeTexture();
             return *this;
         }
 

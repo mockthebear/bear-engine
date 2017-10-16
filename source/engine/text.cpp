@@ -52,7 +52,7 @@ CustomFont::CustomFont(std::string letterpositions){
                 break;
             }
         }
-        delete cached;
+        delete []cached;
         loaded = true;
         fp->Close();
         delete fp;
@@ -253,7 +253,7 @@ void Text::Close(){
     if (texture){
         SDL_DestroyTexture(texture);
         texture = nullptr;
-        isWorking = nullptr;
+        isWorking = false;
         font = nullptr;
         texturespr = nullptr;
     }

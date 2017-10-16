@@ -11,6 +11,7 @@
 
 SmartTileset::SmartTileset(PointInt tileSize,PointInt tilesetSize,int layers,PointInt maxTextureSize):tileSize(PointInt(8,8)){
     isValid = false;
+    lastTarget = nullptr;
     PointInt engineMaxSize = ScreenManager::GetInstance().GetMaxTextureSize();
     if (maxTextureSize.x == -1 || maxTextureSize.x > engineMaxSize.x){
         maxTextureSize.x = engineMaxSize.x;
@@ -107,8 +108,8 @@ void SmartTileset::SetSprite(Sprite spr){
     sp = spr;
     sheetSizes.x = sp.GetWidth()/tileSize.x;
     sheetSizes.y = sp.GetHeight()/tileSize.y;
-    if (sp.IsLoaded()){
-        bear::out << "Sprite from the tile was not loaded.\n";
+    if (!sp.IsLoaded()){
+        bear::out << "[SmartTileset]Sprite from the tile was not loaded.\n";
     }
 }
 void SmartTileset::RenderTile(int x,int y,int index){
@@ -124,7 +125,7 @@ void SmartTileset::RenderTile(int x,int y,int index){
 bool SmartTileset::MakeMap(){
     if (!isValid)
         return false;
-   // Stopwatch timer;
+    Stopwatch timer;
     bear::out << "Making the map\n";
     SDL_Texture *lastTexture = nullptr;
 
@@ -140,7 +141,7 @@ bool SmartTileset::MakeMap(){
             }
         }
     }
-
+    bear::out << "Textures " << float(timer.Get()/1000.0) << "\n";
     for (int l=0;l<Layers;l++){
         for (int y=0;y<tilesetCompatSize.y;y++){
             for (int x=0;x<tilesetCompatSize.x;x++){
@@ -158,7 +159,7 @@ bool SmartTileset::MakeMap(){
             }
         }
     }
-   // bear::out << "Finished in " << float(timer.Get()/1000.0) << "\n";
+    bear::out << "Finished in " << float(timer.Get()/1000.0) << "\n";
     ScreenManager::GetInstance().SetRenderTarget(nullptr,true);
 
     return true;
@@ -284,19 +285,19 @@ SmartTileset::~SmartTileset(){
             for (int x=0;x<framesOnMap.x;x++){
                 SDL_DestroyTexture(textureMap[l][y][x]);
             }
-            delete textureMap[l][y];
-            delete needRemake[l][y];
+            delete []textureMap[l][y];
+            delete []needRemake[l][y];
         }
-        delete textureMap[l];
-        delete needRemake[l];
+        delete []textureMap[l];
+        delete []needRemake[l];
     }
-    delete needRemake;
-    delete textureMap;
+    delete []needRemake;
+    delete []textureMap;
     for (int l=0;l<Layers;l++){
         for (int y=0;y<tilesetCompatSize.y;y++){
-            delete tileMap[l][y];
+            delete []tileMap[l][y];
         }
-        delete tileMap[l];
+        delete []tileMap[l];
     }
-    delete tileMap;
+    delete []tileMap;
 }

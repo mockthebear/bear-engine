@@ -141,7 +141,7 @@ class RenderHelp{
                     if (Collision::IsColliding(r,cb)){
                         pixels[x + (y*T.getW())] = RenderHelp::FormatRGBA(r_color,g,b,alpha);
                     }else{
-                        pixels[x + (y*T.getW())] = RenderHelp::FormatRGBA(r_color,g,b,0);
+                        pixels[x + (y*T.getW())] = RenderHelp::FormatRGBA(0,0,0,0);
                     }
                 }
             }

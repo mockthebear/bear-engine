@@ -5,7 +5,7 @@
 
 XmlNode::~XmlNode(){
     if (Nodes)
-        delete Nodes;
+        delete []Nodes;
 }
 
 XmlNode * XmlNode::Next(){
@@ -42,8 +42,7 @@ XmlNode *Xml::Parse(std::string fileName){
         return nullptr;
     }
     f.Cache();
-
-    std::string data = f.GetCache();
+    std::string data(f.GetCache());
 
 
     utils::ReadUntil(data,"<?");
@@ -84,7 +83,6 @@ XmlNode *Xml::Parse(std::string fileName){
     d->Name = mouduleName;
     std::string dataFromWithin = utils::ReadUntil(data,"</"+mouduleName+">");
     ParsePartial(d,dataFromWithin);
-
     return d;
 }
 
@@ -154,7 +152,7 @@ void Xml::ParsePartial(XmlNode *d,std::string content){
             reallocAux[d->nodeCount] = aux;
             aux->index = d->nodeCount;
             d->nodeCount++;
-            delete d->Nodes;
+            delete [] d->Nodes;
             d->Nodes = reallocAux;
         }else{
             delete aux;

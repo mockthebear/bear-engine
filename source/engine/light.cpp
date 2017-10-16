@@ -187,16 +187,13 @@ bool Light::Shutdown(){
     Console::GetInstance().AddTextInfo("Deleting light.");
     delete out;
 
-    std::cout << maxAlloc << " : "<<MapMap<<"\n";
-    if (MapMap != nullptr){
-        for (int i=0;i<maxAlloc;i++){
-            std::cout << i << "\n";
-            delete []MapMap[i];
-        }
-        delete []MapMap;
-    }
     delete []ShadeMap;
     delete []DataMap;
+
+    for (int i=0;i<maxAlloc;i++){
+        delete []MapMap[i];
+    }
+    delete []MapMap;
     MapMap = nullptr;
     out = nullptr;
     Console::GetInstance().AddTextInfo("Light deleted.");

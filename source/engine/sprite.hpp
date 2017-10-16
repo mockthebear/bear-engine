@@ -478,7 +478,7 @@ class Sprite{
             Get the current frame in the grid
             @return the frame on x,y position
         */
-        PointInt GetFrame(){ return currentFrame; };
+        Point GetFrame(){ return currentFrame; };
         /**
             Used to load texture settings from the given pointer
             @param ptr The pointer

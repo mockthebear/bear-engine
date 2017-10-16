@@ -109,6 +109,7 @@ class Game{
         /**
             *Delta time. Get the time between the frames
         */
+        inline uint32_t GetDeltaTimeI(){return (dt-frameStart);};
         inline float GetDeltaTime(){return (dt-frameStart)/100.0;};
         /**
             *Add an state to the state stack
