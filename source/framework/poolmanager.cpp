@@ -60,6 +60,21 @@ void PoolManager::EraseGroups(){
     Groups.clear();
 }
 
+void PoolManager::KillAll(){
+    for(unsigned int i = 0; i< Pools.size(); ++i){
+        for (int a=0;a<Pools[i].Max();a++){
+            GameObject *obj = Pools[i].Get(a);
+            if (obj != nullptr){
+                obj->Kill();
+            }
+        }
+    }
+    for (auto &it : Unregistered){
+        it->Kill();
+    }
+
+}
+
 void PoolManager::ErasePools(){
     for(unsigned int i = 0; i< Pools.size(); ++i){
         Pools[i].Delete();
@@ -226,8 +241,8 @@ GameObject * PoolManager::GetInstanceGlobal(int index,PoolId pool){
 }
 
 void PoolManager::Update(float dt){
-    unsigned int t = 0;
-    unsigned int id = 0;
+    //unsigned int t = 0;
+    //unsigned int id = 0;
     for(unsigned int i = 0; i< Pools.size(); ++i){
         //Stopwatch sw;
         Pools[i].Update(dt);

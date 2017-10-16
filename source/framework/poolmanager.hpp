@@ -234,6 +234,7 @@ class PoolManager{
             This will delete all the pools.
         */
         void ErasePools();
+        void KillAll();
         /**
             Update all the instances in all pools
         */
