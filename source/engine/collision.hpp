@@ -280,23 +280,35 @@ namespace Collision {
         }
 
 	static inline bool IsColliding( Circle& b,Circle& a ){
-            if (distanceSquared( a.x, a.y, b.x, b.y ) <= b.r+a.r){
-                return true;
-            }
-            return false;
+        if (distanceSquared( a.x, a.y, b.x, b.y ) <= b.r+a.r){
+            return true;
         }
+        return false;
+    }
 
-        bool WarpAway(Rect &obj1,Rect obj2);
-        bool SoftWarpAway(GameObject* thisObject,GameObject* otherObject);
-        bool SoftWarpAway(GameObject* thisObject,GameObject* otherObject,Point speed);
+    std::vector<GameObject*> GetNearObjects(GameObject* dis,PoolManager &pool,PoolGroupId gid,float scale=4,bool onlySolid=true);
+
+    bool WarpAway(Rect &obj1,Rect obj2);
+    bool SoftWarpAway(GameObject* thisObject,GameObject* otherObject);
+    bool SoftWarpAway(GameObject* thisObject,GameObject* otherObject,Point speed);
 
 
-        int AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,PoolManager &pool,PoolGroupId gid=-1);
-        int AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObject* dis,PoolManager &pool,PoolGroupId gid=-1,float msize=0.5);
-        std::vector<Rect> CheckCollision(std::vector<Rect> &rectArr,GameObject* dis,PoolManager &pool,PoolGroupId gid,bool onlySolid=true);
-        bool CheckCollision(Rect tempXY,GameObject* dis,PoolManager &pool,PoolGroupId gid=-1,bool onlySolid = true);
-        GameObject* GetCollidingObject(GameObject* thisObject,PoolManager &pool,PoolGroupId gid=-1,bool onlySolid = true);
-        std::vector<GameObject*> GetCollidingObjects(GameObject* thisObject,PoolManager &pool,PoolGroupId gid=-1,bool onlySolid = true);
+    int AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,PoolManager &pool,PoolGroupId gid=-1,bool onlySolid = true);
+    int AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObject* dis,PoolManager &pool,PoolGroupId gid=-1,float msize=0.5,bool onlySolid = true);
+    bool CheckCollision(Rect tempXY,GameObject* dis,PoolManager &pool,PoolGroupId gid=-1,bool onlySolid = true);
+
+    int AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,std::vector<GameObject*> vec,bool onlySolid = true);
+    int AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObject* dis,std::vector<GameObject*> vec,float msize=0.5,bool onlySolid = true);
+    bool CheckCollision(Rect tempXY,GameObject* dis,std::vector<GameObject*> vec,bool onlySolid = true);
+
+
+
+
+
+    std::vector<Rect> CheckCollision(std::vector<Rect> &rectArr,GameObject* dis,PoolManager &pool,PoolGroupId gid,bool onlySolid=true);
+
+    GameObject* GetCollidingObject(GameObject* thisObject,PoolManager &pool,PoolGroupId gid=-1,bool onlySolid = true);
+    std::vector<GameObject*> GetCollidingObjects(GameObject* thisObject,PoolManager &pool,PoolGroupId gid=-1,bool onlySolid = true);
 
 
 };
