@@ -426,7 +426,7 @@ class Cone : public Circle{
         };
 
         float start_angle,opening;
-		float GetSize(){return r;};
+		float GetSize(){return 2.0f * r;};
 };
 
 
