@@ -45,7 +45,7 @@ class LuaManager{
             if (lua_pcall(L, arg, returns,  ext) != 0) {
                 Console::GetInstance().AddTextInfo(utils::format("Lua error: :c %s -> [%s]",lua_tostring(L, -1),lastCalled.c_str()));
                 lua_pop(L,1);
-                lua_getfield(L, LUA_GLOBALSINDEX, "debug");
+                lua_getglobal(L, "debug");
                 if (!lua_istable(L, -1)) {
                     lua_pop(L, 1);
                     return false;
