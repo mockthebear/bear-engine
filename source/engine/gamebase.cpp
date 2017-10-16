@@ -420,6 +420,7 @@ void Game::Run(){
             float delay = SDL_GetTicks()-dt;
             if ((1000.0f/ConfigManager::MaxFps) - delay > 0){
                 SDL_Delay( std::max( (1000.0f/ConfigManager::MaxFps) - delay,0.0f) );
+            }
 
         }
 };

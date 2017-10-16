@@ -282,7 +282,7 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
                                 rn++;
                                 Rect tempY2(dis->box.x,dis->box.y+ax*dt,dis->box.w,dis->box.h);
                                 if (Collision::IsColliding(obj->box,tempY2)){
-                                    /**if (ax == -colSize*2.0f){
+                                    if (ax == -colSize*2.0f){
                                         // first loop colliding means the player was already inside
                                         //sy = 0;
                                         if (1){

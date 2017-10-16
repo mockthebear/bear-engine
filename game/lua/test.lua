@@ -129,18 +129,25 @@ function MakeLuaStateWithComplexObjects()
 
 	state.text = Text("owo",12,{r=255,g=255,b=0,a=100})
 
+
+
 	state.begin = function(this)
 		--Should initiate the camera system. Everything outside screen is ignored
 		g_camera.Initiate()
 
+		g_assets.LoadResources("test.burr","test")
+
+
 		for i=1,10 do
 
-			local Obj = LuaObject(32  + i*32,32 + i*32)
+			local Obj = LuaObject(32  + i*64,32 + i*64)
 
 			Obj.speed = i;
 
 			Obj:SetWidth(32 - i * 2)
 			Obj:SetHeight(32 - i * 2)
+
+			Obj.spr = Sprite("test:bear.png")
 
 
 			Obj.Update = function(self,dt)
@@ -156,13 +163,15 @@ function MakeLuaStateWithComplexObjects()
 
 			Obj.Render = function(self)
 				g_render.DrawFillSquare(self:GetBox(),math.random(0,255),math.random(0,255),0,255)
+				self.spr:Render(self:GetBox()) --Also works: {x = posX, y = posY}
+
 			end
 		end
 
 	end
 
 	state.finish = function(this)
-
+		g_assets.EraseResource("test")
 	end
 
 	state.resume = function(this)

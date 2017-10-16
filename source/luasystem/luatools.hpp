@@ -555,7 +555,13 @@ template<typename T1,typename ClassObj,typename ... Types> struct internal_regis
 
     };*/
     template <typename ... Opt> static void LambdaRegisterStackOpt(lua_State *L,std::string str,int stackPos,T1 (ClassObj::*func)(Types ... args),Opt ... optionalArgs ){
+        //#if defined(__GNUC__) || defined(__GNUG__)
+        //LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
+       // #else
         LuaCFunctionLambda f = [func,str,optionalArgs...](lua_State *L2) -> int {
+       // #endif // defined
+
+
             LuaManager::lastCalled = str;
             int argCount = sizeof...(Types);
             int argNecessary = std::max(lua_gettop(L2)-2, int(sizeof...(Opt)));
@@ -569,7 +575,11 @@ template<typename T1,typename ClassObj,typename ... Types> struct internal_regis
             std::tuple<Types ...> ArgumentList;
             if (sizeof...(Types) > 0)
                 lua_pop(L2, 1);
+          //  #if defined(__GNUC__) || defined(__GNUG__)
+           // readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1);
+           // #else
             readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,optionalArgs...);
+           // #endif // defined
             T1 rData = expanderClass<sizeof...(Types),ClassObj,T1>::expand(ArgumentList,L2,func);
             GenericLuaReturner<T1>::Ret(rData,L2);
             return 1;
@@ -611,7 +621,11 @@ template<typename ClassObj,typename ... Types> struct internal_register<void,Cla
 
     };*/
     template <typename ... Opt> static void LambdaRegisterStackOpt(lua_State *L,std::string str,int stackPos,void (ClassObj::*func)(Types ... args),Opt ... optionalArgs ){
+        //#if defined(__GNUC__) || defined(__GNUG__)
+        //LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
+        //#else
         LuaCFunctionLambda f = [func,str,optionalArgs...](lua_State *L2) -> int {
+        //#endif // defined
             LuaManager::lastCalled = str;
             int argCount = sizeof...(Types);
             int argNecessary = std::max(lua_gettop(L2)-2, int(sizeof...(Opt)));
@@ -626,7 +640,11 @@ template<typename ClassObj,typename ... Types> struct internal_register<void,Cla
             if (sizeof...(Types) > 0)
                 lua_pop(L2, 1);
 
+            //#if defined(__GNUC__) || defined(__GNUG__)
+            //readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1);
+            //#else
             readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,optionalArgs...);
+            //#endif // defined
             expanderClass<sizeof...(Types),ClassObj,void>::expand(ArgumentList,L2,func);
             GenericLuaReturner<void>::Ret(0,L2);
 

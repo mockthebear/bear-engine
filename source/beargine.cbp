@@ -157,6 +157,8 @@
 		<Unit filename="framework/resourcefiles.hpp" />
 		<Unit filename="framework/resourcemanager.cpp" />
 		<Unit filename="framework/resourcemanager.hpp" />
+		<Unit filename="framework/schedule.cpp" />
+		<Unit filename="framework/schedule.hpp" />
 		<Unit filename="framework/threadpool.cpp" />
 		<Unit filename="framework/threadpool.hpp" />
 		<Unit filename="framework/typechecker.cpp" />

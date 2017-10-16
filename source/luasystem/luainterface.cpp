@@ -15,6 +15,7 @@
 #include "../sound/sound.hpp"
 #include "../engine/timer.hpp"
 #include "../engine/sprite.hpp"
+#include "../framework/resourcemanager.hpp"
 
 LuaInterface& LuaInterface::Instance()
 {
@@ -792,6 +793,21 @@ void LuaInterface::RegisterClasses()
         //BearEngine->GetCurrentState().AddWindow(t);
         return t;
     },nullptr);
+
+    GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_assets");
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_assets","LoadResources",std::function<bool(std::string,std::string)>([](std::string file,std::string alias)
+    {
+        return ResourceManager::GetInstance().Load(file,alias);
+    }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_assets","EraseResource",std::function<void(std::string)>([](std::string alias)
+    {
+        ResourceManager::GetInstance().Erase(alias);
+    }));
+
+
+
+
+
 
     GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_ui");
 
