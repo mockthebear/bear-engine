@@ -6,15 +6,15 @@
 
 enum BEKeyBinds{
     BE_KEY_UP=0,
-    BE_KEY_DOWN,
-    BE_KEY_LEFT,
-    BE_KEY_RIGHT,
-    BE_KEY_A,
-    BE_KEY_B,
-    BE_KEY_X,
-    BE_KEY_Y,
-    BE_KEY_PAUSE,
-    BE_KEY_SELECT,
+    BE_KEY_DOWN=1,
+    BE_KEY_LEFT=2,
+    BE_KEY_RIGHT=3,
+    BE_KEY_A=4,
+    BE_KEY_B=5,
+    BE_KEY_X=6,
+    BE_KEY_Y=7,
+    BE_KEY_PAUSE=8,
+    BE_KEY_SELECT=9,
 };
 enum InputMethodIdentifier{
     IM_NONE,
@@ -44,6 +44,14 @@ class InputMethod{
 
 };
 
+class TempKey{
+    public:
+    TempKey(){key = PRESSED;dur=0.0f;};
+    TempKey(InputState s,float d){key = s;dur=d;};
+    float dur;
+    InputState key;
+};
+
 class BEInput{
     public:
         BEInput();
@@ -59,7 +67,14 @@ class BEInput{
 
 
         void Update(float dt);
+
+
+        void ForceKeyPress(BEKeyBinds key,float duration);
+        void ResetForcedKeys();
     private:
         InputState GetKeyStatus(InputMethod& method);
         std::map<BEKeyBinds,std::vector<InputMethod>> keyData;
+        std::map<BEKeyBinds,TempKey> forcedData;
 };
+
+extern BEInput g_beinput;

@@ -42,7 +42,7 @@ class Test_Lua: public State{
         void Update(float dt){
             duration -= dt;
 
-            if( InputManager::GetInstance().IsAnyKeyPressed() || duration <= 0 ) {
+            if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
                 bear::out << "Call new state\n";
                 LuaCaller::CallGlobalField(LuaManager::L,"MakeLuaState");
 

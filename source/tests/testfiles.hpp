@@ -21,7 +21,7 @@ class Test_Files: public State{
             f.Open("teste.txt",true);
             if (f.IsOpen()){
                 uint32_t size = f.GetSize();
-                bear::out << "Size is " << size << "\n";
+                Bearssert(size == 24);
                 std::string line;
                 f.GetLine(line);
                 Bearssertc(line == "Hello text","Expected 'Hello text'");
@@ -75,7 +75,6 @@ class Test_Files: public State{
             bear::out << "Opening basefile enginedata.burr\n";
             if (!ResourceManager::GetInstance().Load("engine/enginedata.burr","engine")){
                 Console::GetInstance().AddTextInfo("engine/enginedata.burr missing!!!");
-                getchar();
             }
             bear::out << "Opening basefile ui.burr\n";
             if (!ResourceManager::GetInstance().Load("engine/ui.burr","ui")){
@@ -97,7 +96,7 @@ class Test_Files: public State{
 
         void Update(float dt){
             duration -= dt;
-            if( InputManager::GetInstance().IsAnyKeyPressed() || duration <= 0 ) {
+            if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
                 requestDelete = true;
             }
 

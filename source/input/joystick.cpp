@@ -3,29 +3,75 @@
 #include "../engine/renderhelp.hpp"
 
 
+void JoyHat::Update(Joystick* motherJoy,float dt){
+    for (int i=0;i<JOYHAT_BUTTONS_COUNT;i++){
+        if (keys[i] == JUST_PRESSED){
+            keys[i] = PRESSED;
+        }
+        if (keys[i] == JUST_RELEASED){
+            keys[i] = RELEASED;
+        }
+        bool pressed = (keyState&(1 << i)) != 0;
+        if (pressed){
+            if (keys[i] != PRESSED){
+                motherJoy->anyKeyPressed = 1000 + i;
+                keys[i] = JUST_PRESSED;
+            }
+        }else{
+            if (keys[i] != RELEASED){
+                keys[i] = JUST_RELEASED;
+            }
+        }
+
+    }
+}
+
 Joystick::Joystick(){
     m_joyHandler = NULL;
+}
+
+std::string Joystick::GetTextInfo(){
+    std::stringstream S;
+    S << "Name: "<< m_name << "\n";
+    S << "id: "<< m_id << "\n";
+    S << "Axis: "<< m_axes << "\n";
+    S << "Buttons: "<< m_buttons << "\n";
+    S << "Balls: "<< m_balls << "\n";
+    S << "Hats: "<< m_hats << "\n";
+    S << "Is haptic: ";
+    if (m_haptic){
+        S << "YES";
+    }else{
+        S << "NO";
+    }
+    S << "\n";
+    S << "GUID: " <<m_guid.data <<"\n";
+    return S.str();
 }
 
 Joystick::Joystick(int index){
     m_joyHandler = SDL_JoystickOpen(index);
     if (m_joyHandler){
         m_id        = SDL_JoystickInstanceID(m_joyHandler);
+        m_guid      = SDL_JoystickGetGUID(m_joyHandler);
         m_name       = SDL_JoystickNameForIndex(index);
         m_axes       = SDL_JoystickNumAxes(m_joyHandler);
         m_buttons    = SDL_JoystickNumButtons(m_joyHandler);
         m_balls      = SDL_JoystickNumBalls(m_joyHandler);
         m_hats       = SDL_JoystickNumHats(m_joyHandler);
         m_haptic     = SDL_HapticOpenFromJoystick(m_joyHandler);
-        anyKeyPressed= false;
+        anyKeyPressed= 0;
         HasCallButton= false;
         HasCallAxis  = false;
         HasCallBall  = false;
         HasCallHat   = false;
         Axis = new int[m_axes];
+        axisState = new InputState[m_axes*2];
         Hats = new JoyHat[m_hats];
         Balls = new PointInt[m_balls];
 
+        for (int i=0;i<m_axes*2;i++)
+            axisState[i] = RELEASED;
         for (int i=0;i<m_axes;i++)
             Axis[i] = 0;
         if (m_haptic){
@@ -41,8 +87,10 @@ Joystick::Joystick(int index){
 }
 
 Joystick::~Joystick(){
-    delete Axis;
-    delete Balls;
+    delete []Axis;
+    delete []Balls;
+    delete []Hats;
+    delete []axisState;
 }
 bool Joystick::VibrateStop(){
     if (!m_haptic){
@@ -82,6 +130,11 @@ void Joystick::Render(int id){
     }
 }
 
+InputState Joystick::GetAxisInputState(int axisIdb){
+
+    return axisState[axisIdb];
+}
+
 void Joystick::Update(float dt){
     if (!IsWorking())
         return;
@@ -94,9 +147,19 @@ void Joystick::Update(float dt){
             it->second = RELEASED;
         }
     }
+    for (int i=0;i<m_axes*2;i++){
+        if (axisState[i] == JUST_PRESSED){
+            axisState[i] = PRESSED;
+        }
+        if (axisState[i] == JUST_RELEASED){
+            axisState[i] = RELEASED;
+        }
+
+    }
+
     if (m_hats > 0){
         for (int i=0;i<m_hats;i++){
-            Hats[i].Update(dt);
+            Hats[i].Update(this,dt);
         }
     }
 }
@@ -179,7 +242,43 @@ void Joystick::MoveAxis(int axisId,int value){
     if (HasCallAxis){
         AxisCallBack(m_id,axisId,value);
     }
+
+
+
+    float changePos = 32767/2;
+
     Axis[axisId] = value;
+
+    //std::cout << value;
+    int axI = axisId*2;
+    if (value < 0){
+        value = value * -1;
+        axI = axI+1;
+    }
+    if (value == 0){
+        if (axisState[axI] == PRESSED){
+            axisState[axI] = JUST_RELEASED;
+        }
+        if (axisState[axI+1] == PRESSED){
+            axisState[axI+1] = JUST_RELEASED;
+        }
+        return;
+    }
+
+    bool isPressing = value > changePos;
+    //std::cout << " IS: " << isPressing << " and " << axI << "\n";
+
+    if (!isPressing){
+        if (axisState[axI] == PRESSED){
+            axisState[axI] = JUST_RELEASED;
+        }
+    }else{
+        if (axisState[axI] == RELEASED){
+            axisState[axI] = JUST_PRESSED;
+            anyKeyPressed = axI+2000;
+        }
+    }
+
 
 }
 void Joystick::MoveHat(int hatId,int value){

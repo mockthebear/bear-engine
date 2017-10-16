@@ -8,14 +8,12 @@
 #include "../engine/renderhelp.hpp"
 #include "../performance/graph.hpp"
 #include "../framework/threadpool.hpp"
-#include "../performance/linegrap.hpp"
 
 class Test_Light: public State{
     public:
         Test_Light(){
             requestQuit = requestDelete = false;
             duration = 200.0f;
-            ln = LineGraph({500,100},64);
         };
         ~Test_Light(){
         };
@@ -63,19 +61,17 @@ class Test_Light: public State{
             timer.UpdateBar(0,sw.Get());
 
             duration -= dt;
-            if( InputManager::GetInstance().IsAnyKeyPressed() || duration <= 0 ) {
+            if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
                 requestDelete = true;
             }
 
             if (makeB.HasFinished()){
                 makeB.Restart();
-                //ln.AddData(ScreenManager::GetInstance().GetFps());
                 staticBlock.emplace_back(Rect(rand()%SCREEN_SIZE_W,rand()%SCREEN_SIZE_H,LightPixelSize,LightPixelSize));
 
             }
             if (makeL.HasFinished()){
                 makeL.Restart();
-                ln.AddData(ScreenManager::GetInstance().GetFps());
                 LightPoints.emplace_back(std::make_tuple<Point,uint8_t>(Point(rand()%SCREEN_SIZE_W,rand()%SCREEN_SIZE_H),rand()%255 ));
 
             }
@@ -110,7 +106,6 @@ class Test_Light: public State{
             background.Render(0,0);
             RenderInstances();
             frameRate.Render(32,32);
-            ln.Render(Point(32,390));
 
             for (auto &it : staticBlock){
                 RenderHelp::DrawSquareColor(it.x,it.y,it.w,it.h,0,0,0,255);
@@ -147,7 +142,6 @@ class Test_Light: public State{
             ResourceManager::GetInstance().Erase("light");
         };
     private:
-        LineGraph ln;
         Timer makeB;
         Timer makeL;
         Stopwatch sw;

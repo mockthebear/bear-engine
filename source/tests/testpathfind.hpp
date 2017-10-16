@@ -36,7 +36,7 @@ class Test_PathFind: public State{
 
         void Update(float dt){
             duration -= dt;
-            if( InputManager::GetInstance().IsAnyKeyPressed() || duration <= 0 ) {
+            if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
                 requestDelete = true;
             }
 

@@ -6,7 +6,7 @@ Keyboard::Keyboard(){
 
 
 void Keyboard::Update(float dt){
-    anyKeyPressed = 0;
+    anyKeyPressed = -1;
     for ( auto it = keyState.begin(); it != keyState.end(); ++it ){
         if (it->second == JUST_PRESSED){
             it->second = PRESSED;

@@ -104,7 +104,7 @@ void InputManager::Render(){
     }*/
 }
 
-void InputManager::Vibrate(uint32_t milis){
+void InputManager::Vibrate(float str,uint32_t milis){
     #ifdef __ANDROID__
     JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
     jobject activity = (jobject)SDL_AndroidGetActivity();
@@ -128,7 +128,11 @@ void InputManager::Vibrate(uint32_t milis){
     env->DeleteLocalRef(activity);
     env->DeleteLocalRef(clazz);
 
-
+    #else
+    Joystick *j = GetJoystick(0);
+    if (j && j->HasHaptics()){
+        j->Vibrate(str,milis);
+    }
     #endif
 }
 
@@ -325,12 +329,19 @@ bool InputManager::IsKeyUp(int key){
     return keyboard.keyState[key] == JUST_RELEASED || keyboard.keyState[key] == RELEASED;
 }
 
-int InputManager::IsAnyKeyPressed(bool considerTap){
-    if (keyboard.anyKeyPressed != 0)
+int InputManager::IsAnyKeyPressed(bool considerJoystick,bool considerTap){
+    if (keyboard.anyKeyPressed != -1)
         return keyboard.anyKeyPressed;
+    if (considerJoystick){
+        for ( auto &it : Joysticks ){
+            if (it.second != nullptr && it.second->IsAnyKeyPressed() != -1){
+                return it.second->IsAnyKeyPressed();
+            }
+        }
+    }
     if (considerTap && IsScreenTapped())
         return  IsScreenTapped();
-    return 0;
+    return -1;
 }
 int InputManager::IsScreenTapped(){
     return touchscreen.m_hasTap;

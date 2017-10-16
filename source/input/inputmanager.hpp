@@ -89,7 +89,7 @@ class InputManager{
             @brief Literally, true for any kay pressed
             @return the pressed SDLK id
         */
-        int IsAnyKeyPressed(bool considerTap = false);
+        int IsAnyKeyPressed(bool considerJoystick = true,bool considerTap = false);
         int IsScreenTapped();
         /**
             @brief When requested by input to quit
@@ -262,7 +262,7 @@ class InputManager{
         /**
             *Wip
         */
-        void Vibrate(uint32_t milis);
+        void Vibrate(float str,uint32_t milis);
 
         void CreateVirtualButton(int Key,PointInt size,PointInt position,std::string text);
 

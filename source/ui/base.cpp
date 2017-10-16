@@ -95,7 +95,7 @@ void UIBase::Input(){
     }
 
     key = InputManager::GetInstance().IsAnyKeyPressed();
-    if (key != 0 && OnKeyPress){
+    if (key != -1 && OnKeyPress){
         OnKeyPress(this,key);
     }
 

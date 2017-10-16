@@ -31,7 +31,6 @@ class Test_Pool: public State{
 
 
 
-
             Pool.AddInstance(TestObject(Point(32,32)));
             TestObject obj = TestObject({55,55});
             Pool.AddInstance(obj);
@@ -48,7 +47,7 @@ class Test_Pool: public State{
                 Pool.AddInstance(TestObject(Point(90,90)));
                 objAdder = 10.0f;
             }
-            if( InputManager::GetInstance().IsAnyKeyPressed() || duration <= 0 ) {
+            if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
                 requestDelete = true;
             }
 

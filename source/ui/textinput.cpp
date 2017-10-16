@@ -34,7 +34,7 @@ void TextInput::Input(){
     if (focused){
         int key = InputManager::GetInstance().IsAnyKeyPressed();
 
-        if (key != 0){
+        if (key != -1){
             std::stringstream S;
 
             if (key == SDLK_BACKSPACE){

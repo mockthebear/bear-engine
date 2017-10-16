@@ -38,6 +38,9 @@ enum JoyHatDirection{
     JOYHAT_RIGHT,
     JOYHAT_BUTTONS_COUNT,
 };
+
+class Joystick;
+
 class JoyHat{
     public:
         JoyHat(){
@@ -46,27 +49,7 @@ class JoyHat{
                 keys[i] = RELEASED;
             }
         };
-        void Update(float dt){
-            for (int i=0;i<JOYHAT_BUTTONS_COUNT;i++){
-                if (keys[i] == JUST_PRESSED){
-                    keys[i] = PRESSED;
-                }
-                if (keys[i] == JUST_RELEASED){
-                    keys[i] = RELEASED;
-                }
-                bool pressed = (keyState&(1 << i)) != 0;
-                if (pressed){
-                    if (keys[i] != PRESSED){
-                        keys[i] = JUST_PRESSED;
-                    }
-                }else{
-                    if (keys[i] != RELEASED){
-                        keys[i] = JUST_RELEASED;
-                    }
-                }
-
-            }
-        };
+        void Update(Joystick* motherJoy,float dt);
         uint32_t keyState;
         InputState keys[JOYHAT_BUTTONS_COUNT];
 };
@@ -210,7 +193,9 @@ class Joystick{
             @param axisId -32767 , +32767
             @return true or false
         */
+        InputState GetAxisInputState(int axisIdb);
         int GetAxis(int axisId){return Axis[axisId];};
+        InputState *axisState;
         int *Axis;
         /**
             *Joysticks can have more than one ball. This function return the value from the given ball
@@ -283,7 +268,10 @@ class Joystick{
         bool Vibrate(float strenght = 0.5,uint32_t duration = 100);
         bool VibrateStop();
 
+        std::string GetTextInfo();
+
     private:
+        friend class JoyHat;
         /* Buttons */
         std::unordered_map<int, InputState> Buttons;
         bool HasCallButton;
@@ -308,6 +296,7 @@ class Joystick{
         int m_axes,m_buttons,m_balls,m_hats;
         SDL_Joystick *m_joyHandler;
         SDL_Haptic *m_haptic;
+        SDL_JoystickGUID m_guid;
         int anyKeyPressed;
 
 
