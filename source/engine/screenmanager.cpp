@@ -117,7 +117,9 @@ SDL_Renderer* ScreenManager::StartRenderer(){
 }
 
 void ScreenManager::RenderPresent(){
-
+    if (m_defaultScreen){
+        SetRenderTarget(m_defaultScreen);
+    }
     int w = ConfigManager::GetInstance().GetScreenW();
     int h = ConfigManager::GetInstance().GetScreenH();
     RenderHelp::DrawSquareColorA(w,0,w/2.0,h + w/2.0,0,0,0,255);

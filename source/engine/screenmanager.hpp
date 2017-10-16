@@ -50,8 +50,8 @@ class ScreenManager{
         void PreRender();
         double GetScaleRatioH(){return m_defaultScreen != nullptr ? 1 : m_scaleRatio.y;};
         double GetScaleRatioW(){return m_defaultScreen != nullptr ? 1 : m_scaleRatio.x;};
-        double GetOffsetW(){return (m_defaultScreen != nullptr ? m_offsetScreen.x : m_offsetScreen.x)+shake.x;};
-        double GetOffsetH(){return (m_defaultScreen != nullptr ? m_offsetScreen.y : m_offsetScreen.y)+shake.y;};
+        double GetOffsetW(){return (m_defaultScreen != nullptr ? 0 : m_offsetScreen.x)+shake.x;};
+        double GetOffsetH(){return (m_defaultScreen != nullptr ? 0 : m_offsetScreen.y)+shake.y;};
         void ResizeToScale(int w,int h,ResizeAction behave);
         float GetFps(){return m_fps;};
     private:
