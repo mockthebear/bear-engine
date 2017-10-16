@@ -15,7 +15,7 @@ class LuaObject: public GameObject{
         bool canForceUpdate(){ return forceUpdate;};
         bool canForceRender(){ return forceRender;};
         int hasPerspective(){return perspective;};
-        void Destroy(){Kill();};
+        void Destroy();
         void Kill(){Active=false;};
         void Update(float dt);
         void Render();
@@ -23,12 +23,16 @@ class LuaObject: public GameObject{
         void NotifyCollision(GameObject *p);
         bool Is(int i);
         void NotifyDamage(GameObject *bj,int n);
+        void NotifyInPool(void*);
 
         REGISTER_GETSETTER(X,float,box.x);
         REGISTER_GETSETTER(Y,float,box.y);
         REGISTER_GETSETTER(Width,float,box.w);
         REGISTER_GETSETTER(Height,float,box.h);
         REGISTER_GETSETTER(Box,Rect,box);
+
+        float MoveX(float var){ return (box.x += var); };
+        float MoveY(float var){ return (box.x += var); };
 
         int GetPoolIndex(){return poolIndex;};
         uint64_t GetMyRef(){return (uint64_t)this;};

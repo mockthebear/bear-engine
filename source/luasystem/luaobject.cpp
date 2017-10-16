@@ -31,6 +31,11 @@ LuaObject::~LuaObject(){
 
 
 
+void LuaObject::Destroy(){
+
+    Kill();
+}
+
 void LuaObject::Update(float dt){
     LuaCaller::CallSelfField(LuaManager::L,this,"Update",dt);
 }
@@ -47,6 +52,9 @@ bool LuaObject::IsDead(){
 }
 void LuaObject::NotifyCollision(GameObject *obj){
     LuaCaller::CallSelfField(LuaManager::L,this,"NotifyCollision",obj);
+}
+void LuaObject::NotifyInPool(void*){
+    LuaCaller::CallSelfField(LuaManager::L,this,"NotifyInPool",GetPoolIndex());
 }
 void LuaObject::NotifyDamage(GameObject *bj,int n){
 
