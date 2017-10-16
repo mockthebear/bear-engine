@@ -13,6 +13,7 @@ class Test_PathFind: public State{
             duration = 80.0f;
             start = Point(100,32);
             finish = Point(550,550);
+            pf = nullptr;
         };
         ~Test_PathFind(){
 
@@ -58,7 +59,8 @@ class Test_PathFind: public State{
         void Input();
         void Resume(){};
         void End(){
-            pf->Close();
+            if (pf)
+                pf->Close();
         };
     private:
         std::vector<Point> Path;

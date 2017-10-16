@@ -38,9 +38,9 @@ class Test_Joystick: public State{
 
 
             }
-            //if( InputManager::GetInstance().IsAnyKeyPressed() || duration <= 0 ) {
-            //    requestDelete = true;
-            //}
+            if( duration <= 0 ) {
+                requestDelete = true;
+            }
 
 
 

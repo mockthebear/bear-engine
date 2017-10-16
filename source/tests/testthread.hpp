@@ -12,6 +12,10 @@
 #include "../performance/graph.hpp"
 #include "../framework/threadpool.hpp"
 #include "../engine/timer.hpp"
+#include "../engine/screenmanager.hpp"
+#include "../input/inputmanager.hpp"
+
+void job(int from,int to,void*);
 
 class Test_Threadpool: public State{
     public:
@@ -19,6 +23,7 @@ class Test_Threadpool: public State{
             requestQuit = requestDelete = false;
             state = 0;
             iterations = 80000000;
+            inside = 0;
 
         };
         ~Test_Threadpool(){
@@ -35,99 +40,47 @@ class Test_Threadpool: public State{
         };
 
 
+        void LaunchTest(uint32_t threads){
+            bear::out << "["<<threads<<"] Threads.\n";
+            inside = 0;
+            ThreadPool::GetInstance().Begin(threads);
+            ThreadPool::GetInstance().AddParallelFor(job,0,iterations);
+            ThreadPool::GetInstance().SpreadJobs();
+            sw.Reset();
+            ThreadPool::GetInstance().Unlock();
+            ThreadPool::GetInstance().Lock();
+            float dur = sw.Get();
+            timer.AddBar(utils::format("%d",threads),{Uint8(state%2 == 0 ? 0 : 255),Uint8(state%2 == 0 ? 255 : 0),Uint8(state%3 == 0 ? 255 : 0),Uint8(255)},dur);
+            ThreadPool::GetInstance().KillThreads();
+            bear::out << "Pi is: "<< (inside/(double)iterations)*4.0 << "\n";
+        }
+
+
 
         void Update(float dt){
 
-            float arg = iterations;
-            auto job = [arg](int from,int to,void*){
 
-
-                int inside = 0;
-
-                float Pointx,Pointy,sq;
-                for (int in = from;in < to;in++){
-                    Pointx = (rand()%10000000)/5000000.0f  -1;
-                    Pointy = (rand()%10000000)/5000000.0f  -1;
-                    sq = Pointx*Pointx + Pointy*Pointy;
-                    if (sq <= 1)
-                        inside++;
-                }
-                std::stringstream S;
-                S << "From ["<<from<<":"<<to<<"] i got " << inside << "\n";
-                bear::out << S.str();
-
-
-            };
 
             if (state == 0){
-                sw.Reset();
-                bear::out << "[1] Threads.\n";
-                job(0,iterations,nullptr);
-                float dur = sw.Get();
-                timer.AddBar("1",{255,0,0,255},dur);
+                LaunchTest(1);
                 state = 1;
             }else if(state == 1){
-                bear::out << "[2] Threads.\n";
-                ThreadPool::GetInstance().Begin(2);
-                ThreadPool::GetInstance().AddParallelFor(job,0,iterations);
-                ThreadPool::GetInstance().SpreadJobs();
-                sw.Reset();
-                ThreadPool::GetInstance().Unlock();
-                ThreadPool::GetInstance().Lock();
-                float dur = sw.Get();
-                timer.AddBar("2",{255,100,0,255},dur);
-                ThreadPool::GetInstance().KillThreads();
+                LaunchTest(2);
                 state = 2;
             }else if(state == 2){
-                bear::out << "[4] Threads.\n";
-                ThreadPool::GetInstance().Begin(4);
-                ThreadPool::GetInstance().AddParallelFor(job,0,iterations);
-                ThreadPool::GetInstance().SpreadJobs();
-                sw.Reset();
-                ThreadPool::GetInstance().Unlock();
-                ThreadPool::GetInstance().Lock();
-                float dur = sw.Get();
-                timer.AddBar("4",{255,200,0,255},dur);
-                ThreadPool::GetInstance().KillThreads();
+                LaunchTest(4);
 
                 state = 3;
             }else if(state == 3){
-                bear::out << "[8] Threads.\n";
-                ThreadPool::GetInstance().Begin(8);
-                ThreadPool::GetInstance().AddParallelFor(job,0,iterations);
-                ThreadPool::GetInstance().SpreadJobs();
-                sw.Reset();
-                ThreadPool::GetInstance().Unlock();
-                ThreadPool::GetInstance().Lock();
-                float dur = sw.Get();
-                timer.AddBar("8",{255,200,0,255},dur);
-                ThreadPool::GetInstance().KillThreads();
+                LaunchTest(8);
 
                 state = 4;
             }else if(state == 4){
-                bear::out << "[16] Threads.\n";
-                ThreadPool::GetInstance().Begin(16);
-                ThreadPool::GetInstance().AddParallelFor(job,0,iterations);
-                ThreadPool::GetInstance().SpreadJobs();
-                sw.Reset();
-                ThreadPool::GetInstance().Unlock();
-                ThreadPool::GetInstance().Lock();
-                float dur = sw.Get();
-                timer.AddBar("16",{0,200,0,255},dur);
-                ThreadPool::GetInstance().KillThreads();
+                LaunchTest(16);
 
                 state = 5;
             }else if(state == 5){
-                bear::out << "[32] Threads.\n";
-                ThreadPool::GetInstance().Begin(32);
-                ThreadPool::GetInstance().AddParallelFor(job,0,iterations);
-                ThreadPool::GetInstance().SpreadJobs();
-                sw.Reset();
-                ThreadPool::GetInstance().Unlock();
-                ThreadPool::GetInstance().Lock();
-                float dur = sw.Get();
-                timer.AddBar("32",{0,200,0,255},dur);
-                ThreadPool::GetInstance().KillThreads();
+                LaunchTest(32);
                 duration = 10.0f;
                 state = 6;
             }else if(state == 6){
@@ -146,11 +99,12 @@ class Test_Threadpool: public State{
         void End(){
 
         };
+        static unsigned int inside;
+        static int iterations;
     private:
         Stopwatch sw;
         Graph timer;
         float duration;
-        int iterations;
         int state;
 };
 

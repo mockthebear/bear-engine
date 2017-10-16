@@ -9,7 +9,7 @@ void job(int from,int to,void*){
     int inside = 0;
     int total = to-from;
 
-    unsigned int s = from;
+
 
 
 
