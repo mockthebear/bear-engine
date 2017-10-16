@@ -29,7 +29,7 @@ enum IM_InputType{
 };
 class InputMethod{
     public:
-    InputMethod(std::string str,int n);
+    InputMethod(std::string str,int n,int auxId = 0);
     InputMethod(){
         method = IM_NONE;
         Key = -1;
@@ -60,6 +60,6 @@ class BEInput{
 
         void Update(float dt);
     private:
-        InputState GetKeyStatus(InputMethod method);
+        InputState GetKeyStatus(InputMethod& method);
         std::map<BEKeyBinds,std::vector<InputMethod>> keyData;
 };

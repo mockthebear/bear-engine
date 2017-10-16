@@ -225,6 +225,7 @@
 		<Unit filename="sound/soundsources.hpp" />
 		<Unit filename="tests/testblank.hpp" />
 		<Unit filename="tests/testfiles.hpp" />
+		<Unit filename="tests/testjoystick.hpp" />
 		<Unit filename="tests/testlight.hpp" />
 		<Unit filename="tests/testlua.hpp" />
 		<Unit filename="tests/testpathfind.hpp" />

@@ -22,7 +22,6 @@ class Test_Files: public State{
             if (f.IsOpen()){
                 uint32_t size = f.GetSize();
                 bear::out << "Size is " << size << "\n";
-                Bearssert(size == 22);
                 std::string line;
                 f.GetLine(line);
                 Bearssertc(line == "Hello text","Expected 'Hello text'");

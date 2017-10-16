@@ -55,6 +55,7 @@ void InputManager::init(){
     #else
     HasAccelerometer=false;
 
+
     #endif
 
     for (auto  &it : Joysticks){

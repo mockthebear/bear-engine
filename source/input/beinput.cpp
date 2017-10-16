@@ -2,15 +2,22 @@
 #include "inputmanager.hpp"
 
 
-InputMethod::InputMethod(std::string str,int n):InputMethod(){
+InputMethod::InputMethod(std::string str,int n,int auxId = 0):InputMethod(){
     if (str == "keyboard" || str == ""){
         method = IM_KEYBOARD;
         Key = n;
+    }
+    if (str == "joystick0-hat0" ){//fix
+        method = IM_JOYSTICK;
+        type = IT_HAT;
+        Key = n;
+        DeviceId = auxId;
     }
     if (str == "joystick0-button" ){//fix
         method = IM_JOYSTICK;
         type = IT_BUTTON;
         Key = n;
+        DeviceId = auxId;
     }
 
 }
@@ -91,7 +98,7 @@ bool BEInput::KeyRelease(BEKeyBinds key){
     return false;
 }
 
-InputState BEInput::GetKeyStatus(InputMethod method){
+InputState BEInput::GetKeyStatus(InputMethod& method){
     switch(method.method){
         case IM_KEYBOARD:
             return InputManager::GetInstance().GetKeyState(method.Key);
@@ -101,8 +108,8 @@ InputState BEInput::GetKeyStatus(InputMethod method){
             if (joys){
                 if (method.type == IT_BUTTON){
                     return joys->GetButtonState(method.Key);
-                }else{
-
+                }else if (method.type == IT_HAT){
+                    return joys->GetHatState(method.DeviceId,method.Key);
                 }
             }
             break;

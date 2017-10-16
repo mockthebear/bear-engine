@@ -16,8 +16,8 @@ void job(int from,int to,void*){
 
     float Pointx,Pointy,sq;
     for (int in = from;in < to;in++){
-        Pointx = (rand_r(&s)%10000000)/5000000.0f  -1;
-        Pointy = (rand_r(&s)%10000000)/5000000.0f  -1;
+        Pointx = 0;//(rand_r(&s)%10000000)/5000000.0f  -1;
+        Pointy = 0;//(rand_r(&s)%10000000)/5000000.0f  -1;
         sq = Pointx*Pointx + Pointy*Pointy;
         if (sq <= 1)
             inside++;

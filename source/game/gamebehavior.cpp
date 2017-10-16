@@ -18,6 +18,7 @@
 #include "../tests/testlight.hpp"
 #include "../tests/testpathfind.hpp"
 #include "../tests/testpool.hpp"
+#include "../tests/testjoystick.hpp"
 
 
 
@@ -76,6 +77,7 @@ bool GameBehavior::OnLoad(){
     Game::GetInstance()->AddState(new Test_PathFind());
     Game::GetInstance()->AddState(new Test_Sprite());
     Game::GetInstance()->AddState(new Test_Pool());
+    Game::GetInstance()->AddState(new Test_Joystick());
     Game::GetInstance()->AddState(new Test_Files());
 
     return DefaultBehavior::GetInstance().OnLoad();

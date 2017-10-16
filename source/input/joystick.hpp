@@ -7,6 +7,7 @@
 #include "../settings/definitions.hpp"
 #include "../framework/geometry.hpp"
 #include "inputdefinitions.hpp"
+#include <iostream>
 #include SDL_LIB_HEADER
 /**
  * @brief This class manages the joystick
@@ -30,6 +31,45 @@
  * Consider checking the enum InputState.
 
  */
+enum JoyHatDirection{
+    JOYHAT_UP = 0,
+    JOYHAT_LEFT,
+    JOYHAT_DOWN,
+    JOYHAT_RIGHT,
+    JOYHAT_BUTTONS_COUNT,
+};
+class JoyHat{
+    public:
+        JoyHat(){
+            keyState = 0;
+            for (int i=0;i<JOYHAT_BUTTONS_COUNT;i++){
+                keys[i] = RELEASED;
+            }
+        };
+        void Update(float dt){
+            for (int i=0;i<JOYHAT_BUTTONS_COUNT;i++){
+                if (keys[i] == JUST_PRESSED){
+                    keys[i] = PRESSED;
+                }
+                if (keys[i] == JUST_RELEASED){
+                    keys[i] = RELEASED;
+                }
+                bool pressed = (keyState&(1 << i)) != 0;
+                if (pressed){
+                    if (keys[i] != PRESSED){
+                        keys[i] = JUST_PRESSED;
+                    }
+                }else{
+                    if (keys[i] != RELEASED){
+                        keys[i] = JUST_RELEASED;
+                    }
+                }
+
+            }
+        };
+        uint32_t keyState;
+        InputState keys[JOYHAT_BUTTONS_COUNT];
+};
 
 class Joystick{
     public:
@@ -186,6 +226,25 @@ class Joystick{
             @return true or false
         */
         InputState GetButtonState(int button){return Buttons[button];};
+
+        /**
+            Return the state of a given button
+            @param button Button number Joystick::GetButtonCount
+            @return true or false
+        */
+
+        bool IsValidHat(int hatId,int button);
+
+        InputState GetHatState(int hatId,int button);
+
+        int GetHatButtonCount(){return (int)JOYHAT_BUTTONS_COUNT;};
+
+
+        bool HatButtonPress(int hatId,int button);
+        bool HatButtonRelease(int hatId,int button);
+        bool HatIsButtonPressed(int hatId,int button);
+        bool HatIsButtonReleased(int hatId,int button);
+
         /**
             Return the SDL2 device ID of this joystick
             @return int
@@ -213,11 +272,16 @@ class Joystick{
         */
         int GetHatsCount(){return m_hats;};
 
+        bool HasHaptics(){return m_haptic != nullptr;};
+
         std::string GetName(){return m_name;};
 
         int IsAnyKeyPressed(){
             return anyKeyPressed;
         }
+
+        bool Vibrate(float strenght = 0.5,uint32_t duration = 100);
+        bool VibrateStop();
 
     private:
         /* Buttons */
@@ -237,7 +301,7 @@ class Joystick{
         /* Axis */
         bool HasCallHat;
         std::function<void(int joyId,int axisId,int Value)> HatCallBack;
-        int *Hats;
+        JoyHat *Hats;
 
         std::string m_name;
         int m_id;
