@@ -46,7 +46,8 @@ void GraphBar::Render(Point pos,Point size,float max,int width){
 
 
 Graph::Graph(){
-    clear();
+    bars.clear();
+    barCounter = 0;
     width = 32;
 
 }

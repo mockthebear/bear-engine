@@ -21,10 +21,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
-					<Add option="-pg" />
-					<Add option="-Wl,-Bstatic" />
 					<Add option="-llua51" />
-					<Add option="-Wl,-Bdynamic" />
 					<Add option="-lMinGW32" />
 					<Add option="-lSDL2main" />
 					<Add option="-lSDL2" />
