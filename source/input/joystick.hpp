@@ -9,6 +9,10 @@
 #include "inputdefinitions.hpp"
 #include <iostream>
 #include SDL_LIB_HEADER
+
+#define MAXJOYAXIS 32768
+#define TOLERANCE 3000
+
 /**
  * @brief This class manages the joystick
  *

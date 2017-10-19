@@ -34,9 +34,9 @@ class Test_Joystick: public State{
 
         void Update(float dt){
             duration -= dt;
-            if (j1){
-
-
+            j1 = g_input.GetJoystick(0);
+            if (!j1){
+                bear::out << "No joystick found\n";
             }
             if( duration <= 0 ) {
                 requestDelete = true;
@@ -46,6 +46,7 @@ class Test_Joystick: public State{
 
         };
         void Render(){
+            j1 = g_input.GetJoystick(0);
             if (j1){
                 for (int i=0;i<j1->GetButtonCount();i++){
                     InputState s = j1->GetButtonState(i);
@@ -79,6 +80,34 @@ class Test_Joystick: public State{
                         }
                         RenderHelp::DrawSquareColorA(32 * b,64 + 32*i,28,28,255,color,color2,100);
                     }
+                }
+
+                for (int i=0;i<j1->GetAxisCount();i++){
+
+                    float s = j1->GetAxis(i);
+                    //std::cout << "["<<i<<"] " << s << "\n";
+
+                    float fSize = 330.0f;
+
+                    bool preepr = abs(s) > (32767/2) ? true : false;
+
+                    s = s / 32767.0f;
+                    s = s * fSize;
+
+                    if (s > 0){
+                        RenderHelp::DrawSquareColorA(400,96 + 32*i,s,28,0,255,0,preepr ? 255 : 100);
+                    }else{
+                        s = - s;
+                        RenderHelp::DrawSquareColorA(400 - s ,96 + 32*i,s,28,255,0,0,preepr ? 255 : 100);
+                    }
+                    RenderHelp::DrawSquareColorA(400 - fSize,96 + 32*i,fSize * 2,28,0,255,255,255,true);
+                    InputState sE = j1->GetAxisInputState(i*2 +1);
+                    RenderHelp::DrawSquareColorA(400 -fSize- 28 ,96 + 32*i,28,28,255,255,255,255,!(sE == PRESSED || sE == JUST_PRESSED));
+                    sE = j1->GetAxisInputState(i*2 );
+                    RenderHelp::DrawSquareColorA(400 +fSize ,96 + 32*i,28,28,255,255,255,255,!(sE == PRESSED || sE == JUST_PRESSED));
+
+
+
                 }
 
             }

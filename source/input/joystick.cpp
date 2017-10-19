@@ -238,44 +238,56 @@ void Joystick::Button(int button,int state){
 
 
 void Joystick::MoveAxis(int axisId,int value){
-
+    //std::cout << axisId <<" = " << value << "\n";
     if (HasCallAxis){
         AxisCallBack(m_id,axisId,value);
     }
 
 
 
-    float changePos = 32767/2;
+    float changePos = MAXJOYAXIS/3;
+    int tolerance = TOLERANCE;
 
     Axis[axisId] = value;
 
     //std::cout << value;
+    bool isSum = false;
     int axI = axisId*2;
     if (value < 0){
         value = value * -1;
         axI = axI+1;
+        isSum = true;
     }
-    if (value == 0){
+    if (abs(value) <= tolerance){
+        //std::cout << "Released "<<axI<< " and "<<(axI+1) << "\n";
         if (axisState[axI] == PRESSED){
             axisState[axI] = JUST_RELEASED;
         }
-        if (axisState[axI+1] == PRESSED){
-            axisState[axI+1] = JUST_RELEASED;
+        int add = isSum ? -1 : 1;
+        if (axisState[axI+add] == PRESSED){
+            axisState[axI+add] = JUST_RELEASED;
         }
         return;
     }
 
     bool isPressing = value > changePos;
-    //std::cout << " IS: " << isPressing << " and " << axI << "\n";
+
 
     if (!isPressing){
+        //std::cout << value << " RELEASED " << axI << "\n";
         if (axisState[axI] == PRESSED){
-            axisState[axI] = JUST_RELEASED;
+           axisState[axI] = JUST_RELEASED;
         }
     }else{
+        //std::cout << value << " PRESSED " << axI << "\n";
         if (axisState[axI] == RELEASED){
             axisState[axI] = JUST_PRESSED;
             anyKeyPressed = axI+2000;
+        }
+        int otherSide = axI + (isSum ? -1 : 1);
+        //std::cout << PRESSED << "/"<<JUST_RELEASED<<"/"<<RELEASED<<"/"<<JUST_RELEASED<<" ["<<axisId<<"]AND IS "<< axisState[otherSide] << ":"<<otherSide<<"\n";
+        if (axisState[otherSide] == PRESSED){
+            axisState[otherSide] = JUST_RELEASED;
         }
     }
 
@@ -330,4 +342,3 @@ void Joystick::ClearAllCallBacks(){
     ClearAxisCallBack();
     ClearBallCallBack();
 };
-

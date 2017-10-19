@@ -100,6 +100,7 @@ void Game::init(const char *name){
             }
         }
         if (startFlags&BEAR_FLAG_LOAD_BASEFILES){
+            bear::out << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n";
             if (!ResourceManager::GetInstance().Load("engine/enginedata.burr","engine")){
                 Console::GetInstance().AddTextInfo("engine/enginedata.burr missing!!!");
                 Console::GetInstance().CloseOutput();

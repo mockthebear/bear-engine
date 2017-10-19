@@ -15,13 +15,21 @@ class Test_Files: public State{
         Test_Files(){
             ScreenManager::GetInstance().SetScreenName("Test file");
             requestQuit = requestDelete = false;
+
+        };
+        ~Test_Files(){
+
+        };
+        void Begin(){
+
             bear::out << "Loading a simple file.\n";
             duration = 10.0f;
             GameFile f;
             f.Open("teste.txt",true);
             if (f.IsOpen()){
+                bear::out << "File open.\n";
                 uint32_t size = f.GetSize();
-                Bearssert(size == 24);
+                bear::out << "File size: " << size << "\n";
                 std::string line;
                 f.GetLine(line);
                 Bearssertc(line == "Hello text","Expected 'Hello text'");
@@ -75,19 +83,14 @@ class Test_Files: public State{
             bear::out << "Opening basefile enginedata.burr\n";
             if (!ResourceManager::GetInstance().Load("engine/enginedata.burr","engine")){
                 Console::GetInstance().AddTextInfo("engine/enginedata.burr missing!!!");
+                getchar();
             }
             bear::out << "Opening basefile ui.burr\n";
             if (!ResourceManager::GetInstance().Load("engine/ui.burr","ui")){
                 Console::GetInstance().AddTextInfo("engine/ui.burr missing!!!");
+                getchar();
             }
             bear::out << "Completed.\n";
-        };
-        ~Test_Files(){
-
-        };
-        void Begin(){
-
-
 
 
         };
