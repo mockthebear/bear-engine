@@ -7,6 +7,7 @@
 #include "../engine/timer.hpp"
 #include "../engine/renderhelp.hpp"
 #include "../performance/graph.hpp"
+#include "../performance/linegrap.hpp"
 #include "../framework/threadpool.hpp"
 
 class Test_Light: public State{
@@ -14,6 +15,7 @@ class Test_Light: public State{
         Test_Light(){
             requestQuit = requestDelete = false;
             duration = 200.0f;
+            tmr = 5.0f;
         };
         ~Test_Light(){
         };
@@ -36,6 +38,9 @@ class Test_Light: public State{
             }
             background = Assets.make<Sprite>("light:wall.jpg");
             timer.Start(Point(32,300),64,true);
+
+            lg = LineGraph(Point(400,100),100);
+
             frameRate = Text("fps: ??",28);
             timer.AddBar("Begin",{255,0,0,255},0);
             timer.AddBar("Shade and reduce",{0,255,0,255},0);
@@ -91,6 +96,12 @@ class Test_Light: public State{
             */
             Light::GetInstance()->Update(dt,LIGHT_SHADE);
             frameRate.SetText(utils::format("fps: %d",(int)ScreenManager::GetInstance().GetFps()));
+            tmr -= dt;
+            if (tmr <= 0){
+                tmr = 5.0f;
+                lg.AddData(ScreenManager::GetInstance().GetFps());
+
+            }
 
         };
         void Render(){
@@ -133,7 +144,7 @@ class Test_Light: public State{
             Light::GetInstance()->Render();
             timer.UpdateBar(3,sw.Get());
             timer.Render(Point(32,64));
-
+            lg.Render(Point(32,400));
         };
         void Input();
         void Resume(){};
@@ -142,11 +153,13 @@ class Test_Light: public State{
             ResourceManager::GetInstance().Erase("light");
         };
     private:
+        float tmr;
         Timer makeB;
         Timer makeL;
         Stopwatch sw;
         Graph timer;
         Text frameRate;
+        LineGraph lg;
         Sprite background;
         std::vector<std::tuple<Point,uint8_t>> LightPoints;
         std::vector<Rect> staticBlock;

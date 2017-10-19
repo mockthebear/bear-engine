@@ -4,7 +4,7 @@
 #include "../performance/console.hpp"
 #include "utils.hpp"
 #include <iostream>
-
+#include <climits>
 
 GameFile::GameFile(){
     m_cache = NULL;
@@ -46,7 +46,7 @@ bool GameFile::Open(std::string name,bool notify){
         name = DirManager::AdjustAssetsPath(name);
         m_filePointer = SDL_RWFromFile(name.c_str(),"rb");
         ParseFile();
-        if (m_size == LONG_MAX){
+        if (m_size == ULONG_MAX){
             Console::GetInstance().AddText(utils::format("File %s is a dir", name ) );
             m_filePointer = nullptr;
             return false;
