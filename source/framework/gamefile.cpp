@@ -45,6 +45,12 @@ bool GameFile::Open(std::string name,bool notify){
     }else{
         name = DirManager::AdjustAssetsPath(name);
         m_filePointer = SDL_RWFromFile(name.c_str(),"rb");
+        ParseFile();
+        if (m_size == LONG_MAX){
+            Console::GetInstance().AddText(utils::format("File %s is a dir", name ) );
+            m_filePointer = nullptr;
+            return false;
+        }
 
     }
     if (m_filePointer == NULL){
@@ -55,6 +61,13 @@ bool GameFile::Open(std::string name,bool notify){
             if (notify){
                 Console::GetInstance().AddText(utils::format("Cannot locate %s", str ) );
             }
+            return false;
+        }
+        ParseFile();
+        if (m_size == LONG_MAX){
+            SDL_RWclose(m_filePointer);
+            Console::GetInstance().AddText(utils::format("File %s is a dir", str ) );
+            m_filePointer = nullptr;
             return false;
         }
     }

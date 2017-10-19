@@ -157,12 +157,12 @@ class GameFile{
             * Get file size
             @return an number
         */
-        uint32_t GetSize(){return m_size;};
+        uint64_t GetSize(){return m_size;};
         /**
             * Like function ftell. It gives you the current position
             @return an number
         */
-        uint32_t Tell(){return m_filePos;};
+        uint64_t Tell(){return m_filePos;};
         /**
             * Like fseek
             @return true if sucess
@@ -180,8 +180,8 @@ class GameFile{
         void ParseFile();
 
         char *m_cache;
-        uint32_t m_size;
-        uint32_t m_filePos;
+        uint64_t m_size;
+        uint64_t m_filePos;
         SDL_RWops *m_filePointer;
         bool fromResource;
 
