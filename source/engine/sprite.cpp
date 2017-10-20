@@ -47,6 +47,25 @@ Sprite::Sprite(){
 
 }
 
+Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
+    textureShred = texture_;
+     frameCount = fcount;
+    repeat = rep;
+    frameTime = ftime;
+    fname = alias;
+    Uint32 format;
+    int acess;
+    aliasing = hasAliasing;
+    if (textureShred.get()){
+        if (SDL_QueryTexture(textureShred.get(), &format,&acess,&dimensions.w,&dimensions.h) < 0){
+
+        }
+        SetClip(0,0,dimensions.w,dimensions.h);
+    }
+    SetGrid(GetWidth()/frameCount,GetHeight());
+    SetFrame(0);
+}
+
 Sprite::Sprite(TexturePtr texture_,std::string name,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
     textureShred = texture_;
      frameCount = fcount;

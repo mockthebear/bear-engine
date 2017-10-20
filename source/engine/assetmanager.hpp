@@ -102,6 +102,14 @@ class AssetMannager{
             return T();
         }
 
+        template<class T,typename ...Args> bool load(Args ...args){
+            auto t = gen(false,T(),args...);
+            if (t.get()){
+                return false;
+            }
+            return true;
+        }
+
         template<class T,typename ...Args> std::shared_ptr<T> make_shared(Args ...args){
             auto t = gen(false,T(),args...);
             if (t.get()){
@@ -112,8 +120,10 @@ class AssetMannager{
         }
 
         TexturePtr makeTexture(bool forced,std::string str,int fcount=1,float ftime=0,int rep=1,bool hasAliasing=false);
+        TexturePtr makeTexture(bool forced,std::string str,std::string alias,bool hasAliasing=false);
         TexturePtr makeTexture(bool forced,SDL_RWops* rw,std::string str,bool hasAntiAliasign=false);
         TexturePtr makeTexture(bool forced,std::string fileName,ColorReplacer &r,bool HasAliasing=false);
+        TexturePtr makeTexture(bool forced,std::string fileName,std::string alias,ColorReplacer &r,bool HasAliasing=false);
 
 
         SoundPtr makeSound(bool forced,std::string fileName);

@@ -4,6 +4,43 @@
 #include "utils.hpp"
 #include <map>
 
+/** \brief Basic XML reader
+ * Simple reading of this XML:
+ @code
+ <?xml version="1.0" encoding="UTF-8"?>
+<species name="bear">
+	<leg value="huge"/>
+	<adorable value="1"/>
+</species>
+ @endcode
+ * This code get all this data:
+ @code
+    XmlNode *file = Xml::Parse("file.xml"); //Or  asset:file.xml
+    if (file){
+        std::string species = file->GetName(); // species
+        std::string tagName = file->Info("name"); // bear
+        XmlNode * node = file->Get("leg"); //<leg size="huge"/>
+        if (node){
+            std::string tag = file->GetName(); // leg
+            std::string size = file->Info("value"); // huge
+        }
+
+        for (auto &it : *file){
+            //Iteration for each member
+            bear::out << it->GetName(); << "\n";
+            bear::out << it->Info("value"); << "\n";
+        }
+        //Output:
+        // leg - huge
+        // adorable - 1
+
+        // This will delete all nodes. So becareful
+        delete file;
+    }
+ @endcode
+ */
+
+
 class XmlNode{
     public:
         ~XmlNode();

@@ -83,6 +83,15 @@ class Sprite{
         */
         Sprite(TexturePtr texture,std::string name,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
         /**
+            *This constructor its a bit special, and need a bit more attention
+            *You start the sprite and pass only an SDL_Texture. There is no mapping
+            *No destory, not anything, it just hold the SDL_Texture and render as an common texture
+            *in the class.
+            @param texture An sdl texture
+        */
+        Sprite(TexturePtr texture,std::string name,std::string alias,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
+
+        /**
             *Create an sprite from an path to an file. The file should be SDL2_Image supported
             *You can set the frame count and frame time to an animation
             *When you animate an sprite, remember to call Sprite::Update on your GameActivity
@@ -164,12 +173,12 @@ class Sprite{
             @param HasAliasing mark as true to load the sprite using antialiasing.
         */
         static SDL_Texture *Preload(std::string fileName,ColorReplacer &r,bool HasAliasing=false);
-        /**
-            *This dont destroy the texture!!!
-        */
         Sprite* GetMe(){
             return this;
         }
+        /**
+            *This dont destroy the texture!!!
+        */
         ~Sprite();
         /**
             *Can be used when you create an sprite with empty constructor.

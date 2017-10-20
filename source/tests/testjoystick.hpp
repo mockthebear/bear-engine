@@ -14,6 +14,7 @@ class Test_Joystick: public State{
 
         };
         void Begin(){
+            ScreenManager::GetInstance().SetScreenName("Test Joystick or gamepad");
             bear::out << "Test joystick begin:\n";
             duration = 600.0f;
             bear::out << g_input.GetJoystickCount() << " joysticks detected.\n";

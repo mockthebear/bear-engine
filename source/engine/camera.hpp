@@ -54,6 +54,9 @@ class Camera{
             Set the camera to follow one object
         */
         static void Follow(GameObject *ob,bool smooth = false);
+        /**
+            Set the camera to follow one rect. Dont delete the rect until you cancel this mode
+        */
         static void Follow(Rect *focusRect,bool smooth = false);
         /**
             Disabled following

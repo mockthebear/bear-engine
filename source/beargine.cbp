@@ -96,7 +96,6 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add option="-pg -lgmon" />
 					<Add option="-pg" />
 					<Add option="-Wl,-Bstatic" />
 					<Add option="-llua5.1" />

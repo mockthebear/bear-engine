@@ -14,7 +14,7 @@ class Test_Light: public State{
     public:
         Test_Light(){
             requestQuit = requestDelete = false;
-            duration = 200.0f;
+            duration = 600.0f;
             tmr = 5.0f;
         };
         ~Test_Light(){

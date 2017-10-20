@@ -15,6 +15,7 @@ class Test_Pool: public State{
 
         };
         void Begin(){
+            ScreenManager::GetInstance().SetScreenName("Test pool");
             /*
             If the first parameter was false. The object 2 would not be added.
             This object 2 will be added to an list, not to a pool. Basically an std::vector<GameObject*>

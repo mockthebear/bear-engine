@@ -9,7 +9,6 @@ class Test_PathFind: public State{
     public:
         Test_PathFind(){
             requestQuit = requestDelete = false;
-            bear::out << "Test\n";
             duration = 80.0f;
             start = Point(100,32);
             finish = Point(550,550);
@@ -19,6 +18,7 @@ class Test_PathFind: public State{
 
         };
         void Begin(){
+            ScreenManager::GetInstance().SetScreenName("Test path find");
             pf = new PathFind(600,600,4,16);
             for (int i=0;i<300;i++){
                 Point p(rand()%600,rand()%600);

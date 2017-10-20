@@ -32,31 +32,32 @@
  * if the stack gets empty, the game close.
  *
  *
- * Simples game state that you can have:
+ * Simple game state that you can have:
  @code
 
 Mystate::Mystate(){
-    ParticlePool = new SPP<Particle>(1000);
+
     requestQuit = requestDelete = false;
 
-    ResourceManager::GetInstance().Load("data/packedFiles.burr","assets");
-
-    background = new Sprite("assets:bg.png");
 
 }
 
 
 void Mystate::Begin(){
+    ResourceManager::GetInstance().Load("data/packedFiles.burr","assets");
+
+    background = Sprite("assets:bg.png");
+
+    Pool.Register<Projectile>(400);
+
+    Pool.AddInstance(Projectile(32,32));
 
 }
 
-Mystate::~Mystate(){
-    delete background;
-    delete ParticlePool;
+void Mystate::End(){
     Pool.ErasePools();
     ResourceManager::GetInstance().Erase("assets");
 }
-
 
 void Mystate::Update(float dt){
     if (InputManager::GetInstance().ShouldQuit()){
@@ -65,23 +66,23 @@ void Mystate::Update(float dt){
     if( InputManager::GetInstance().KeyPress(SDLK_ESCAPE) ) {
         requestQuit = true;
     }
-    ParticlePool->UpdateInstances(dt);
-    // GenericState::Map
-    ParticlePool->PreRender(Map);
+
+    UpdateWindowses(dt);
+    Pool.Update(dt);
+    Pool.PreRender(Map);
+
 }
 
 void Mystate::Render(){
+    //Not necessary.
     SDL_SetRenderDrawColor(BearEngine->GetRenderer(), 0,0,0, 0);
     SDL_RenderClear( BearEngine->GetRenderer() );
-    background->Render(0,0);
-    // GenericState::Map
-    for (auto it=Map.begin(); it!=Map.end(); ++it){
-        for (auto &k : *it->second){
-            k->Render();
-        }
-        delete it->second;
-    }
 
+    background->Render(0,0);
+
+    RenderInstances();
+
+    RenderWindowses();
 }
 
  @endcode
