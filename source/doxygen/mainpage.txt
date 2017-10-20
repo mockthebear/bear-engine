@@ -14,13 +14,13 @@
  *
  * \subsection Librarys used
  *		-# SDL2
- *		-# SDL2 image
  *		-# SDL2 ttf
- *		-# SDL2 mixer
+ *		-# Openal
  *		-# pthreads
  *		-# lua51
+ *		-# libvorbis
  *
- * rola
+ * asdf
  *
  *
  *

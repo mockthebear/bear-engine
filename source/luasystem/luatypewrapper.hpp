@@ -32,7 +32,7 @@ struct QuickDebug{
     };
 };
 
-
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 template<class T> struct IndexerHelper;
 template<class T> struct ClassRegister;
 
@@ -1113,5 +1113,5 @@ template<>
         };
 };
 
-
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 #endif

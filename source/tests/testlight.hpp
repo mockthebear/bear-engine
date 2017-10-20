@@ -39,7 +39,7 @@ class Test_Light: public State{
             background = Assets.make<Sprite>("light:wall.jpg");
             timer.Start(Point(32,300),64,true);
 
-            lg = LineGraph(Point(400,100),100);
+            lg = LineGraph(Point(400,100),200);
 
             frameRate = Text("fps: ??",28);
             timer.AddBar("Begin",{255,0,0,255},0);

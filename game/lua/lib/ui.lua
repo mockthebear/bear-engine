@@ -119,7 +119,7 @@ function widgets.Window(data)
 
 
 	ui = widgets.FormatPattern(data,ui)
-	local tex = Text(ui.str,15,ui.textcolor)
+	local tex = Text(ui.str or ui.text,15,ui.textcolor)
 	tex:SetFont(ui.font)
 
 	if ui.id then
@@ -134,7 +134,7 @@ function widgets.Window(data)
 
 	ui:SetX(ui.pos.x)
 	ui:SetY(ui.pos.y)
-	local tex = Text(ui.str,12,ui.textcolor)
+	local tex = Text(ui.str or ui.text,12,ui.textcolor)
 	tex:SetFont(ui.font)
 	ui:SetTextObj(tex)
 	ui.texSize = tex:GetHeight()
@@ -263,10 +263,11 @@ function widgets.Label(data)
 
 	ui.SetText = function(this,text)
 		this.str = text .. '\n'
+		this.text = text .. '\n'
 		this.maxHeight = 0
 		this.maxWidth = 0
 		this.textLines = 1
-		for i in this.str:gmatch("(.-)\n") do
+		for i in this.text:gmatch("(.-)\n") do
 			if i and i:len() > 0 then
 
 				if not this.texts[this.textLines] then
@@ -312,7 +313,7 @@ function widgets.Label(data)
 	ui:SetX(ui.pos.x)
 	ui:SetY(ui.pos.y)
 
-	ui:SetText(ui.str)
+	ui:SetText(ui.str or ui.text)
 
 	return ui
 end
@@ -332,7 +333,7 @@ function widgets.Checkbox(data)
 
 
 	ui.spr = Sprite("ui/checkbox.png")
-	local tex = Text(ui.str,12,ui.textcolor)
+	local tex = Text(ui.str or ui.text,12,ui.textcolor)
 	tex:SetFont(ui.font)
 	tex:SetAliasign(true)
 	ui.tex = tex
@@ -397,7 +398,7 @@ function widgets.Button(data)
 
 	ui = widgets.FormatPattern(data,ui)
 
-	local tex = Text(ui.str,ui.textsize,ui.textcolor)
+	local tex = Text(ui.str or ui.text,ui.textsize,ui.textcolor)
 	tex:SetFont(ui.font)
 
 

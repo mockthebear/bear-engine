@@ -57,14 +57,14 @@ void GameBehavior::Begin(){
     Game::startFlags |= BEAR_FLAG_START_TTF;
 }
 bool GameBehavior::OnLoad(){
-    /*PointInt P = ScreenManager::GetInstance().GetDisplaySize();
+    PointInt P = ScreenManager::GetInstance().GetDisplaySize();
     PointInt P2 = ConfigManager::GetInstance().GetScreenSize();
 
     bear::out << "Supported main display is "<< P.x << " x "<< P.y << "\n";
     bear::out << "Started with screen "<< P2.x << " x "<< P2.y << "\n";
 
-    bear::out << "Starting state.\n";*/
-     Game::GetInstance()->AddState(new Test_());
+    bear::out << "Starting state.\n";
+    Game::GetInstance()->AddState(new Test_());
 
     Game::GetInstance()->AddState(new Test_Light());
     #ifdef THREADPOOLTEST
@@ -73,6 +73,7 @@ bool GameBehavior::OnLoad(){
     #ifdef LUATESTSUITE
     Game::GetInstance()->AddState(new Test_Lua());
     #endif // LUATESTSUITE
+
 
     Game::GetInstance()->AddState(new Test_PathFind());
     Game::GetInstance()->AddState(new Test_Sprite());

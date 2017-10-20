@@ -121,9 +121,35 @@ end
 	also testing any kind of interaction between c++/lua
 ]]
 
+function MakeObject()
+	local Obj = LuaObject(32,32 + math.random(1,500))
+	Obj.speed = math.random(1,1000)/100.0;
+	Obj:SetWidth(32)
+	Obj:SetHeight(32 )
 
+	Obj.spr = Sprite("test:bear.png")
+	Obj.Update = function(self,dt)
+		local gObj = self:GetMyObj()
+		gObj:SetX( gObj:GetX() + self.speed * dt)
+		if self:GetX() >= 400 then
+			self:Destroy()
+			collectgarbage()
+		end
+	end
+	Obj.Render = function(self)
+		g_render.DrawFillSquare(self:GetBox(),math.random(0,255),math.random(0,255),0,255)
+		self.spr:Render(self:GetBox()) --Also works: {x = posX, y = posY}
+	end
+	return Obj
+end
 function MakeLuaStateWithComplexObjects()
 	local state = LuaGameState()
+
+
+	--Some UI
+
+	
+
 
 	state.timer = 255.0
 
@@ -138,36 +164,28 @@ function MakeLuaStateWithComplexObjects()
 		g_assets.LoadResources("test.burr","test")
 
 
-		for i=1,10 do
+		local w = widgets.Window({
+			size = {x=64,y=64},
+		})
 
-			local Obj = LuaObject(32  + i*64,32 + i*64)
+		w:AddComponent(widgets.Label({
+			str = "Label",
+			id = "testlabel",
+			alignment = { top = 'parent.top',left = 'parent.left', },
+		}))
 
-			Obj.speed = i;
-
-			Obj:SetWidth(32 - i * 2)
-			Obj:SetHeight(32 - i * 2)
-
-			Obj.spr = Sprite("test:bear.png")
-
-
-			Obj.Update = function(self,dt)
-				local gObj = self:GetMyObj()
-
-				gObj:SetX( gObj:GetX() + self.speed * dt)
-
-				if self:GetX() >= 200 then
-					self:Destroy()
-					collectgarbage()
-				end
-			end
-
-			Obj.Render = function(self)
-				g_render.DrawFillSquare(self:GetBox(),math.random(0,255),math.random(0,255),0,255)
-				self.spr:Render(self:GetBox()) --Also works: {x = posX, y = posY}
-
-			end
-		end
-
+		w:AddComponent(widgets.Button({
+			str = "Button",
+			action = function (thisButton,mouseKey)
+				print("Pressed!!!!!!!")
+				MakeObject()
+				w:GetChildById('testlabel'):SetText("Pressed")
+			end,
+			alignment = { top = 'testlabel.bottom + 5',left = 'parent.left + 2', },
+		}))
+		g_ui.AddWindow(w)
+		this.w = w;
+		MakeObject()
 	end
 
 	state.finish = function(this)
@@ -183,7 +201,7 @@ function MakeLuaStateWithComplexObjects()
 	end
 
 	state.update = function(this,dt)
-		this.timer = this.timer - 10 * dt
+		this.timer = this.timer - dt
 		if this.timer <= 0 then
 			this.data.canClose = true
 		end
