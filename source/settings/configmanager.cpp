@@ -31,7 +31,8 @@ void ConfigManager::SetWindowIcon(std::string icon){
     unsigned char *imageData = nullptr;
     uint64_t rsize;
     int sizeX,sizeY,comp;
-    if (icon.find(":")!=std::string::npos){
+    std::string aux = icon;
+    if (ResourceManager::IsValidResource(aux)){
         SDL_RWops* rw = ResourceManager::GetInstance().GetFile(icon); //safe
         if (rw){
             char *res = ResourceManager::GetFileBuffer(rw,rsize);
