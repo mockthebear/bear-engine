@@ -8,6 +8,7 @@
 #include "../engine/timer.hpp"
 #include "../framework/resourcemanager.hpp"
 #include "../framework/gamefile.hpp"
+#include "../framework/userfile.hpp"
 #include "../framework/debughelper.hpp"
 
 class Test_Files: public State{
@@ -90,6 +91,28 @@ class Test_Files: public State{
                 Console::GetInstance().AddTextInfo("engine/ui.burr missing!!!");
                 getchar();
             }
+
+
+            bear::out << "Writing an file.\n";
+
+            UserFile wrt;
+            if (wrt.Open("writeTest.txt")){
+                bear::out << "Writing on file: " << wrt.GetFilePath() << "\n";
+                wrt.Printf("Hi. Test :D");
+                wrt.Close();
+                bear::out << "Opening our file.\n";
+                if (f.Open("writeTest.txt",true)){
+                    bear::out <<"Our file contains:"<< f.Read(-1) << "\n";
+                    f.Close();
+
+                }else{
+                    bear::out << "Error reading our file.\n";
+                }
+
+            }else{
+                bear::out << "Error on writing an file.\n";
+            }
+
             bear::out << "Completed.\n";
 
 
