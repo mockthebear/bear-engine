@@ -9,7 +9,7 @@ SoundPool& SoundPool::GetInstance(bool autoQuantity){
 
 
 SoundPool::SoundPool(bool autoQuantity){
-    count = 16;
+    count = 32;
     sources = new ALuint[count];
     classes = new int[count];
     alGenSources(count,sources);
