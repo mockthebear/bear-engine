@@ -38,6 +38,7 @@ Game::Game(){isClosing=SDLStarted=canDebug=GameBegin=hasBeenClosed=HasAudio=fals
 uint32_t Game::startFlags = BEAR_FLAG_START_EVERYTHING;
 
 void Game::init(const char *name){
+    std::cout << "hi\n";
     if (instance == NULL){
         SDLStarted = false;
         Started = false;
@@ -51,14 +52,8 @@ void Game::init(const char *name){
         canDebug = false;
 
 
-
         GameBehavior::GetInstance().Begin();
 
-
-        if (startFlags&BEAR_FLAG_START_CONSOLE){
-            Console::GetInstance(true);
-            Console::GetInstance().AddTextInfo("Starting...");
-        }
 
         //GameBehavior::GetInstance().OnOpen();
 
@@ -68,6 +63,11 @@ void Game::init(const char *name){
             }else{
                 Console::GetInstance().AddTextInfo("SDL is on!");
             }
+        }
+
+        if (startFlags&BEAR_FLAG_START_CONSOLE){
+            Console::GetInstance(true);
+            Console::GetInstance().AddTextInfo("Starting...");
         }
 
         if (startFlags&BEAR_FLAG_START_TTF){
