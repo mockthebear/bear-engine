@@ -16,7 +16,7 @@ void job(int from,int to,void*){
 
     float Pointx,Pointy,sq;
     for (int in = from;in < to;in++){
-        #ifdef WIN32
+        #ifdef __MINGW32__
         Pointx = 0;
         Pointy = 0;
         #else
