@@ -31,11 +31,12 @@ class Test_Sprite: public State{
             /*
                 Replace all WHITE with pure red without aliasing
             */
+            bear::out << "Testing Load with color replacing\n";
             r.AddReplacer(RenderHelp::FormatRGBA(255,255,255,255),RenderHelp::FormatRGBA(255,0,0,255));
             Assets.load<Sprite>("data/raccoon.png","otherRaccoon",r);
 
 
-
+            bear::out << "Loading from alias\n";
             raccoonHead = Assets.make<Sprite>("someFancyName");
             cursor = Assets.make<Sprite>("otherRaccoon");
             /*

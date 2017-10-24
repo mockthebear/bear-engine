@@ -97,7 +97,7 @@ class Test_Files: public State{
 
             UserFile wrt;
             if (wrt.Open("writeTest.txt")){
-                bear::out << "Writing on file: " << wrt.GetFilePath() << "\n";
+                bear::out << "Writing on : " << wrt.GetFilePath() << "\n";
                 wrt.Printf("Hi. Test :D");
                 wrt.Close();
                 bear::out << "Opening our file.\n";
@@ -106,11 +106,13 @@ class Test_Files: public State{
                     f.Close();
 
                 }else{
-                    bear::out << "Error reading our file.\n";
+                    bear::out << "Failed to write the file.\n";
+                    getchar();
                 }
 
             }else{
                 bear::out << "Error on writing an file.\n";
+                getchar();
             }
 
             bear::out << "Completed.\n";
