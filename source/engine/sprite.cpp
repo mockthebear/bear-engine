@@ -198,20 +198,24 @@ SDL_Texture* Sprite::CopyTexture(){
 
 
 SDL_Texture* Sprite::Preload(const char *file,bool adjustDir,bool HasAliasing){
-    std::string stdnamee(file);
-    if (stdnamee.find(":")!=std::string::npos){
+
+    char sprn[1024];
+    strcpy(sprn,file);
+    std::string stdnamee(sprn);
+
+    std::string aux = stdnamee;
+    if (ResourceManager::IsValidResource(aux)){
         SDL_RWops *rw = ResourceManager::GetInstance().GetFile(stdnamee); //Safe
         SDL_Texture* returnTexture = Sprite::Preload(rw,stdnamee,HasAliasing);
         SDL_RWclose(rw);
         return returnTexture;
     }
-    if (adjustDir){
-        stdnamee = DirManager::AdjustAssetsPath(stdnamee);
-    }
+    stdnamee = DirManager::AdjustAssetsPath(stdnamee);
+
     unsigned char* imageData = nullptr;
-    SDL_RWops* rw = SDL_RWFromFile(file, "rb");
+    SDL_RWops* rw = SDL_RWFromFile(stdnamee.c_str(), "rb");
     if (!rw){
-        Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",stdnamee.c_str(),SDL_GetError()));
+        Console::GetInstance().AddTextInfo(utils::format("[Standard]Cannot preload sprite [%s] because: %s",stdnamee.c_str(),SDL_GetError()));
         return nullptr;
     }
     uint64_t rsize;
@@ -251,7 +255,7 @@ SDL_Texture* Sprite::Preload(const char *file,bool adjustDir,bool HasAliasing){
             return ret;
         }else{
             stbi_image_free(imageData);
-            Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",file,SDL_GetError()));
+            Console::GetInstance().AddTextInfo(utils::format("[2]Cannot preload sprite [%s] because: %s",stdnamee,SDL_GetError()));
         }
     }
     return nullptr;
@@ -302,7 +306,7 @@ SDL_Texture* Sprite::Preload(SDL_RWops* rw,std::string name,bool HasAliasing){
             return ret;
         }else{
             stbi_image_free(imageData);
-            Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",name.c_str(),SDL_GetError()));
+            Console::GetInstance().AddTextInfo(utils::format("[RW]Cannot preload sprite [%s] because: %s",name.c_str(),SDL_GetError()));
         }
     }
 
@@ -316,10 +320,10 @@ SDL_Texture* Sprite::Preload(std::string fileName,ColorReplacer &r,bool HasAlias
     if (fileName == ""){
         return nullptr;
     }
-    fileName = DirManager::AdjustAssetsPath(fileName);
     unsigned char* imageData = nullptr;
     int sizeX,sizeY,comp;
-    if (fileName.find(":")!=std::string::npos){
+    std::string aux = fileName;
+    if (ResourceManager::IsValidResource(aux)){
         /**
             Loading from rwops
         */
@@ -334,7 +338,14 @@ SDL_Texture* Sprite::Preload(std::string fileName,ColorReplacer &r,bool HasAlias
         ResourceManager::ClearFileBuffer(res);
         SDL_RWclose(rw);
     }else{
-        imageData = stbi_load(fileName.c_str(),&sizeX,&sizeY,&comp,STBI_rgb_alpha);
+        GameFile tempFile;
+        if (tempFile.Open(fileName,true)){
+            tempFile.Cache();
+            char *res = tempFile.GetCache_Unsafe();
+            uint64_t rsize = tempFile.GetSize();
+            imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
+            tempFile.Close();
+        }
     }
     if (imageData){
         #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -367,7 +378,7 @@ SDL_Texture* Sprite::Preload(std::string fileName,ColorReplacer &r,bool HasAlias
             return ret;
         }else{
             stbi_image_free(imageData);
-            Console::GetInstance().AddTextInfo(utils::format("Cannot preload sprite [%s] because: %s",fileName.c_str(),SDL_GetError()));
+            Console::GetInstance().AddTextInfo(utils::format("[ColorReplacer]Cannot preload sprite [%s] because: %s",fileName.c_str(),SDL_GetError()));
         }
     }
     return nullptr;
@@ -386,7 +397,8 @@ void Sprite::Query(TexturePtr ptr){
 bool Sprite::Open(const char *filepath,bool HasAliasing){
     scaleX = scaleY = 1;
     std::string stdnamee(filepath);
-    if (stdnamee.find(":")!=std::string::npos){
+    std::string aux = stdnamee;
+    if (ResourceManager::IsValidResource(aux)){
         SDL_RWops* file = ResourceManager::GetInstance().GetFile(stdnamee); //safe
         bool ret = Open(file,stdnamee,HasAliasing);
         SDL_RWclose(file);
