@@ -1,5 +1,6 @@
 #include "soundloader.hpp"
 #include "../engine/bear.hpp"
+#include "../framework/dirmanager.hpp"
 #include <vorbis/vorbisfile.h>
 
 size_t AR_readOgg(void* dst, size_t size1, size_t size2, void* fh)
@@ -132,7 +133,9 @@ BufferData *SoundLoader::loadOggFileRW(SDL_RWops* soundFile){
     return ret;
 }
 BufferData *SoundLoader::loadOggFile(const char *str){
-    SDL_RWops *rw = SDL_RWFromFile(str, "rb");
+    std::string name(str);
+    name = DirManager::AdjustAssetsPath(name);
+    SDL_RWops *rw = SDL_RWFromFile(name.c_str(), "rb");
     if (!rw){
         bear::out << "Error: " << SDL_GetError() << "\n";
         return nullptr;
@@ -143,7 +146,9 @@ BufferData *SoundLoader::loadOggFile(const char *str){
 }
 
 BufferData *SoundLoader::loadWavFile(const char *filename){
-    SDL_RWops *rw = SDL_RWFromFile(filename, "rb");
+    std::string name(filename);
+    name = DirManager::AdjustAssetsPath(name);
+    SDL_RWops *rw = SDL_RWFromFile(name.c_str(), "rb");
     if (!rw){
         bear::out << "Error: " << SDL_GetError() << "\n";
         return nullptr;

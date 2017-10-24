@@ -80,7 +80,8 @@ Sound::Sound(const char *s,int classType):Sound(){
 
 bool Sound::Open(std::string str){
     std::string stdnamee(str);
-    if (stdnamee.find(":")!=std::string::npos){
+    std::string aux = stdnamee;
+    if (ResourceManager::IsValidResource(aux)){
         snd = GlobalAssetManager::GetInstance().makeSound(false,str);
     }else{
         snd = GlobalAssetManager::GetInstance().makeSound(false,str);
@@ -112,7 +113,9 @@ BufferData* Sound::Preload(SDL_RWops* file,std::string name){
 BufferData* Sound::Preload(std::string stdnamee){
     if (!ConfigManager::GetInstance().IsWorkingAudio())
         return NULL;
-    if (stdnamee.find(":")!=std::string::npos){
+
+    std::string aux = stdnamee;
+    if (ResourceManager::IsValidResource(aux)){
         SDL_RWops* rw = ResourceManager::GetInstance().GetFile(stdnamee); //safe
         if (!rw){
             bear::out << "Cannot load " << stdnamee << ". file not found\n";
@@ -146,7 +149,8 @@ int Sound::PlayOnce(const char *s,bool global,int volume,Point3 pos,int classN){
         return -1;
     std::string stdnamee(s);
     SoundPtr snd;
-    if (stdnamee.find(":")!=std::string::npos){
+    std::string aux = stdnamee;
+    if (ResourceManager::IsValidResource(aux)){
         if (global)
             snd = GlobalAssetManager::GetInstance().makeSound(false,stdnamee);
         else
@@ -190,7 +194,8 @@ int Sound::PlayOncePiched(const char *s,int ptch,bool global,int volume,Point3 p
         return -1;
     std::string stdnamee(s);
     SoundPtr snd;
-    if (stdnamee.find(":")!=std::string::npos){
+    std::string aux = stdnamee;
+    if (ResourceManager::IsValidResource(aux)){
         if (global)
             snd = GlobalAssetManager::GetInstance().makeSound(false,stdnamee);
         else
