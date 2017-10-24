@@ -63,10 +63,24 @@ bool ResourceManager::Load(std::string file,std::string alias){
     resources[alias] = f;
     return true;
 }
+
+bool ResourceManager::IsValidResource(std::string name){
+    std::size_t found = name.find(":");
+    if (found==std::string::npos)
+        return false;
+    if (found <= 3)
+        return false;
+    return true;
+};
+
 SDL_RWops* ResourceManager::GetFile(std::string file){
     std::size_t found = file.find(":");
     if (found==std::string::npos)
         return NULL;
+    if (found <= 3){
+        Console::GetInstance().AddTextInfo(utils::format("Trying to load resourcefile named [%s]. Too shor name.\n",file.substr(0,found).c_str() ));
+        return NULL;
+    }
     std::string alias = file.substr(0,found);
     std::string name = file.substr(found+1);
     return GetFile(alias,name);
