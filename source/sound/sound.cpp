@@ -185,6 +185,52 @@ int Sound::PlayOnce(const char *s,bool global,int volume,Point3 pos,int classN){
     }
     return -1;
 }
+int Sound::PlayOncePiched(const char *s,int ptch,bool global,int volume,Point3 pos,int classN){
+    if (!ConfigManager::GetInstance().IsWorkingAudio())
+        return -1;
+    std::string stdnamee(s);
+    SoundPtr snd;
+    if (stdnamee.find(":")!=std::string::npos){
+        if (global)
+            snd = GlobalAssetManager::GetInstance().makeSound(false,stdnamee);
+        else
+            snd = Game::GetCurrentState().Assets.makeSound(false,stdnamee);
+    }else{
+        if (global)
+            snd = GlobalAssetManager::GetInstance().makeSound(false,s);
+        else
+            snd = Game::GetCurrentState().Assets.makeSound(false,s);
+    }
+
+    if (snd.get()){
+        ALuint sourceID_ = SoundPool::GetInstance().GetSource(classN);
+        if (sourceID_ != 0){
+            volume = std::max(volume,0);
+            volume = std::min(MAX_VOL_SIZE,(float)volume);
+            SoundLoader::ShowError();
+            alSourcei(sourceID_, AL_BUFFER, snd.get()->buffer);
+            SoundLoader::ShowError();
+            alSource3f(sourceID_, AL_POSITION, pos.x, pos.y, pos.z);
+            SoundLoader::ShowError();
+            alSourcef(sourceID_, AL_GAIN, MasterVolume[classN]*((float)volume/MAX_VOL_SIZE) );
+            SoundLoader::ShowError();
+            alSourcef(sourceID_, AL_PITCH, 1.0);
+            SoundLoader::ShowError();
+            alSourcei(sourceID_, AL_LOOPING, false);
+            SoundLoader::ShowError();
+            float addPitch = ( (ptch*100 - rand()%(ptch*200))/10000.0f );
+            alSourcef(sourceID_, AL_PITCH, 1.0f + addPitch );
+            alSourcePlay(sourceID_);
+            SoundLoader::ShowError();
+            return snd.get()->buffer;
+        }else{
+            bear::out << "No source\n";
+        }
+    }else{
+        bear::out << "Cannot play " << s << " because no source\n";
+    }
+    return -1;
+}
 
 void Sound::Kill(){
     Stop();

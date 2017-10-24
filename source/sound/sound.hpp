@@ -56,6 +56,7 @@ class Sound{
 
 
         static int PlayOnce(const char *s,bool useGlobalAssetManager=false,int volume=128,Point3 pos=Point3(),int classN=0);
+        static int PlayOncePiched(const char *s,int pch=1,bool useGlobalAssetManager=false,int volume=128,Point3 pos=Point3(),int classN=0);
 
         static BufferData* Preload (std::string name);
         static BufferData* Preload(SDL_RWops* file,std::string name);
