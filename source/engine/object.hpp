@@ -187,6 +187,8 @@ class GameObject{
     */
     int poolIndex;
 
+    double rotation;
+
     virtual void NotifyInPool(void *pool){(void)pool;};
 
     uint64_t GetMyRef(){return (uint64_t)this;};
@@ -201,7 +203,7 @@ class GameObject{
     protected:
         void hashIt(int var){hash = var;};
         inline int GetHash_internal(){return hash;};
-        float rotation;
+
         uint64_t Flags;
 
 
