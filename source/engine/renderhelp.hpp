@@ -148,6 +148,28 @@ class RenderHelp{
             T.UpdateTexture();
             T.Render(PointInt(cb.x-Camera::pos.x-T.getW()/2 + offset.x,cb.y-Camera::pos.y-T.getW()/2 + offset.y));
         };
+        template<class Te> static void DrawCollisionBox3(Te &cb,float angle,Point offset,int r_color,int g,int b,int alpha=100){
+            int maxSize = cb.GetSize()*4.0;
+
+            SmartTexture T(0,0,maxSize,maxSize,true);
+            Uint32 * pixels = T.GetPixels();
+            for (int x=0;x<T.getW();x++){
+                for (int y=0;y<T.getH();y++){
+                    Rect r;
+                    r.x = x+cb.x-T.getW()/2;
+                    r.y = y+cb.y-T.getH()/2;
+                    r.h = 1;
+                    r.w = 1;
+                    if (Collision::IsColliding(r,cb,0,angle)){
+                        pixels[x + (y*T.getW())] = RenderHelp::FormatRGBA(r_color,g,b,alpha);
+                    }else{
+                        pixels[x + (y*T.getW())] = RenderHelp::FormatRGBA(0,0,0,0);
+                    }
+                }
+            }
+            T.UpdateTexture();
+            T.Render(PointInt(cb.x-Camera::pos.x-T.getW()/2 + offset.x,cb.y-Camera::pos.y-T.getW()/2 + offset.y));
+        };
 
 };
 
