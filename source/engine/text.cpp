@@ -177,11 +177,9 @@ void Text::InternalSetFont(std::string ftnm){
     int fontsize = size;
 
 	sprintf(buff,"%d",fontsize);
-    if (ftnm.find(":")==std::string::npos){
-
+	std::string aux = ftnm;
+    if (!ResourceManager::IsValidResource(aux)){
         isWorking = false;
-
-        ftnm = DirManager::AdjustAssetsPath(ftnm);
         tweaks = false;
     }
     std::string oName = ftnm;
@@ -195,7 +193,6 @@ void Text::InternalSetFont(std::string ftnm){
         if (tweaks){
             SDL_RWops* rw = ResourceManager::GetInstance().GetFile(oName);
             font = TTF_OpenFontRW(rw,true,fontsize);
-            //SDL_RWclose(rw);
         }else{
             font = TTF_OpenFont(oName.c_str(), fontsize);
         }
