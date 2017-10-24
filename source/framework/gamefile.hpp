@@ -52,7 +52,7 @@ class GameFile{
             @param notify print on Console if fails
             @return true if sucess
         */
-        bool Open(std::string name,bool notify=false);
+        bool Open(std::string name,bool notify=false,bool useRelativePath = true);
         /**
             *Close the file. Dont delete the cached stuff
             @return true if sucess

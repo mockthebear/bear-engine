@@ -38,12 +38,13 @@ GameFile::~GameFile(){
     ClearCache();
 }
 
-bool GameFile::Open(std::string name,bool notify){
+bool GameFile::Open(std::string name,bool notify,bool useRelativePath){
 	std::string aux = name;
 	if (ResourceManager::IsValidResource(name)){
         m_filePointer = ResourceManager::GetInstance().GetFile(name); //safe
     }else{
-        name = DirManager::AdjustAssetsPath(name);
+        if (useRelativePath)
+            name = DirManager::AdjustAssetsPath(name);
         m_filePointer = SDL_RWFromFile(name.c_str(),"rb");
         ParseFile();
         if (m_size == ULONG_MAX){
