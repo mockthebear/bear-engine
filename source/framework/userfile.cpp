@@ -9,7 +9,7 @@ UserFile::UserFile(){
 bool UserFile::Close(){
     if (fptr){
         fname = "";
-        fclose(fptr);
+        SDL_RWclose(fptr);
         fptr = NULL;
         return true;
     }
@@ -19,7 +19,7 @@ bool UserFile::Close(){
 bool UserFile::Open(std::string name){
     if (!fptr){
         fname = name;
-        fptr = fopen(UserFile::GetFilePath().c_str(),"wb");
+        fptr = SDL_RWFromFile(UserFile::GetFilePath().c_str(),"wb");
         if (!fptr){
             writePos = 0;
             fname = "";
@@ -84,7 +84,7 @@ uint32_t UserFile::WriteU64(uint64_t c){
 uint32_t UserFile::Write(char *str,int size){
     if (fptr){
         writePos += size;
-        fwrite (str,sizeof(char), size,fptr );
+        SDL_RWwrite (fptr,str,sizeof(char), size );
         return writePos;
     }
     return 0;
@@ -92,7 +92,7 @@ uint32_t UserFile::Write(char *str,int size){
 uint32_t UserFile::Write(std::string str){
     if (fptr){
         writePos += str.size();
-        fprintf(fptr,"%s",str.c_str());
+        SDL_RWwrite (fptr,str.c_str(),sizeof(char), str.size() );
         return writePos;
     }
     return 0;

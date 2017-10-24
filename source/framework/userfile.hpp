@@ -41,9 +41,13 @@ class UserFile{
             return *this;
         }
     private:
+        void fputc(char c,SDL_RWops * fptr2){
+            const char c2 = c;;
+            SDL_RWwrite(fptr,&c2,1,1);
+        };
         uint32_t writePos;
         std::string fname;
-        FILE *fptr;
+        SDL_RWops *fptr;
 };
 
 #endif
