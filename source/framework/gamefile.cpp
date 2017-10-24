@@ -39,8 +39,8 @@ GameFile::~GameFile(){
 }
 
 bool GameFile::Open(std::string name,bool notify){
-
-	if (name.find(":")!=std::string::npos){
+	std::string aux = name;
+	if (ResourceManager::IsValidResource(name)){
         m_filePointer = ResourceManager::GetInstance().GetFile(name); //safe
     }else{
         name = DirManager::AdjustAssetsPath(name);
@@ -54,19 +54,17 @@ bool GameFile::Open(std::string name,bool notify){
 
     }
     if (m_filePointer == NULL){
-		char str[180];
-		sprintf(str, "%s%s", SDL_GetBasePath(), name.c_str());
-        m_filePointer = SDL_RWFromFile(str,"rb");
+        m_filePointer = SDL_RWFromFile(name.c_str(),"rb");
         if (!m_filePointer){
             if (notify){
-                Console::GetInstance().AddText(utils::format("Cannot locate %s", str ) );
+                Console::GetInstance().AddText(utils::format("Cannost locate %s", name ) );
             }
             return false;
         }
         ParseFile();
         if (m_size == LONG_MAX){
             SDL_RWclose(m_filePointer);
-            Console::GetInstance().AddText(utils::format("File %s is a dir", str ) );
+            Console::GetInstance().AddText(utils::format("File %s is a dir", name ) );
             m_filePointer = nullptr;
             return false;
         }
