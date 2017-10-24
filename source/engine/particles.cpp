@@ -211,8 +211,9 @@ void Particle::Render(){
     if(HasSprite){
         sp.SetAlpha(Alpha);
         sp.SetScale(Point(Scale,Scale));
-        sp.SetCenter(Point(16,16));
+        //sp.SetCenter(Point(sp.GetWidth()/Frame,sp.GetHeight()/Frame));
         sp.Render(box.x-Camera::pos.x,box.y-Camera::pos.y,rotation);
+        sp.SetAlpha(255);
     }else if(textures != NULL){
         if (currentFrame >= Frame)
             return;
@@ -221,7 +222,9 @@ void Particle::Render(){
         txt.SetRotation(rotation);
         //txt.SetScale(Point(Scale,Scale));
         txt.SetAlpha(Alpha);
+
         txt.Render(Camera::AdjustPosition(box));
+        txt.SetAlpha(255);
     }
 
 }

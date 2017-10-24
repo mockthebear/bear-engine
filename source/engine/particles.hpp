@@ -133,6 +133,7 @@ class Particle: public GameObject{
             Set rotation speed
         */
         void SetRotation(float r){Rotating = r;};
+        void SetRotationModule(float r){rotation = r;};
         /**
             Set the particle to decrease alpha in the same rate at the end of duration
         */
