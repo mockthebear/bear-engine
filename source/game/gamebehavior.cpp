@@ -19,6 +19,7 @@
 #include "../tests/testpathfind.hpp"
 #include "../tests/testpool.hpp"
 #include "../tests/testjoystick.hpp"
+#include "../tests/testtext.hpp"
 
 
 
@@ -76,6 +77,7 @@ bool GameBehavior::OnLoad(){
 
 
     Game::GetInstance()->AddState(new Test_PathFind());
+    Game::GetInstance()->AddState(new Test_Text());
     Game::GetInstance()->AddState(new Test_Sprite());
     Game::GetInstance()->AddState(new Test_Pool());
     Game::GetInstance()->AddState(new Test_Joystick());

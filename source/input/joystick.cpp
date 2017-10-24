@@ -139,6 +139,7 @@ void Joystick::Update(float dt){
     if (!IsWorking())
         return;
     anyKeyPressed = -1;
+
     for ( auto it = Buttons.begin(); it != Buttons.end(); ++it ){
         if (it->second == JUST_PRESSED){
             it->second = PRESSED;
@@ -162,6 +163,8 @@ void Joystick::Update(float dt){
             Hats[i].Update(this,dt);
         }
     }
+
+
 }
 
 bool Joystick::ButtonPress(int key){
@@ -222,15 +225,16 @@ bool Joystick::HatIsButtonReleased(int hatId,int button){
 
 void Joystick::Button(int button,int state){
     if (state == SDL_PRESSED){
-        if (Buttons[button] != PRESSED){
+        if (Buttons[button] != PRESSED && Buttons[button] != JUST_PRESSED){
             anyKeyPressed = button;
             Buttons[button] = JUST_PRESSED;
         }
     }else{
-        if (Buttons[button] != RELEASED){
+        if (Buttons[button] != RELEASED && Buttons[button] != JUST_RELEASED){
             Buttons[button] = JUST_RELEASED;
         }
     }
+    bear::out << "["<<m_id<<"]Button 0 = "<<Buttons[0] <<" and "<< Buttons[1] << " ("<<button<<":"<<state<<")\n";
     if (HasCallButton){
         ButtonCallBack(m_id,button,Buttons[button]);
     }
