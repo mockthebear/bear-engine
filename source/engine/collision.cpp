@@ -29,6 +29,16 @@ int Collision::AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,Pool
 
 }
 
+Rect Collision::GetIntersectRect(Rect& a,  Rect& b){
+    if (!IsColliding(a,b)){
+        return Rect(0,0,0,0);
+    }
+    float c1 = std::max(a.x, b.x);
+    float c2 = std::max(a.y, b.y);
+    float c3 = std::min(a.x+a.w,b.x + b.w);
+    float c4 = std::min(a.y + a.h, b.y + b.h);
+    return Rect(c1,c2, c3-c1,c4-c2 );
+}
 
 int Collision::AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,std::vector<GameObject*> vec,bool onlySolid){
     Rect tempXY(dis->box.x+sx*dt,dis->box.y+sy*dt,dis->box.w,dis->box.h);

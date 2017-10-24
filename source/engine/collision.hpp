@@ -115,6 +115,40 @@ namespace Collision {
             //If the shapes have not collided
             return false;
         };
+        static inline bool IsColliding( Rect rect,Circle circle, double angle ){
+            // Rotate circle's center point back
+            float centerX = rect.GetXCenter();
+            float centerY = rect.GetYCenter();
+
+            double unrotatedCircleX = cos(angle) * (circle.x - centerX) - sin(angle) * (circle.y - centerY) + centerX;
+            double unrotatedCircleY = sin(angle) * (circle.x - centerX) + cos(angle) * (circle.y - centerY) + centerY;
+
+            double closestX, closestY;
+
+            if (unrotatedCircleX  < rect.x)
+                closestX = rect.x;
+            else if (unrotatedCircleX  > rect.x + rect.w)
+                closestX = rect.x + rect.w;
+            else
+                closestX = unrotatedCircleX ;
+
+            // Find the unrotated closest y point from center of unrotated circle
+            if (unrotatedCircleY < rect.y)
+                closestY = rect.y;
+            else if (unrotatedCircleY > rect.y + rect.h)
+                closestY = rect.y + rect.h;
+            else
+                closestY = unrotatedCircleY;
+
+            // Determine collision
+
+
+            double distance = Point(unrotatedCircleX , unrotatedCircleY).GetDistance(Point(closestX, closestY));
+            if (distance < circle.r)
+                return true;
+            else
+                return false;
+        };
 
 
         static inline bool IsColliding( Rect& b,Cone& a ){
@@ -280,7 +314,7 @@ namespace Collision {
         }
 
 	static inline bool IsColliding( Circle& b,Circle& a ){
-        if (distanceSquared( a.x, a.y, b.x, b.y ) <= b.r+a.r){
+        if ( a.GetPoint().GetDistance(b.GetPoint())  <= b.r+a.r){
             return true;
         }
         return false;
@@ -304,7 +338,7 @@ namespace Collision {
 
 
 
-
+    Rect GetIntersectRect(Rect& a,  Rect& b);
     std::vector<Rect> CheckCollision(std::vector<Rect> &rectArr,GameObject* dis,PoolManager &pool,PoolGroupId gid,bool onlySolid=true);
 
     GameObject* GetCollidingObject(GameObject* thisObject,PoolManager &pool,PoolGroupId gid=-1,bool onlySolid = true);
