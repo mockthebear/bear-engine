@@ -463,11 +463,6 @@ class Sprite{
             return m_alpha*255;
         };
         /**
-            *Duplicate the texture
-            *<b>Not tested yet with all features</b>
-        */
-        //SDL_Texture* CopyTexture();
-        /**
             *Set a grid for animation frames
             @param gx The grid size in x axis
             @param gy The grid size in y axis

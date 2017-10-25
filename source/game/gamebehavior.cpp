@@ -81,12 +81,12 @@ bool GameBehavior::OnLoad(){
 
 
 
-    //Game::GetInstance()->AddState(new Test_PathFind());
-    //Game::GetInstance()->AddState(new Test_Text());
+    Game::GetInstance()->AddState(new Test_PathFind());
+    Game::GetInstance()->AddState(new Test_Text());
     Game::GetInstance()->AddState(new Test_Sprite());
     Game::GetInstance()->AddState(new Test_Pool());
     Game::GetInstance()->AddState(new Test_Shapes());
-    //Game::GetInstance()->AddState(new Test_Joystick());
+    Game::GetInstance()->AddState(new Test_Joystick());
     Game::GetInstance()->AddState(new Test_Files());
 
     return DefaultBehavior::GetInstance().OnLoad();

@@ -175,10 +175,7 @@ class Text{
             *
             *This creator simply get an path to a custom font, then uses it on a given text
         */
-        /*Text(Text &t):Text(){
-            cpy(t);
-            texture = NULL;
-        };*/
+
         Text(std::string customfontfile, std::string text,int x=0,int y=0);
         /**
             *Empty constructor is almost empty
@@ -207,7 +204,6 @@ class Text{
         /**
             Render without any scaling or screen adjustment
         */
-        void RenderRS(int X = 0, int Y = 0,TextRenderStyle renderStyle = TEXT_RENDER_TOPLEFT);
         void inline Render(PointInt p,TextRenderStyle renderStyle = TEXT_RENDER_TOPLEFT){Render(p.x,p.y,renderStyle);};
         /**
             *When you edit the current text, a new texture is created
@@ -302,10 +298,7 @@ class Text{
         */
         void SetRotation(float anglee){angle = anglee;};
 
-        /**
-            *You can copy the current texture and use it further
-        */
-        SDL_Texture* CopyTexture();
+
         /**
             *Now this operator is tricky.
             *In sprite we dont have this issue, because the texture is saved on
@@ -352,7 +345,11 @@ class Text{
         int alpha;
 
         TTF_Font* font;
+        #ifndef RENDER_OPENGL
         SDL_Texture* texture;
+        #else
+        BearTexture* texture;
+        #endif // RENDER_OPENGL
         CustomFont *texturespr;
 
 		bool isWorking,aliasing;

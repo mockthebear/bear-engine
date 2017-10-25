@@ -9,6 +9,69 @@ bool RenderHelp::RendedTexture(){
     return false;
 }
 
+GLuint powerOfTwo( GLuint num )
+{
+    if( num != 0 )
+    {
+        num--;
+        num |= (num >> 1);
+        num |= (num >> 2);
+        num |= (num >> 4);
+        num |= (num >> 8);
+        num |= (num >> 16);
+        num++;
+    }
+    return num;
+}
+
+
+BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface){
+    if (!surface){
+        return nullptr;
+    }
+    int bpp;
+    Uint32 Rmask, Gmask, Bmask, Amask;
+    SDL_PixelFormatEnumToMasks(SDL_PIXELFORMAT_ABGR8888, &bpp, &Rmask, &Gmask, &Bmask, &Amask);
+    SDL_Surface *img_rgba8888 = SDL_CreateRGBSurface(0, surface->w, surface->h, bpp, Rmask, Gmask, Bmask, Amask);
+    if (!img_rgba8888){
+        return nullptr;
+    }
+
+    SDL_SetSurfaceAlphaMod(surface, 0xFF);
+    SDL_BlitSurface(surface, NULL, img_rgba8888, NULL);
+
+    GLuint texId=0;
+    glGenTextures(1, &texId);
+    if (texId == 0){
+        return nullptr;
+    }
+    glBindTexture(GL_TEXTURE_2D, texId);
+
+    /*
+    int Mode = GL_RGB;
+
+    if(surface->format->BytesPerPixel == 4) {
+        Mode = GL_RGBA;
+    }*/
+
+    unsigned int pow_w =  powerOfTwo(surface->w);
+    unsigned int pow_h =  powerOfTwo(surface->h);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pow_w, pow_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h, GL_RGBA, GL_UNSIGNED_BYTE, img_rgba8888->pixels);
+
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    SDL_FreeSurface(img_rgba8888);
+    return new BearTexture(texId,pow_w, pow_h,GL_RGBA);
+}
+
 void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8_t b,uint8_t a,int sides){
     #ifndef RENDER_OPENGL
     //duh todo

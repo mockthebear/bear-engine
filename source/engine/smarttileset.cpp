@@ -118,9 +118,8 @@ void SmartTileset::RenderTile(int x,int y,int index){
     }
     int cx = index%sheetSizes.x;
     int cy = index/sheetSizes.x;
-    //todo: Check smarttileset
-    //sp.SetClip(tileSize.x*cx,tileSize.y*cy,tileSize.x,tileSize.y);
-    //sp.RawRender(x,y,0);
+    sp.SetClip(tileSize.x*cx,tileSize.y*cy,tileSize.x,tileSize.y);
+    sp.Render(x,y,0);
 }
 
 bool SmartTileset::MakeMap(){
@@ -129,6 +128,8 @@ bool SmartTileset::MakeMap(){
     Stopwatch timer;
     bear::out << "Making the map\n";
     SDL_Texture *lastTexture = nullptr;
+
+    //todo: SetRenderTarget  < not working rn
 
     for (int l=0;l<Layers;l++){
         for (int y=0;y<framesOnMap.y;y++){
