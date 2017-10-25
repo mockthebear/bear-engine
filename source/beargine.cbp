@@ -18,6 +18,7 @@
 					<Add option="-pg" />
 					<Add option="-g" />
 					<Add option="-DIGNORESTEAM" />
+					<Add option="-DRENDER_OPENGL" />
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
@@ -28,6 +29,8 @@
 					<Add option="-lSDL2_ttf" />
 					<Add option="-lopenal32" />
 					<Add option="-lvorbisfile" />
+					<Add option="-lopengl32" />
+					<Add option="-lglew32" />
 					<Add option="-pthread" />
 				</Linker>
 			</Target>
@@ -252,6 +255,7 @@
 		<Unit filename="tests/testlua.hpp" />
 		<Unit filename="tests/testpathfind.hpp" />
 		<Unit filename="tests/testpool.hpp" />
+		<Unit filename="tests/testshapes.hpp" />
 		<Unit filename="tests/testsprite.hpp" />
 		<Unit filename="tests/testtext.hpp" />
 		<Unit filename="tests/testthread.cpp" />
