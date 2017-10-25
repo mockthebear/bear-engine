@@ -51,6 +51,42 @@ void ScreenManager::NotyifyScreenClosed(){
     m_window = NULL;
 }
 
+bool ScreenManager::SetupOpenGL(){
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetSwapInterval(1);
+
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	SDL_GL_SwapWindow(m_window);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+	glViewport( 0.f, 0.f, m_originalScreen.x, m_originalScreen.y );
+
+    //Initialize Projection Matrix
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
+
+    //Initialize Modelview Matrix
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
+
+    //Save the default modelview matrix
+    glPushMatrix();
+
+    //Initialize clear color
+    glClearColor( 0.f, 0.f, 0.f, 1.f );
+
+}
+
 SDL_Window* ScreenManager::StartScreen(std::string name){
     if( SDL_GetCurrentDisplayMode( 0, &m_displayMode ) == 0 )
     {
@@ -64,16 +100,19 @@ SDL_Window* ScreenManager::StartScreen(std::string name){
     }
     m_originalScreen = m_screen;
     Uint32 flags = 0;
-
+    //Todo: resizer
     if (ConfigManager::GetInstance().GetResizeAction() != RESIZE_BEHAVIOR_NORESIZE){
-        flags |= SDL_WINDOW_RESIZABLE;
+        //flags |= SDL_WINDOW_RESIZABLE;
     }
+    flags = SDL_WINDOW_OPENGL;
     m_window = SDL_CreateWindow( name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screen.x, m_screen.y,flags); //SDL_WINDOW_RESIZABLE
     if (!m_window){
         bear::out << "[ScreenManager::StartScreen] Display size suported is "<<m_display.x<<"x"<<m_display.y<<".\n";
         bear::out << "[ScreenManager::StartScreen] Impossible to create"<<m_screen.x<<"x"<<m_screen.y<<" dummy display.\n";
         return NULL;
     }
+    m_glContext = SDL_GL_CreateContext(m_window);
+
     return m_window;
 }
 
@@ -129,15 +168,19 @@ void ScreenManager::RenderPresent(){
 
 }
 void ScreenManager::PreRender(){
+    /*
     if (m_defaultScreen){
         SetRenderTarget(m_defaultScreen);
     }
     SDL_SetRenderDrawColor(m_renderer, 0,0,0, 0);
     SDL_RenderClear( m_renderer );
+    */
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void ScreenManager::Render(){
-    if (m_defaultScreen)
+    /*if (m_defaultScreen)
         SetRenderTarget(nullptr);
     if (m_defaultScreen){
         //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
@@ -150,7 +193,8 @@ void ScreenManager::Render(){
         dimensions2.w = m_originalScreen.x*m_scaleRatio.x;
         SDL_RenderCopy(m_renderer,m_defaultScreen,nullptr,&dimensions2);
         //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
-    }
+    }*/
+    SDL_GL_SwapWindow(m_window);
 }
 
 void ScreenManager::NotifyResized(){

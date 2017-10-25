@@ -5,6 +5,7 @@
 #include SDL_LIB_HEADER
 
 void RenderHelp::DrawSquareColorUnscaled(int x,int y,int w,int h,int r,int g,int b,int a){
+    //TODO: Remake
     SDL_SetRenderDrawColor(BearEngine->GetRenderer(), r, g,b, a);
     SDL_Rect rectangle;
     rectangle.x = ( x );
@@ -16,6 +17,7 @@ void RenderHelp::DrawSquareColorUnscaled(int x,int y,int w,int h,int r,int g,int
 }
 
 bool RenderHelp::RendedTexture(Point texturePos,Point textureSize,SDL_Texture* texture,RectInt textureClip,float angle,SDL_RendererFlip flip,Point center_){
+    //TODO: Remake
     if (!texture){
         return false;
     }
@@ -42,25 +44,21 @@ bool RenderHelp::RendedTexture(Point texturePos,Point textureSize,SDL_Texture* t
 }
 
 void RenderHelp::DrawSquareColorA(int x,int y,int w,int h,int r,int g,int b,int a,bool outline){
-
-    SDL_SetRenderDrawColor(BearEngine->GetRenderer(), r, g,b, a);
-    SDL_Rect rectangle;
-    double scaleRatioW = (ScreenManager::GetInstance().GetScaleRatioW());
-    double scaleRatioH = (ScreenManager::GetInstance().GetScaleRatioH());
-    rectangle.x = ( x*scaleRatioW  )+ ScreenManager::GetInstance().GetOffsetW();
-    rectangle.y = ( y*scaleRatioH  )+ ScreenManager::GetInstance().GetOffsetH();
-    rectangle.w = ( w*scaleRatioW  );
-    rectangle.h = ( h*scaleRatioH  );
-    if (!outline){
-        SDL_RenderFillRect(BearEngine->GetRenderer(), &rectangle);
-    }else{
-        SDL_RenderDrawRect (BearEngine->GetRenderer(), &rectangle);
-    }
+    glLoadIdentity();
+    glTranslatef(x, y, 0.0f);
+    glBegin( GL_QUADS );
+        glColor4f( r/255.f, g/255.f, b/255.f,a/255.0f );
+        glVertex2f( 0,0 );
+        glVertex2f(  w, 0 );
+        glVertex2f( w,  h );
+        glVertex2f( 0,  h );
+    glEnd();
+    glPopMatrix();
 
 }
 
 void RenderHelp::DrawSquareColorANS(int x,int y,int w,int h,int r,int g,int b,int a){
-
+    //TODO: Remake
     SDL_SetRenderDrawColor(BearEngine->GetRenderer(), r, g,b, a);
     SDL_Rect rectangle;
     rectangle.x = ( x  );
@@ -72,6 +70,7 @@ void RenderHelp::DrawSquareColorANS(int x,int y,int w,int h,int r,int g,int b,in
 }
 
 void RenderHelp::DrawLineColorA(int x,int y,int w,int h,int r,int g,int b,int a){
+    //TODO: Remake
     double scaleRatioW = (ScreenManager::GetInstance().GetScaleRatioW());
     double scaleRatioH = (ScreenManager::GetInstance().GetScaleRatioH());
     SDL_SetRenderDrawColor(BearEngine->GetRenderer(), r, g,b, a);
@@ -83,6 +82,7 @@ void RenderHelp::DrawLineColorA(int x,int y,int w,int h,int r,int g,int b,int a)
 }
 
 SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h){
+    //TODO: Remake
     SDL_Texture *t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, w, h);
     Uint32 * pixels = new Uint32[w * h];
     DebugHelper::AssertAlloc(pixels,WHERE_ARG);
@@ -99,6 +99,7 @@ SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h){
 }
 
 SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h,std::function<Uint32 (Uint32 , int, int)> F){
+    //TODO: Remake
     SDL_Texture *t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, w, h);
     Uint32 * pixels = new Uint32[w * h];
     if (pixels == nullptr){

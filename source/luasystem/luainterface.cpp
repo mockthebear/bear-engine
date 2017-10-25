@@ -455,7 +455,6 @@ void LuaInterface::RegisterClasses()
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","Open",&Sprite::Openf);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetClip",&Sprite::SetClip);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","Render",&Sprite::Renderpoint,0.0);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","RawRender",&Sprite::RawRender,0.0,0,0);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","Update",&Sprite::Update);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","ResetAnimation",&Sprite::ResetAnimation);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetFrame",&Sprite::SetFrame,0,0);

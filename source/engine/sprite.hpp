@@ -11,9 +11,23 @@
 #include <unordered_map>
 #include <map>
 #include <string>
-
+#include <GL/glew.h>
 #include <memory>
-typedef chain_ptr<SDL_Texture> TexturePtr;
+class BearTexture{
+    public:
+        BearTexture(){
+            id = 0;
+            w = h = c = 0;
+        };
+        BearTexture(GLuint textureId,uint32_t width,uint32_t height,GLenum imgMode):id(textureId),w(width),h(height),mode(imgMode){};
+        GLuint id;
+        uint32_t w;
+        uint32_t h;
+        uint32_t c;
+        GLenum mode;
+
+};
+typedef chain_ptr<BearTexture> TexturePtr;
 
 /**
  * @brief Color replacing filter class to use on load
@@ -150,7 +164,7 @@ class Sprite{
             @param file The path or the asset tweak asset:file
         */
 
-        static SDL_Texture* Preload(const char *file,bool adjustDir=true,bool HasAliasing=false);
+        static BearTexture* Preload(const char *file,bool adjustDir=true,bool HasAliasing=false);
         /**
             *Works like Sprite::Preload(char *file)
             *You have to pass an RWops and set an alias to work on Sprite::assetTable
@@ -164,7 +178,7 @@ class Sprite{
             SDL_RWclose(file);
             @endcode
         */
-        static SDL_Texture* Preload(SDL_RWops* rw,std::string name,bool HasAliasing=false);
+        static BearTexture* Preload(SDL_RWops* rw,std::string name,bool HasAliasing=false);
         /**
             *Works like Sprite::Preload(char *file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false)
             *You have to pass an RWops and set an alias to work on Sprite::assetTable
@@ -172,7 +186,7 @@ class Sprite{
             @param r an color replace filer.
             @param HasAliasing mark as true to load the sprite using antialiasing.
         */
-        static SDL_Texture *Preload(std::string fileName,ColorReplacer &r,bool HasAliasing=false);
+        static BearTexture *Preload(std::string fileName,ColorReplacer &r,bool HasAliasing=false);
         Sprite* GetMe(){
             return this;
         }
@@ -224,14 +238,6 @@ class Sprite{
         void Render (int x,int y,double angle=0);
 
         void Renderxy(int x,int y,double angle=0);
-        /**
-            *Work as the same of Render, but without any changing by the screen scale
-            *Only the transformations of this sprite
-            @param x The x position
-            @param y The y position
-            @param angle When you need rotate the sprite
-        */
-        void RawRender(int x,int y,double angle);
 
         /**
             *The render function will render on the game at the position x,y.
@@ -355,7 +361,7 @@ class Sprite{
             *Get the texture. Note that texture can be an shared one
             @return The SDL_Texture pointer;
         */
-        SDL_Texture* GetSDLTexture(){
+        BearTexture* GetSDLTexture(){
             return (textureShred.get());
         };
         /**
@@ -437,10 +443,11 @@ class Sprite{
             @param Green [0-255] The default is 255 of all sprites;
         */
         void ReBlend(uint8_t Red,uint8_t Blue,uint8_t Green){
-            OUTR = Red;
+            /*OUTR = Red;
             OUTB = Blue;
             OUTG = Green;
-            SDL_SetTextureColorMod((textureShred.get()),OUTR,OUTB,OUTG);
+            SDL_SetTextureColorMod((textureShred.get()),OUTR,OUTB,OUTG);*/
+            //todo: remake
         };
         /**
             *Changed the sprite alpha
@@ -450,7 +457,8 @@ class Sprite{
         */
         void SetAlpha(uint8_t alpha){
             m_alpha = alpha;
-            SDL_SetTextureAlphaMod((textureShred.get()),alpha);
+            //todo: remake
+            //SDL_SetTextureAlphaMod((textureShred.get()),alpha);
         };
 
         uint8_t GetAlpha(){
@@ -460,7 +468,7 @@ class Sprite{
             *Duplicate the texture
             *<b>Not tested yet with all features</b>
         */
-        SDL_Texture* CopyTexture();
+        //SDL_Texture* CopyTexture();
         /**
             *Set a grid for animation frames
             @param gx The grid size in x axis
