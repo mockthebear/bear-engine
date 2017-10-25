@@ -4,81 +4,78 @@
 #include "gamebase.hpp"
 #include SDL_LIB_HEADER
 
-void RenderHelp::DrawSquareColorUnscaled(int x,int y,int w,int h,int r,int g,int b,int a){
-    //TODO: Remake
-    SDL_SetRenderDrawColor(BearEngine->GetRenderer(), r, g,b, a);
-    SDL_Rect rectangle;
-    rectangle.x = ( x );
-    rectangle.y = ( y );
-    rectangle.w = ( w );
-    rectangle.h = ( h );
-    SDL_RenderFillRect(BearEngine->GetRenderer(), &rectangle);
 
+bool RenderHelp::RendedTexture(){
+    return false;
 }
 
-bool RenderHelp::RendedTexture(Point texturePos,Point textureSize,SDL_Texture* texture,RectInt textureClip,float angle,SDL_RendererFlip flip,Point center_){
-    //TODO: Remake
-    if (!texture){
-        return false;
-    }
-    SDL_Point center;
-    if (textureClip.x == -1 || textureClip.y == -1){
-        textureClip.w = textureSize.x;
-        textureClip.h = textureSize.y;
-    }
-    SDL_Rect clipRect = {textureClip.x,textureClip.y,textureClip.w,textureClip.h};
-    center.x = center_.x;
-    center.y = center_.y;
-    if (center.x == -1 || center.y == -1){
-        center.x = textureSize.x/2.0;
-        center.y = textureSize.y/2.0;
-    }
-    double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
-    double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
-    SDL_Rect rectangle;
-    rectangle.x = ( texturePos.x*scaleRatioW  )+ ScreenManager::GetInstance().GetOffsetW();
-    rectangle.y = ( texturePos.y*scaleRatioH  )+ ScreenManager::GetInstance().GetOffsetH();
-    rectangle.w = ( textureSize.x*scaleRatioW  );
-    rectangle.h = ( textureSize.y*scaleRatioH  );
-    return SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,&clipRect,&rectangle,angle,&center,flip) == 0;
-}
-
-void RenderHelp::DrawSquareColorA(int x,int y,int w,int h,int r,int g,int b,int a,bool outline){
+void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8_t b,uint8_t a,int sides){
+    #ifndef RENDER_OPENGL
+    //duh todo
+    #else
     glLoadIdentity();
-    glTranslatef(x, y, 0.0f);
-    glBegin( GL_QUADS );
-        glColor4f( r/255.f, g/255.f, b/255.f,a/255.0f );
+
+    glTranslatef(p1.x, p1.y, 0.0f);
+
+    glBegin(GL_TRIANGLE_FAN);
+      glColor4ub( r,g,b,a );
+      glVertex2f(0,0);
+      GLfloat angle;
+      for (int i = 0; i <= sides; i++) {
+         angle = i * 2.0f * Geometry::PI() / sides;
+         glVertex2f( cos(angle) *  radius, sin(angle) *  radius);
+      }
+    glEnd();
+
+    glPopMatrix();
+    #endif // RENDER_OPENGL
+}
+
+
+void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline,float angle){
+    #ifndef RENDER_OPENGL
+    //duh todo
+    #else
+    glLoadIdentity();
+    glTranslatef(box.x, box.y, 0.0f);
+    if (!outline){
+        glBegin( GL_QUADS );
+    }else{
+        glBegin( GL_LINE_LOOP );
+    }
+        glColor4ub( r,g,b,a );
         glVertex2f( 0,0 );
-        glVertex2f(  w, 0 );
-        glVertex2f( w,  h );
-        glVertex2f( 0,  h );
+        glVertex2f(  box.w, 0 );
+        glVertex2f( box.w,  box.h );
+        glVertex2f( 0,  box.h );
     glEnd();
     glPopMatrix();
+    #endif
 
 }
 
-void RenderHelp::DrawSquareColorANS(int x,int y,int w,int h,int r,int g,int b,int a){
-    //TODO: Remake
-    SDL_SetRenderDrawColor(BearEngine->GetRenderer(), r, g,b, a);
-    SDL_Rect rectangle;
-    rectangle.x = ( x  );
-    rectangle.y = ( y );
-    rectangle.w = ( w  );
-    rectangle.h = ( h  );
-    SDL_RenderFillRect(BearEngine->GetRenderer(), &rectangle);
-
-}
-
-void RenderHelp::DrawLineColorA(int x,int y,int w,int h,int r,int g,int b,int a){
-    //TODO: Remake
+void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thicc){
+    #ifndef RENDER_OPENGL
     double scaleRatioW = (ScreenManager::GetInstance().GetScaleRatioW());
     double scaleRatioH = (ScreenManager::GetInstance().GetScaleRatioH());
     SDL_SetRenderDrawColor(BearEngine->GetRenderer(), r, g,b, a);
     SDL_RenderDrawLine(BearEngine->GetRenderer(),
-                       x*scaleRatioW + ScreenManager::GetInstance().GetOffsetW(),
-                       y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH(),
-                       w*scaleRatioW + ScreenManager::GetInstance().GetOffsetW(),
-                       h*scaleRatioH + ScreenManager::GetInstance().GetOffsetH());
+                       p1.x*scaleRatioW + ScreenManager::GetInstance().GetOffsetW(),
+                       p1.y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH(),
+                       p2.x*scaleRatioW + ScreenManager::GetInstance().GetOffsetW(),
+                       p2.y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH());
+    #else
+        glLoadIdentity();
+        glLineWidth(thicc);
+        glColor4ub( r,g,b,a );
+        glBegin(GL_LINES);
+            glVertex3f(p1.x, p1.y, 0.0);
+            glVertex3f(p2.x, p2.y, 0);
+        glEnd();
+        glLineWidth(1);
+        glPopMatrix();
+    #endif
+
 }
 
 SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h){
@@ -133,17 +130,11 @@ uint8_t RenderHelp::GetA(uint32_t r){
 }
 
 Uint32 RenderHelp::FormatRGBA2(int r,int g,int b,int a){
-
     return a+(b<<8)+(g<<16)+(r<<24);
-
 }
 
-
-
 Uint32 RenderHelp::FormatRGBA(int r,int g,int b,int a){
-
     return r+(g<<8)+(b<<16)+(a<<24);
-
 }
 
 Uint32 RenderHelp::FormatARGB(int a,int r,int b,int g){

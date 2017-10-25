@@ -13,29 +13,8 @@
 */
 class RenderHelp{
     public:
-        /**
-            *Given an sdl texture and some informations it will render the same way as class Sprite does
-            @param texturePos position of where it should be rendered.
-            @param textureSize texture height and width
-            @param texture the texture
-            @param textureClip clip rect. Leave as Rect(0,0,-1,-1) to dont clip anything
-            @param angle rotation. Default = 0
-            @param flip option to flip spprite. Default = SDL_FLIP_NONE
-            @param center rotation center. Default = Point(-1,-1)  to set as center
-        */
-        static bool RendedTexture(Point texturePos,Point textureSize,SDL_Texture* texture,RectInt textureClip=RectInt(0,0,-1,-1),float angle=0,SDL_RendererFlip flip=SDL_FLIP_NONE,Point center=Point(-1,-1));
-        /**
-            *Given an sdl texture and some informations it will render the same way as class Sprite does
-            @param texturePos position of where it should be rendered.
-            @param textureSize texture height and width
-            @param texture the texture
-            @param angle rotation. Default = 0
-            @param flip option to flip spprite. Default = SDL_FLIP_NONE
-            @param center rotation center. Default = Point(-1,-1) to set as center
-        */
-        static bool RendedTexture(Point texturePos,Point textureSize,SDL_Texture* texture,float angle=0,SDL_RendererFlip flip=SDL_FLIP_NONE,Point center=Point(-1,-1)){
-            return RendedTexture(texturePos,textureSize,texture,RectInt(0,0,-1,-1),angle,flip,center);
-        }
+
+        static bool RendedTexture();
         /**
             *Draw a single pixel line. Does not be affected by scaling in is thickness
             @param x position x
@@ -47,19 +26,29 @@ class RenderHelp{
             @param b blue
             @param a alpha = 255
         */
-        static void DrawLineColorA(int x,int y,int x2,int y2,int r,int g,int b,int a=255);
-        static void DrawSquareColorA(Rect box,int r,int g,int b,int a=255,bool outline=false){
-            DrawSquareColorA(box.x,box.y,box.w,box.h,r,g,b,a,outline);
-        };
+        static void DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f);
 
-        static void DrawSquareColorA(int x,int y,int w,int h,int r,int g,int b,int a=255,bool outline=false);
-
-        static void DrawSquareColor(int x,int y,int w,int h,int r,int g,int b,int a=255,bool outline=false){
-            DrawSquareColorA( x, y, w, h, r, g, b, a,outline);
+        static void DrawLineColor(int x,int y,int x2,int y2,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f){
+            DrawLineColor(Point(x,y),Point(x2,y2),r,g,b,a,thickness);
         }
 
-        static void DrawSquareColorANS(int x,int y,int w,int h,int r,int g,int b,int a=255);
-        static void DrawSquareColorUnscaled(int x,int y,int w,int h,int r,int g,int b,int a=255);
+        static void DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false,float angle=0);
+
+        static void DrawSquareColorA(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false,float angle=0){
+            DrawSquareColor(box,r,g,b,a,outline,angle);
+        };
+
+        static void DrawSquareColorA(int x,int y,int w,int h,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false,float angle=0){
+            DrawSquareColorA(Rect(x,y,w,h),r,g,b,a,outline,angle);
+        }
+        static void DrawSquareColor(int x,int y,int w,int h,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false,float angle=0){
+            DrawSquareColor(Rect(x,y,w,h),r,g,b,a,outline,angle);
+        }
+
+        static void DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,int sides = 16);
+
+
+
         static SmartTexture *GeneratePatternTexture(int x,int y,int width,int height,std::function<Uint32 (Uint32 , int, int)> F);
         static SmartTexture *GeneratePatternTexture(int x,int y,int width,int height);
 
@@ -120,7 +109,7 @@ class RenderHelp{
             @param b_color Blue
             @param alpha Alpha, default = 100.
         */
-        static void DrawCollisionBox(Rect &box,Point offset,int r_color,int g_color,int b_color,int alpha=100){
+        /*static void DrawCollisionBox(Rect &box,Point offset,int r_color,int g_color,int b_color,int alpha=100){
             RenderHelp::DrawSquareColorA(box.x-Camera::pos.x+offset.x,box.y-Camera::pos.y+offset.y,box.w,box.h,r_color,g_color,b_color,alpha);
         }
         static void DrawCollisionBox(Rect &box,int r_color,int g_color,int b_color,int alpha=100){
@@ -170,6 +159,8 @@ class RenderHelp{
             T.UpdateTexture();
             T.Render(PointInt(cb.x-Camera::pos.x-T.getW()/2 + offset.x,cb.y-Camera::pos.y-T.getW()/2 + offset.y));
         };
+
+        */
 
 };
 

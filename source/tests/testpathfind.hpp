@@ -51,7 +51,7 @@ class Test_PathFind: public State{
             Point first = finish;
             int iter = 0;
             for (auto &it : Path){
-                RenderHelp::DrawLineColorA(first.x+8,first.y+8,it.x+8,it.y+8,255,(iter/(float)Path.size())*255,0,255);
+                RenderHelp::DrawLineColor(first.x+8,first.y+8,it.x+8,it.y+8,255,(iter/(float)Path.size())*255,0,255);
                 first = it;
                 iter++;
             }

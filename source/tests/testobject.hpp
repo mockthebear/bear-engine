@@ -57,7 +57,7 @@ class TestObject: public GameObject{
     void Render(){
         float maxHealth = 5.0f;
         float colorChange = (health / maxHealth) * 255.0f;
-        RenderHelp::DrawCollisionBox(box,Camera::pos.x,255,colorChange,colorChange,255);
+        RenderHelp::DrawSquareColor(box,255,colorChange,colorChange,255);
     }
 
     bool IsDead(){
@@ -159,7 +159,7 @@ class TestObject2: public GameObject{
         void Render(){
             float maxHealth = 5.0f;
             float colorChange = (health / maxHealth) * 255.0f;
-            RenderHelp::DrawCollisionBox(box,Camera::pos.x,255,255-colorChange,255,255);
+            RenderHelp::DrawSquareColor(box,255,255-colorChange,255,255);
         }
 
         bool IsDead(){
