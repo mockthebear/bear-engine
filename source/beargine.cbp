@@ -15,9 +15,12 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++0x" />
+					<Add option="-pg" />
+					<Add option="-g" />
 					<Add option="-DIGNORESTEAM" />
 				</Compiler>
 				<Linker>
+					<Add option="-pg -lgmon" />
 					<Add option="-llua51" />
 					<Add option="-lMinGW32" />
 					<Add option="-lSDL2main" />
