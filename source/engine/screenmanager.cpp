@@ -66,25 +66,18 @@ bool ScreenManager::SetupOpenGL(){
 	SDL_GL_SwapWindow(m_window);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
 	glViewport( 0.f, 0.f, m_originalScreen.x, m_originalScreen.y );
 
-    //Initialize Projection Matrix
+
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
-
-    //Initialize Modelview Matrix
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
 
-    //Save the default modelview matrix
     glPushMatrix();
-
-    //Initialize clear color
     glClearColor( 0.f, 0.f, 0.f, 1.f );
-
+    return true;
 }
 
 SDL_Window* ScreenManager::StartScreen(std::string name){
@@ -102,9 +95,9 @@ SDL_Window* ScreenManager::StartScreen(std::string name){
     Uint32 flags = 0;
     //Todo: resizer
     if (ConfigManager::GetInstance().GetResizeAction() != RESIZE_BEHAVIOR_NORESIZE){
-        //flags |= SDL_WINDOW_RESIZABLE;
+        flags |= SDL_WINDOW_RESIZABLE;
     }
-    flags = SDL_WINDOW_OPENGL;
+    flags |= SDL_WINDOW_OPENGL;
     m_window = SDL_CreateWindow( name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screen.x, m_screen.y,flags); //SDL_WINDOW_RESIZABLE
     if (!m_window){
         bear::out << "[ScreenManager::StartScreen] Display size suported is "<<m_display.x<<"x"<<m_display.y<<".\n";
@@ -156,6 +149,7 @@ SDL_Renderer* ScreenManager::StartRenderer(){
 }
 
 void ScreenManager::RenderPresent(){
+    #ifndef RENDER_OPENGL
     if (m_defaultScreen){
         SetRenderTarget(m_defaultScreen);
     }
@@ -165,22 +159,26 @@ void ScreenManager::RenderPresent(){
     RenderHelp::DrawSquareColorA(-w/2.0,0,w/2.0,h + w/2.0,0,0,0,255);
     RenderHelp::DrawSquareColorA(-w/2.0,h,w*2,h/2.0,0,0,0,255);
     SDL_RenderPresent(m_renderer);
-
+    #else
+    SDL_GL_SwapWindow(m_window);
+    #endif // RENDER_OPENGL
 }
 void ScreenManager::PreRender(){
-    /*
+    #ifndef RENDER_OPENGL
     if (m_defaultScreen){
         SetRenderTarget(m_defaultScreen);
     }
     SDL_SetRenderDrawColor(m_renderer, 0,0,0, 0);
     SDL_RenderClear( m_renderer );
-    */
+    #else
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
+    #endif // RENDER_OPENGL
 }
 
 void ScreenManager::Render(){
-    /*if (m_defaultScreen)
+    #ifndef RENDER_OPENGL
+    if (m_defaultScreen)
         SetRenderTarget(nullptr);
     if (m_defaultScreen){
         //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
@@ -193,16 +191,20 @@ void ScreenManager::Render(){
         dimensions2.w = m_originalScreen.x*m_scaleRatio.x;
         SDL_RenderCopy(m_renderer,m_defaultScreen,nullptr,&dimensions2);
         //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
-    }*/
-    SDL_GL_SwapWindow(m_window);
+    }
+    #endif // RENDER_OPENGL
+
 }
 
 void ScreenManager::NotifyResized(){
     int newW,newH;
     SDL_GetWindowSize(m_window, &newW, &newH);
+
+
+
+
     if (GameBehavior::GetInstance().OnResize(newW,newH)){
-        m_screen.x = newW;
-        m_screen.y = newH;
+        glViewport(m_offsetScreen.x, 0,m_screen.x, m_screen.y);
     }
 
 }
@@ -240,11 +242,26 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
 
 
     if (behave == RESIZE_SCALE){
+        /*
+            Strech screen to maintain an scale ratio
+        */
         m_scaleRatio.x = std::min(m_scaleRatio.x,m_scaleRatio.y);
         m_scaleRatio.y = std::min(m_scaleRatio.x,m_scaleRatio.y);
+
+        Point aux = m_originalScreen;
+        aux.x *= m_scaleRatio.x;
+        aux.y *= m_scaleRatio.y;
+        m_screen.x = aux.x;
+        m_screen.y = aux.y;
+
+    }else{
+        m_screen.x = w;
+        m_screen.y = h;
     }
 
-    if (w < m_originalScreen.x*m_scaleRatio.x || h < m_originalScreen.y*m_scaleRatio.y){
+
+    //todo: Screen size less than original
+    /*if (w < m_originalScreen.x*m_scaleRatio.x || h < m_originalScreen.y*m_scaleRatio.y){
         Point ValidScale = m_scaleRatio;
         Point LocalScale = m_scaleRatio;
         while(m_originalScreen.x*LocalScale.x > w || m_originalScreen.y*LocalScale.y > h){
@@ -254,9 +271,9 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
             LocalScale.y = round(ValidScale.y*8.0)/8.0;
         }
         m_scaleRatio = LocalScale;
-    }
+    }*/
 
-    m_offsetScreen.x = m_originalScreen.x == w ? 0 : w/2 - (m_originalScreen.x/2)*m_scaleRatio.x;
+    m_offsetScreen.x = m_originalScreen.x == w ? 0 : w/2 - m_screen.x/2;
 }
 
 void ScreenManager::SetScreenName(std::string name){
@@ -289,11 +306,14 @@ void ScreenManager::Update(float dt){
     }
 }
 int ScreenManager::SetRenderTarget(SDL_Texture *t,bool trueNull){
+    //todo: texture targeting
+    /*
     if (t == nullptr && m_defaultScreen){
         //return SDL_SetRenderTarget(m_renderer,m_defaultScreen);
     }
     if (trueNull){
         return SDL_SetRenderTarget(m_renderer,m_defaultScreen);
     }
+    */
     return SDL_SetRenderTarget(m_renderer,t);
 }
