@@ -1,5 +1,5 @@
 #include "../settings/definitions.hpp"
-#include SDL_LIB_HEADER
+
 
 
 #ifndef SPRITEHA
@@ -11,8 +11,14 @@
 #include <unordered_map>
 #include <map>
 #include <string>
-#include <GL/glew.h>
+
 #include <memory>
+
+#include SDL_LIB_HEADER
+
+#ifdef RENDER_OPENGL
+#include GLEW_LIB_HEADER
+
 class BearTexture{
     public:
         BearTexture(){
@@ -28,6 +34,9 @@ class BearTexture{
 
 };
 typedef chain_ptr<BearTexture> TexturePtr;
+#else
+typedef chain_ptr<SDL_Texture> TexturePtr;
+#endif // RENDER_OPENGL
 
 /**
  * @brief Color replacing filter class to use on load
@@ -405,19 +414,6 @@ class Sprite{
         void SetScaleX(float scale=1){
             scaleX=scale;
         };
-        /**
-            *Change the sprite scale. Its an local scale, not shared.
-            @param scale the original value is 1.
-        */
-
-        void SetCenteredScale(bool set,Point sprSize=Point(0,0)){
-            scaleCentered = set;
-            if (sprSize.x == 0.0f || sprSize.y == 0.0f){
-                widSize = Point(clipRect.w,clipRect.h);
-            }else{
-                widSize = sprSize;
-            }
-        }
 
         void SetScaleY(float scale=1){
             scaleY=scale;
@@ -443,11 +439,12 @@ class Sprite{
             @param Green [0-255] The default is 255 of all sprites;
         */
         void ReBlend(uint8_t Red,uint8_t Blue,uint8_t Green){
-            /*OUTR = Red;
-            OUTB = Blue;
-            OUTG = Green;
-            SDL_SetTextureColorMod((textureShred.get()),OUTR,OUTB,OUTG);*/
-            //todo: remake
+            OUTR = Red/255.0f;
+            OUTB = Blue/255.0f;
+            OUTG = Green/255.0f;
+            #ifndef RENDER_OPENGL
+            SDL_SetTextureColorMod((textureShred.get()),OUTR*255,OUTB*255,OUTG*255);
+            #endif // RENDER_OPENGL
         };
         /**
             *Changed the sprite alpha
@@ -456,13 +453,14 @@ class Sprite{
             @param alpha [0-255] The default is 255 of all sprites;
         */
         void SetAlpha(uint8_t alpha){
-            m_alpha = alpha;
-            //todo: remake
-            //SDL_SetTextureAlphaMod((textureShred.get()),alpha);
+            m_alpha = alpha/255.0f;
+            #ifndef RENDER_OPENGL
+            SDL_SetTextureAlphaMod((textureShred.get()),alpha);
+            #endif // RENDER_OPENGL
         };
 
         uint8_t GetAlpha(){
-            return m_alpha;
+            return m_alpha*255;
         };
         /**
             *Duplicate the texture
@@ -509,21 +507,27 @@ class Sprite{
         bool aliasing;
         TexturePtr textureShred;
         friend class AssetMannager;
+
         SDL_RendererFlip sprFlip;
         std::string fname;
-        uint8_t OUTR,OUTB,OUTG;
-        uint8_t m_alpha;
+        float OUTR,OUTB,OUTG;
+        float m_alpha;
         float scaleX,scaleY,timeElapsed,frameTime;
         int over;
         int repeat;
         int frameCount;
         PointInt currentFrame;
         PointInt grid;
-        SDL_Rect dimensions;
-        SDL_Rect clipRect;
-        SDL_Point center;
-        Point widSize;
-        bool hasCenter,scaleCentered;
+        Rect dimensions;
+        Rect clipRect;
+        Point center;
+        bool hasCenter;
+
+
+        GLfloat texLeft;
+        GLfloat texRight;
+        GLfloat texTop;
+        GLfloat texBottom;
 };
 
 

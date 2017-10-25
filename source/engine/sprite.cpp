@@ -36,11 +36,10 @@ Sprite::Sprite(){
     repeat = 1;
     hasCenter = false;
     aliasing = false;
-    m_alpha = 255;
+    m_alpha = 1.0f;
     fname = "";
     over = 0;
-    scaleCentered = false;
-    OUTR = OUTB = OUTG = 255;
+    OUTR = OUTB = OUTG = 1.0f;
     timeElapsed = 0;
     frameTime = 0;
     sprFlip = SDL_FLIP_NONE;
@@ -49,7 +48,7 @@ Sprite::Sprite(){
 
 Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
     textureShred = texture_;
-     frameCount = fcount;
+    frameCount = fcount;
     repeat = rep;
     frameTime = ftime;
     fname = alias;
@@ -375,64 +374,59 @@ void Sprite::SetClip(int x, int y,int w,int h){
 
 
 void Sprite::Render(PointInt pos,double angle){
-
-   /* double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1
-    double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1
+    #ifndef RENDER_OPENGL
+    double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
+    double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
     dimensions2.x = pos.x*scaleRatioW + ScreenManager::GetInstance().GetOffsetW();
     dimensions2.y = pos.y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH();
     dimensions2.h = clipRect.h*scaleRatioH*scaleY;
     dimensions2.w = clipRect.w*scaleRatioW*scaleX;
-    SDL_RenderCopyEx(BearEngine->GetRenderer(),textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip);*/
-
+    SDL_RenderCopyEx(BearEngine->GetRenderer(),textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip);
+    #else
     if (IsLoaded()){
         glLoadIdentity();
-
-
-
-        glTranslatef( pos.x, pos.y, 0.f );
-        glRotatef(angle,0.0,0.0,1.0);
-
-
-
-
-
-        //Set texture ID
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         glEnable(GL_TEXTURE_2D);
-        glBindTexture( GL_TEXTURE_2D, textureShred.get()->id );
+        glColor4f(OUTR, OUTG, OUTB, m_alpha);
+        float w = dimensions.w;
+        float h = dimensions.h;
+
+        texLeft = clipRect.x / (float)w;
+        texRight = ( clipRect.x + clipRect.w ) / (float)w;
+        texTop = clipRect.y / (float)h;
+        texBottom = ( clipRect.y + clipRect.h ) / (float)h;
+
+        GLfloat quadWidth = clipRect.w ;
+        GLfloat quadHeight = clipRect.h ;
+        glTranslatef(
+                     (pos.x   + quadWidth / 2.f  ),
+                     (pos.y  + quadHeight/ 2.f  ),
+                       0.f );
+
+        if (sprFlip == SDL_FLIP_HORIZONTAL){
+            texLeft = texLeft * -1.0f;
+            texRight = texRight * -1.0f;
+        }
+        if (sprFlip == SDL_FLIP_VERTICAL){
+            texTop = texTop * -1.0f;
+            texBottom = texBottom * -1.0f;
+        }
 
 
-        float textureW = dimensions.w;
-        float textureH = dimensions.h;
+        glRotatef( angle, 0.f, 0.f, 1.f );
 
-        //Render textured quad
-        float renderSizex = clipRect.w*scaleY;
-        float renderSizey = clipRect.h*scaleY;
-
-
-
-
-        float clipX = clipRect.x;
-        float clipY = clipRect.y;
-
-        float clipW = clipRect.w;
-        float clipH = clipRect.h;
-
-        float clipaX = clipX/textureW;
-        float clipaY = clipY/textureH;
-        float clipaW = clipaX + clipW/textureW;
-        float clipaH = clipaY + clipH/textureH;
+         glBindTexture( GL_TEXTURE_2D, textureShred.get()->id );
 
         glBegin( GL_QUADS );
-            glTexCoord2f( clipaX, clipaY ); glVertex2f(           0.f,            0.f );
-            glTexCoord2f( clipaW, clipaY ); glVertex2f( renderSizex,            0.f );
-            glTexCoord2f( clipaW, clipaH ); glVertex2f( renderSizex, renderSizey );
-            glTexCoord2f( clipaX, clipaH ); glVertex2f(           0.f, renderSizey );
+            glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
+            glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
+            glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
+            glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
         glEnd();
 
         glDisable(GL_TEXTURE_2D);
         glPopMatrix();
     }
+    #endif // RENDER_OPENGL
 
 
 }

@@ -14,7 +14,7 @@ class Test_Sprite: public State{
         Test_Sprite():State(){
 
             requestQuit = requestDelete = false;
-            duration = 50.0f;
+            duration = 600.0f;
 
         };
         ~Test_Sprite(){
@@ -39,6 +39,12 @@ class Test_Sprite: public State{
             bear::out << "Loading from alias\n";
             raccoonHead = Assets.make<Sprite>("someFancyName");
             cursor = Assets.make<Sprite>("otherRaccoon");
+            sheet = Assets.make<Sprite>("data/totem.png");
+
+            sheet.SetGrid(32,64);
+            sheet.SetFrame(0,0);
+            sheet.SetFrameCount(4);
+            sheet.SetFrameTime(0.2);
             /*
                 Would give the same result.
                 raccoonHead = Assets.make<Sprite>("someFancyName");
@@ -47,6 +53,9 @@ class Test_Sprite: public State{
 
 
             */
+
+            tiles = Assets.make<Sprite>("data/tiles.png");
+            tiles.SetGrid(32,32);
 
             bear::out << "Opening resources\n";
             if (!ResourceManager::GetInstance().Load("test.burr","test")){
@@ -66,6 +75,7 @@ class Test_Sprite: public State{
 
         void Update(float dt){
             duration -= dt;
+            sheet.Update(dt);
             if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
                 requestDelete = true;
             }
@@ -75,6 +85,13 @@ class Test_Sprite: public State{
             background.Render(0,0);
             bearHead.Render(Point(64,64),duration * 3.6f * 2.0f);
             raccoonHead.Render(Point(120,64),0);
+            sheet.Render(200,200);
+            for (int i=0;i<20;i++){
+                tiles.SetFrame(i%12,0);
+                tiles.Render(32*i,264);
+                tiles.SetFrame((i+1)%12,0);
+                tiles.Render(32*i,296);
+            }
             cursor.Render(g_input.GetMouse());
         };
         void Input();
@@ -88,6 +105,8 @@ class Test_Sprite: public State{
         Sprite bearHead;
         Sprite raccoonHead;
         Sprite cursor;
+        Sprite sheet;
+        Sprite tiles;
         float duration;
 };
 

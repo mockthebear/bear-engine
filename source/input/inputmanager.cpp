@@ -295,10 +295,10 @@ bool InputManager::IsMousePressed(int key){
 
 
 int InputManager::GetMouseX(){
-    return (mouse.position.x -   ScreenManager::GetInstance().GetOffsetW())/ScreenManager::GetInstance().GetScaleRatioW();
+    return (mouse.position.x -  ScreenManager::GetInstance().GetOffsetW()) / ScreenManager::GetInstance().GetScaleRatioW();
 }
 int InputManager::GetMouseY(){
-    return (mouse.position.y-  ScreenManager::GetInstance().GetOffsetH())/ScreenManager::GetInstance().GetScaleRatioH() ;
+    return (mouse.position.y -  ScreenManager::GetInstance().GetOffsetH()) / ScreenManager::GetInstance().GetScaleRatioH();
 }
 
 int InputManager::GetMouseMousePressKey(){
