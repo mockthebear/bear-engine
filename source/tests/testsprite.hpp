@@ -5,6 +5,7 @@
 #include "../performance/console.hpp"
 #include "../engine/sprite.hpp"
 #include "../engine/renderhelp.hpp"
+#include "../engine/shadermanager.hpp"
 
 #include "../framework/resourcemanager.hpp"
 
@@ -68,6 +69,8 @@ class Test_Sprite: public State{
             bearHead = Assets.make<Sprite>("test:bear.png",1,0,1,TEXTURE_TRILINEAR);
             bear::out << "Sprites loaded.\n";
 
+            g_shader.Compile("engine/vertex.glvs","engine/color.glfs");
+
 
 
         };
@@ -83,7 +86,9 @@ class Test_Sprite: public State{
 
         };
         void Render(){
+            g_shader.Bind();
             background.Render(0,0);
+            g_shader.Unbind();
             RenderHelp::DrawSquareColor(10,10,SCREEN_SIZE_W-20,SCREEN_SIZE_H-20,255,0,255,255,true);
             bearHead.Render(Point(64,64),duration * 3.6f * 2.0f);
             raccoonHead.Render(Point(120,64),0);

@@ -144,6 +144,8 @@
 		<Unit filename="engine/renderhelp.hpp" />
 		<Unit filename="engine/screenmanager.cpp" />
 		<Unit filename="engine/screenmanager.hpp" />
+		<Unit filename="engine/shadermanager.cpp" />
+		<Unit filename="engine/shadermanager.hpp" />
 		<Unit filename="engine/shooteffect.cpp" />
 		<Unit filename="engine/shooteffect.hpp" />
 		<Unit filename="engine/smarttexture.cpp" />
