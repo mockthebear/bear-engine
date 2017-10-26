@@ -25,7 +25,7 @@ class Test_Sprite: public State{
             bear::out << "Testing Load sprite from an direct file:\n";
 
             //Loading the same sprite twice, and seting an nickname and use anti aliasing
-            Assets.load<Sprite>("data/raccoon.png","someFancyName",true);
+            Assets.load<Sprite>("data/raccoon.png","someFancyName");
             ColorReplacer r;
 
             /*
@@ -33,13 +33,14 @@ class Test_Sprite: public State{
             */
             bear::out << "Testing Load with color replacing\n";
             r.AddReplacer(RenderHelp::FormatRGBA(255,255,255,255),RenderHelp::FormatRGBA(255,0,0,255));
-            Assets.load<Sprite>("data/raccoon.png","otherRaccoon",r);
+            Assets.load<Sprite>("data/raccoon.png","otherRaccoon",r,TEXTURE_TRILINEAR);
 
 
             bear::out << "Loading from alias\n";
             raccoonHead = Assets.make<Sprite>("someFancyName");
             cursor = Assets.make<Sprite>("otherRaccoon");
             sheet = Assets.make<Sprite>("data/totem.png");
+            smol = Assets.make<Sprite>("data/doge death.png");
 
             sheet.SetGrid(32,64);
             sheet.SetFrame(0,0);
@@ -64,7 +65,7 @@ class Test_Sprite: public State{
             }
             bear::out << "Load right from resources\n";
             background = Assets.make<Sprite>("test:wall.jpg");
-            bearHead = Assets.make<Sprite>("test:bear.png");
+            bearHead = Assets.make<Sprite>("test:bear.png",1,0,1,TEXTURE_TRILINEAR);
             bear::out << "Sprites loaded.\n";
 
 
@@ -83,6 +84,7 @@ class Test_Sprite: public State{
         };
         void Render(){
             background.Render(0,0);
+            RenderHelp::DrawSquareColor(10,10,SCREEN_SIZE_W-20,SCREEN_SIZE_H-20,255,0,255,255,true);
             bearHead.Render(Point(64,64),duration * 3.6f * 2.0f);
             raccoonHead.Render(Point(120,64),0);
             sheet.Render(200,200);
@@ -92,6 +94,8 @@ class Test_Sprite: public State{
                 tiles.SetFrame((i+1)%12,0);
                 tiles.Render(32*i,296);
             }
+            smol.SetScale(Point(8,8));
+            smol.Render(300,300,0);
             cursor.Render(g_input.GetMouse());
         };
         void Input();
@@ -107,6 +111,7 @@ class Test_Sprite: public State{
         Sprite cursor;
         Sprite sheet;
         Sprite tiles;
+        Sprite smol;
         float duration;
 };
 

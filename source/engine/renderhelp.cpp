@@ -25,7 +25,7 @@ GLuint powerOfTwo( GLuint num )
 }
 
 
-BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface){
+BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod aliasing){
     if (!surface){
         return nullptr;
     }
@@ -57,8 +57,20 @@ BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface){
     unsigned int pow_w =  powerOfTwo(surface->w);
     unsigned int pow_h =  powerOfTwo(surface->h);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    switch (aliasing){
+        case TEXTURE_NEARST:
+            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+            break;
+        case TEXTURE_LINEAR:
+            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+            break;
+        case TEXTURE_TRILINEAR:
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            break;
+    }
 
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pow_w, pow_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
@@ -69,7 +81,10 @@ BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface){
     glBindTexture(GL_TEXTURE_2D, 0);
 
     SDL_FreeSurface(img_rgba8888);
-    return new BearTexture(texId,pow_w, pow_h,GL_RGBA);
+    BearTexture *t = new BearTexture(texId,pow_w, pow_h,GL_RGBA);
+    t->size_w = surface->w;
+    t->size_h = surface->h;
+    return t;
 }
 
 void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8_t b,uint8_t a,int sides){

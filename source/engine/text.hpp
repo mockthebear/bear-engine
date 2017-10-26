@@ -180,8 +180,14 @@ class Text{
         /**
             *Empty constructor is almost empty
         */
+        #ifndef RENDER_OPENGL
         Text():box(),bg({100,100,120,255}),angle(0),fontfile(""),text(""),style(TEXT_SOLID),size(),scaleY(1.0f),scaleX(1.0f),
         color({255,255,255,255}),alpha(255),font(nullptr),texture(nullptr),texturespr(nullptr),isWorking(false),aliasing(false){};
+        #else
+        Text():box(),bg({100,100,120,255}),angle(0),fontfile(""),text(""),style(TEXT_SOLID),size(),scaleY(1.0f),scaleX(1.0f),
+        color({255,255,255,255}),alpha(255),font(nullptr),isWorking(false),texture(nullptr),aliasing(TEXTURE_LINEAR),texturespr(nullptr){};
+        #endif // RENDER_OPENGL
+
 
 
         /**
@@ -255,11 +261,17 @@ class Text{
         }
 
         void InternalSetFont(std::string fnt);
-
+        #ifndef RENDER_OPENGL
         void SetAliasign(bool al){
+        #else
+        void SetAliasign(TextureLoadMethod al){
+        #endif // RENDER_OPENGL
             aliasing = al;
             RemakeTexture();
+
         }
+
+
 
         /**
             *Clear assetTable
@@ -345,14 +357,19 @@ class Text{
         int alpha;
 
         TTF_Font* font;
+        bool isWorking;
         #ifndef RENDER_OPENGL
         SDL_Texture* texture;
+        bool aliasing;
         #else
         BearTexture* texture;
+        TextureLoadMethod aliasing;
         #endif // RENDER_OPENGL
         CustomFont *texturespr;
 
-		bool isWorking,aliasing;
+
+
+
 
 };
 

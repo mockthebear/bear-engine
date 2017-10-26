@@ -32,7 +32,7 @@ AssetMannager::~AssetMannager(){
 }
 
 
-TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string alias,bool hasAliasing) {
+TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string alias,TextureLoadMethod hasAliasing) {
     if (alias == ""){
         alias = str;
     }
@@ -62,7 +62,11 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string al
     return spriteMap[alias];
 }
 
-TexturePtr AssetMannager::makeTexture(bool forced,std::string str,int ,float,int,bool hasAliasing) {
+TexturePtr AssetMannager::makeTexture(bool forced,std::string str,TextureLoadMethod hasAliasing) {
+    return makeTexture(forced,str,1,0,1,hasAliasing);
+};
+
+TexturePtr AssetMannager::makeTexture(bool forced,std::string str,int ,float,int,TextureLoadMethod hasAliasing) {
     if (!spriteMap[str] || forced){
         BearTexture* c =Sprite::Preload((char*)str.c_str(),true,hasAliasing);
         if (!c){
@@ -89,12 +93,12 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,int ,float,int
     return spriteMap[str];
 }
 
-TexturePtr AssetMannager::makeTexture(bool forced,SDL_RWops* rw,std::string str,bool hasAntiAliasign)  {
+TexturePtr AssetMannager::makeTexture(bool forced,SDL_RWops* rw,std::string str,TextureLoadMethod hasAliasing)  {
     if (!spriteMap[str] || forced){
         if (!rw){
             return TexturePtr();
         }
-        BearTexture* c =Sprite::Preload(rw,str,hasAntiAliasign);
+        BearTexture* c =Sprite::Preload(rw,str,hasAliasing);
         if (!c){
             Console::GetInstance().AddTextInfoF("Failed to create. %s in %d",str,id);
             return TexturePtr();
@@ -122,12 +126,12 @@ TexturePtr AssetMannager::makeTexture(bool forced,SDL_RWops* rw,std::string str,
     return spriteMap[str];
 }
 
-TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string alias,ColorReplacer &r,bool HasAliasing)  {
+TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string alias,ColorReplacer &r,TextureLoadMethod hasAliasing)  {
     if (alias == ""){
         alias = str;
     }
     if (!spriteMap[alias] || forced){
-        BearTexture* c =Sprite::Preload(str,r,HasAliasing);
+        BearTexture* c =Sprite::Preload(str,r,hasAliasing);
         if (!c){
             return TexturePtr();
         }
@@ -154,9 +158,9 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string al
     return spriteMap[alias];
 }
 
-TexturePtr AssetMannager::makeTexture(bool forced,std::string str,ColorReplacer &r,bool HasAliasing)  {
+TexturePtr AssetMannager::makeTexture(bool forced,std::string str,ColorReplacer &r,TextureLoadMethod hasAliasing)  {
     if (!spriteMap[str] || forced){
-        BearTexture* c =Sprite::Preload(str,r,HasAliasing);
+        BearTexture* c =Sprite::Preload(str,r,hasAliasing);
         if (!c){
             return TexturePtr();
         }

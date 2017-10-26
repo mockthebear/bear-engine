@@ -320,6 +320,12 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
 
         GLfloat quadWidth =  box.w ;
         GLfloat quadHeight = box.h ;
+
+
+        texRight = (  texture->size_w ) / (float)texture->w;
+        texBottom = ( texture->size_h ) / (float)texture->h;
+
+
         glTranslatef(
                      (cameraX   + quadWidth / 2.f  ),
                      (cameraY  + quadHeight/ 2.f  ),
@@ -477,11 +483,11 @@ void Text::RemakeTexture(bool Destory){
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
         SDL_FreeSurface(surf);
         #else
-        texture = RenderHelp::SurfaceToTexture(surf);
+        texture = RenderHelp::SurfaceToTexture(surf,aliasing);
         SDL_FreeSurface(surf);
         if (texture){
-            box.w = texture->w;
-            box.h = texture->h;
+            box.w = texture->size_w;
+            box.h = texture->size_h;
         }
         #endif // RENDER_OPENGL
     }else{

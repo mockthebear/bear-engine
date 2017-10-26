@@ -204,7 +204,7 @@ void ScreenManager::NotifyResized(){
 
 
     if (GameBehavior::GetInstance().OnResize(newW,newH)){
-        glViewport(m_offsetScreen.x, 0,m_screen.x, m_screen.y);
+        glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
     }
 
 }
@@ -261,7 +261,7 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
 
 
     //todo: Screen size less than original
-    /*if (w < m_originalScreen.x*m_scaleRatio.x || h < m_originalScreen.y*m_scaleRatio.y){
+    if (w < m_originalScreen.x*m_scaleRatio.x || h < m_originalScreen.y*m_scaleRatio.y){
         Point ValidScale = m_scaleRatio;
         Point LocalScale = m_scaleRatio;
         while(m_originalScreen.x*LocalScale.x > w || m_originalScreen.y*LocalScale.y > h){
@@ -271,9 +271,15 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
             LocalScale.y = round(ValidScale.y*8.0)/8.0;
         }
         m_scaleRatio = LocalScale;
-    }*/
+        Point aux = m_originalScreen;
+        aux.x *= m_scaleRatio.x;
+        aux.y *= m_scaleRatio.y;
+        m_screen.x = aux.x;
+        m_screen.y = aux.y;
+    }
 
     m_offsetScreen.x = m_originalScreen.x == w ? 0 : w/2 - m_screen.x/2;
+    m_offsetScreen.y = m_originalScreen.y == h ? 0 : h/2 - m_screen.y/2;
 }
 
 void ScreenManager::SetScreenName(std::string name){
