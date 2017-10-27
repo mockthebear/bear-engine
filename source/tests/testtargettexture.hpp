@@ -31,11 +31,11 @@ class Test_TargetTexture: public State{
         void Render(){
             background.Render(0,0,0);
             targ.Bind();
-            background.Render(0,0,0);
+            background.Render(0,0,45);
 
 
             glLoadIdentity();
-            glTranslatef(4,400, 0.0f);
+            glTranslatef(4,4, 0.0f);
 
             glBegin( GL_QUADS );
                 glColor4ub( 255,255,120,240 );
@@ -48,7 +48,7 @@ class Test_TargetTexture: public State{
 
             RenderHelp::DrawCircleColor(Point(400-64,400 - 64),32,255,0,255,255);
             targ.UnBind();
-            targ.Render(Point(0,0));
+            targ.Render(Point(32,32));
 
             RenderHelp::DrawCircleColor(Point(400,400),200,0,0,255,155);
 

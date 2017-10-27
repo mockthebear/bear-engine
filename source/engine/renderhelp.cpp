@@ -297,7 +297,8 @@ bool TargetTexture::Bind(){
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &lastbuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
     //glOrtho( 0.0, 100,100, 0.0, 1.0, -1.0 );
-    //glViewport(0,0,w,h);
+    Point gameCanvas = ScreenManager::GetInstance().GetGameSize();
+    glViewport(0,h-gameCanvas.y,gameCanvas.x,gameCanvas.y);
 
     return true;
 }
@@ -307,7 +308,7 @@ bool TargetTexture::UnBind(){
     glBindFramebuffer(GL_FRAMEBUFFER, lastbuffer);
     lastbuffer = 0;
     //glOrtho( 0.0, 800,600, 0.0, 1.0, -1.0 );
-    //ScreenManager::GetInstance().ResetViewpPort();
+    ScreenManager::GetInstance().ResetViewpPort();
     return true;
 }
 
