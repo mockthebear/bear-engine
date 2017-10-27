@@ -70,8 +70,8 @@ bool ScreenManager::SetupOpenGL(){
     }
 
 
-	glClearColor(0.0, 0.0, 0.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	SDL_GL_SwapWindow(m_window);
     glEnable(GL_BLEND);
@@ -101,8 +101,8 @@ bool ScreenManager::StartPostProcessing(){
     glBindTexture(GL_TEXTURE_2D, fbo_texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_originalScreen.x, m_originalScreen.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -242,7 +242,7 @@ void ScreenManager::RenderPresent(){
 
         glBindTexture(GL_TEXTURE_2D, fbo_texture);
         glEnable(GL_TEXTURE_2D);
-
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         float w = m_originalScreen.x;
         float h = m_originalScreen.y;
 
@@ -275,6 +275,10 @@ void ScreenManager::RenderPresent(){
         g_shader.Unbind();
     #endif // RENDER_OPENGL
 }
+
+void ScreenManager::ResetViewpPort(){
+    glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
+}
 void ScreenManager::PreRender(){
     #ifndef RENDER_OPENGL
     if (m_defaultScreen){
@@ -285,11 +289,15 @@ void ScreenManager::PreRender(){
     #else
 
     if (postProcess){
-        glClearColor( 1.f, 1.f, 1.f, 1.f );
 
+
+
+        glViewport(0,0,m_screen.x, m_screen.y+1);
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        glBindTexture( GL_TEXTURE_2D, 0 );
+        glClearColor( 0.f, 0.f, 0.f, 1.f );
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glViewport(0,0,m_screen.x, m_screen.y);
+        //RenderHelp::DrawSquareColor(Rect(0,0,m_originalScreen.x,m_originalScreen.y-1),0,0,0,255);
 
 
     }else{

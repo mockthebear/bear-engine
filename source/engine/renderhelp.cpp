@@ -252,3 +252,113 @@ Uint32 RenderHelp::FormatRGBA(int r,int g,int b,int a){
 Uint32 RenderHelp::FormatARGB(int a,int r,int b,int g){
     return a+(r<<8)+(g<<16)+(b<<24);
 }
+
+
+void TargetTexture::Render(Point pos){
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glLoadIdentity();
+
+        //
+
+
+        glBindTexture(GL_TEXTURE_2D, renderedTexture);
+        glEnable(GL_TEXTURE_2D);
+
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+        float ww = size_w;
+        float hw = size_h;
+
+        GLfloat  texLeft = 0.0f;
+        GLfloat  texRight =  1.0f;
+        GLfloat  texTop =  1.0f;
+        GLfloat  texBottom = 0.0f;
+        float quadWidth = size_w;
+        float quadHeight = size_h;
+
+        glTranslatef(
+                        (pos.x + quadWidth / 2.f  ),
+                        (pos.y + quadHeight/ 2.f  ),
+                        0.f );
+
+        glBegin( GL_QUADS );
+                glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
+                glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
+                glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
+                glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
+            glEnd();
+
+        glDisable(GL_TEXTURE_2D);
+        glBindTexture( GL_TEXTURE_2D, 0 );
+        glPopMatrix();
+
+}
+bool TargetTexture::Bind(){
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &lastbuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
+    //glOrtho( 0.0, 100,100, 0.0, 1.0, -1.0 );
+    //glViewport(0,0,w,h);
+
+    return true;
+}
+
+
+bool TargetTexture::UnBind(){
+    glBindFramebuffer(GL_FRAMEBUFFER, lastbuffer);
+    lastbuffer = 0;
+    //glOrtho( 0.0, 800,600, 0.0, 1.0, -1.0 );
+    //ScreenManager::GetInstance().ResetViewpPort();
+    return true;
+}
+
+bool TargetTexture::Generate(int wa,int ha){
+    size_w = w = wa;
+    size_h = h = ha;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &lastbuffer);
+
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1, &renderedTexture);
+    glBindTexture(GL_TEXTURE_2D, renderedTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, wa, ha, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    /* Depth buffer */
+    glGenRenderbuffers(1, &depthrenderbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, wa,ha);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+    /* Framebuffer to link everything together */
+    glGenFramebuffers(1, &Framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, renderedTexture, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
+
+
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    GLfloat fbo_vertices[] = {
+        -1, 1,
+        1,  1,
+        -1, -1,
+        1,  -1,
+    };
+    glGenBuffers(1, &vbo_fbo_vertices);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_fbo_vertices);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(fbo_vertices), fbo_vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindTexture( GL_TEXTURE_2D, 0 );
+    glBindFramebuffer(GL_FRAMEBUFFER, lastbuffer);
+    lastbuffer = 0;
+    return true;
+
+}
+
+
+

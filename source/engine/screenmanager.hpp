@@ -42,7 +42,7 @@ class ScreenManager{
             ShakingDuration = duration;
             shaking = true;
         };
-
+        void ResetViewpPort();
         bool MakeDefaultScreenAsTexture();
         bool ClearScreenTexture();
         void RenderPresent();

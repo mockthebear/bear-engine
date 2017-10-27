@@ -260,6 +260,7 @@
 		<Unit filename="tests/testpool.hpp" />
 		<Unit filename="tests/testshapes.hpp" />
 		<Unit filename="tests/testsprite.hpp" />
+		<Unit filename="tests/testtargettexture.hpp" />
 		<Unit filename="tests/testtext.hpp" />
 		<Unit filename="tests/testthread.cpp" />
 		<Unit filename="tests/testthread.hpp" />
