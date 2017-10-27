@@ -18,18 +18,17 @@ class TargetTexture : public BearTexture{
         Framebuffer = 0;
         renderedTexture = 0;
         depthrenderbuffer = 0;
-        lastbuffer = 0;
     };
     bool Generate(int w,int h);
     bool Bind();
-    bool UnBind();
+    static bool UnBind();
     void Render(Point pos);
 
     GLuint vbo_fbo_vertices;
     GLuint renderedTexture;
     GLuint Framebuffer;
     GLuint depthrenderbuffer;
-    GLint lastbuffer;
+    static GLint lastbuffer;
 };
 class RenderHelp{
     public:

@@ -2,6 +2,7 @@
 #include "../framework/geometry.hpp"
 #include "gamebase.hpp"
 #include "sprite.hpp"
+#include "renderhelp.hpp"
 
 /**
     @brief Fast rendering optmized tileset.
@@ -94,7 +95,7 @@ class SmartTileset{
     private:
 
         void RenderTile(int x,int y,int tile);
-        SDL_Texture *GetTextureFromPosition(int layer,int x,int y);
+        TargetTexture *GetTextureFromPosition(int layer,int x,int y);
         PointInt framesOnMap;
         PointInt tileSize;
         PointInt tilesetSize;
@@ -102,8 +103,8 @@ class SmartTileset{
         PointInt maxTextureSize;
         int Layers;
         int    ***tileMap;
-        SDL_Texture ****textureMap;
-        SDL_Texture *lastTarget;
+        TargetTexture ****textureMap;
+        TargetTexture *lastTarget;
         bool ***needRemake;
         bool isOnStream;
         bool isValid;

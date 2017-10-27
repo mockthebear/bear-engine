@@ -253,6 +253,7 @@ Uint32 RenderHelp::FormatARGB(int a,int r,int b,int g){
     return a+(r<<8)+(g<<16)+(b<<24);
 }
 
+GLint TargetTexture::lastbuffer = 0;
 
 void TargetTexture::Render(Point pos){
     //glBindFramebuffer(GL_FRAMEBUFFER, 0);
