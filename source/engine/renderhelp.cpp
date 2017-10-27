@@ -24,6 +24,46 @@ GLuint powerOfTwo( GLuint num )
     return num;
 }
 
+BearTexture* RenderHelp::CreateTexture(int width,int height,TextureLoadMethod aliasing){
+    GLuint texId=0;
+    glGenTextures(1, &texId);
+    if (texId == 0){
+        return nullptr;
+    }
+    glBindTexture(GL_TEXTURE_2D, texId);
+
+    unsigned int pow_w =  powerOfTwo(width);
+    unsigned int pow_h =  powerOfTwo(height);
+
+    switch (aliasing){
+        case TEXTURE_NEARST:
+            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+            break;
+        case TEXTURE_LINEAR:
+            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+            break;
+        case TEXTURE_TRILINEAR:
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            break;
+    }
+
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pow_w, pow_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width,height, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+
+    BearTexture *t2 = new BearTexture(texId,pow_w, pow_h,GL_RGBA);
+    t2->size_w = width;
+    t2->size_h = height;
+    return t2;
+}
 
 BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod aliasing){
     if (!surface){
@@ -46,13 +86,6 @@ BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod
         return nullptr;
     }
     glBindTexture(GL_TEXTURE_2D, texId);
-
-    /*
-    int Mode = GL_RGB;
-
-    if(surface->format->BytesPerPixel == 4) {
-        Mode = GL_RGBA;
-    }*/
 
     unsigned int pow_w =  powerOfTwo(surface->w);
     unsigned int pow_h =  powerOfTwo(surface->h);
@@ -92,11 +125,12 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
     //duh todo
     #else
     glLoadIdentity();
-
     glTranslatef(p1.x, p1.y, 0.0f);
 
+    glColor4ub( r,g,b,a );
+
     glBegin(GL_TRIANGLE_FAN);
-      glColor4ub( r,g,b,a );
+
       glVertex2f(0,0);
       GLfloat angle;
       for (int i = 0; i <= sides; i++) {
@@ -105,7 +139,7 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
       }
     glEnd();
 
-    glPopMatrix();
+    //glPopMatrix();
     #endif // RENDER_OPENGL
 }
 
@@ -155,7 +189,7 @@ void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,u
     #endif
 
 }
-
+/*
 SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h){
     //TODO: Remake
     SDL_Texture *t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, w, h);
@@ -190,7 +224,7 @@ SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h,std::fu
     SDL_UpdateTexture(t, NULL, pixels, w * sizeof(Uint32));
 	return new SmartTexture(t,pixels,x,y,h,w);
 }
-
+*/
 uint8_t RenderHelp::GetR(uint32_t r){
     return r&0xff;
 }

@@ -17,6 +17,7 @@ class Test_Text: public State{
             ScreenManager::GetInstance().SetScreenName("Test Text");
 
             title = Text("Basic text",34,{255,255,255});
+            title.RemakeTexture();
             underline = Text("hmmmmm",28,{100,100,100});
             rotating = Text("ui/UnB-Office_Regular.ttf",45,TEXT_SOLID,"Rotating",{255,33,180});
             rotating.SetAliasign(TEXTURE_TRILINEAR);

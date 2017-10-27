@@ -56,10 +56,12 @@ class ScreenManager{
         double GetOffsetH(){return (m_defaultScreen != nullptr ? 0 : m_offsetScreen.y)+shake.y;};
         void ResizeToScale(int w,int h,ResizeAction behave);
         float GetFps(){return m_fps;};
+
+        bool StartPostProcessing();
+    private:
         bool postProcess;
         GLuint frameBuffer,fbo_texture,rbo_depth,fbo,vbo_fbo_vertices;
 
-    private:
         SDL_GLContext m_glContext;
         SDL_Texture *m_defaultScreen;
         float m_fps;

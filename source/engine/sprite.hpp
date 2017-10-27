@@ -35,6 +35,17 @@ class BearTexture{
             size_w = size_h = 0;
             textureMode = TEXTURE_NEARST;
         };
+        GLuint DropTexture(){
+           GLuint ret = id;
+           id = 0;
+           return ret;
+        }
+        void ClearTexture(){
+            GLuint tex = DropTexture();
+            if (tex > 0)
+                glDeleteTextures(1, &tex);
+        }
+
         BearTexture(GLuint textureId,uint32_t width,uint32_t height,GLenum imgMode):id(textureId),w(width),h(height),mode(imgMode){};
         GLuint id;
         uint32_t w;

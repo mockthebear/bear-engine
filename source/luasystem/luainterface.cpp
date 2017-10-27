@@ -398,7 +398,9 @@ void LuaInterface::RegisterClasses()
 
         name = GenericLuaGetter<std::string>::Call(L);
 
-        Text *t = LuaReferenceCounter<Text>::makeReference(Text(name,size,color));
+        Text *t = new Text(name,size,color);
+        t->SetKeepAlive(true);
+        bear::out << "Created: " << (uint64_t)t<<"\n";
         t->RemakeTexture();
         return t;
     });

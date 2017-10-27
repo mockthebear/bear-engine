@@ -30,7 +30,7 @@ class Test_Shapes: public State{
             RenderHelp::DrawSquareColorA(Rect(98,220,64,64),255,100,100,255,true);
 
 
-            RenderHelp::DrawCircleColor(Point(98,220),32,100,100,255,255);
+            RenderHelp::DrawCircleColor(Point(98,220),32,100,100,255,100);
         };
         void Input();
         void Resume(){};

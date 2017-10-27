@@ -14,7 +14,7 @@ ScreenManager::~ScreenManager(){
 ScreenManager::ScreenManager(){
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
-    postProcess = true;
+    postProcess = false;
     ShakingDuration = 0;
     shaking = 0;
     shaking = false;
@@ -60,7 +60,7 @@ bool ScreenManager::SetupOpenGL(){
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetSwapInterval(1);
+    SDL_GL_SetSwapInterval(0);
 
     glewExperimental = GL_TRUE;
     GLenum glewError = glewInit();
@@ -86,51 +86,55 @@ bool ScreenManager::SetupOpenGL(){
     glLoadIdentity();
 
     glPushMatrix();
-    glClearColor( 0.f, 0.f, 0.f, 1.f );
+    glClearColor( 1.f, 1.f, 1.f, 1.f );
 
     if (postProcess){
-
-        glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1, &fbo_texture);
-        glBindTexture(GL_TEXTURE_2D, fbo_texture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_originalScreen.x, m_originalScreen.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-        glBindTexture(GL_TEXTURE_2D, 0);
-
-        /* Depth buffer */
-        glGenRenderbuffers(1, &rbo_depth);
-        glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_originalScreen.x, m_originalScreen.y);
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-        /* Framebuffer to link everything together */
-        glGenFramebuffers(1, &fbo);
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, fbo_texture, 0);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth);
-
-
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        GLfloat fbo_vertices[] = {
-            -1,  1,
-            1,  1,
-            -1,  -1,
-            1,  -1,
-        };
-        glGenBuffers(1, &vbo_fbo_vertices);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_fbo_vertices);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(fbo_vertices), fbo_vertices, GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
-        g_shader.Compile("engine/vertex.glvs","engine/color.glfs");
+        StartPostProcessing();
     }
     return true;
+}
+
+bool ScreenManager::StartPostProcessing(){
+    postProcess = true;
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1, &fbo_texture);
+    glBindTexture(GL_TEXTURE_2D, fbo_texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_originalScreen.x, m_originalScreen.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    /* Depth buffer */
+    glGenRenderbuffers(1, &rbo_depth);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_originalScreen.x, m_originalScreen.y);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+    /* Framebuffer to link everything together */
+    glGenFramebuffers(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, fbo_texture, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth);
+
+
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    GLfloat fbo_vertices[] = {
+        -1,  1,
+        1,  1,
+        -1,  -1,
+        1,  -1,
+    };
+    glGenBuffers(1, &vbo_fbo_vertices);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_fbo_vertices);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(fbo_vertices), fbo_vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+    g_shader.Compile("engine/vertex.glvs","engine/color.glfs");
 }
 
 SDL_Window* ScreenManager::StartScreen(std::string name){
@@ -151,14 +155,21 @@ SDL_Window* ScreenManager::StartScreen(std::string name){
         flags |= SDL_WINDOW_RESIZABLE;
     }
     flags |= SDL_WINDOW_OPENGL;
+    //flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+
+
+    //SDL_WINDOW_OPENGL |  |
+
     m_window = SDL_CreateWindow( name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screen.x, m_screen.y,flags); //SDL_WINDOW_RESIZABLE
+
     if (!m_window){
         bear::out << "[ScreenManager::StartScreen] Display size suported is "<<m_display.x<<"x"<<m_display.y<<".\n";
         bear::out << "[ScreenManager::StartScreen] Impossible to create"<<m_screen.x<<"x"<<m_screen.y<<" dummy display.\n";
         return NULL;
     }
     m_glContext = SDL_GL_CreateContext(m_window);
-
+    //Disable any fullscreen on startup. Necessary on linux to dont break the display
+    SDL_SetWindowFullscreen(m_window, SDL_FALSE);
     return m_window;
 }
 
@@ -215,13 +226,12 @@ void ScreenManager::RenderPresent(){
     #else
 
     if (postProcess){
-        glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
         glLoadIdentity();
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
+        glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
 
         g_shader.Bind();
 
@@ -233,15 +243,15 @@ void ScreenManager::RenderPresent(){
         glBindTexture(GL_TEXTURE_2D, fbo_texture);
         glEnable(GL_TEXTURE_2D);
 
-        float w = m_screen.x;
-        float h = m_screen.y;
+        float w = m_originalScreen.x;
+        float h = m_originalScreen.y;
 
         GLfloat  texLeft = 0.0f;
         GLfloat  texRight =  1.0f;
         GLfloat  texTop =  1.0f;
         GLfloat  texBottom = 0.0f;
-        float quadWidth = m_screen.x;
-        float quadHeight = m_screen.y;
+        float quadWidth = w;
+        float quadHeight = h;
 
         glTranslatef(
                         ( quadWidth / 2.f  ),
@@ -258,7 +268,9 @@ void ScreenManager::RenderPresent(){
 
         glPopMatrix();
     }
+    glFlush();
     SDL_GL_SwapWindow(m_window);
+
     if (postProcess)
         g_shader.Unbind();
     #endif // RENDER_OPENGL
@@ -271,15 +283,20 @@ void ScreenManager::PreRender(){
     SDL_SetRenderDrawColor(m_renderer, 0,0,0, 0);
     SDL_RenderClear( m_renderer );
     #else
+
     if (postProcess){
+        glClearColor( 1.f, 1.f, 1.f, 1.f );
+
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glViewport(0,0,m_screen.x, m_screen.y);
+
+
     }else{
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+        glClearColor( 0.f, 0.f, 0.f, 1.f );
     }
+
 
     #endif // RENDER_OPENGL
 }

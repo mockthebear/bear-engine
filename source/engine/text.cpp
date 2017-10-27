@@ -237,24 +237,15 @@ Text::Text(std::string fontfilep, std::string textp,int x,int y):Text(){
 
 }
 Text::~Text(){
-    if (texture){
-        #ifndef RENDER_OPENGL
-        SDL_DestroyTexture( texture );
-        #else
-        delete texture;
-        #endif // RENDER_OPENGL
-        texture = nullptr;
-    }
 }
 
 void Text::Close(){
     if (texture){
         #ifndef RENDER_OPENGL
         SDL_DestroyTexture( texture );
-        #else
-        delete texture;
-        #endif // RENDER_OPENGL
         texture = nullptr;
+        #endif // RENDER_OPENGL
+        //
         isWorking = false;
         font = nullptr;
         texturespr = nullptr;
@@ -447,15 +438,8 @@ void Text::RemakeTexture(bool Destory){
         box.h = p.y;
         return;
     }
-    if (texture && Destory){
-        #ifndef RENDER_OPENGL
-        SDL_DestroyTexture( texture );
-        #else
-        delete texture;
-        #endif // RENDER_OPENGL
-    }
 
-    texture = nullptr;
+
     SDL_Surface *surf=nullptr;
     if (!font){
         bear::out << "[TXT:RemakeTexture] there is no font\n";
@@ -483,9 +467,14 @@ void Text::RemakeTexture(bool Destory){
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
         SDL_FreeSurface(surf);
         #else
-        texture = RenderHelp::SurfaceToTexture(surf,aliasing);
+        BearTexture *b2 = RenderHelp::SurfaceToTexture(surf,aliasing);
         SDL_FreeSurface(surf);
-        if (texture){
+        if (b2){
+            texture = std::shared_ptr<BearTexture>(b2,[](BearTexture* bher)
+            {
+                bher->ClearTexture();
+                delete bher;
+            });
             box.w = texture->size_w;
             box.h = texture->size_h;
         }

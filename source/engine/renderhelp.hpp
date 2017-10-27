@@ -50,6 +50,8 @@ class RenderHelp{
 
         static BearTexture* SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod aliasing=TEXTURE_LINEAR);
 
+        static BearTexture* CreateTexture(int width,int height,TextureLoadMethod aliasing=TEXTURE_LINEAR);
+
 
         static SmartTexture *GeneratePatternTexture(int x,int y,int width,int height,std::function<Uint32 (Uint32 , int, int)> F);
         static SmartTexture *GeneratePatternTexture(int x,int y,int width,int height);

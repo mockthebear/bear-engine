@@ -87,13 +87,9 @@ class Test_Sprite: public State{
         };
         void Render(){
 
-            Point p = g_input.GetMouse();
-            p.y = p.y/(float)SCREEN_SIZE_H;
-            p.x = p.x/(float)SCREEN_SIZE_W;
-            glUniform2f(g_shader.GetUniformLocation("Cent2d"),p.x,p.y);
+
             background.Render(0,0,0);
             //
-            RenderHelp::DrawSquareColor(10,10,SCREEN_SIZE_W-20,SCREEN_SIZE_H-20,255,0,255,255,true);
             bearHead.Render(Point(64,64),duration * 3.6f * 2.0f);
             raccoonHead.Render(Point(120,64),0);
             sheet.Render(200,200);
@@ -106,6 +102,8 @@ class Test_Sprite: public State{
             smol.SetScale(Point(8,8));
             smol.Render(300,300,0);
             cursor.Render(g_input.GetMouse());
+            RenderHelp::DrawSquareColor(10,10,SCREEN_SIZE_W-20,SCREEN_SIZE_H-20,255,0,255,255,true);
+            RenderHelp::DrawCircleColor(Point(400,400),86,255,0,100,100);
 
         };
         void Input();
