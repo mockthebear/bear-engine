@@ -1,29 +1,28 @@
-/*This source code copyrighted by Lazy Foo' Productions (2004-2013)
-and may not be redestributed without written permission.*/
+#version 120
+uniform sampler2D myTexture;
+uniform vec2 Cent2d;
+const float PI = 3.1415926535;
+varying vec2 vTexCoord;
 
-//Texture Color
-uniform vec4 LTextureColor;
 
-//Texture Unit
-uniform sampler2D LTextureUnit;
 
-#if __VERSION__ >= 130
+void main(void)
 
-//Texture coordinate
-in vec2 texCoord;
-
-//Final color
-out vec4 gl_FragColor;
-
-#else
-
-//Texture coordinate
-varying vec2 texCoord;
-
-#endif
-
-void main()
 {
-	//Set fragment
-	gl_FragColor = texture( LTextureUnit, texCoord ) * LTextureColor;
+	
+   vec2 bulge;
+
+   float angle = atan( (vTexCoord.y-Cent2d.y) / ( vTexCoord.x-Cent2d.x) );
+   float dist = sqrt(pow(vTexCoord.x - Cent2d.x,2.0f) + pow(vTexCoord.y-Cent2d.y,2.0f));
+   float maxDist = 0.4f;
+
+   if (dist <= 0.1){
+   	bulge.x  = vTexCoord.x +  sin(angle)*dist/maxDist;
+   	bulge.y  = vTexCoord.y +  sin( angle - PI/2.0f)*dist/maxDist;
+   }else{
+   	bulge = vTexCoord;
+
+   }
+   vec4 auxColor = texture2D(myTexture, bulge).rgba;
+   gl_FragColor = auxColor;
 }

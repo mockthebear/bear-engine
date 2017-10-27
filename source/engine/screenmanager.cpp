@@ -2,6 +2,7 @@
 #include "../settings/configmanager.hpp"
 #include "../performance/console.hpp"
 #include "../framework/utils.hpp"
+#include "shadermanager.hpp"
 #include "renderhelp.hpp"
 #include __BEHAVIOR_FOLDER__
 #include "camera.hpp"
@@ -13,6 +14,7 @@ ScreenManager::~ScreenManager(){
 ScreenManager::ScreenManager(){
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
+    postProcess = true;
     ShakingDuration = 0;
     shaking = 0;
     shaking = false;
@@ -85,6 +87,49 @@ bool ScreenManager::SetupOpenGL(){
 
     glPushMatrix();
     glClearColor( 0.f, 0.f, 0.f, 1.f );
+
+    if (postProcess){
+
+        glActiveTexture(GL_TEXTURE0);
+        glGenTextures(1, &fbo_texture);
+        glBindTexture(GL_TEXTURE_2D, fbo_texture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_originalScreen.x, m_originalScreen.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        /* Depth buffer */
+        glGenRenderbuffers(1, &rbo_depth);
+        glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_originalScreen.x, m_originalScreen.y);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+        /* Framebuffer to link everything together */
+        glGenFramebuffers(1, &fbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, fbo_texture, 0);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth);
+
+
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        GLfloat fbo_vertices[] = {
+            -1,  1,
+            1,  1,
+            -1,  -1,
+            1,  -1,
+        };
+        glGenBuffers(1, &vbo_fbo_vertices);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_fbo_vertices);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(fbo_vertices), fbo_vertices, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+        g_shader.Compile("engine/vertex.glvs","engine/color.glfs");
+    }
     return true;
 }
 
@@ -155,7 +200,7 @@ SDL_Renderer* ScreenManager::StartRenderer(){
 
     return m_renderer;
 }
-
+#include "../input/inputmanager.hpp"
 void ScreenManager::RenderPresent(){
     #ifndef RENDER_OPENGL
     if (m_defaultScreen){
@@ -168,7 +213,54 @@ void ScreenManager::RenderPresent(){
     RenderHelp::DrawSquareColorA(-w/2.0,h,w*2,h/2.0,0,0,0,255);
     SDL_RenderPresent(m_renderer);
     #else
+
+    if (postProcess){
+        glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
+        glLoadIdentity();
+        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+
+        g_shader.Bind();
+
+        Point p = g_input.GetMouse();
+                p.y = p.y/(float)SCREEN_SIZE_H;
+                p.x = p.x/(float)SCREEN_SIZE_W;
+                glUniform2f(g_shader.GetUniformLocation("Cent2d"),p.x,1.0f-p.y);
+
+        glBindTexture(GL_TEXTURE_2D, fbo_texture);
+        glEnable(GL_TEXTURE_2D);
+
+        float w = m_screen.x;
+        float h = m_screen.y;
+
+        GLfloat  texLeft = 0.0f;
+        GLfloat  texRight =  1.0f;
+        GLfloat  texTop =  1.0f;
+        GLfloat  texBottom = 0.0f;
+        float quadWidth = m_screen.x;
+        float quadHeight = m_screen.y;
+
+        glTranslatef(
+                        ( quadWidth / 2.f  ),
+                        ( quadHeight/ 2.f  ),
+                        0.f );
+
+        glBegin( GL_QUADS );
+                glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
+                glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
+                glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
+                glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
+            glEnd();
+
+
+        glPopMatrix();
+    }
     SDL_GL_SwapWindow(m_window);
+    if (postProcess)
+        g_shader.Unbind();
     #endif // RENDER_OPENGL
 }
 void ScreenManager::PreRender(){
@@ -179,8 +271,16 @@ void ScreenManager::PreRender(){
     SDL_SetRenderDrawColor(m_renderer, 0,0,0, 0);
     SDL_RenderClear( m_renderer );
     #else
-    glClearColor(0.0, 0.0, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    if (postProcess){
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+        glViewport(0,0,m_screen.x, m_screen.y);
+    }else{
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    }
+
     #endif // RENDER_OPENGL
 }
 
@@ -212,7 +312,17 @@ void ScreenManager::NotifyResized(){
 
 
     if (GameBehavior::GetInstance().OnResize(newW,newH)){
-        glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
+        if (postProcess){
+            glBindTexture(GL_TEXTURE_2D, fbo_texture);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_screen.x, m_screen.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_screen.x, m_screen.y);
+            glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        }else{
+            glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
+        }
     }
 
 }

@@ -24,6 +24,71 @@ void Shader::Close(){
 }
 
 
+void Shader::printProgramLog( GLuint program )
+{
+	//Make sure name is shader
+	if( glIsProgram( program ) )
+	{
+		//Program log length
+		int infoLogLength = 0;
+		int maxLength = infoLogLength;
+
+		//Get info string length
+		glGetProgramiv( program, GL_INFO_LOG_LENGTH, &maxLength );
+
+		//Allocate string
+		char* infoLog = new char[ maxLength ];
+
+		//Get info log
+		glGetProgramInfoLog( program, maxLength, &infoLogLength, infoLog );
+		if( infoLogLength > 0 )
+		{
+			//Print Log
+			printf( "%s\n", infoLog );
+		}
+
+		//Deallocate string
+		delete[] infoLog;
+	}
+	else
+	{
+		printf( "Name %d is not a program\n", program );
+	}
+}
+
+void Shader::printShaderLog( GLuint shader )
+{
+	//Make sure name is shader
+	if( glIsShader( shader ) )
+	{
+		//Shader log length
+		int infoLogLength = 0;
+		int maxLength = infoLogLength;
+
+		//Get info string length
+		glGetShaderiv( shader, GL_INFO_LOG_LENGTH, &maxLength );
+
+		//Allocate string
+		char* infoLog = new char[ maxLength ];
+
+		//Get info log
+		glGetShaderInfoLog( shader, maxLength, &infoLogLength, infoLog );
+		if( infoLogLength > 0 )
+		{
+			//Print Log
+			printf( "%s\n", infoLog );
+		}
+
+		//Deallocate string
+		delete[] infoLog;
+	}
+	else
+	{
+		printf( "Name %d is not a shader\n", shader );
+	}
+}
+
+
 bool Shader::Compile(std::string vert,std::string frag){
     if( !GLEW_VERSION_2_1 ){
         bear::out << "OpenGL 2.1 not supported!\n" << "\n";
@@ -64,6 +129,7 @@ bool Shader::Compile(std::string vert,std::string frag){
 	if( vShaderCompiled != GL_TRUE )
 	{
 		printf( "Unable to compile vertex shader %d!\n", vertexShader );
+		printShaderLog( vertexShader );
         return false;
 	}
 
@@ -82,6 +148,7 @@ bool Shader::Compile(std::string vert,std::string frag){
 	if( fShaderCompiled != GL_TRUE )
 	{
 		printf( "Unable to compile fragment shader %d!\n", fragmentShader );
+		printShaderLog( fragmentShader );
         return false;
 	}
 
@@ -95,6 +162,7 @@ bool Shader::Compile(std::string vert,std::string frag){
 	if( programSuccess != GL_TRUE )
     {
 		printf( "Error linking program %d!\n", m_shaderId );
+		printProgramLog( m_shaderId );
         return false;
     };
 
@@ -103,42 +171,6 @@ bool Shader::Compile(std::string vert,std::string frag){
 
 
 
-    mVertexPos2DLocation = glGetAttribLocation( m_shaderId, "LVertexPos2D" );
-    if( mVertexPos2DLocation == -1 )
-    {
-        printf( "%s is not a valid glsl program variable!\n", "LVertexPos2D" );
-    }
-
-    mTexCoordLocation = glGetAttribLocation( m_shaderId, "LTexCoord" );
-    if( mTexCoordLocation == -1 )
-    {
-        printf( "%s is not a valid glsl program variable!\n", "LTexCoord" );
-    }
-
-    mTextureColorLocation = glGetUniformLocation( m_shaderId, "LTextureColor" );
-    if( mTextureColorLocation == -1 )
-    {
-        printf( "%s is not a valid glsl program variable!\n", "LTextureColor" );
-    }
-
-    mTextureUnitLocation = glGetUniformLocation( m_shaderId, "LTextureUnit" );
-    if( mTextureUnitLocation == -1 )
-    {
-        printf( "%s is not a valid glsl program variable!\n", "LTextureUnit" );
-    }
-
-    mProjectionMatrixLocation = glGetUniformLocation( m_shaderId, "LProjectionMatrix" );
-    if( mProjectionMatrixLocation == -1 )
-    {
-        printf( "%s is not a valid glsl program variable!\n", "LProjectionMatrix" );
-    }
-
-    mModelViewMatrixLocation = glGetUniformLocation( m_shaderId, "LModelViewMatrix" );
-    if( mModelViewMatrixLocation == -1 )
-    {
-        printf( "%s is not a valid glsl program variable!\n", "LModelViewMatrix" );
-    }
-
 
 
 
@@ -146,6 +178,17 @@ bool Shader::Compile(std::string vert,std::string frag){
     file_frag.Close();
     return true;
 }
+
+GLint Shader::GetUniformLocation(const char* locName){
+    GLint loc = glGetUniformLocation( m_shaderId, locName );
+    if( loc == -1 )
+    {
+        printf( "%s is not a valid glsl program variable!\n", locName );
+        getchar();
+    }
+    return loc;
+}
+
 bool Shader::Bind(){
     if (m_shaderId == 0)
         return false;
@@ -158,73 +201,3 @@ bool Shader::Unbind(){
 }
 
 
-
-void Shader::setVertexPointer( GLsizei stride, const GLvoid* data )
-{
-    glVertexAttribPointer( mVertexPos2DLocation, 2, GL_FLOAT, GL_FALSE, stride, data );
-}
-
-void Shader::setTexCoordPointer( GLsizei stride, const GLvoid* data )
-{
-    glVertexAttribPointer( mTexCoordLocation, 2, GL_FLOAT, GL_FALSE, stride, data );
-}
-
-void Shader::enableVertexPointer()
-{
-    glEnableVertexAttribArray( mVertexPos2DLocation );
-}
-
-void Shader::disableVertexPointer()
-{
-    glDisableVertexAttribArray( mVertexPos2DLocation );
-}
-
-void Shader::enableTexCoordPointer()
-{
-    glEnableVertexAttribArray( mTexCoordLocation );
-}
-
-void Shader::disableTexCoordPointer()
-{
-    glDisableVertexAttribArray( mTexCoordLocation );
-}
-
-void Shader::setProjection( glm::mat4 matrix )
-{
-    mProjectionMatrix = matrix;
-}
-
-void Shader::setModelView( glm::mat4 matrix )
-{
-    mModelViewMatrix = matrix;
-}
-
-void Shader::leftMultProjection( glm::mat4 matrix )
-{
-    mProjectionMatrix = matrix * mProjectionMatrix;
-}
-
-void Shader::leftMultModelView( glm::mat4 matrix )
-{
-    mModelViewMatrix = matrix * mModelViewMatrix;
-}
-
-void Shader::updateProjection()
-{
-    glUniformMatrix4fv( mProjectionMatrixLocation, 1, GL_FALSE, glm::value_ptr( mProjectionMatrix ) );
-}
-
-void Shader::updateModelView()
-{
-    glUniformMatrix4fv( mModelViewMatrixLocation, 1, GL_FALSE, glm::value_ptr( mModelViewMatrix ) );
-}
-
-void Shader::setTextureColor( LColorRGBA color )
-{
-    glUniform4fv( mTextureColorLocation, 4, (const GLfloat*)&color );
-}
-
-void Shader::setTextureUnit( GLuint unit )
-{
-    glUniform1i( mTextureUnitLocation, unit );
-}

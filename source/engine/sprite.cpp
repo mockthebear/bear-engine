@@ -415,7 +415,6 @@ void Sprite::SetClip(int x, int y,int w,int h){
 
 }
 
-
 void Sprite::Render(PointInt pos,double angle){
     #ifndef RENDER_OPENGL
     double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
@@ -441,7 +440,7 @@ void Sprite::Render(PointInt pos,double angle){
         GLfloat quadWidth = clipRect.w ;
         GLfloat quadHeight = clipRect.h ;
         glTranslatef(
-                     (pos.x   + quadWidth / 2.f  ),
+                     (pos.x  + quadWidth / 2.f  ),
                      (pos.y  + quadHeight/ 2.f  ),
                        0.f );
 
