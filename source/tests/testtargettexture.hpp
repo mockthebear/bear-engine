@@ -36,6 +36,7 @@ class Test_TargetTexture: public State{
             tset->SetTile(0,3,7,120);
             tset->SetTile(1,0,8,110);
             tset->SetTile(0,18,8,110);
+            tset->SetTile(1,0,7,117);
 
             tset->MakeMap();
 
@@ -86,7 +87,7 @@ class Test_TargetTexture: public State{
             targ.UnBind();
             targ.Render(Point(32,32));
             tset->RenderLayer(0);
-            //tset->RenderLayer(1);
+            tset->RenderLayer(1);
             //RenderHelp::DrawCircleColor(Point(400,400),200,0,0,255,155);
 
 
