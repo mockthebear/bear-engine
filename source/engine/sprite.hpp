@@ -15,12 +15,39 @@
 #include <memory>
 
 #include SDL_LIB_HEADER
+#include <GL/glew.h>
 
-
-enum TextureLoadMethod{
+enum TextureLoadMethodEnum{
     TEXTURE_NEARST,
     TEXTURE_LINEAR,
     TEXTURE_TRILINEAR,
+};
+
+class TextureLoadMethod{
+    public:
+    TextureLoadMethod(){
+        mode = TEXTURE_NEARST;
+    };
+    TextureLoadMethod(TextureLoadMethodEnum md){
+        mode = md;
+    };
+    void ApplyFilter(){
+        switch (mode){
+            case TEXTURE_NEARST:
+                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+                break;
+            case TEXTURE_LINEAR:
+                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+                break;
+            case TEXTURE_TRILINEAR:
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+                break;
+        }
+    }
+    TextureLoadMethodEnum mode;
 };
 
 #ifdef RENDER_OPENGL
@@ -128,57 +155,24 @@ class Sprite{
             *in the class.
             @param texture An sdl texture
         */
-        Sprite(TexturePtr texture,std::string name,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
-        /**
-            *This constructor its a bit special, and need a bit more attention
-            *You start the sprite and pass only an SDL_Texture. There is no mapping
-            *No destory, not anything, it just hold the SDL_Texture and render as an common texture
-            *in the class.
-            @param texture An sdl texture
-        */
-        Sprite(TexturePtr texture,std::string name,std::string alias,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
 
-        /**
-            *Create an sprite from an path to an file. The file should be SDL2_Image supported
-            *You can set the frame count and frame time to an animation
-            *When you animate an sprite, remember to call Sprite::Update on your GameActivity
-            @param file The path to an file
-            @param fcount Frame count. <b>THE FRAME MOVES ON X ONLY<b>
-            @param ftime The time between the frames
-        */
-        Sprite(char *file,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
-        /**
-            *Create an sprite from an path to an file. The file should be SDL2_Image supported
-            *You can set the frame count and frame time to an animation
-            *When you animate an sprite, remember to call Sprite::Update on your GameActivity
-            @param file The path to an file
-            @param fcount Frame count. <b>THE FRAME MOVES ON X ONLY<b>
-            @param ftime The time between the frames
-        */
-        Sprite(const char *file,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
-        /**
-            *Create an sprite from an path to an file. The file should be SDL2_Image supported
-            *You can set the frame count and frame time to an animation
-            *When you animate an sprite, remember to call Sprite::Update on your GameActivity
-            @param file The path to an file
-            @param r An replacer filter
-            @param fcount Frame count. <b>THE FRAME MOVES ON X ONLY<b>
-            @param ftime The time between the frames
-        */
-        Sprite(const char *file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
 
+        Sprite(TexturePtr texture,std::string name,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+        Sprite(TexturePtr texture,std::string name,std::string alias,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+
+        Sprite(TexturePtr texture,std::string name,int fcount,float ftime,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+        Sprite(TexturePtr texture,std::string name,std::string alias,int fcount,float ftime,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
 
         Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
-        /**
-            *Create an sprite from a rwops. Also delete the RWops
-            *You also NEED to set an alias to use as hash.
-            *You can set the frame count and frame time to an animation
-            *When you animate an sprite, remember to call Sprite::Update on your GameActivity
-            @param file The path to an file
-            @param fcount Frame count. <b>THE FRAME MOVES ON X ONLY<b>
-            @param ftime The time between the frames
-        */
-        Sprite(SDL_RWops* rw,std::string name,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+
+        Sprite(SDL_RWops* rw,std::string name,int fcount,float ftime,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+
+
+        Sprite(std::string file,int fcount=1.0f,float ftime=1.0f,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+
+        Sprite(std::string file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+
+
 
         /**
             *This function is static. You can call it any time
@@ -248,7 +242,7 @@ class Sprite{
         bool Openf(std::string file,TextureLoadMethod AliasingMethod=TEXTURE_NEARST){
             return Open(file.c_str(),AliasingMethod);
         }
-        bool Open(const char *file,TextureLoadMethod AliasingMethod=TEXTURE_NEARST);
+        bool Open(std::string file,TextureLoadMethod AliasingMethod=TEXTURE_NEARST);
         /**
             *Set clip on the sprite. Clipping stuff.
             *When call Sprite::Render, the rendered thing will be only the clipped area.

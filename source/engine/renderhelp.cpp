@@ -35,20 +35,7 @@ BearTexture* RenderHelp::CreateTexture(int width,int height,TextureLoadMethod al
     unsigned int pow_w =  powerOfTwo(width);
     unsigned int pow_h =  powerOfTwo(height);
 
-    switch (aliasing){
-        case TEXTURE_NEARST:
-            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-            break;
-        case TEXTURE_LINEAR:
-            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-            break;
-        case TEXTURE_TRILINEAR:
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            break;
-    }
+    aliasing.ApplyFilter();
 
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pow_w, pow_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
@@ -90,20 +77,7 @@ BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod
     unsigned int pow_w =  powerOfTwo(surface->w);
     unsigned int pow_h =  powerOfTwo(surface->h);
 
-    switch (aliasing){
-        case TEXTURE_NEARST:
-            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-            break;
-        case TEXTURE_LINEAR:
-            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-            break;
-        case TEXTURE_TRILINEAR:
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            break;
-    }
+    aliasing.ApplyFilter();
 
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pow_w, pow_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
@@ -266,9 +240,6 @@ void TargetTexture::Render(Point pos){
         glEnable(GL_TEXTURE_2D);
 
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-        float ww = size_w;
-        float hw = size_h;
 
         GLfloat  texLeft = 0.0f;
         GLfloat  texRight =  1.0f;

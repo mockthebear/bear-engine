@@ -41,6 +41,9 @@ class Test_Sprite: public State{
             raccoonHead = Assets.make<Sprite>("someFancyName");
             cursor = Assets.make<Sprite>("otherRaccoon");
             sheet = Assets.make<Sprite>("data/totem.png");
+
+            sheet2 = Assets.make<Sprite>("data/totem.png",4,0.2);
+
             smol = Assets.make<Sprite>("data/doge death.png");
 
             sheet.SetGrid(32,64);
@@ -66,7 +69,7 @@ class Test_Sprite: public State{
             }
             bear::out << "Load right from resources\n";
             background = Assets.make<Sprite>("test:wall.jpg");
-            bearHead = Assets.make<Sprite>("test:bear.png",1,0,1,TEXTURE_TRILINEAR);
+            bearHead = Assets.make<Sprite>("test:bear.png",TEXTURE_TRILINEAR);
             bear::out << "Sprites loaded.\n";
 
 
@@ -80,6 +83,7 @@ class Test_Sprite: public State{
         void Update(float dt){
             duration -= dt;
             sheet.Update(dt);
+            sheet2.Update(dt);
             if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
                 requestDelete = true;
             }
@@ -93,6 +97,7 @@ class Test_Sprite: public State{
             bearHead.Render(Point(64,64),duration * 3.6f * 2.0f);
             raccoonHead.Render(Point(120,64),0);
             sheet.Render(200,200);
+            sheet2.Render(232,200);
             for (int i=0;i<20;i++){
                 tiles.SetFrame(i%12,0);
                 tiles.Render(32*i,264);
@@ -117,7 +122,7 @@ class Test_Sprite: public State{
         Sprite bearHead;
         Sprite raccoonHead;
         Sprite cursor;
-        Sprite sheet;
+        Sprite sheet,sheet2;
         Sprite tiles;
         Sprite smol;
         float duration;

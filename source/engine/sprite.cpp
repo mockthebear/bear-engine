@@ -46,6 +46,29 @@ Sprite::Sprite(){
 
 }
 
+Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,TextureLoadMethod hasAliasing):Sprite(){
+    textureShred = texture_;
+    fname = alias;
+    aliasing = hasAliasing;
+    if (textureShred.get()){
+        Query(textureShred);
+    }
+    SetGrid(GetWidth()/frameCount,GetHeight());
+    SetFrame(0);
+}
+
+
+Sprite::Sprite(TexturePtr texture_,std::string name,TextureLoadMethod hasAliasing):Sprite(){
+    textureShred = texture_;
+    fname = name;
+    aliasing = hasAliasing;
+    if (textureShred.get()){
+        Query(textureShred);
+    }
+    SetGrid(GetWidth()/frameCount,GetHeight());
+    SetFrame(0);
+}
+
 Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
     textureShred = texture_;
     frameCount = fcount;
@@ -87,7 +110,7 @@ Sprite::Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount,
     SetAlpha(255);
 }
 
-Sprite::Sprite(const char *file,ColorReplacer &r,bool replacer,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
+Sprite::Sprite(std::string file,ColorReplacer &r,bool replacer,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
     frameCount = fcount;
     repeat = rep;
     frameTime = ftime;
@@ -104,15 +127,6 @@ Sprite::Sprite(const char *file,ColorReplacer &r,bool replacer,int fcount,float 
 
 }
 
-Sprite::Sprite(char *file,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
-    repeat = rep;
-    frameTime = ftime;
-    fname = file;
-    Open(file,hasAliasing);
-    SetGrid(GetWidth()/frameCount,GetHeight());
-    SetFrame(0);
-    SetAlpha(255);
-}
 
 Sprite::Sprite(SDL_RWops* file,std::string name,int fcount,float ftime,int rep,TextureLoadMethod hasAliasingg):Sprite(){
     frameCount = fcount;
@@ -125,7 +139,7 @@ Sprite::Sprite(SDL_RWops* file,std::string name,int fcount,float ftime,int rep,T
     SetAlpha(255);
 }
 
-Sprite::Sprite(const char *file,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
+Sprite::Sprite(std::string file,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
 
     frameCount = fcount;
     fname = file;
@@ -210,20 +224,7 @@ BearTexture *Sprite::Preload(const char *file,bool adjustDir,TextureLoadMethod H
         GLuint texId;
         glGenTextures(1, &texId);
         glBindTexture(GL_TEXTURE_2D, texId);
-        switch (HasAliasing){
-            case TEXTURE_NEARST:
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-                break;
-            case TEXTURE_LINEAR:
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-                break;
-            case TEXTURE_TRILINEAR:
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-                break;
-        }
+        HasAliasing.ApplyFilter();
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sizeX, sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
         glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -254,20 +255,7 @@ BearTexture * Sprite::Preload(SDL_RWops* rw,std::string name,TextureLoadMethod h
         GLuint texId;
         glGenTextures(1, &texId);
         glBindTexture(GL_TEXTURE_2D, texId);
-        switch (hasAliasing){
-            case TEXTURE_NEARST:
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-                break;
-            case TEXTURE_LINEAR:
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-                break;
-            case TEXTURE_TRILINEAR:
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-                break;
-        }
+        hasAliasing.ApplyFilter();
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sizeX, sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -329,20 +317,7 @@ BearTexture * Sprite::Preload(std::string fileName,ColorReplacer &r,TextureLoadM
         GLuint texId;
         glGenTextures(1, &texId);
         glBindTexture(GL_TEXTURE_2D, texId);
-        switch (hasAliasing){
-            case TEXTURE_NEARST:
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-                break;
-            case TEXTURE_LINEAR:
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-                break;
-            case TEXTURE_TRILINEAR:
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-                break;
-        }
+        hasAliasing.ApplyFilter();
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sizeX, sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
         glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -363,7 +338,7 @@ void Sprite::Query(TexturePtr ptr){
     }
 }
 
-bool Sprite::Open(const char *filepath,TextureLoadMethod hasAliasing){
+bool Sprite::Open(std::string filepath,TextureLoadMethod hasAliasing){
     scaleX = scaleY = 1;
     std::string stdnamee(filepath);
     std::string aux = stdnamee;
