@@ -40,12 +40,9 @@ BearTexture* RenderHelp::CreateTexture(int width,int height,TextureLoadMethod al
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pow_w, pow_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width,height, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-
-
     glBindTexture(GL_TEXTURE_2D, 0);
 
-
+    DebugHelper::DisplayGlError();
     BearTexture *t2 = new BearTexture(texId,pow_w, pow_h,GL_RGBA);
     t2->size_w = width;
     t2->size_h = height;

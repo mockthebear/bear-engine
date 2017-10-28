@@ -148,10 +148,10 @@ function MakeLuaStateWithComplexObjects()
 
 	--Some UI
 
-	
 
 
-	state.timer = 255.0
+
+	state.timer = 15.0
 
 	state.text = Text("owo",12,{r=255,g=255,b=0,a=100})
 

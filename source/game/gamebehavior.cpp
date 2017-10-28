@@ -71,24 +71,24 @@ bool GameBehavior::OnLoad(){
     Game::GetInstance()->AddState(new Test_());
     */
     Game::GetInstance()->AddState(new Test_Light());
-    #ifdef THREADPOOLTEST
+    /*#ifdef THREADPOOLTEST
     Game::GetInstance()->AddState(new Test_Threadpool());
     #endif // THREADPOOLTEST
 
 
     #ifdef LUATESTSUITE
     Game::GetInstance()->AddState(new Test_Lua());
-    #endif // LUATESTSUITE
+    #endif // LUATESTSUITE*/
 
 
 
-    Game::GetInstance()->AddState(new Test_PathFind());
+    /*Game::GetInstance()->AddState(new Test_PathFind());
     Game::GetInstance()->AddState(new Test_Text());
     Game::GetInstance()->AddState(new Test_TargetTexture());
     Game::GetInstance()->AddState(new Test_Sprite());
     Game::GetInstance()->AddState(new Test_Pool());
     Game::GetInstance()->AddState(new Test_Shapes());
-    Game::GetInstance()->AddState(new Test_Joystick());
+    Game::GetInstance()->AddState(new Test_Joystick());*/
     Game::GetInstance()->AddState(new Test_Files());
 
     return DefaultBehavior::GetInstance().OnLoad();

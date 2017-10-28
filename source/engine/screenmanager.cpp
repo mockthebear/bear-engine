@@ -2,6 +2,7 @@
 #include "../settings/configmanager.hpp"
 #include "../performance/console.hpp"
 #include "../framework/utils.hpp"
+#include "../framework/debughelper.hpp"
 #include "shadermanager.hpp"
 #include "renderhelp.hpp"
 #include __BEHAVIOR_FOLDER__
@@ -68,6 +69,7 @@ bool ScreenManager::SetupOpenGL(){
     {
         printf( "Error initializing GLEW! %s\n", glewGetErrorString( glewError ) );
     }
+    DebugHelper::DisplayGlError();
 
 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -87,7 +89,7 @@ bool ScreenManager::SetupOpenGL(){
 
     glPushMatrix();
     glClearColor( 1.f, 1.f, 1.f, 1.f );
-
+    DebugHelper::DisplayGlError();
     if (postProcess){
         StartPostProcessing();
     }
@@ -135,6 +137,7 @@ bool ScreenManager::StartPostProcessing(){
 
 
     g_shader.Compile("engine/vertex.glvs","engine/color.glfs");
+    DebugHelper::DisplayGlError();
     return true;
 }
 

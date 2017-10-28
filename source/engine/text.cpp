@@ -177,7 +177,7 @@ void Text::InternalSetFont(std::string ftnm){
     char buff[20];
     int fontsize = size;
 
-	sprintf_s(buff,sizeof(buff),"%d",fontsize);
+	sprintf(buff,"%d",fontsize);
 	std::string aux = ftnm;
     if (!ResourceManager::IsValidResource(aux)){
         isWorking = false;
@@ -380,7 +380,7 @@ void Text::SetFontSize(int ftsz){
         return;
     std::string ftnm = fontfile;
     char buff[10];
-	sprintf_s(buff,sizeof(buff),"%d",ftsz);
+	sprintf(buff,"%d",ftsz);
     ftnm = ftnm+buff;
 
     if (assetTable[ftnm]){

@@ -12,7 +12,7 @@ NumberInput::NumberInput(Point pos,int *start,UIBase *owner):UIBase(){
 
     char input[128];
     addr = start;
-    sprintf_s(input,"%d",*addr);
+    sprintf(input,"%d",*addr);
     SetText(Text(style.fontfile,style.fontSize,style.txtstyle,input,{style.fg[0],style.fg[1],style.fg[2]} ));
     box.w = 100;
     box.h = style.fontSize + 4;
@@ -27,7 +27,7 @@ NumberInput::NumberInput(Point pos,int start,UIBase *owner):UIBase(){
     box.x = pos.x + (owner ? owner->box.x : 0);
     box.y = pos.y + (owner ? owner->box.y : 0);
     char input[128];
-    sprintf_s(input,"%d",start);
+    sprintf(input,"%d",start);
     SetText(Text(style.fontfile,style.fontSize,style.txtstyle,input, {style.fg[0],style.fg[1],style.fg[2]} ));
     box.w = 100;
     box.h = style.fontSize + 4;

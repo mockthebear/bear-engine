@@ -196,7 +196,7 @@ Sprite::~Sprite(){}
 BearTexture *Sprite::Preload(const char *file,bool adjustDir,TextureLoadMethod HasAliasing){
 
     char sprn[1024];
-    strcpy_s(sprn,1024,file);
+    strcpy(sprn,file);
     std::string stdnamee(sprn);
 
     std::string aux = stdnamee;

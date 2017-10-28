@@ -19,14 +19,14 @@ namespace utils {
 
     template<typename... arg> std::string format(const std::string& txt, const arg&... a ) {
         char Buffer[400];
-		sprintf_s(Buffer,txt.c_str(),a...);
+		sprintf(Buffer,txt.c_str(),a...);
         return std::string(Buffer);
     }
 
 
     template<typename... arg> std::string format(const std::string& txt,std::string str, const arg&... a ) {
         char Buffer[400];
-        sprintf_s(Buffer,txt.c_str(),str.c_str(),a...);
+        sprintf(Buffer,txt.c_str(),str.c_str(),a...);
         return std::string(Buffer);
     }
 

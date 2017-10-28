@@ -695,9 +695,9 @@ template<>
         std::string n;
         if (lua_isnil(L,stackPos)){
             Console::GetInstance().AddText(utils::format("[LuaBase][Warning]Argument %d is nil",lua_gettop(L)));
-            strcpy_s((char*)transfer,512,"nil");
+            strcpy((char*)transfer,"nil");
         }else{
-			strcpy_s((char*)transfer, 512, lua_tostring(L,stackPos));
+			strcpy((char*)transfer, lua_tostring(L,stackPos));
         }
         if (pop)
             lua_pop(L,1);
@@ -713,9 +713,9 @@ template<>
         std::string n;
         if (lua_isnil(L,stackPos)){
             Console::GetInstance().AddText(utils::format("[LuaBase][Warning]Argument %d is nil",lua_gettop(L)));
-            strcpy_s(transfer, 512, "nil");
+            strcpy(transfer, "nil");
         }else{
-            strcpy_s(transfer, 512, lua_tostring(L,stackPos));
+            strcpy(transfer, lua_tostring(L,stackPos));
         }
         if (pop)
             lua_pop(L,1);

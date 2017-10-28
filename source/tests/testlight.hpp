@@ -30,15 +30,17 @@ class Test_Light: public State{
             Camera::Initiate(Rect(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H),128,200);
             bear::out << "Setup light\n";
             Light::GetInstance()->StartLights( Point(SCREEN_SIZE_W,SCREEN_SIZE_H) ,Point(160,160) ,LightPixelSize,6.5,90);
+            bear::out << "Done\n";
             Light::GetInstance()->SetLightRaysCount(220);
-
+            bear::out << "Loading assets\n";
             if (!ResourceManager::GetInstance().Load("test.burr","light")){
                 bear::out << "Could not find test.burr\n";
                 getchar();
             }
             background = Assets.make<Sprite>("light:wall.jpg");
+            bear::out << "Loaded background\n";
             timer.Start(Point(32,300),64,true);
-
+            bear::out << "Start linegraph\n";
             lg = LineGraph(Point(400,100),200);
 
             frameRate = Text("fps: ??",28);
