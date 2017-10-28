@@ -14,7 +14,7 @@ ScreenManager::~ScreenManager(){
 ScreenManager::ScreenManager(){
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
-    postProcess = false;
+    postProcess = true;
     ShakingDuration = 0;
     shaking = 0;
     shaking = false;
@@ -135,6 +135,7 @@ bool ScreenManager::StartPostProcessing(){
 
 
     g_shader.Compile("engine/vertex.glvs","engine/color.glfs");
+    return true;
 }
 
 SDL_Window* ScreenManager::StartScreen(std::string name){
@@ -233,13 +234,10 @@ void ScreenManager::RenderPresent(){
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
 
-        g_shader.Bind();
+        /*g_shader.Bind();
 
-        Point p = g_input.GetMouse();
-                p.y = p.y/(float)SCREEN_SIZE_H;
-                p.x = p.x/(float)SCREEN_SIZE_W;
-                glUniform2f(g_shader.GetUniformLocation("Cent2d"),p.x,1.0f-p.y);
 
+*/
         glBindTexture(GL_TEXTURE_2D, fbo_texture);
         glEnable(GL_TEXTURE_2D);
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -266,7 +264,7 @@ void ScreenManager::RenderPresent(){
             glEnd();
 
 
-        glPopMatrix();
+        //glPopMatrix();
     }
     glFlush();
     SDL_GL_SwapWindow(m_window);
@@ -454,15 +452,26 @@ void ScreenManager::Update(float dt){
 
     }
 }
+
+GLuint ScreenManager::GetDefaultFrameBuffer(){
+    if (!postProcess){
+        return 0;
+    }
+    return frameBuffer;
+}
+
 int ScreenManager::SetRenderTarget(SDL_Texture *t,bool trueNull){
     //todo: texture targeting
-    /*
+    #ifndef RENDER_OPENGL
     if (t == nullptr && m_defaultScreen){
         //return SDL_SetRenderTarget(m_renderer,m_defaultScreen);
     }
     if (trueNull){
         return SDL_SetRenderTarget(m_renderer,m_defaultScreen);
     }
-    */
+
     return SDL_SetRenderTarget(m_renderer,t);
+    #else
+    return -1;
+    #endif // RENDER_OPENGL
 }

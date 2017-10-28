@@ -57,6 +57,7 @@ class ScreenManager{
         void ResizeToScale(int w,int h,ResizeAction behave);
         float GetFps(){return m_fps;};
 
+        GLuint GetDefaultFrameBuffer();
         bool StartPostProcessing();
     private:
         bool postProcess;

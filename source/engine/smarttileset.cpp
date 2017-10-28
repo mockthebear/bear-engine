@@ -248,10 +248,9 @@ void SmartTileset::Update(float dt){
         for (int y=0;y<framesOnMap.y;y++){
             for (int x=0;x<framesOnMap.x;x++){
                 if (needRemake[l][y][x]){
-                    TargetTexture::UnBind();
-                    textureMap[l][y][x]->Bind();
                     needRemake[l][y][x] = false;
                     PointInt tilesPerBlock = maxTextureSize/tileSize;
+                    textureMap[l][y][x]->Bind();
                     for (int tx = 0; tx < tilesPerBlock.x; tx++){
                         for (int ty = 0; ty < tilesPerBlock.y; ty++){
                             int addy = (y * tilesPerBlock.y) + ty;
@@ -259,6 +258,7 @@ void SmartTileset::Update(float dt){
                             RenderTile(  tx * tileSize.x, ty * tileSize.y,tileMap[l][ addy ][ addx ] );
                         }
                     }
+                    TargetTexture::UnBind();
                 }
             }
         }
@@ -267,7 +267,7 @@ void SmartTileset::Update(float dt){
     if (g_input.OnScreenResize()){
         MakeMap();
     }
-    TargetTexture::UnBind();
+
 }
 
 

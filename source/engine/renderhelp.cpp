@@ -306,9 +306,11 @@ bool TargetTexture::Bind(){
 
 
 bool TargetTexture::UnBind(){
+    if (lastbuffer == 0){
+        lastbuffer = ScreenManager::GetInstance().GetDefaultFrameBuffer();
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, lastbuffer);
     lastbuffer = 0;
-    //glOrtho( 0.0, 800,600, 0.0, 1.0, -1.0 );
     ScreenManager::GetInstance().ResetViewpPort();
     return true;
 }

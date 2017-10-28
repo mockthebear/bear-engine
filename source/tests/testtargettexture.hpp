@@ -9,11 +9,13 @@ class Test_TargetTexture: public State{
     public:
         Test_TargetTexture(){
             requestQuit = requestDelete = false;
-
+            tset = nullptr;
             duration = 100.0f;
         };
         ~Test_TargetTexture(){
-
+            if (tset){
+                delete tset;
+            }
         };
         void Begin(){
             tileN = 174;
@@ -44,13 +46,12 @@ class Test_TargetTexture: public State{
 
         void Update(float dt){
             tset->Update(dt);
+
             duration -= dt;
             tileAnim -= dt;
             if (tileAnim <= 0){
                 tileAnim = 1.0f;
                 tileN++;
-
-                bear::out << tileN << "\n";
                 tset->SetTileDirect(0,2,7,tileN);
                 if (tileN >= 174+5){
                     tileN = 174;
@@ -66,7 +67,7 @@ class Test_TargetTexture: public State{
 
         };
         void Render(){
-            background.Render(0,0,0);
+            //background.Render(0,0,0);
             targ.Bind();
             background.Render(0,0,45);
 
@@ -85,11 +86,18 @@ class Test_TargetTexture: public State{
 
             RenderHelp::DrawCircleColor(Point(400-64,400 - 64),32,255,0,255,255);
             targ.UnBind();
+
+            g_shader.Bind();
+            Point p = g_input.GetMouse();
+                p.y = p.y/(float)SCREEN_SIZE_H;
+                p.x = p.x/(float)SCREEN_SIZE_W;
+                glUniform2f(g_shader.GetUniformLocation("Cent2d"),p.x,1.0f-p.y);
             targ.Render(Point(32,32));
+
+            g_shader.Unbind();
+            //RenderHelp::DrawCircleColor(Point(400,400),200,0,0,255,155);
             tset->RenderLayer(0);
             tset->RenderLayer(1);
-            //RenderHelp::DrawCircleColor(Point(400,400),200,0,0,255,155);
-
 
         };
         void Input();
