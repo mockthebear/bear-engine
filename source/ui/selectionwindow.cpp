@@ -106,7 +106,7 @@ void SelectionWindow::Render(Point where){
     RenderHelp::DrawSquareColorA(box.x,box.y,box.w,box.h,style.bg[0] ,style.bg[1] ,style.bg[2] ,style.bg[3] );
 
     RenderHelp::DrawSquareColorA(box.x,box.y,box.w,box.h,style.fg[0] ,style.fg[1] ,style.fg[2] ,style.fg[3],true );
-    RenderHelp::DrawLineColorA(box.x+1,box.y+title->GetTextObject()->GetHeight()+3,box.x+box.w-2,box.y+title->GetTextObject()->GetHeight()+3,255,255,255,255);
+    //RenderHelp::DrawLineColorA(box.x+1,box.y+title->GetTextObject()->GetHeight()+3,box.x+box.w-2,box.y+title->GetTextObject()->GetHeight()+3,255,255,255,255);
 
 
 

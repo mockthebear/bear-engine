@@ -404,7 +404,7 @@ class Circle{
 
         Point GetPoint(){return Point(x,y);};
         float x,y,r;
-        float GetSize(){return 2.0 * r;};
+        float GetSize(){return 2.0f * r;};
 };
 
 class Cone : public Circle{

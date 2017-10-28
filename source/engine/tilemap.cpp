@@ -18,9 +18,10 @@ TileMap::TileMap (char *str,TileSet* s){
 }
 
 void TileMap::Load(char *str){
-    FILE *f = fopen(str,"r");
+	FILE *f;
+	fopen_s(&f,str,"r");
     if (f){
-		fscanf(f,"%d,%d,%d,",&mapWidth,&mapHeight,&mapDepth);
+		fscanf_s(f,"%d,%d,%d,",&mapWidth,&mapHeight,&mapDepth);
         printf("%d,%d,%d,\n",mapWidth,mapHeight,mapDepth);
         tileMatrix.resize(mapWidth*mapHeight*mapDepth);
         for(int i =tileMatrix.size() - 1; i >= 0; --i){
@@ -30,7 +31,7 @@ void TileMap::Load(char *str){
         for (int d=0;d<mapDepth;d++){
             for (int i=0;i<mapWidth;i++){
                 for (int j=0;j<mapHeight;j++){
-                   fscanf(f,"%d,",&tileMatrix[getIndex(j,i,d)]);
+                   fscanf_s(f,"%d,",&tileMatrix[getIndex(j,i,d)]);
                    tileMatrix[getIndex(j,i,d)]--;
 
                 }

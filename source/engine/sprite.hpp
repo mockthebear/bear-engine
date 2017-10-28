@@ -397,8 +397,8 @@ class Sprite{
         */
         void SetCenter(Point p){
             hasCenter=true;
-            center.x = (int)p.x;
-            center.y = (int)p.y;
+            center.x = p.x;
+            center.y = p.y;
         };
 
         Point GetCenter(){

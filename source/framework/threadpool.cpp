@@ -11,6 +11,7 @@
 #include <math.h>
 #include <stdlib.h>
 #ifndef DISABLE_THREADPOOL
+#define HAVE_STRUCT_TIMESPEC
 #include <pthread.h>
 #endif
 #include <iostream>

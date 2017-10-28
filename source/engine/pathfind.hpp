@@ -24,13 +24,13 @@ class PFNode: public Point{
             priority = 0;
         }
         PFNode(int xp, int yp, int d, int p){
-            x=xp;
-            y=yp;
+            x=(float)xp;
+            y= (float)yp;
             priority=p;
         }
 
         void updatePriority(const int & xd, const int & yd){
-             priority=level+getDistance(Point(xd, yd))*10;
+             priority=level+getDistance(Point((float)xd, (float)yd))*10.0f;
         }
 };
 bool operator<(const PFNode & a, const PFNode & b);

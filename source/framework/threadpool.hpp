@@ -8,6 +8,7 @@
 #include <stack>
 #include <queue>
 #ifndef DISABLE_THREADPOOL
+#define HAVE_STRUCT_TIMESPEC
 #include <pthread.h>
 #include <semaphore.h>
 #endif
