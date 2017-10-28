@@ -31,6 +31,7 @@
 					<Add option="-lvorbisfile" />
 					<Add option="-lopengl32" />
 					<Add option="-lglew32" />
+					<Add option="-lglu32" />
 					<Add option="-pthread" />
 				</Linker>
 			</Target>

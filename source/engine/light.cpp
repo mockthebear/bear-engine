@@ -76,7 +76,7 @@ void Light::Gen(parameters *P,Job &j){
             shaded = GetAround(ShadeMap,x,y);
             yellowish = (255-shaded)/4.0;
 
-            pix[yoff + x ] = RenderHelp::FormatRGBA2(shaded,0,0,shaded);
+            pix[yoff + x ] = RenderHelp::FormatRGBA2(shaded,yellowish,0,yellowish);
 
         }
     }
