@@ -1,0 +1,336 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CBE4C707-AB87-4C19-A382-35238A09D3DE}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>bearengine</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)..\game\</OutDir>
+    <IntDir>..\obj\vs\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>C:\bearlib\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)..\game\</OutDir>
+    <IntDir>..\obj\vs\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level1</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <UndefinePreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;</UndefinePreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\bearlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\bearlib\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;OpenAL32.lib;libogg.lib;libvorbisfile.lib;lua51.lib;opengl32.lib;glew32.lib;pthreadVC2.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level1</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\bearlib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;OpenAL32.lib;libogg.lib;libvorbisfile.lib;lua51.lib;opengl32.lib;glew32.lib;pthreadVC2.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\bearlib\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="engine\assetmanager.cpp" />
+    <ClCompile Include="engine\bear.cpp" />
+    <ClCompile Include="engine\camera.cpp" />
+    <ClCompile Include="engine\collision.cpp" />
+    <ClCompile Include="engine\defaultbehavior.cpp" />
+    <ClCompile Include="engine\gamebase.cpp" />
+    <ClCompile Include="engine\genericstate.cpp" />
+    <ClCompile Include="engine\light.cpp" />
+    <ClCompile Include="engine\parallelcollisionmanager.cpp" />
+    <ClCompile Include="engine\particlecreator.cpp" />
+    <ClCompile Include="engine\particles.cpp" />
+    <ClCompile Include="engine\pathfind.cpp" />
+    <ClCompile Include="engine\renderhelp.cpp" />
+    <ClCompile Include="engine\screenmanager.cpp" />
+    <ClCompile Include="engine\shadermanager.cpp" />
+    <ClCompile Include="engine\shooteffect.cpp" />
+    <ClCompile Include="engine\smarttexture.cpp" />
+    <ClCompile Include="engine\smarttexturemanager.cpp" />
+    <ClCompile Include="engine\smarttileset.cpp" />
+    <ClCompile Include="engine\sprite.cpp" />
+    <ClCompile Include="engine\text.cpp" />
+    <ClCompile Include="engine\tilemap.cpp" />
+    <ClCompile Include="engine\tileset.cpp" />
+    <ClCompile Include="engine\timer.cpp" />
+    <ClCompile Include="framework\chainptr.cpp" />
+    <ClCompile Include="framework\debughelper.cpp" />
+    <ClCompile Include="framework\dirmanager.cpp" />
+    <ClCompile Include="framework\gamefile.cpp" />
+    <ClCompile Include="framework\geometry.cpp" />
+    <ClCompile Include="framework\poolmanager.cpp" />
+    <ClCompile Include="framework\resourcefiles.cpp" />
+    <ClCompile Include="framework\resourcemanager.cpp" />
+    <ClCompile Include="framework\schedule.cpp" />
+    <ClCompile Include="framework\threadpool.cpp" />
+    <ClCompile Include="framework\typechecker.cpp" />
+    <ClCompile Include="framework\userfile.cpp" />
+    <ClCompile Include="framework\utils.cpp" />
+    <ClCompile Include="framework\xml.cpp" />
+    <ClCompile Include="game\gamebehavior.cpp" />
+    <ClCompile Include="game\title.cpp" />
+    <ClCompile Include="input\accelerometer.cpp" />
+    <ClCompile Include="input\beinput.cpp" />
+    <ClCompile Include="input\inputmanager.cpp" />
+    <ClCompile Include="input\joystick.cpp" />
+    <ClCompile Include="input\keyboard.cpp" />
+    <ClCompile Include="input\mouse.cpp" />
+    <ClCompile Include="input\touch.cpp" />
+    <ClCompile Include="input\touchkeys.cpp" />
+    <ClCompile Include="luasystem\luacaller.cpp" />
+    <ClCompile Include="luasystem\luagamestate.cpp" />
+    <ClCompile Include="luasystem\luainterface.cpp" />
+    <ClCompile Include="luasystem\luaobject.cpp" />
+    <ClCompile Include="luasystem\luatools.cpp" />
+    <ClCompile Include="luasystem\luaui.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="performance\console.cpp" />
+    <ClCompile Include="performance\graph.cpp" />
+    <ClCompile Include="performance\linegrap.cpp" />
+    <ClCompile Include="settings\configmanager.cpp" />
+    <ClCompile Include="sound\sound.cpp" />
+    <ClCompile Include="sound\soundloader.cpp" />
+    <ClCompile Include="sound\soundsources.cpp" />
+    <ClCompile Include="tests\testthread.cpp" />
+    <ClCompile Include="ui\base.cpp" />
+    <ClCompile Include="ui\button.cpp" />
+    <ClCompile Include="ui\checkbox.cpp" />
+    <ClCompile Include="ui\gettextwindow.cpp" />
+    <ClCompile Include="ui\label.cpp" />
+    <ClCompile Include="ui\numberinput.cpp" />
+    <ClCompile Include="ui\selectionwindow.cpp" />
+    <ClCompile Include="ui\textinput.cpp" />
+    <ClCompile Include="ui\window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="engine\assetmanager.hpp" />
+    <ClInclude Include="engine\bear.hpp" />
+    <ClInclude Include="engine\behavior.hpp" />
+    <ClInclude Include="engine\camera.hpp" />
+    <ClInclude Include="engine\collision.hpp" />
+    <ClInclude Include="engine\defaultbehavior.hpp" />
+    <ClInclude Include="engine\gamebase.hpp" />
+    <ClInclude Include="engine\genericstate.hpp" />
+    <ClInclude Include="engine\light.hpp" />
+    <ClInclude Include="engine\object.hpp" />
+    <ClInclude Include="engine\parallelcollisionmanager.hpp" />
+    <ClInclude Include="engine\particlecreator.hpp" />
+    <ClInclude Include="engine\particles.hpp" />
+    <ClInclude Include="engine\pathfind.hpp" />
+    <ClInclude Include="engine\renderhelp.hpp" />
+    <ClInclude Include="engine\screenmanager.hpp" />
+    <ClInclude Include="engine\shadermanager.hpp" />
+    <ClInclude Include="engine\shooteffect.hpp" />
+    <ClInclude Include="engine\smarttexture.hpp" />
+    <ClInclude Include="engine\smarttexturemanager.hpp" />
+    <ClInclude Include="engine\smarttileset.hpp" />
+    <ClInclude Include="engine\sprite.hpp" />
+    <ClInclude Include="engine\text.hpp" />
+    <ClInclude Include="engine\tilemap.hpp" />
+    <ClInclude Include="engine\tileset.hpp" />
+    <ClInclude Include="engine\timer.hpp" />
+    <ClInclude Include="framework\basepool.hpp" />
+    <ClInclude Include="framework\chainptr.hpp" />
+    <ClInclude Include="framework\debughelper.hpp" />
+    <ClInclude Include="framework\dirmanager.hpp" />
+    <ClInclude Include="framework\gamefile.hpp" />
+    <ClInclude Include="framework\geometry.hpp" />
+    <ClInclude Include="framework\lcokfreequeue.hpp" />
+    <ClInclude Include="framework\poolmanager.hpp" />
+    <ClInclude Include="framework\resourcefiles.hpp" />
+    <ClInclude Include="framework\resourcemanager.hpp" />
+    <ClInclude Include="framework\schedule.hpp" />
+    <ClInclude Include="framework\threadpool.hpp" />
+    <ClInclude Include="framework\typechecker.hpp" />
+    <ClInclude Include="framework\userfile.hpp" />
+    <ClInclude Include="framework\utils.hpp" />
+    <ClInclude Include="framework\xml.hpp" />
+    <ClInclude Include="game\gamebehavior.hpp" />
+    <ClInclude Include="game\state.hpp" />
+    <ClInclude Include="game\title.hpp" />
+    <ClInclude Include="image\stb_image.h" />
+    <ClInclude Include="input\accelerometer.hpp" />
+    <ClInclude Include="input\beinput.hpp" />
+    <ClInclude Include="input\inputdefinitions.hpp" />
+    <ClInclude Include="input\inputmanager.hpp" />
+    <ClInclude Include="input\joystick.hpp" />
+    <ClInclude Include="input\keyboard.hpp" />
+    <ClInclude Include="input\mouse.hpp" />
+    <ClInclude Include="input\touch.hpp" />
+    <ClInclude Include="input\touchkeys.hpp" />
+    <ClInclude Include="luasystem\luacaller.hpp" />
+    <ClInclude Include="luasystem\luagamestate.hpp" />
+    <ClInclude Include="luasystem\luainterface.hpp" />
+    <ClInclude Include="luasystem\luaobject.hpp" />
+    <ClInclude Include="luasystem\luatools.hpp" />
+    <ClInclude Include="luasystem\luatypewrapper.hpp" />
+    <ClInclude Include="luasystem\luaui.hpp" />
+    <ClInclude Include="performance\console.hpp" />
+    <ClInclude Include="performance\graph.hpp" />
+    <ClInclude Include="performance\linegrap.hpp" />
+    <ClInclude Include="settings\configmanager.hpp" />
+    <ClInclude Include="settings\definitions.hpp" />
+    <ClInclude Include="sound\sound.hpp" />
+    <ClInclude Include="sound\sounddef.hpp" />
+    <ClInclude Include="sound\soundloader.hpp" />
+    <ClInclude Include="sound\soundsources.hpp" />
+    <ClInclude Include="tests\testblank.hpp" />
+    <ClInclude Include="tests\testfiles.hpp" />
+    <ClInclude Include="tests\testjoystick.hpp" />
+    <ClInclude Include="tests\testlight.hpp" />
+    <ClInclude Include="tests\testlua.hpp" />
+    <ClInclude Include="tests\testobject.hpp" />
+    <ClInclude Include="tests\testpathfind.hpp" />
+    <ClInclude Include="tests\testpool.hpp" />
+    <ClInclude Include="tests\testshapes.hpp" />
+    <ClInclude Include="tests\testsprite.hpp" />
+    <ClInclude Include="tests\testtargettexture.hpp" />
+    <ClInclude Include="tests\testtext.hpp" />
+    <ClInclude Include="tests\testthread.hpp" />
+    <ClInclude Include="ui\base.hpp" />
+    <ClInclude Include="ui\button.hpp" />
+    <ClInclude Include="ui\checkbox.hpp" />
+    <ClInclude Include="ui\gettextwindow.hpp" />
+    <ClInclude Include="ui\label.hpp" />
+    <ClInclude Include="ui\numberinput.hpp" />
+    <ClInclude Include="ui\selectionwindow.hpp" />
+    <ClInclude Include="ui\textinput.hpp" />
+    <ClInclude Include="ui\window.hpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
