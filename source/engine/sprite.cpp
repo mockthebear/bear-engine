@@ -29,6 +29,7 @@ uint32_t ColorReplacer::Get(uint32_t color){
 
 
 Sprite::Sprite(){
+    m_lf = 0;
     dimensions.w = dimensions.h = dimensions.x = dimensions.y = 0;
     scaleX = scaleY = 1;
     currentFrame = PointInt(0,0);
@@ -165,6 +166,11 @@ void Sprite::Update(float dt){
             over++;
         }
         SetFrame(currentFrame.x);
+    }
+    if (IsAnimationOver() && m_lf > 0){
+        currentFrame.x = m_lf;
+        SetFrame(currentFrame.x);
+        return;
     }
 }
 

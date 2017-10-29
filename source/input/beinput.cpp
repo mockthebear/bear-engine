@@ -61,6 +61,8 @@ void BEInput::Update(float dt){
     }
 }
 
+
+
 void BEInput::clear(){
     keyData.clear();
 }
@@ -77,6 +79,10 @@ bool BEInput::IsKeyDown(BEKeyBinds key){
         }
     }
     return false;
+}
+
+void BEInput::ForceKeyUp(BEKeyBinds key,float duration){
+    forcedData[key] = TempKey(JUST_RELEASED,duration);
 }
 
 bool BEInput::IsKeyUp(BEKeyBinds key){

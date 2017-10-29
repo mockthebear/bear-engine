@@ -405,6 +405,10 @@ class Sprite{
             return Point(center);
         }
 
+        void SetStayLastFrame(int lf){
+            m_lf = lf;
+        }
+
         /**
             *Set the amount of times the animation will repeat until Sprite::IsAnimationOver could return true
             *Say you set repeat to 2, then every time it finishes the animation cycle an counter will be incremented
@@ -629,7 +633,7 @@ class Animation{
         uint32_t sprY;
         uint32_t sprW;
         uint32_t sprH;
-        uint32_t MaxFrames;
+        uint32_t MaxFrames,m_lf;
         float SprDelay;
         float SprMaxDelay;
         bool CanRepeat;
