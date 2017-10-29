@@ -119,11 +119,17 @@ class AssetMannager{
             return std::shared_ptr<T>(new T);
         }
 
-        TexturePtr makeTexture(bool forced,std::string str,int fcount=1,float ftime=0,int rep=1,bool hasAliasing=false);
-        TexturePtr makeTexture(bool forced,std::string str,std::string alias,bool hasAliasing=false);
-        TexturePtr makeTexture(bool forced,SDL_RWops* rw,std::string str,bool hasAntiAliasign=false);
-        TexturePtr makeTexture(bool forced,std::string fileName,ColorReplacer &r,bool HasAliasing=false);
-        TexturePtr makeTexture(bool forced,std::string fileName,std::string alias,ColorReplacer &r,bool HasAliasing=false);
+        TexturePtr makeTexture(bool forced,std::string str,int fcount,float ftime,int rep=1,TextureLoadMethod aliasignMethod = TextureLoadMethod());
+
+
+        TexturePtr makeTexture(bool forced,std::string str,TextureLoadMethod aliasignMethod = TextureLoadMethod());
+        TexturePtr makeTexture(bool forced,std::string str,std::string alias,TextureLoadMethod aliasignMethod= TextureLoadMethod());
+
+
+        TexturePtr makeTexture(bool forced,SDL_RWops* rw,std::string str,TextureLoadMethod aliasignMethod= TextureLoadMethod());
+
+        TexturePtr makeTexture(bool forced,std::string fileName,ColorReplacer &r,TextureLoadMethod aliasignMethod= TextureLoadMethod());
+        TexturePtr makeTexture(bool forced,std::string fileName,std::string alias,ColorReplacer &r,TextureLoadMethod aliasignMethod= TextureLoadMethod());
 
 
         SoundPtr makeSound(bool forced,std::string fileName);

@@ -1,3 +1,5 @@
 beargine.depend
 beargine.layout
+*.db
+.vs
 !.gitignore

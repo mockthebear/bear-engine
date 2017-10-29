@@ -36,57 +36,69 @@ Sprite::Sprite(){
     frameCount = 1;
     repeat = 1;
     hasCenter = false;
-    aliasing = false;
-    m_alpha = 255;
+    aliasing = TEXTURE_LINEAR;
+    m_alpha = 1.0f;
     fname = "";
     over = 0;
-    scaleCentered = false;
-    OUTR = OUTB = OUTG = 255;
+    OUTR = OUTB = OUTG = 1.0f;
     timeElapsed = 0;
     frameTime = 0;
     sprFlip = SDL_FLIP_NONE;
 
 }
 
-Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
+Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,TextureLoadMethod hasAliasing):Sprite(){
     textureShred = texture_;
-     frameCount = fcount;
-    repeat = rep;
-    frameTime = ftime;
     fname = alias;
-    Uint32 format;
-    int acess;
     aliasing = hasAliasing;
     if (textureShred.get()){
-        if (SDL_QueryTexture(textureShred.get(), &format,&acess,&dimensions.w,&dimensions.h) < 0){
-
-        }
-        SetClip(0,0,dimensions.w,dimensions.h);
+        Query(textureShred);
     }
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
 }
 
-Sprite::Sprite(TexturePtr texture_,std::string name,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
+
+Sprite::Sprite(TexturePtr texture_,std::string name,TextureLoadMethod hasAliasing):Sprite(){
+    textureShred = texture_;
+    fname = name;
+    aliasing = hasAliasing;
+    if (textureShred.get()){
+        Query(textureShred);
+    }
+    SetGrid(GetWidth()/frameCount,GetHeight());
+    SetFrame(0);
+}
+
+Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
+    textureShred = texture_;
+    frameCount = fcount;
+    repeat = rep;
+    frameTime = ftime;
+    fname = alias;
+    aliasing = hasAliasing;
+    if (textureShred.get()){
+        Query(textureShred);
+    }
+    SetGrid(GetWidth()/frameCount,GetHeight());
+    SetFrame(0);
+}
+
+Sprite::Sprite(TexturePtr texture_,std::string name,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
     textureShred = texture_;
      frameCount = fcount;
     repeat = rep;
     frameTime = ftime;
     fname = name;
-    Uint32 format;
-    int acess;
     aliasing = hasAliasing;
     if (textureShred.get()){
-        if (SDL_QueryTexture(textureShred.get(), &format,&acess,&dimensions.w,&dimensions.h) < 0){
-
-        }
-        SetClip(0,0,dimensions.w,dimensions.h);
+        Query(textureShred);
     }
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
 }
 
-Sprite::Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
+Sprite::Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
     frameCount = fcount;
     repeat = rep;
     frameTime = ftime;
@@ -99,7 +111,7 @@ Sprite::Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount,
     SetAlpha(255);
 }
 
-Sprite::Sprite(const char *file,ColorReplacer &r,bool replacer,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
+Sprite::Sprite(std::string file,ColorReplacer &r,bool replacer,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
     frameCount = fcount;
     repeat = rep;
     frameTime = ftime;
@@ -116,28 +128,19 @@ Sprite::Sprite(const char *file,ColorReplacer &r,bool replacer,int fcount,float 
 
 }
 
-Sprite::Sprite(char *file,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
-    repeat = rep;
-    frameTime = ftime;
-    fname = file;
-    Open(file,hasAliasing);
-    SetGrid(GetWidth()/frameCount,GetHeight());
-    SetFrame(0);
-    SetAlpha(255);
-}
 
-Sprite::Sprite(SDL_RWops* file,std::string name,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
+Sprite::Sprite(SDL_RWops* file,std::string name,int fcount,float ftime,int rep,TextureLoadMethod hasAliasingg):Sprite(){
     frameCount = fcount;
     repeat = rep;
     frameTime = ftime;
     fname = name;
-    Open(file,name,hasAliasing);
+    Open(file,name,hasAliasingg);
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
     SetAlpha(255);
 }
 
-Sprite::Sprite(const char *file,int fcount,float ftime,int rep,bool hasAliasing):Sprite(){
+Sprite::Sprite(std::string file,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
 
     frameCount = fcount;
     fname = file;
@@ -194,16 +197,9 @@ void Sprite::SetFrame(int xFrame,int yFrame){
 
 Sprite::~Sprite(){}
 
-SDL_Texture* Sprite::CopyTexture(){
-    /*if (fname != ""){
-        return NULL;
-    }
-    return Open((char*)fname.c_str(),);*/
-    return nullptr;
-}
 
 
-SDL_Texture* Sprite::Preload(const char *file,bool adjustDir,bool HasAliasing){
+BearTexture *Sprite::Preload(const char *file,bool adjustDir,TextureLoadMethod HasAliasing){
 
     char sprn[1024];
     strcpy(sprn,file);
@@ -212,7 +208,7 @@ SDL_Texture* Sprite::Preload(const char *file,bool adjustDir,bool HasAliasing){
     std::string aux = stdnamee;
     if (ResourceManager::IsValidResource(aux)){
         SDL_RWops *rw = ResourceManager::GetInstance().GetFile(stdnamee); //Safe
-        SDL_Texture* returnTexture = Sprite::Preload(rw,stdnamee,HasAliasing);
+        BearTexture *returnTexture = Sprite::Preload(rw,stdnamee,HasAliasing);
         SDL_RWclose(rw);
         return returnTexture;
     }
@@ -226,50 +222,31 @@ SDL_Texture* Sprite::Preload(const char *file,bool adjustDir,bool HasAliasing){
     }
     uint64_t rsize;
     int sizeX,sizeY,comp;
-    char *res = ResourceManager::GetFileBuffer(rw,rsize);
+    char* res = ResourceManager::GetFileBuffer(rw,rsize);
     imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
     ResourceManager::ClearFileBuffer(res);
     SDL_RWclose(rw);
     if (imageData){
-        #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-        SDL_Surface* surface = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
-        #else
-        SDL_Surface* surface = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
-        #endif
-        if (surface){
-            /*
-                Pixel replacing
-            */
-            int pixelCount = (sizeX*sizeY);
-            for( int i = 0; i < pixelCount; ++i ){
-                ((Uint32*)surface->pixels)[i] =((Uint32*)imageData)[i];
-            }
-            /*
-                Generate texture
-            */
-            if (HasAliasing)
-                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-            SDL_Texture *ret = SDL_CreateTextureFromSurface(Game::GetInstance()->GetRenderer(),surface);// = finalSmart->GetTexture();
-            if (HasAliasing)
-                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+        GLuint texId;
+        glGenTextures(1, &texId);
+        glBindTexture(GL_TEXTURE_2D, texId);
+        HasAliasing.ApplyFilter();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sizeX, sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+        glBindTexture(GL_TEXTURE_2D, 0);
 
-            /*
-                Cleanup and return
-            */
-            stbi_image_free(imageData);
-            SDL_FreeSurface(surface);
-            return ret;
-        }else{
-            stbi_image_free(imageData);
-            Console::GetInstance().AddTextInfo(utils::format("[2]Cannot preload sprite [%s] because: %s",stdnamee,SDL_GetError()));
-        }
+        stbi_image_free(imageData);
+        BearTexture *ret = new BearTexture(texId,sizeX,sizeY,GL_RGBA);
+        ret->textureMode = HasAliasing;
+        return ret;
     }
     return nullptr;
 }
 
-SDL_Texture* Sprite::Preload(SDL_RWops* rw,std::string name,bool HasAliasing){
+BearTexture * Sprite::Preload(SDL_RWops* rw,std::string name,TextureLoadMethod hasAliasing){
+    #ifndef RENDER_OPENGL
     if (HasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
+    #endif // RENDER_OPENGL
     unsigned char* imageData = nullptr;
     int sizeX,sizeY,comp;
     uint64_t rsize;
@@ -281,48 +258,29 @@ SDL_Texture* Sprite::Preload(SDL_RWops* rw,std::string name,bool HasAliasing){
     imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
     ResourceManager::ClearFileBuffer(res);
     if (imageData){
-        #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-        SDL_Surface* surface = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
-        #else
-        SDL_Surface* surface = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
-        #endif
-        if (surface){
-            /*
-                Pixel replacing
-            */
-            int pixelCount = (sizeX*sizeY);
-            for( int i = 0; i < pixelCount; ++i ){
-                ((Uint32*)surface->pixels)[i] = (((Uint32*)imageData)[i]);
-            }
-            /*
-                Generate texture
-            */
-            if (HasAliasing)
-                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-            SDL_Texture *ret = SDL_CreateTextureFromSurface(Game::GetInstance()->GetRenderer(),surface);// = finalSmart->GetTexture();
-            if (HasAliasing)
-                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+        GLuint texId;
+        glGenTextures(1, &texId);
+        glBindTexture(GL_TEXTURE_2D, texId);
 
-            /*
-                Cleanup and return
-            */
-            stbi_image_free(imageData);
-            SDL_FreeSurface(surface);
+        hasAliasing.ApplyFilter();
 
-            return ret;
-        }else{
-            stbi_image_free(imageData);
-            Console::GetInstance().AddTextInfo(utils::format("[RW]Cannot preload sprite [%s] because: %s",name.c_str(),SDL_GetError()));
-        }
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sizeX, sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        stbi_image_free(imageData);
+        BearTexture *ret = new BearTexture(texId,sizeX,sizeY,GL_RGBA);
+        ret->textureMode = hasAliasing;
+        return ret;
     }
 
-
+    #ifndef RENDER_OPENGL
     if (HasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+    #endif // RENDER_OPENGL
 
     return nullptr;
 }
-SDL_Texture* Sprite::Preload(std::string fileName,ColorReplacer &r,bool HasAliasing){
+BearTexture * Sprite::Preload(std::string fileName,ColorReplacer &r,TextureLoadMethod hasAliasing){
     if (fileName == ""){
         return nullptr;
     }
@@ -354,63 +312,50 @@ SDL_Texture* Sprite::Preload(std::string fileName,ColorReplacer &r,bool HasAlias
         }
     }
     if (imageData){
-        #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-        SDL_Surface* surface = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
-        #else
-        SDL_Surface* surface = SDL_CreateRGBSurface(0, sizeX,sizeY, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
-        #endif
-        if (surface){
-            /*
-                Pixel replacing
-            */
-            int pixelCount = (sizeX*sizeY);
-            for( int i = 0; i < pixelCount; ++i ){
-                ((Uint32*)surface->pixels)[i] = r.Get(((Uint32*)imageData)[i]);
-            }
-            /*
-                Generate texture
-            */
-            if (HasAliasing)
-                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-            SDL_Texture *ret = SDL_CreateTextureFromSurface(Game::GetInstance()->GetRenderer(),surface);// = finalSmart->GetTexture();
-            if (HasAliasing)
-                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
 
-            /*
-                Cleanup and return
-            */
-            stbi_image_free(imageData);
-            SDL_FreeSurface(surface);
-            return ret;
-        }else{
-            stbi_image_free(imageData);
-            Console::GetInstance().AddTextInfo(utils::format("[ColorReplacer]Cannot preload sprite [%s] because: %s",fileName.c_str(),SDL_GetError()));
+        /*
+            Pixel replacing
+        */
+        int pixelCount = (sizeX*sizeY);
+        for( int i = 0; i < pixelCount; ++i ){
+            ((Uint32*)imageData)[i] = r.Get(((Uint32*)imageData)[i]);
         }
+
+        GLuint texId;
+        glGenTextures(1, &texId);
+        glBindTexture(GL_TEXTURE_2D, texId);
+        hasAliasing.ApplyFilter();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sizeX, sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        stbi_image_free(imageData);
+        BearTexture *ret = new BearTexture(texId,sizeX,sizeY,GL_RGBA);
+        ret->textureMode = hasAliasing;
+        return ret;
     }
     return nullptr;
 }
 
 void Sprite::Query(TexturePtr ptr){
-    SDL_Texture *texturee = ptr.get();
+    BearTexture *texturee = ptr.get();
     if (texturee != NULL){
-        Uint32 format;
-        int acess;
-        SDL_QueryTexture((texturee), &format,&acess,&dimensions.w,&dimensions.h);
+        dimensions.w = texturee->w;
+        dimensions.h = texturee->h;
         SetClip(0,0,dimensions.w,dimensions.h);
     }
 }
 
-bool Sprite::Open(const char *filepath,bool HasAliasing){
+bool Sprite::Open(std::string filepath,TextureLoadMethod hasAliasing){
     scaleX = scaleY = 1;
     std::string stdnamee(filepath);
     std::string aux = stdnamee;
     if (ResourceManager::IsValidResource(aux)){
         SDL_RWops* file = ResourceManager::GetInstance().GetFile(stdnamee); //safe
-        bool ret = Open(file,stdnamee,HasAliasing);
+        bool ret = Open(file,stdnamee,hasAliasing);
         SDL_RWclose(file);
         return ret;
     }
-    textureShred = GlobalAssetManager::GetInstance().makeTexture(false,stdnamee,HasAliasing);
+    textureShred = GlobalAssetManager::GetInstance().makeTexture(false,stdnamee,hasAliasing);
     if (textureShred.get()){
         Query(textureShred);
         return true;
@@ -418,7 +363,7 @@ bool Sprite::Open(const char *filepath,bool HasAliasing){
     return false;
 }
 
-bool Sprite::Open(SDL_RWops* file,std::string name,bool HasAliasing){
+bool Sprite::Open(SDL_RWops* file,std::string name,TextureLoadMethod HasAliasing){
     scaleX = scaleY = 1;
     textureShred = GlobalAssetManager::GetInstance().makeTexture(false,file,name,HasAliasing);
     if (textureShred.get()){
@@ -452,78 +397,63 @@ void Sprite::SetClip(int x, int y,int w,int h){
 
 }
 
-
 void Sprite::Render(PointInt pos,double angle){
-    SDL_Rect dimensions2;
-
-
-    double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1
-    double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1
+    #ifndef RENDER_OPENGL
+    double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
+    double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
     dimensions2.x = pos.x*scaleRatioW + ScreenManager::GetInstance().GetOffsetW();
     dimensions2.y = pos.y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH();
     dimensions2.h = clipRect.h*scaleRatioH*scaleY;
     dimensions2.w = clipRect.w*scaleRatioW*scaleX;
     SDL_RenderCopyEx(BearEngine->GetRenderer(),textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip);
+    #else
+    if (IsLoaded()){
+        glLoadIdentity();
+        glEnable(GL_TEXTURE_2D);
+        glColor4f(OUTR, OUTG, OUTB, m_alpha);
+        float w = dimensions.w;
+        float h = dimensions.h;
+
+        texLeft = clipRect.x / (float)w;
+        texRight =  ( clipRect.x + clipRect.w ) / (float)w;
+        texTop = clipRect.y / (float)h;
+        texBottom = ( clipRect.y + clipRect.h ) / (float)h;
+
+        GLfloat quadWidth = clipRect.w ;
+        GLfloat quadHeight = clipRect.h ;
+        glTranslatef(
+                     (pos.x  + quadWidth / 2.f  ),
+                     (pos.y  + quadHeight/ 2.f  ),
+                       0.f );
+
+        glScalef(scaleX * ( (sprFlip&SDL_FLIP_HORIZONTAL) != 0 ? -1.0f : 1.0f), scaleY * ( (sprFlip&SDL_FLIP_VERTICAL) != 0 ? -1.0f : 1.0f), 1.0f);
+        glRotatef( angle, 0.f, 0.f, 1.f );
+
+         glBindTexture( GL_TEXTURE_2D, textureShred.get()->id );
+
+        glBegin( GL_QUADS );
+            glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
+            glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
+            glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
+            glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
+        glEnd();
+
+        glDisable(GL_TEXTURE_2D);
+        glPopMatrix();
+    }
+    #endif // RENDER_OPENGL
+
 
 }
 void Sprite::Renderxy(int x,int y,double angle){
     Render(x-Camera::pos.x,y-Camera::pos.y,angle);
 }
 void Sprite::Render(int x,int y,double angle){
-    SDL_Rect dimensions2;
-    double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1
-    double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1
-
-    if (scaleCentered){
-        /*Rect adj(x,y,clipRect.w*scaleX,clipRect.h*scaleY);
-        Point c;
-        if (hasCenter){
-            c.x = center.x;
-            c.y = center.y;
-        }else{
-            Rect aux(x,y,clipRect.w,clipRect.h);
-            c = aux.GetCenter();
-        }
-        adj.CenterRectIn(c);
-        x = (adj.x);
-        y = (adj.y);*/
-        Point c;
-        if (hasCenter){
-            c.x = center.x;
-            c.y = center.y;
-            Rect aux(x,y,clipRect.w,clipRect.h);
-            aux.CenterRectIn(c);
-            c = aux.GetCenter();
-        }else{
-            Rect aux(x,y,clipRect.w,clipRect.h);
-            c = aux.GetCenter();
-        }
-
-
-        //Point r2 = foodRect.GetCenter();
-        //smol.Render(r2.x - (sc.x * 50 )  +50/2.0   + 22,r2.y - (sc.y * 50)   + (50/2.0) - 4,0);
-
-        x = c.x - (scaleX * clipRect.w) + clipRect.w*scaleX/2.0f;
-        y = c.y - (scaleY * clipRect.h) + clipRect.h*scaleY/2.0f;
-
-
-        //x -= (widSize.x - scaleX*widSize.x)/2;
-        //y -= (widSize.y - scaleY*widSize.y)/2;
-
-    }
-
-    dimensions2.x = x*scaleRatioW + ScreenManager::GetInstance().GetOffsetW();
-    dimensions2.y = y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH();
-    dimensions2.h = clipRect.h*scaleRatioH*scaleY;
-    dimensions2.w = clipRect.w*scaleRatioW*scaleX;
-    SDL_RenderCopyEx(BearEngine->GetRenderer(),textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
+    Render(PointInt(x,y),angle);
 }
 
 
-void Sprite::RawRender(int x,int y,double angle){
-    SDL_Rect dimensions2 = {x,y,int(clipRect.h*scaleY),int(clipRect.w*scaleX)};
-    SDL_RenderCopyEx(BearEngine->GetRenderer(),textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip); //wat
-}
+
 
 int Sprite::GetWidth(){
     return dimensions.w*scaleX;
@@ -539,3 +469,4 @@ int Sprite::GetFrameHeight(){
 int Sprite::GetFrameWidth(){
     return clipRect.w*scaleX;
 }
+

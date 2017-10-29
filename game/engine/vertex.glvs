@@ -1,0 +1,11 @@
+
+varying vec2 vTexCoord;
+
+
+void main(void)
+{
+   vTexCoord[0] = gl_MultiTexCoord0[0];
+   vTexCoord[1] = gl_MultiTexCoord0[1];
+   gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+}
+   

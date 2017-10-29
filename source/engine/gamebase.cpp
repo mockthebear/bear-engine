@@ -98,9 +98,11 @@ void Game::init(const char *name){
             }else{
                 Console::GetInstance().AddTextInfo("Renderer is on!");
             }
+            Console::GetInstance().AddTextInfo("Starting openGL");
+            ScreenManager::GetInstance().SetupOpenGL();
+
         }
         if (startFlags&BEAR_FLAG_LOAD_BASEFILES){
-            bear::out << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n";
             if (!ResourceManager::GetInstance().Load("engine/enginedata.burr","engine")){
                 Console::GetInstance().AddTextInfo("engine/enginedata.burr missing!!!");
                 Console::GetInstance().CloseOutput();
@@ -343,10 +345,10 @@ void Game::Run(){
                 if (InputManager::GetInstance().KeyPress(SDLK_F3)){
                     static bool full = false;
                     if (!full){
-                        ScreenManager::GetInstance().MakeDefaultScreenAsTexture();
+                        //ScreenManager::GetInstance().MakeDefaultScreenAsTexture();
                         SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
                     }else{
-                        ScreenManager::GetInstance().ClearScreenTexture();
+                        //ScreenManager::GetInstance().ClearScreenTexture();
                         SDL_SetWindowFullscreen(window, SDL_FALSE);
                     }
                     full = !full;

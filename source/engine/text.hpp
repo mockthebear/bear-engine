@@ -175,18 +175,23 @@ class Text{
             *
             *This creator simply get an path to a custom font, then uses it on a given text
         */
-        /*Text(Text &t):Text(){
-            cpy(t);
-            texture = NULL;
-        };*/
+
         Text(std::string customfontfile, std::string text,int x=0,int y=0);
         /**
             *Empty constructor is almost empty
         */
+        #ifndef RENDER_OPENGL
         Text():box(),bg({100,100,120,255}),angle(0),fontfile(""),text(""),style(TEXT_SOLID),size(),scaleY(1.0f),scaleX(1.0f),
-        color({255,255,255,255}),alpha(255),font(nullptr),texture(nullptr),texturespr(nullptr),isWorking(false),aliasing(false){};
+        color({255,255,255,255}),alpha(255),font(nullptr),texture(nullptr),texturespr(nullptr),isWorking(false),aliasing(false),keepAlive(false){};
+        #else
+        Text():box(),bg({100,100,120,255}),angle(0),fontfile(""),text(""),style(TEXT_SOLID),size(),scaleY(1.0f),scaleX(1.0f),
+        color({255,255,255,255}),alpha(255),font(nullptr),isWorking(false),texture(nullptr),aliasing(TEXTURE_LINEAR),texturespr(nullptr),keepAlive(false){};
+        #endif // RENDER_OPENGL
 
 
+        void SetKeepAlive(bool set){
+            keepAlive = set;
+        };
         /**
             *Here it just delete the texture.
         */
@@ -207,7 +212,6 @@ class Text{
         /**
             Render without any scaling or screen adjustment
         */
-        void RenderRS(int X = 0, int Y = 0,TextRenderStyle renderStyle = TEXT_RENDER_TOPLEFT);
         void inline Render(PointInt p,TextRenderStyle renderStyle = TEXT_RENDER_TOPLEFT){Render(p.x,p.y,renderStyle);};
         /**
             *When you edit the current text, a new texture is created
@@ -259,11 +263,17 @@ class Text{
         }
 
         void InternalSetFont(std::string fnt);
-
+        #ifndef RENDER_OPENGL
         void SetAliasign(bool al){
+        #else
+        void SetAliasign(TextureLoadMethod al){
+        #endif // RENDER_OPENGL
             aliasing = al;
             RemakeTexture();
+
         }
+
+
 
         /**
             *Clear assetTable
@@ -302,10 +312,7 @@ class Text{
         */
         void SetRotation(float anglee){angle = anglee;};
 
-        /**
-            *You can copy the current texture and use it further
-        */
-        SDL_Texture* CopyTexture();
+
         /**
             *Now this operator is tricky.
             *In sprite we dont have this issue, because the texture is saved on
@@ -352,10 +359,20 @@ class Text{
         int alpha;
 
         TTF_Font* font;
+        bool isWorking;
+        #ifndef RENDER_OPENGL
         SDL_Texture* texture;
+        bool aliasing;
+        #else
+        std::shared_ptr<BearTexture> texture;
+        TextureLoadMethod aliasing;
+        #endif // RENDER_OPENGL
         CustomFont *texturespr;
+        bool keepAlive;
 
-		bool isWorking,aliasing;
+
+
+
 
 };
 

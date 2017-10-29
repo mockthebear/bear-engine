@@ -76,7 +76,7 @@ void Light::Gen(parameters *P,Job &j){
             shaded = GetAround(ShadeMap,x,y);
             yellowish = (255-shaded)/4.0;
 
-            pix[yoff + x ] = RenderHelp::FormatRGBA2(yellowish,yellowish,190-yellowish/2,shaded);
+            pix[yoff + x ] = RenderHelp::FormatRGBA2(shaded,yellowish,0,yellowish);
 
         }
     }
@@ -217,18 +217,16 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float perm
     DataMap = new uint8_t[sizeY*sizeX];
     pix = out->GetPixels();
     for (int y=0;y<sizeY;y++){
-        /*ShadeMap[y] = new uint8_t[sizeX];
-        DataMap[y] = new uint8_t[sizeX];
-        */
+
         for (int x=0;x<sizeX;x++){
             ShadeMap[x + y * sizeX] = MaxDarkness;
             DataMap[x + y * sizeX] = 0;
-            pix[y * (sizeX) + x] = RenderHelp::FormatRGBA(255,0,0,0);
+            pix[y * (sizeX) + x] = RenderHelp::FormatRGBA(255,0,0,255);
         }
     }
 
 
-    out->UpdateTexture();
+
 
     if (MapMap == nullptr){
         maxAlloc=2;
@@ -423,6 +421,8 @@ void Light::Render(Point pos){
     out->UpdateTexture();
     int extraX = ((int)(floor(Camera::pos.x))%blockSize);
     int extraY = ((int)(floor(Camera::pos.y))%blockSize);
+
+    /*
     double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
     double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
 
@@ -432,6 +432,11 @@ void Light::Render(Point pos){
 
     dimensions2.h = size.y*scaleRatioH;
     dimensions2.w = size.x*scaleRatioW;
-    SDL_RenderCopyEx(BearEngine->GetRenderer(),out->GetTexture(),nullptr,&dimensions2,0,nullptr,SDL_FLIP_NONE);
+    SDL_RenderCopyEx(BearEngine->GetRenderer(),out->GetTexture(),nullptr,&dimensions2,0,nullptr,SDL_FLIP_NONE);*/
+
+    out->Render(Point(
+        pos.x - (extraX - ExtraSize.x/4) + size.x/4,
+        pos.y  -(extraY - ExtraSize.y/4 + blockSize*4) + size.y/4
+                      ),0,Point(size.x/sizeX, size.y/sizeY));
 
 }

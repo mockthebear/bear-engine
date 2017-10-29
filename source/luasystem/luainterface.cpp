@@ -398,7 +398,8 @@ void LuaInterface::RegisterClasses()
 
         name = GenericLuaGetter<std::string>::Call(L);
 
-        Text *t = LuaReferenceCounter<Text>::makeReference(Text(name,size,color));
+        Text *t = new Text(name,size,color);
+        t->SetKeepAlive(true);
         t->RemakeTexture();
         return t;
     });
@@ -455,7 +456,6 @@ void LuaInterface::RegisterClasses()
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","Open",&Sprite::Openf);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetClip",&Sprite::SetClip);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","Render",&Sprite::Renderpoint,0.0);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","RawRender",&Sprite::RawRender,0.0,0,0);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","Update",&Sprite::Update);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","ResetAnimation",&Sprite::ResetAnimation);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetFrame",&Sprite::SetFrame,0,0);
@@ -731,7 +731,7 @@ void LuaInterface::RegisterClasses()
     //g_render.DrawOutlineSquare(point1, point2, red, green, blue, alpha)
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","DrawLineColor",std::function<void(Point,Point,uint8_t,uint8_t,uint8_t,uint8_t)>([](Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a)
     {
-        RenderHelp::DrawLineColorA(p1.x,p1.y,p2.x,p2.y,r,g,b,a);
+        RenderHelp::DrawLineColor(p1.x,p1.y,p2.x,p2.y,r,g,b,a);
     }));
     //g_render.FormatARGB(red, green, blue, alpha)
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","FormatARGB",std::function<uint32_t(uint8_t,uint8_t,uint8_t,uint8_t)>([](uint8_t r,uint8_t g,uint8_t b,uint8_t a)

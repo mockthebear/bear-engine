@@ -5,6 +5,7 @@
 #include "../framework/resourcemanager.hpp"
 #include "../framework/utils.hpp"
 #include "../performance/console.hpp"
+#include "renderhelp.hpp"
 #include "gamebase.hpp"
 std::unordered_map<std::string, TTF_Font*> Text::assetTable;
 std::unordered_map<std::string, CustomFont*> Text::customTable;
@@ -206,11 +207,7 @@ void Text::InternalSetFont(std::string ftnm){
         }
     }
 }
-SDL_Texture* Text::CopyTexture(){
-    SDL_Texture* ret = texture;
-    RemakeTexture(false);
-    return ret;
-}
+
 
 Text::Text(std::string fontfilep, std::string textp,int x,int y):Text(){
     angle = 0;
@@ -240,16 +237,15 @@ Text::Text(std::string fontfilep, std::string textp,int x,int y):Text(){
 
 }
 Text::~Text(){
-    if (texture){
-        SDL_DestroyTexture(texture);
-        texture = nullptr;
-    }
 }
 
 void Text::Close(){
     if (texture){
-        SDL_DestroyTexture(texture);
+        #ifndef RENDER_OPENGL
+        SDL_DestroyTexture( texture );
         texture = nullptr;
+        #endif // RENDER_OPENGL
+        //
         isWorking = false;
         font = nullptr;
         texturespr = nullptr;
@@ -277,6 +273,10 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
     }
 
     if (font){
+        if (!texture){
+            RemakeTexture();
+        }
+        #ifndef RENDER_OPENGL
         SDL_Rect dimensions2;
         double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
         double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
@@ -285,57 +285,59 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
         dimensions2.h = box.h*scaleRatioH*scaleY;
         dimensions2.w = box.w*scaleRatioW*scaleY;
 
-        if (!texture){
-            RemakeTexture();
-        }
+
         if (texture){
             SDL_SetTextureAlphaMod(texture,alpha);
             if (SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,nullptr,&dimensions2,static_cast<double>(angle),nullptr,SDL_FLIP_NONE)){
-
                 RemakeTexture();
             }
         }
+        #else
+        if (!texture){
+            RemakeTexture();
+            if (!texture){
+                return;
+            }
+        }
+        glLoadIdentity();
+        glEnable(GL_TEXTURE_2D);
+        glColor4f(1.0f, 1.0f, 1.0f, alpha/255.0f);
+
+
+        GLfloat texLeft = 0.0f;
+        GLfloat texRight = 1.0f;
+        GLfloat texTop = 0.0f;
+        GLfloat texBottom = 1.0f;
+
+        GLfloat quadWidth =  box.w ;
+        GLfloat quadHeight = box.h ;
+
+
+        texRight = (  texture->size_w ) / (float)texture->w;
+        texBottom = ( texture->size_h ) / (float)texture->h;
+
+
+        glTranslatef(
+                     (cameraX   + quadWidth / 2.f  ),
+                     (cameraY  + quadHeight/ 2.f  ),
+                       0.f );
+
+
+        glRotatef( angle, 0.f, 0.f, 1.f );
+
+         glBindTexture( GL_TEXTURE_2D, texture->id );
+
+        glBegin( GL_QUADS );
+            glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
+            glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
+            glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
+            glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
+        glEnd();
+
+        glDisable(GL_TEXTURE_2D);
+        glPopMatrix();
+        #endif
     }else if (texturespr){
-        Point p = texturespr->Render(text,box.x+cameraX,box.y+cameraY,alpha);
-        box.w = p.x;
-        box.h = p.y;
-    }
-}
-void Text::RenderRS(int cameraX,int cameraY,TextRenderStyle renderStyle){
-    if (!isWorking)
-        return;
-
-    if (renderStyle != 0){
-        if (renderStyle & TEXT_RENDER_TOPRIGHT){
-            cameraX -= GetWidth();
-        }
-        if (renderStyle & TEXT_RENDER_BOTTOMLEFT){
-            cameraY -= GetHeight();
-        }
-        if (renderStyle & TEXT_RENDER_CENTERHOR){
-            cameraX -= GetWidth()/2;
-        }
-        if (renderStyle & TEXT_RENDER_CENTERVER){
-            cameraY -= GetHeight()/2;
-        }
-    }
-    if (font){
-        SDL_Rect dimensions2;
-        dimensions2.x = box.x+cameraX;
-        dimensions2.y = box.y+cameraY;
-        dimensions2.h = box.h;
-        dimensions2.w = box.w;
-
-        if (!texture){
-            RemakeTexture();
-        }
-        if (texture){
-            SDL_SetTextureAlphaMod(texture,alpha);
-            if (SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,nullptr,&dimensions2,static_cast<double>(angle),nullptr,SDL_FLIP_NONE)){
-                RemakeTexture();
-            }
-        }
-    }else{
         Point p = texturespr->Render(text,box.x+cameraX,box.y+cameraY,alpha);
         box.w = p.x;
         box.h = p.y;
@@ -421,6 +423,7 @@ void Text::Clear(){
     assetTable.clear();
 
 }
+
 //private
 void Text::RemakeTexture(bool Destory){
     if (!isWorking)
@@ -435,11 +438,8 @@ void Text::RemakeTexture(bool Destory){
         box.h = p.y;
         return;
     }
-    if (texture && Destory){
-        SDL_DestroyTexture( texture );
-    }
 
-    texture = nullptr;
+
     SDL_Surface *surf=nullptr;
     if (!font){
         bear::out << "[TXT:RemakeTexture] there is no font\n";
@@ -454,6 +454,7 @@ void Text::RemakeTexture(bool Destory){
     }
 
     if (surf){
+        #ifndef RENDER_OPENGL
         if (aliasing)
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
         texture = SDL_CreateTextureFromSurface(BearEngine->GetRenderer(),surf);
@@ -462,18 +463,22 @@ void Text::RemakeTexture(bool Destory){
         SDL_QueryTexture(texture, &format,&acess,&w,&h);
         box.h=h;
         box.w=w;
-        /*SDL_Rect dimensions2;
-        dimensions2.x = -box.w;
-        dimensions2.y = -box.h;
-        dimensions2.h = box.h;
-        dimensions2.w = box.w;*/
-
-        //if (SDL_RenderCopy(BearEngine->GetRenderer(),texture,NULL,&dimensions2) < 0){
-        //    bear::out << "[TXT:RemakeTexture] Failed to render, SDL reason["<<SDL_GetError()<<"]:"<<"|"<<text.size()<<"{"<<text<<"}\n";
-        //}
         if (aliasing)
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
         SDL_FreeSurface(surf);
+        #else
+        BearTexture *b2 = RenderHelp::SurfaceToTexture(surf,aliasing);
+        SDL_FreeSurface(surf);
+        if (b2){
+            texture = std::shared_ptr<BearTexture>(b2,[](BearTexture* bher)
+            {
+                bher->ClearTexture();
+                delete bher;
+            });
+            box.w = texture->size_w;
+            box.h = texture->size_h;
+        }
+        #endif // RENDER_OPENGL
     }else{
         bear::out << "[Text:RemakeTexture] Surface not loaded "<<SDL_GetError()<<" ("<<text<<")\n";
     }

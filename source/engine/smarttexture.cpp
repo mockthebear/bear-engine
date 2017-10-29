@@ -1,5 +1,6 @@
 #include "smarttexture.hpp"
 #include "gamebase.hpp"
+#include "renderhelp.hpp"
 
 SmartTexture::SmartTexture(int xx,int yy,int ww,int hh,bool del,bool hasAliasing){
    h = hh;
@@ -8,13 +9,24 @@ SmartTexture::SmartTexture(int xx,int yy,int ww,int hh,bool del,bool hasAliasing
    pixels = nullptr;
 
 
-   if (hasAliasing)
+
+    #ifndef RENDER_OPENGL
+    if (hasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-   t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, ww, hh);
-   if (hasAliasing)
+    t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, ww, hh);
+    if (hasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+    SDL_SetTextureBlendMode( t, SDL_BLENDMODE_BLEND );
+    #else
+    t = std::shared_ptr<BearTexture>(RenderHelp::CreateTexture(ww,hh,TEXTURE_TRILINEAR),[](BearTexture* bher)
+            {
+                bher->ClearTexture();
+                delete bher;
+            });
+    #endif // RENDER_OPENGL
+
    pixels = new Uint32[w * h];
-   SDL_SetTextureBlendMode( t, SDL_BLENDMODE_BLEND );
+
    x = xx;
    y = yy;
 }
@@ -22,17 +34,26 @@ SmartTexture::SmartTexture(int xx,int yy,int ww,int hh,bool del,bool hasAliasing
 
 
 void SmartTexture::UpdateTexture(){
+    #ifndef RENDER_OPENGL
     SDL_UpdateTexture(t, NULL, pixels, w * sizeof(Uint32));
+    #else
+    glBindTexture(GL_TEXTURE_2D, t->id);
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, t->size_w, pow_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->size_w, t->size_h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    #endif // RENDER_OPENGL
 
 }
 SmartTexture::~SmartTexture(){
     delete []pixels;
     if (deleteTexture){
-        SDL_DestroyTexture( t );
+        //SDL_DestroyTexture( t );
     }
 }
-void SmartTexture::Render(PointInt pos,float angle){
-    SDL_Rect rr;
+void SmartTexture::Render(PointInt pos,float angle,Point scale){
+    #ifndef RENDER_OPENGL
+
+   SDL_Rect rr;
     double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1
     double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH(); //floor(ScreenManager::GetInstance().GetScaleRatioH()*32.1)/32.1
     rr.x = pos.x*scaleRatioW + ScreenManager::GetInstance().GetOffsetW();
@@ -40,142 +61,43 @@ void SmartTexture::Render(PointInt pos,float angle){
     rr.h = h*scaleRatioH;
     rr.w = w*scaleRatioW;
     SDL_RenderCopyEx(BearEngine->GetRenderer(),t,NULL,&rr,angle,nullptr,SDL_FLIP_NONE);
-}
-
-SmartSurface::SmartSurface()
-{
-	texture = NULL;
-	w = 0;
-	h = 0;
-	mPixels = NULL;
-	pitch = 0;
-}
-
-SmartSurface::SmartSurface(std::string path)
-{
-	texture = NULL;
-	w = 0;
-	h = 0;
-	mPixels = NULL;
-	pitch = 0;
-	loadFromFile(  path );
-}
-SmartSurface::~SmartSurface()
-{
-	free();
-}
-
-bool SmartSurface::loadFromFile( std::string path )
-{
-	free();
-	SDL_Texture* texture_aux = NULL;
-	/*SDL_Surface* surf = IMG_Load( path.c_str() );
-	if( surf == NULL ){
-		printf( "Cannot load img: %s\n", path.c_str() );
-		return false;
-	}else{
-		SDL_Surface* aux_surf = SDL_ConvertSurfaceFormat( surf, SDL_PIXELFORMAT_RGBA8888, 0 );
-		if( aux_surf == NULL ){
-			printf( "Unable to convert loaded surface to display format! %s\n", SDL_GetError() );
-		}else{
-			texture_aux = SDL_CreateTexture( Game::GetInstance()->GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, aux_surf->w, aux_surf->h );
-            if (not texture_aux){
-                return false;
-            }
-            SDL_SetTextureBlendMode( texture_aux, SDL_BLENDMODE_BLEND );
-            SDL_LockTexture( texture_aux, &aux_surf->clip_rect, &mPixels, &pitch );
-            memcpy( mPixels, aux_surf->pixels, aux_surf->pitch * aux_surf->h );
-            w = aux_surf->w;
-            h = aux_surf->h;
-            Uint32* pixels = (Uint32*)mPixels;
-            int count = ( pitch / 4 ) * h;
-            Uint32 colorKey = SDL_MapRGB( aux_surf->format, 0xFF, 0xFF, 0xFF );
-            Uint32 transparent = SDL_MapRGBA( aux_surf->format, 0x00, 0x0, 0x0, 0x00 );
-            for( int i = 0; i < count; ++i ){
-                if( pixels[ i ] == colorKey ){
-                    pixels[ i ] = transparent;
-                }
-            }
-
-            SDL_UnlockTexture( texture_aux );
-            mPixels = NULL;
-        }
-        SDL_FreeSurface( aux_surf );
-		SDL_FreeSurface( surf );
-	}
-
-	//Return success
-	texture = texture_aux;*/
-	return true;
-}
-
-void SmartSurface::free(){
-	//Free texture if it exists
-	if( texture != NULL )
-	{
-		SDL_DestroyTexture( texture );
-		texture = NULL;
-		w = 0;
-		h = 0;
-		mPixels = NULL;
-		pitch = 0;
-	}
-}
-
-void SmartSurface::setColor( Uint8 red, Uint8 green, Uint8 blue ){
-	SDL_SetTextureColorMod( texture, red, green, blue );
-}
-
-void SmartSurface::setBlendMode( SDL_BlendMode blending ){
-	SDL_SetTextureBlendMode( texture, blending );
-}
-
-void SmartSurface::setAlpha( Uint8 alpha ){
-	SDL_SetTextureAlphaMod( texture, alpha );
-}
-
-void SmartSurface::Render( int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip ){
-	SDL_Rect dimensions2;
-    double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
-    double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
-    dimensions2.h = h*scaleRatioH;
-    dimensions2.w = w*scaleRatioW;
-	if( clip != NULL )
-	{
-		dimensions2.w = clip->w*scaleRatioW;
-		dimensions2.h = clip->h*scaleRatioH;
-	}
-
-    dimensions2.x = x*scaleRatioW+ ScreenManager::GetInstance().GetOffsetW();
-    dimensions2.y = y*scaleRatioH+ ScreenManager::GetInstance().GetOffsetH();
-
-	SDL_RenderCopyEx( Game::GetInstance()->GetRenderer(), texture, clip, &dimensions2, angle, center, flip );
-
-}
+    #else
+    glLoadIdentity();
+    glEnable(GL_TEXTURE_2D);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 
-bool SmartSurface::lockTexture(){
-	if( mPixels != NULL ){
-		return false;
-	}else if( SDL_LockTexture( texture, NULL, &mPixels, &pitch ) != 0 ){
-        return false;
-	}
-	return true;
-}
+    GLfloat texLeft = 0.0f;
+    GLfloat texRight = 1.0f;
+    GLfloat texTop = 0.0f;
+    GLfloat texBottom = 1.0f;
 
-bool SmartSurface::unlockTexture(){
-	if( mPixels == NULL ){
-		return false;
-	}else{
-		SDL_UnlockTexture( texture );
-		mPixels = NULL;
-		pitch = 0;
-		return true;
-	}
-}
+    GLfloat quadWidth =  t->size_w ;
+    GLfloat quadHeight = t->size_h ;
 
 
-Uint32 SmartSurface::getPixel32( unsigned int x, unsigned int y ){
-    Uint32 *pixels = (Uint32*)mPixels;
-    return pixels[ ( y * ( pitch / 4 ) ) + x ];
+    texRight = (  t->size_w ) / (float)t->w;
+    texBottom = ( t->size_h ) / (float)t->h;
+
+
+    glTranslatef(
+                    (pos.x   + quadWidth / 2.f  ),
+                    (pos.y  + quadHeight/ 2.f  ),
+                    0.f );
+
+    glScalef(scale.x,scale.y, 1.0f);
+    glRotatef( angle, 0.f, 0.f, 1.f );
+
+    glBindTexture( GL_TEXTURE_2D, t->id );
+
+    glBegin( GL_QUADS );
+        glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
+        glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
+        glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
+        glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
+    #endif // RENDER_OPENGL
 }

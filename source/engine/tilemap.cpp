@@ -18,7 +18,7 @@ TileMap::TileMap (char *str,TileSet* s){
 }
 
 void TileMap::Load(char *str){
-    FILE *f = fopen(str,"r");
+	FILE *f = fopen(str,"r");
     if (f){
 		fscanf(f,"%d,%d,%d,",&mapWidth,&mapHeight,&mapDepth);
         printf("%d,%d,%d,\n",mapWidth,mapHeight,mapDepth);

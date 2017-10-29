@@ -26,5 +26,6 @@ class DebugHelper{
         static void Assert(bool p,std::string file,std::string func,int line,std::string msg){
             AssertAlloc((void*)p,file,func,line,msg);
         }
+        static void DisplayGlError();
 };
 #endif // DEBUGHELPERBE

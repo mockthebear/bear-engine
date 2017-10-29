@@ -1,0 +1,180 @@
+/media/mock/bolo/bear-engine/source/luasystem/luatools.cpp:4: warning: documented symbol `bool GenericLuaGetter::Empty' was not declared or defined.
+/media/mock/bolo/bear-engine/source/luasystem/luatools.cpp:5: warning: documented symbol `std::string GenericLuaGetter::Empty' was not declared or defined.
+/media/mock/bolo/bear-engine/source/luasystem/luatools.cpp:8: warning: documented symbol `float GenericLuaGetter::Empty' was not declared or defined.
+/media/mock/bolo/bear-engine/source/luasystem/luatools.cpp:9: warning: documented symbol `double GenericLuaGetter::Empty' was not declared or defined.
+/media/mock/bolo/bear-engine/source/luasystem/luatools.cpp:10: warning: documented symbol `int GenericLuaGetter::Empty' was not declared or defined.
+/media/mock/bolo/bear-engine/source/luasystem/luatools.cpp:14: warning: documented symbol `char GenericLuaGetter::transfer' was not declared or defined.
+/media/mock/bolo/bear-engine/source/engine/text.hpp:64: warning: image file images/numbers.png is not found in IMAGE_PATH: assuming external image.
+/media/mock/bolo/bear-engine/source/engine/object.hpp:93: warning: HTML tags may not use the 'empty tag' XHTML syntax.
+/media/mock/bolo/bear-engine/source/engine/object.hpp:95: warning: end of comment block while expecting command </b>
+/media/mock/bolo/bear-engine/source/engine/object.hpp:95: warning: end of comment block while expecting command </b>
+/media/mock/bolo/bear-engine/source/engine/object.hpp:101: warning: argument 'other' of command @param is not found in the argument list of GameObject::NotifyCollision(GameObject *)
+/media/mock/bolo/bear-engine/source/engine/object.hpp:116: warning: argument 'other' of command @param is not found in the argument list of GameObject::NotifyDamage(GameObject *object, int damage)
+/media/mock/bolo/bear-engine/source/engine/object.hpp:135: warning: The following parameters of GameObject::NotifyDamage(GameObject *object, int damage) are not documented:
+  parameter 'object'
+  parameter 'damage'
+/media/mock/bolo/bear-engine/source/framework/geometry.hpp:28: warning: argument 'n' of command @param is not found in the argument list of GenericPoint< T >::GenericPoint(GenericPoint< T2 > p)
+/media/mock/bolo/bear-engine/source/framework/geometry.hpp:31: warning: The following parameters of GenericPoint::GenericPoint(GenericPoint< T2 > p) are not documented:
+  parameter 'p'
+/media/mock/bolo/bear-engine/source/framework/geometry.hpp:107: warning: argument 'return' of command @param is not found in the argument list of GenericPoint< T >::getDirection(GenericPoint p)
+/media/mock/bolo/bear-engine/source/framework/geometry.hpp:110: warning: The following parameters of GenericPoint::getDirection(GenericPoint p) are not documented:
+  parameter 'p'
+/media/mock/bolo/bear-engine/source/input/inputmanager.hpp:203: warning: argument 'i' of command @param is not found in the argument list of InputManager::FingerPress(int fingerId)
+/media/mock/bolo/bear-engine/source/input/inputmanager.hpp:208: warning: The following parameters of InputManager::FingerPress(int fingerId) are not documented:
+  parameter 'fingerId'
+/media/mock/bolo/bear-engine/source/input/inputmanager.hpp:246: warning: argument 'i' of command @param is not found in the argument list of InputManager::GetJoystick(int id)
+/media/mock/bolo/bear-engine/source/input/inputmanager.hpp:256: warning: The following parameters of InputManager::GetJoystick(int id) are not documented:
+  parameter 'id'
+/media/mock/bolo/bear-engine/source/input/inputmanager.hpp:234: warning: argument 'i' of command @param is not found in the argument list of InputManager::GetTouchTrueY(int fingerId)
+/media/mock/bolo/bear-engine/source/input/inputmanager.hpp:238: warning: The following parameters of InputManager::GetTouchTrueY(int fingerId) are not documented:
+  parameter 'fingerId'
+/media/mock/bolo/bear-engine/source/input/joystick.hpp:195: warning: argument 'axisId' of command @param is not found in the argument list of Joystick::GetAxisInputState(int axisIdb)
+/media/mock/bolo/bear-engine/source/input/joystick.hpp:200: warning: The following parameters of Joystick::GetAxisInputState(int axisIdb) are not documented:
+  parameter 'axisIdb'
+/media/mock/bolo/bear-engine/source/input/joystick.hpp:205: warning: argument 'PointInt' of command @param is not found in the argument list of Joystick::GetBall(int ballId)
+/media/mock/bolo/bear-engine/source/input/joystick.hpp:210: warning: The following parameters of Joystick::GetBall(int ballId) are not documented:
+  parameter 'ballId'
+/media/mock/bolo/bear-engine/source/input/joystick.hpp:225: warning: The following parameters of Joystick::IsValidHat(int hatId, int button) are not documented:
+  parameter 'hatId'
+/media/mock/bolo/bear-engine/source/input/joystick.hpp:187: warning: argument 'x' of command @param is not found in the argument list of Joystick::Render(int id)
+/media/mock/bolo/bear-engine/source/input/joystick.hpp:187: warning: argument 'y' of command @param is not found in the argument list of Joystick::Render(int id)
+/media/mock/bolo/bear-engine/source/input/joystick.hpp:192: warning: The following parameters of Joystick::Render(int id) are not documented:
+  parameter 'id'
+/media/mock/bolo/bear-engine/source/performance/linegrap.hpp:13: warning: argument 'X' of command @param is not found in the argument list of LineGraph::LineGraph(Point size, uint16_t dataCount)
+/media/mock/bolo/bear-engine/source/performance/linegrap.hpp:13: warning: argument 'Amount' of command @param is not found in the argument list of LineGraph::LineGraph(Point size, uint16_t dataCount)
+/media/mock/bolo/bear-engine/source/performance/linegrap.hpp:25: warning: The following parameters of LineGraph::LineGraph(Point size, uint16_t dataCount) are not documented:
+  parameter 'size'
+  parameter 'dataCount'
+/media/mock/bolo/bear-engine/source/performance/linegrap.hpp:27: warning: argument 'Value' of command @param is not found in the argument list of LineGraph::AddData(float data)
+/media/mock/bolo/bear-engine/source/performance/linegrap.hpp:33: warning: The following parameters of LineGraph::AddData(float data) are not documented:
+  parameter 'data'
+/media/mock/bolo/bear-engine/source/performance/linegrap.hpp:34: warning: argument 'The' of command @param is not found in the argument list of LineGraph::Render(Point pos)
+/media/mock/bolo/bear-engine/source/performance/linegrap.hpp:40: warning: The following parameters of LineGraph::Render(Point pos) are not documented:
+  parameter 'pos'
+/media/mock/bolo/bear-engine/source/engine/object.hpp:93: warning: HTML tags may not use the 'empty tag' XHTML syntax.
+/media/mock/bolo/bear-engine/source/engine/object.hpp:95: warning: end of comment block while expecting command </b>
+/media/mock/bolo/bear-engine/source/engine/object.hpp:95: warning: end of comment block while expecting command </b>
+/media/mock/bolo/bear-engine/source/luasystem/luaobject.hpp:23: warning: argument 'other' of command @param is not found in the argument list of LuaObject::NotifyCollision(GameObject *) inherited from member NotifyCollision at line 101 in file /media/mock/bolo/bear-engine/source/engine/object.hpp
+/media/mock/bolo/bear-engine/source/luasystem/luaobject.hpp:25: warning: argument 'other' of command @param is not found in the argument list of LuaObject::NotifyDamage(GameObject *object, int damage) inherited from member NotifyDamage at line 116 in file /media/mock/bolo/bear-engine/source/engine/object.hpp
+/media/mock/bolo/bear-engine/source/luasystem/luaobject.hpp:25: warning: The following parameters of LuaObject::NotifyDamage(GameObject *object, int damage) are not documented:
+  parameter 'object'
+  parameter 'damage'
+/media/mock/bolo/bear-engine/source/engine/particles.hpp:72: warning: argument 'the' of command @param is not found in the argument list of Particle::Particle(int x, int y, Text txt, float duration)
+/media/mock/bolo/bear-engine/source/engine/particles.hpp:78: warning: The following parameters of Particle::Particle(int x, int y, Text txt, float duration) are not documented:
+  parameter 'duration'
+/media/mock/bolo/bear-engine/source/engine/particles.hpp:80: warning: argument 'frames' of command @param is not found in the argument list of Particle::Particle(int x, int y, Sprite sp, float duration=0, int repeat=0)
+/media/mock/bolo/bear-engine/source/engine/particles.hpp:80: warning: argument 'delay' of command @param is not found in the argument list of Particle::Particle(int x, int y, Sprite sp, float duration=0, int repeat=0)
+/media/mock/bolo/bear-engine/source/engine/particles.hpp:88: warning: The following parameters of Particle::Particle(int x, int y, Sprite sp, float duration=0, int repeat=0) are not documented:
+  parameter 'duration'
+/media/mock/bolo/bear-engine/source/engine/particles.hpp:144: warning: argument 'degen.' of command @param is not found in the argument list of Particle::SetAlphaDegen(float degen, float currentAlpha=255)
+/media/mock/bolo/bear-engine/source/engine/particles.hpp:148: warning: The following parameters of Particle::SetAlphaDegen(float degen, float currentAlpha=255) are not documented:
+  parameter 'degen'
+/media/mock/bolo/bear-engine/source/engine/particles.hpp:112: warning: argument 'the' of command @param is not found in the argument list of Particle::SetPatternMoveCircle(float speed, float angle, float radius)
+/media/mock/bolo/bear-engine/source/engine/particles.hpp:117: warning: The following parameters of Particle::SetPatternMoveCircle(float speed, float angle, float radius) are not documented:
+  parameter 'radius'
+/media/mock/bolo/bear-engine/source/engine/particles.hpp:119: warning: argument 'dis' of command @param is not found in the argument list of Particle::SetPatternMoveCustom(std::function< void(Particle *dis, float dt, float &data)> customP)
+/media/mock/bolo/bear-engine/source/engine/particles.hpp:119: warning: argument 'dt' of command @param is not found in the argument list of Particle::SetPatternMoveCustom(std::function< void(Particle *dis, float dt, float &data)> customP)
+/media/mock/bolo/bear-engine/source/engine/particles.hpp:119: warning: argument 'data' of command @param is not found in the argument list of Particle::SetPatternMoveCustom(std::function< void(Particle *dis, float dt, float &data)> customP)
+/media/mock/bolo/bear-engine/source/engine/particles.hpp:106: warning: argument 'speed' of command @param is not found in the argument list of Particle::SetPatternMoveLine(Point velocity, Point acceleration)
+/media/mock/bolo/bear-engine/source/engine/particles.hpp:110: warning: The following parameters of Particle::SetPatternMoveLine(Point velocity, Point acceleration) are not documented:
+  parameter 'velocity'
+/media/mock/bolo/bear-engine/source/framework/poolmanager.hpp:197: warning: argument 'object' of command @param is not found in the argument list of PoolManager::AddInstance(T *obj, bool deletePtr=false)
+/media/mock/bolo/bear-engine/source/framework/poolmanager.hpp:206: warning: The following parameters of PoolManager::AddInstance(T *obj, bool deletePtr=false) are not documented:
+  parameter 'obj'
+  parameter 'deletePtr'
+/media/mock/bolo/bear-engine/source/framework/poolmanager.hpp:280: warning: argument 'This' of command @param is not found in the argument list of PoolManager::GetMaxInstancesGlobal(PoolId pool)
+/media/mock/bolo/bear-engine/source/framework/poolmanager.hpp:289: warning: The following parameters of PoolManager::GetMaxInstancesGlobal(PoolId pool) are not documented:
+  parameter 'pool'
+/media/mock/bolo/bear-engine/source/framework/resourcemanager.hpp:12: warning: found </b> tag without matching <b>
+/media/mock/bolo/bear-engine/source/framework/resourcemanager.hpp:21: warning: end of comment block while expecting command </b>
+/media/mock/bolo/bear-engine/source/framework/resourcemanager.hpp:69: warning: argument 'fileName' of command @param is not found in the argument list of ResourceManager::GetFile(std::string file)
+/media/mock/bolo/bear-engine/source/framework/resourcemanager.hpp:83: warning: The following parameters of ResourceManager::GetFile(std::string file) are not documented:
+  parameter 'file'
+/media/mock/bolo/bear-engine/source/framework/schedule.hpp:55: warning: argument 'Duration' of command @param is not found in the argument list of Scheduler::AddEvent(float duration, ScheduleFunction F, uint32_t repeats=0)
+/media/mock/bolo/bear-engine/source/framework/schedule.hpp:55: warning: argument 'An' of command @param is not found in the argument list of Scheduler::AddEvent(float duration, ScheduleFunction F, uint32_t repeats=0)
+/media/mock/bolo/bear-engine/source/framework/schedule.hpp:55: warning: argument 'Number' of command @param is not found in the argument list of Scheduler::AddEvent(float duration, ScheduleFunction F, uint32_t repeats=0)
+/media/mock/bolo/bear-engine/source/framework/schedule.hpp:64: warning: The following parameters of Scheduler::AddEvent(float duration, ScheduleFunction F, uint32_t repeats=0) are not documented:
+  parameter 'duration'
+  parameter 'F'
+  parameter 'repeats'
+/media/mock/bolo/bear-engine/source/framework/schedule.hpp:47: warning: argument 'Event' of command @param is not found in the argument list of Scheduler::Stop(uint64_t eventId)
+/media/mock/bolo/bear-engine/source/framework/schedule.hpp:54: warning: The following parameters of Scheduler::Stop(uint64_t eventId) are not documented:
+  parameter 'eventId'
+/media/mock/bolo/bear-engine/source/engine/object.hpp:93: warning: HTML tags may not use the 'empty tag' XHTML syntax.
+/media/mock/bolo/bear-engine/source/engine/object.hpp:95: warning: end of comment block while expecting command </b>
+/media/mock/bolo/bear-engine/source/engine/object.hpp:95: warning: end of comment block while expecting command </b>
+/media/mock/bolo/bear-engine/source/engine/shooteffect.hpp:18: warning: argument 'other' of command @param is not found in the argument list of ShootEffect::NotifyCollision(GameObject *) inherited from member NotifyCollision at line 101 in file /media/mock/bolo/bear-engine/source/engine/object.hpp
+/media/mock/bolo/bear-engine/source/engine/shooteffect.hpp:19: warning: argument 'other' of command @param is not found in the argument list of ShootEffect::NotifyDamage(GameObject *object, int damage) inherited from member NotifyDamage at line 116 in file /media/mock/bolo/bear-engine/source/engine/object.hpp
+/media/mock/bolo/bear-engine/source/engine/shooteffect.hpp:19: warning: The following parameters of ShootEffect::NotifyDamage(GameObject *object, int damage) are not documented:
+  parameter 'object'
+  parameter 'damage'
+/media/mock/bolo/bear-engine/source/engine/smarttileset.hpp:27: warning: argument 'layers.' of command @param is not found in the argument list of SmartTileset::SmartTileset(PointInt tileSize, PointInt tilesetSize, int layers=1, PointInt maxTextureSize=PointInt(-1,-1))
+/media/mock/bolo/bear-engine/source/engine/smarttileset.hpp:34: warning: The following parameters of SmartTileset::SmartTileset(PointInt tileSize, PointInt tilesetSize, int layers=1, PointInt maxTextureSize=PointInt(-1,-1)) are not documented:
+  parameter 'layers'
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:84: warning: The following parameters of Sprite::Sprite(TexturePtr texture, std::string name, int fcount=1, float ftime=1, int repeat=1, bool hasAliasing=false) are not documented:
+  parameter 'name'
+  parameter 'fcount'
+  parameter 'ftime'
+  parameter 'repeat'
+  parameter 'hasAliasing'
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:92: warning: The following parameters of Sprite::Sprite(TexturePtr texture, std::string name, std::string alias, int fcount=1, float ftime=1, int repeat=1, bool hasAliasing=false) are not documented:
+  parameter 'name'
+  parameter 'alias'
+  parameter 'fcount'
+  parameter 'ftime'
+  parameter 'repeat'
+  parameter 'hasAliasing'
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:101: warning: end of comment block while expecting command </b>
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:101: warning: end of comment block while expecting command </b>
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:102: warning: The following parameters of Sprite::Sprite(char *file, int fcount=1, float ftime=1, int repeat=1, bool hasAliasing=false) are not documented:
+  parameter 'repeat'
+  parameter 'hasAliasing'
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:110: warning: end of comment block while expecting command </b>
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:110: warning: end of comment block while expecting command </b>
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:111: warning: The following parameters of Sprite::Sprite(const char *file, int fcount=1, float ftime=1, int repeat=1, bool hasAliasing=false) are not documented:
+  parameter 'repeat'
+  parameter 'hasAliasing'
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:120: warning: end of comment block while expecting command </b>
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:120: warning: end of comment block while expecting command </b>
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:121: warning: The following parameters of Sprite::Sprite(const char *file, ColorReplacer &r, bool replaceOnAssets=true, int fcount=1, float ftime=1, int repeat=1, bool hasAliasing=false) are not documented:
+  parameter 'replaceOnAssets'
+  parameter 'repeat'
+  parameter 'hasAliasing'
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:126: warning: argument 'file' of command @param is not found in the argument list of Sprite::Sprite(SDL_RWops *rw, std::string name, int fcount=1, float ftime=1, int repeat=1, bool hasAliasing=false)
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:133: warning: end of comment block while expecting command </b>
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:133: warning: end of comment block while expecting command </b>
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:134: warning: The following parameters of Sprite::Sprite(SDL_RWops *rw, std::string name, int fcount=1, float ftime=1, int repeat=1, bool hasAliasing=false) are not documented:
+  parameter 'rw'
+  parameter 'name'
+  parameter 'repeat'
+  parameter 'hasAliasing'
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:389: warning: argument 'if' of command @param is not found in the argument list of Sprite::IsAnimationOver()
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:195: warning: argument 'name' of command @param is not found in the argument list of Sprite::Openf(std::string file, bool HasAliasing=false)
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:195: warning: argument 'reopen' of command @param is not found in the argument list of Sprite::Openf(std::string file, bool HasAliasing=false)
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:201: warning: The following parameters of Sprite::Openf(std::string file, bool HasAliasing=false) are not documented:
+  parameter 'HasAliasing'
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:184: warning: argument 'reopen' of command @param is not found in the argument list of Sprite::Openrw(SDL_RWops *rw, std::string name, bool HasAliasing=false)
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:190: warning: The following parameters of Sprite::Openrw(SDL_RWops *rw, std::string name, bool HasAliasing=false) are not documented:
+  parameter 'HasAliasing'
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:153: warning: The following parameters of Sprite::Preload(const char *file, bool adjustDir=true, bool HasAliasing=false) are not documented:
+  parameter 'adjustDir'
+  parameter 'HasAliasing'
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:167: warning: The following parameters of Sprite::Preload(SDL_RWops *rw, std::string name, bool HasAliasing=false) are not documented:
+  parameter 'HasAliasing'
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:224: warning: The following parameters of Sprite::Render(int x, int y, double angle=0) are not documented:
+  parameter 'y'
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:403: warning: argument 'scale' of command @param is not found in the argument list of Sprite::SetCenteredScale(bool set, Point sprSize=Point(0, 0))
+/media/mock/bolo/bear-engine/source/engine/sprite.hpp:407: warning: The following parameters of Sprite::SetCenteredScale(bool set, Point sprSize=Point(0, 0)) are not documented:
+  parameter 'set'
+  parameter 'sprSize'
+/media/mock/bolo/bear-engine/source/engine/text.hpp:160: warning: The following parameters of Text::Text(std::string fontfile, int fontsize, TextStyle style, std::string text, SDL_Color color, int x=0, int y=0) are not documented:
+  parameter 'y'
+/media/mock/bolo/bear-engine/source/engine/text.hpp:231: warning: argument 'style' of command @param is not found in the argument list of Text::SetAlpha(int alpha)
+/media/mock/bolo/bear-engine/source/engine/text.hpp:235: warning: The following parameters of Text::SetAlpha(int alpha) are not documented:
+  parameter 'alpha'
+/media/mock/bolo/bear-engine/source/engine/text.hpp:225: warning: argument 'color' of command @param is not found in the argument list of Text::SetStyle(TextStyle style)
+/media/mock/bolo/bear-engine/source/engine/text.hpp:229: warning: The following parameters of Text::SetStyle(TextStyle style) are not documented:
+  parameter 'style'
+/media/mock/bolo/bear-engine/source/framework/threadpool.hpp:189: warning: The following parameters of ThreadPool::AddParallelFor(std::function< void(int, int, void *)> lamba, int min, int max, int jobs=-1) are not documented:
+  parameter 'jobs'
+/media/mock/bolo/bear-engine/source/framework/typechecker.hpp:116: warning: argument 'name' of command @param is not found in the argument list of Types::checkType(T *object1)

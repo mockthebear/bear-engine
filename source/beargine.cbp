@@ -18,6 +18,7 @@
 					<Add option="-pg" />
 					<Add option="-g" />
 					<Add option="-DIGNORESTEAM" />
+					<Add option="-DRENDER_OPENGL" />
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
@@ -28,6 +29,9 @@
 					<Add option="-lSDL2_ttf" />
 					<Add option="-lopenal32" />
 					<Add option="-lvorbisfile" />
+					<Add option="-lopengl32" />
+					<Add option="-lglew32" />
+					<Add option="-lglu32" />
 					<Add option="-pthread" />
 				</Linker>
 			</Target>
@@ -88,7 +92,6 @@
 				<Option object_output="../obj/Unix/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option use_console_runner="0" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++0x" />
@@ -106,6 +109,8 @@
 					<Add option="-lSDL2_ttf" />
 					<Add option="-lopenal" />
 					<Add option="-lvorbisfile" />
+					<Add option="-lGLEW" />
+					<Add option="-lGL" />
 					<Add option="-pthread" />
 				</Linker>
 			</Target>
@@ -141,6 +146,8 @@
 		<Unit filename="engine/renderhelp.hpp" />
 		<Unit filename="engine/screenmanager.cpp" />
 		<Unit filename="engine/screenmanager.hpp" />
+		<Unit filename="engine/shadermanager.cpp" />
+		<Unit filename="engine/shadermanager.hpp" />
 		<Unit filename="engine/shooteffect.cpp" />
 		<Unit filename="engine/shooteffect.hpp" />
 		<Unit filename="engine/smarttexture.cpp" />
@@ -252,7 +259,10 @@
 		<Unit filename="tests/testlua.hpp" />
 		<Unit filename="tests/testpathfind.hpp" />
 		<Unit filename="tests/testpool.hpp" />
+		<Unit filename="tests/testscrolling.hpp" />
+		<Unit filename="tests/testshapes.hpp" />
 		<Unit filename="tests/testsprite.hpp" />
+		<Unit filename="tests/testtargettexture.hpp" />
 		<Unit filename="tests/testtext.hpp" />
 		<Unit filename="tests/testthread.cpp" />
 		<Unit filename="tests/testthread.hpp" />

@@ -1,4 +1,5 @@
 #include "assetmanager.hpp"
+#include "../settings/definitions.hpp"
 #include "../performance/console.hpp"
 #include "../sound/soundloader.hpp"
 #include <iostream>
@@ -31,22 +32,28 @@ AssetMannager::~AssetMannager(){
 }
 
 
-TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string alias,bool hasAliasing) {
+TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string alias,TextureLoadMethod hasAliasing) {
     if (alias == ""){
         alias = str;
     }
     if (!spriteMap[alias] || forced){
-        SDL_Texture* c =Sprite::Preload((char*)str.c_str(),true,hasAliasing);
+        BearTexture* c =Sprite::Preload((char*)str.c_str(),true,hasAliasing);
         if (!c){
             return TexturePtr();
         }
         if (forced && spriteMap[alias].get()){
+            #ifdef RENDER_OPENGL
+            BearTexture *be = spriteMap[alias].get();
+            glDeleteTextures( 1, &be->id );
+            delete be;
+            #else
             SDL_DestroyTexture( spriteMap[alias].get() );
+            #endif // RENDER_OPENGL
             spriteMap[alias].reset(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("FORCED: Made texture for [%s] in  manager %d",str,id);
         }else{
-            spriteMap[alias] = chain_ptr<SDL_Texture>::make(c);
+            spriteMap[alias] = chain_ptr<BearTexture>::make(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("Made texture for [%s] in  manager %d",str,id);
         }
@@ -55,19 +62,29 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string al
     return spriteMap[alias];
 }
 
-TexturePtr AssetMannager::makeTexture(bool forced,std::string str,int ,float,int,bool hasAliasing) {
+TexturePtr AssetMannager::makeTexture(bool forced,std::string str,TextureLoadMethod hasAliasing) {
+    return makeTexture(forced,str,1,0,1,hasAliasing);
+};
+
+TexturePtr AssetMannager::makeTexture(bool forced,std::string str,int ,float,int,TextureLoadMethod hasAliasing) {
     if (!spriteMap[str] || forced){
-        SDL_Texture* c =Sprite::Preload((char*)str.c_str(),true,hasAliasing);
+        BearTexture* c =Sprite::Preload((char*)str.c_str(),true,hasAliasing);
         if (!c){
             return TexturePtr();
         }
         if (forced && spriteMap[str].get()){
+            #ifdef RENDER_OPENGL
+            BearTexture *be = spriteMap[str].get();
+            glDeleteTextures( 1, &be->id );
+            delete be;
+            #else
             SDL_DestroyTexture( spriteMap[str].get() );
+            #endif // RENDER_OPENGL
             spriteMap[str].reset(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("FORCED: Made texture for [%s] in  manager %d",str,id);
         }else{
-            spriteMap[str] = chain_ptr<SDL_Texture>::make(c);
+            spriteMap[str] = chain_ptr<BearTexture>::make(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("Made texture for [%s] in  manager %d",str,id);
         }
@@ -76,24 +93,30 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,int ,float,int
     return spriteMap[str];
 }
 
-TexturePtr AssetMannager::makeTexture(bool forced,SDL_RWops* rw,std::string str,bool hasAntiAliasign)  {
+TexturePtr AssetMannager::makeTexture(bool forced,SDL_RWops* rw,std::string str,TextureLoadMethod hasAliasing)  {
     if (!spriteMap[str] || forced){
         if (!rw){
             return TexturePtr();
         }
-        SDL_Texture* c =Sprite::Preload(rw,str,hasAntiAliasign);
+        BearTexture* c =Sprite::Preload(rw,str,hasAliasing);
         if (!c){
             Console::GetInstance().AddTextInfoF("Failed to create. %s in %d",str,id);
             return TexturePtr();
         }
 
         if (forced && spriteMap[str].get()){
+            #ifdef RENDER_OPENGL
+            BearTexture *be = spriteMap[str].get();
+            glDeleteTextures( 1, &be->id );
+            delete be;
+            #else
             SDL_DestroyTexture( spriteMap[str].get() );
+            #endif // RENDER_OPENGL
             spriteMap[str].reset(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("FORCED: Made texture RW for [%s] in  manager %d",str,id);
         }else{
-            spriteMap[str] = chain_ptr<SDL_Texture>::make(c);
+            spriteMap[str] = chain_ptr<BearTexture>::make(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("Made texture RW for [%s] in  manager %d",str,id);
         }
@@ -103,23 +126,29 @@ TexturePtr AssetMannager::makeTexture(bool forced,SDL_RWops* rw,std::string str,
     return spriteMap[str];
 }
 
-TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string alias,ColorReplacer &r,bool HasAliasing)  {
+TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string alias,ColorReplacer &r,TextureLoadMethod hasAliasing)  {
     if (alias == ""){
         alias = str;
     }
     if (!spriteMap[alias] || forced){
-        SDL_Texture* c =Sprite::Preload(str,r,HasAliasing);
+        BearTexture* c =Sprite::Preload(str,r,hasAliasing);
         if (!c){
             return TexturePtr();
         }
 
         if (forced && spriteMap[alias].get()){
+            #ifdef RENDER_OPENGL
+            BearTexture *be = spriteMap[alias].get();
+            glDeleteTextures( 1, &be->id );
+            delete be;
+            #else
             SDL_DestroyTexture( spriteMap[alias].get() );
+            #endif // RENDER_OPENGL
             spriteMap[alias].reset(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("FORCED: Made replace texture for [%s] in  manager %d",str,id);
         }else{
-            spriteMap[alias] = chain_ptr<SDL_Texture>::make(c);
+            spriteMap[alias] = chain_ptr<BearTexture>::make(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("Made replace texture for [%s] in  manager %d",str,id);
         }
@@ -129,20 +158,26 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string al
     return spriteMap[alias];
 }
 
-TexturePtr AssetMannager::makeTexture(bool forced,std::string str,ColorReplacer &r,bool HasAliasing)  {
+TexturePtr AssetMannager::makeTexture(bool forced,std::string str,ColorReplacer &r,TextureLoadMethod hasAliasing)  {
     if (!spriteMap[str] || forced){
-        SDL_Texture* c =Sprite::Preload(str,r,HasAliasing);
+        BearTexture* c =Sprite::Preload(str,r,hasAliasing);
         if (!c){
             return TexturePtr();
         }
 
         if (forced && spriteMap[str].get()){
+            #ifdef RENDER_OPENGL
+            BearTexture *be = spriteMap[str].get();
+            glDeleteTextures( 1, &be->id );
+            delete be;
+            #else
             SDL_DestroyTexture( spriteMap[str].get() );
+            #endif // RENDER_OPENGL
             spriteMap[str].reset(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("FORCED: Made replace texture for [%s] in  manager %d",str,id);
         }else{
-            spriteMap[str] = chain_ptr<SDL_Texture>::make(c);
+            spriteMap[str] = chain_ptr<BearTexture>::make(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("Made replace texture for [%s] in  manager %d",str,id);
         }
@@ -197,7 +232,13 @@ SoundPtr AssetMannager::makeSound(bool forced,SDL_RWops* rw,std::string str){
 bool AssetMannager::erase(){
     for (auto &it : spriteMap){
         if (it.second.get()){
+            #ifdef RENDER_OPENGL
+            BearTexture *be = it.second.get();
+            glDeleteTextures( 1, &be->id );
+            delete be;
+            #else
             SDL_DestroyTexture( it.second.get() );
+            #endif // RENDER_OPENGL
             it.second.reset(nullptr);
             it.second.destroy();
         }

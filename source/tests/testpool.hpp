@@ -42,7 +42,7 @@ class Test_Pool: public State{
 
         void Update(float dt){
             UpdateInstances(dt);
-            duration -= dt;
+            //duration -= dt;
             objAdder -= dt;
             if (objAdder <= 0){
                 Pool.AddInstance(TestObject(Point(90,90)));

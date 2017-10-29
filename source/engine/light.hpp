@@ -3,6 +3,7 @@
 #include "smarttexture.hpp"
 #include "../framework/threadpool.hpp"
 #ifndef DISABLE_THREADPOOL
+#define HAVE_STRUCT_TIMESPEC
 #include <pthread.h>
 #endif
 enum LightStep{

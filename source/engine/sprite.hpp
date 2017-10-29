@@ -1,5 +1,5 @@
 #include "../settings/definitions.hpp"
-#include SDL_LIB_HEADER
+
 
 
 #ifndef SPRITEHA
@@ -13,7 +13,81 @@
 #include <string>
 
 #include <memory>
+
+#include SDL_LIB_HEADER
+#include <GL/glew.h>
+
+enum TextureLoadMethodEnum{
+    TEXTURE_NEARST,
+    TEXTURE_LINEAR,
+    TEXTURE_TRILINEAR,
+};
+
+class TextureLoadMethod{
+    public:
+    TextureLoadMethod(){
+        mode = TEXTURE_NEARST;
+    };
+    TextureLoadMethod(TextureLoadMethodEnum md){
+        mode = md;
+    };
+    void ApplyFilter(){
+        switch (mode){
+            case TEXTURE_NEARST:
+                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+                break;
+            case TEXTURE_LINEAR:
+                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+                break;
+            case TEXTURE_TRILINEAR:
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+                break;
+        }
+    }
+    TextureLoadMethodEnum mode;
+};
+
+#ifdef RENDER_OPENGL
+#include GLEW_LIB_HEADER
+
+
+class BearTexture{
+    public:
+        BearTexture(){
+            id = 0;
+            w = h = c = 0;
+            size_w = size_h = 0;
+            textureMode = TEXTURE_NEARST;
+        };
+        GLuint DropTexture(){
+           GLuint ret = id;
+           id = 0;
+           return ret;
+        }
+        void ClearTexture(){
+            GLuint tex = DropTexture();
+            if (tex > 0)
+                glDeleteTextures(1, &tex);
+        }
+
+        BearTexture(GLuint textureId,uint32_t width,uint32_t height,GLenum imgMode):id(textureId),w(width),h(height),mode(imgMode){};
+        GLuint id;
+        uint32_t w;
+        uint32_t h;
+        uint32_t c;
+        uint32_t size_w;
+        uint32_t size_h;
+        TextureLoadMethod textureMode;
+        GLenum mode;
+
+};
+typedef chain_ptr<BearTexture> TexturePtr;
+#else
 typedef chain_ptr<SDL_Texture> TexturePtr;
+#endif // RENDER_OPENGL
 
 /**
  * @brief Color replacing filter class to use on load
@@ -81,57 +155,24 @@ class Sprite{
             *in the class.
             @param texture An sdl texture
         */
-        Sprite(TexturePtr texture,std::string name,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
-        /**
-            *This constructor its a bit special, and need a bit more attention
-            *You start the sprite and pass only an SDL_Texture. There is no mapping
-            *No destory, not anything, it just hold the SDL_Texture and render as an common texture
-            *in the class.
-            @param texture An sdl texture
-        */
-        Sprite(TexturePtr texture,std::string name,std::string alias,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
-
-        /**
-            *Create an sprite from an path to an file. The file should be SDL2_Image supported
-            *You can set the frame count and frame time to an animation
-            *When you animate an sprite, remember to call Sprite::Update on your GameActivity
-            @param file The path to an file
-            @param fcount Frame count. <b>THE FRAME MOVES ON X ONLY<b>
-            @param ftime The time between the frames
-        */
-        Sprite(char *file,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
-        /**
-            *Create an sprite from an path to an file. The file should be SDL2_Image supported
-            *You can set the frame count and frame time to an animation
-            *When you animate an sprite, remember to call Sprite::Update on your GameActivity
-            @param file The path to an file
-            @param fcount Frame count. <b>THE FRAME MOVES ON X ONLY<b>
-            @param ftime The time between the frames
-        */
-        Sprite(const char *file,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
-        /**
-            *Create an sprite from an path to an file. The file should be SDL2_Image supported
-            *You can set the frame count and frame time to an animation
-            *When you animate an sprite, remember to call Sprite::Update on your GameActivity
-            @param file The path to an file
-            @param r An replacer filter
-            @param fcount Frame count. <b>THE FRAME MOVES ON X ONLY<b>
-            @param ftime The time between the frames
-        */
-        Sprite(const char *file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
 
 
-        Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
-        /**
-            *Create an sprite from a rwops. Also delete the RWops
-            *You also NEED to set an alias to use as hash.
-            *You can set the frame count and frame time to an animation
-            *When you animate an sprite, remember to call Sprite::Update on your GameActivity
-            @param file The path to an file
-            @param fcount Frame count. <b>THE FRAME MOVES ON X ONLY<b>
-            @param ftime The time between the frames
-        */
-        Sprite(SDL_RWops* rw,std::string name,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false);
+        Sprite(TexturePtr texture,std::string name,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+        Sprite(TexturePtr texture,std::string name,std::string alias,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+
+        Sprite(TexturePtr texture,std::string name,int fcount,float ftime,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+        Sprite(TexturePtr texture,std::string name,std::string alias,int fcount,float ftime,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+
+        Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+
+        Sprite(SDL_RWops* rw,std::string name,int fcount,float ftime,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+
+
+        Sprite(std::string file,int fcount=1.0f,float ftime=1.0f,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+
+        Sprite(std::string file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+
+
 
         /**
             *This function is static. You can call it any time
@@ -150,7 +191,7 @@ class Sprite{
             @param file The path or the asset tweak asset:file
         */
 
-        static SDL_Texture* Preload(const char *file,bool adjustDir=true,bool HasAliasing=false);
+        static BearTexture* Preload(const char *file,bool adjustDir=true,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
         /**
             *Works like Sprite::Preload(char *file)
             *You have to pass an RWops and set an alias to work on Sprite::assetTable
@@ -164,15 +205,15 @@ class Sprite{
             SDL_RWclose(file);
             @endcode
         */
-        static SDL_Texture* Preload(SDL_RWops* rw,std::string name,bool HasAliasing=false);
+        static BearTexture* Preload(SDL_RWops* rw,std::string name,TextureLoadMethod AliasingMethod=TEXTURE_NEARST);
         /**
-            *Works like Sprite::Preload(char *file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,bool hasAliasing=false)
+            *Works like Sprite::Preload(char *file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod AliasingMethod=TEXTURE_NEARST)
             *You have to pass an RWops and set an alias to work on Sprite::assetTable
             @param fileName file name. Accept an alias like assets:file.png
             @param r an color replace filer.
             @param HasAliasing mark as true to load the sprite using antialiasing.
         */
-        static SDL_Texture *Preload(std::string fileName,ColorReplacer &r,bool HasAliasing=false);
+        static BearTexture *Preload(std::string fileName,ColorReplacer &r,TextureLoadMethod AliasingMethod=TEXTURE_NEARST);
         Sprite* GetMe(){
             return this;
         }
@@ -187,10 +228,10 @@ class Sprite{
             @param reopen Default is false. When you call this, a new texture will be created and dont be added to the Sprite::assetTable
             @return An texture
         */
-       bool Openrw(SDL_RWops* rw,std::string name,bool HasAliasing=false){
-            return Open(rw,name,HasAliasing);
+       bool Openrw(SDL_RWops* rw,std::string name,TextureLoadMethod AliasingMethod=TEXTURE_NEARST){
+            return Open(rw,name,AliasingMethod);
        };
-       bool Open(SDL_RWops* rw,std::string name,bool HasAliasing=false);
+       bool Open(SDL_RWops* rw,std::string name,TextureLoadMethod AliasingMethod=TEXTURE_NEARST);
         /**
             *Can be used when you create an sprite with empty constructor.
             @param file The path. Accept resource tweak.
@@ -198,10 +239,10 @@ class Sprite{
             @param reopen Default is false. When you call this, a new texture will be created and dont be added to the Sprite::assetTable
             @return An texture
         */
-        bool Openf(std::string file,bool HasAliasing=false){
-            return Open(file.c_str(),HasAliasing);
+        bool Openf(std::string file,TextureLoadMethod AliasingMethod=TEXTURE_NEARST){
+            return Open(file.c_str(),AliasingMethod);
         }
-        bool Open(const char *file,bool HasAliasing=false);
+        bool Open(std::string file,TextureLoadMethod AliasingMethod=TEXTURE_NEARST);
         /**
             *Set clip on the sprite. Clipping stuff.
             *When call Sprite::Render, the rendered thing will be only the clipped area.
@@ -224,14 +265,6 @@ class Sprite{
         void Render (int x,int y,double angle=0);
 
         void Renderxy(int x,int y,double angle=0);
-        /**
-            *Work as the same of Render, but without any changing by the screen scale
-            *Only the transformations of this sprite
-            @param x The x position
-            @param y The y position
-            @param angle When you need rotate the sprite
-        */
-        void RawRender(int x,int y,double angle);
 
         /**
             *The render function will render on the game at the position x,y.
@@ -355,7 +388,7 @@ class Sprite{
             *Get the texture. Note that texture can be an shared one
             @return The SDL_Texture pointer;
         */
-        SDL_Texture* GetSDLTexture(){
+        BearTexture* GetSDLTexture(){
             return (textureShred.get());
         };
         /**
@@ -364,8 +397,8 @@ class Sprite{
         */
         void SetCenter(Point p){
             hasCenter=true;
-            center.x = (int)p.x;
-            center.y = (int)p.y;
+            center.x = p.x;
+            center.y = p.y;
         };
 
         Point GetCenter(){
@@ -403,19 +436,6 @@ class Sprite{
         void SetScaleX(float scale=1){
             scaleX=scale;
         };
-        /**
-            *Change the sprite scale. Its an local scale, not shared.
-            @param scale the original value is 1.
-        */
-
-        void SetCenteredScale(bool set,Point sprSize=Point(0,0)){
-            scaleCentered = set;
-            if (sprSize.x == 0.0f || sprSize.y == 0.0f){
-                widSize = Point(clipRect.w,clipRect.h);
-            }else{
-                widSize = sprSize;
-            }
-        }
 
         void SetScaleY(float scale=1){
             scaleY=scale;
@@ -441,10 +461,12 @@ class Sprite{
             @param Green [0-255] The default is 255 of all sprites;
         */
         void ReBlend(uint8_t Red,uint8_t Blue,uint8_t Green){
-            OUTR = Red;
-            OUTB = Blue;
-            OUTG = Green;
-            SDL_SetTextureColorMod((textureShred.get()),OUTR,OUTB,OUTG);
+            OUTR = Red/255.0f;
+            OUTB = Blue/255.0f;
+            OUTG = Green/255.0f;
+            #ifndef RENDER_OPENGL
+            SDL_SetTextureColorMod((textureShred.get()),OUTR*255,OUTB*255,OUTG*255);
+            #endif // RENDER_OPENGL
         };
         /**
             *Changed the sprite alpha
@@ -453,18 +475,15 @@ class Sprite{
             @param alpha [0-255] The default is 255 of all sprites;
         */
         void SetAlpha(uint8_t alpha){
-            m_alpha = alpha;
+            m_alpha = alpha/255.0f;
+            #ifndef RENDER_OPENGL
             SDL_SetTextureAlphaMod((textureShred.get()),alpha);
+            #endif // RENDER_OPENGL
         };
 
         uint8_t GetAlpha(){
-            return m_alpha;
+            return m_alpha*255;
         };
-        /**
-            *Duplicate the texture
-            *<b>Not tested yet with all features</b>
-        */
-        SDL_Texture* CopyTexture();
         /**
             *Set a grid for animation frames
             @param gx The grid size in x axis
@@ -502,24 +521,30 @@ class Sprite{
         */
         void Kill();
     private:
-        bool aliasing;
+        TextureLoadMethod aliasing;
         TexturePtr textureShred;
         friend class AssetMannager;
+
         SDL_RendererFlip sprFlip;
         std::string fname;
-        uint8_t OUTR,OUTB,OUTG;
-        uint8_t m_alpha;
+        float OUTR,OUTB,OUTG;
+        float m_alpha;
         float scaleX,scaleY,timeElapsed,frameTime;
         int over;
         int repeat;
-        int frameCount;
+        int frameCount,m_lf;
         PointInt currentFrame;
         PointInt grid;
-        SDL_Rect dimensions;
-        SDL_Rect clipRect;
-        SDL_Point center;
-        Point widSize;
-        bool hasCenter,scaleCentered;
+        Rect dimensions;
+        Rect clipRect;
+        Point center;
+        bool hasCenter;
+
+
+        GLfloat texLeft;
+        GLfloat texRight;
+        GLfloat texTop;
+        GLfloat texBottom;
 };
 
 
@@ -608,7 +633,7 @@ class Animation{
         uint32_t sprY;
         uint32_t sprW;
         uint32_t sprH;
-        uint32_t MaxFrames,m_lf;
+        uint32_t MaxFrames;
         float SprDelay;
         float SprMaxDelay;
         bool CanRepeat;

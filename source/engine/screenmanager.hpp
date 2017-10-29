@@ -6,6 +6,7 @@
 #include SDL_LIB_HEADER
 #include <string>
 #include "../framework/geometry.hpp"
+#include <GL/glew.h>
 enum ResizeAction{
     RESIZE_SCALE,
     RESIZE_FREE_SCALE,
@@ -41,12 +42,13 @@ class ScreenManager{
             ShakingDuration = duration;
             shaking = true;
         };
-
+        void ResetViewpPort();
         bool MakeDefaultScreenAsTexture();
         bool ClearScreenTexture();
         void RenderPresent();
         SDL_Texture * GetDefaultRenderer(){return m_defaultScreen;};
         void Render();
+        bool SetupOpenGL();
         void PreRender();
         double GetScaleRatioH(){return m_defaultScreen != nullptr ? 1 : m_scaleRatio.y;};
         double GetScaleRatioW(){return m_defaultScreen != nullptr ? 1 : m_scaleRatio.x;};
@@ -54,7 +56,14 @@ class ScreenManager{
         double GetOffsetH(){return (m_defaultScreen != nullptr ? 0 : m_offsetScreen.y)+shake.y;};
         void ResizeToScale(int w,int h,ResizeAction behave);
         float GetFps(){return m_fps;};
+
+        GLuint GetDefaultFrameBuffer();
+        bool StartPostProcessing();
     private:
+        bool postProcess;
+        GLuint frameBuffer,fbo_texture,rbo_depth,fbo,vbo_fbo_vertices;
+
+        SDL_GLContext m_glContext;
         SDL_Texture *m_defaultScreen;
         float m_fps;
         float m_frameDelay;

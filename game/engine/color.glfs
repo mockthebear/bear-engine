@@ -1,0 +1,38 @@
+#version 120
+uniform sampler2D myTexture;
+uniform vec2 Cent2d;
+const float PI = 3.1415926535;
+varying vec2 vTexCoord;
+
+
+
+void main(void)
+
+{
+	
+   vec2 bulge;
+
+   float angle = atan( (vTexCoord.y-Cent2d.y) / ( vTexCoord.x-Cent2d.x) );
+   float dist = sqrt(pow(vTexCoord.x - Cent2d.x,2.0f) + pow(vTexCoord.y-Cent2d.y,2.0f));
+   float maxDist = 5.0f;
+
+   if (dist < 0.2){
+   	
+   	if (Cent2d.x <= vTexCoord.x){
+   		bulge.x  = Cent2d.x +  cos(angle)*dist*dist*1.901 ;
+   		bulge.y  = Cent2d.y +  sin(angle)*dist*dist*1.901f ;
+   	}else{
+   		bulge.x  = Cent2d.x -  cos(angle)*dist*dist*1.901f ;
+   		bulge.y  = Cent2d.y -  sin(angle)*dist*dist*1.901f ;
+
+   	}
+   	
+   	vec4 auxColor = texture2D(myTexture, bulge).rgba;
+   	gl_FragColor = auxColor;
+   }else{
+   	bulge = vTexCoord;
+   	vec4 auxColor = texture2D(myTexture, bulge).rgba;
+   	gl_FragColor = auxColor;
+   }
+   
+}

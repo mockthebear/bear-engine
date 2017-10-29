@@ -26,14 +26,7 @@ void BlockTileSet::Render(int index,int x,int y){
 }
 
 void BlockTileSet::RawRender(int index,int x,int y){
-    if (tileset.IsLoaded()){
-        if (index <= columns*rows && index != -1){
-            int cx = index%columns;
-            int cy = index/columns;
-            tileset.SetClip(GetTileWidth()*cx,GetTileHeight()*cy,GetTileHeight(),GetTileWidth());
-            tileset.RawRender(x,y,0);
-        }
-    }
+
 }
 
 void BlockTileSet::Render2(int index,int x,int y,float cxe,float cye){
@@ -52,7 +45,8 @@ void BlockTileSet::Render2(int index,int x,int y,float cxe,float cye){
 }
 
 SDL_Texture *BlockTileSet::GetTexture(){
-    return tileset.GetSDLTexture();
+    //todo: remove blocktileset
+    return nullptr;
 
 }
 

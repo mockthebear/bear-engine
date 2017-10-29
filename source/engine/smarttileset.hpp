@@ -2,6 +2,7 @@
 #include "../framework/geometry.hpp"
 #include "gamebase.hpp"
 #include "sprite.hpp"
+#include "renderhelp.hpp"
 
 /**
     @brief Fast rendering optmized tileset.
@@ -68,7 +69,7 @@ class SmartTileset{
             The render will start at the position 0,0 and only subtextures inside camera rect will be rendered.
             @param layer layer it
         */
-        void RenderLayer(int layer);
+        void RenderLayer(int layer,bool showBoundary = false);
         /**
             *In some sdl versions, whenever you resize the sceen, textures with SDL_TEXTUREACCESS_TARGET get reseted in some drivers
             *So this will check for you if the screen has been resized or any need to remake the textures.
@@ -94,7 +95,7 @@ class SmartTileset{
     private:
 
         void RenderTile(int x,int y,int tile);
-        SDL_Texture *GetTextureFromPosition(int layer,int x,int y);
+        TargetTexture *GetTextureFromPosition(int layer,int x,int y);
         PointInt framesOnMap;
         PointInt tileSize;
         PointInt tilesetSize;
@@ -102,8 +103,8 @@ class SmartTileset{
         PointInt maxTextureSize;
         int Layers;
         int    ***tileMap;
-        SDL_Texture ****textureMap;
-        SDL_Texture *lastTarget;
+        TargetTexture ****textureMap;
+        TargetTexture *lastTarget;
         bool ***needRemake;
         bool isOnStream;
         bool isValid;

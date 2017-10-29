@@ -1,6 +1,6 @@
 #include "testthread.hpp"
 
-
+#ifndef DISABLE_THREADPOOL
 int  Test_Threadpool::iterations = 0;
 unsigned int  Test_Threadpool::inside = 0;
 
@@ -16,7 +16,7 @@ void job(int from,int to,void*){
 
     float Pointx,Pointy,sq;
     for (int in = from;in < to;in++){
-        #ifdef __MINGW32__
+        #ifdef _WIN32
         Pointx = 0;
         Pointy = 0;
         #else
@@ -35,3 +35,5 @@ void job(int from,int to,void*){
     bear::out << S.str();
     ThreadPool::GetInstance().CriticalUnLock();
 };
+#endif
+

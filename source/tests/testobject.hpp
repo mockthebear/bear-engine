@@ -38,10 +38,10 @@ class TestObject: public GameObject{
         box.x += speed.x * dt;
         box.y += speed.y * dt;
 
-        if (box.x <= 0 || box.x >= 800 || box.y <= 0 || box.y >= 600){
+        if (box.x <= 0 || box.x >= SCREEN_SIZE_W || box.y <= 0 || box.y >= SCREEN_SIZE_H){
             speed = Point(0,0);
-            box.x = 800/2;
-            box.y = 600/2;
+            box.x = SCREEN_SIZE_W/2;
+            box.y = SCREEN_SIZE_H/2;
             health--;
             if (IsDead()){
                 bear::out << "Object dead. Pool id was: " << poolIndex << "\n";
@@ -57,7 +57,7 @@ class TestObject: public GameObject{
     void Render(){
         float maxHealth = 5.0f;
         float colorChange = (health / maxHealth) * 255.0f;
-        RenderHelp::DrawCollisionBox(box,Camera::pos.x,255,colorChange,colorChange,255);
+        RenderHelp::DrawSquareColor(box,255,colorChange,colorChange,255);
     }
 
     bool IsDead(){
@@ -140,10 +140,10 @@ class TestObject2: public GameObject{
             box.x += speed.x * dt;
             box.y += speed.y * dt;
 
-            if (box.x <= 0 || box.x >= 800 || box.y <= 0 || box.y >= 600){
+            if (box.x <= 0 || box.x >= SCREEN_SIZE_W || box.y <= 0 || box.y >= SCREEN_SIZE_H){
                 speed = Point(0,0);
-                box.x = 800/2;
-                box.y = 600/2;
+                box.x = SCREEN_SIZE_W/2;
+                box.y = SCREEN_SIZE_H/2;
                 health--;
                 if (IsDead()){
                     bear::out << "Object 2 dead. Pool id was: " << poolIndex << "\n";
@@ -159,7 +159,7 @@ class TestObject2: public GameObject{
         void Render(){
             float maxHealth = 5.0f;
             float colorChange = (health / maxHealth) * 255.0f;
-            RenderHelp::DrawCollisionBox(box,Camera::pos.x,255-colorChange,255,255,255);
+            RenderHelp::DrawSquareColor(box,255,255-colorChange,255,255);
         }
 
         bool IsDead(){

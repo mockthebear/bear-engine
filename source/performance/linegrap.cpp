@@ -39,7 +39,7 @@ void LineGraph::Render(Point pos){
             lastY = it;
 
             x += count * spread;
-            RenderHelp::DrawLineColorA(x, bY,x + spread,y,255,255,255,255);
+            RenderHelp::DrawLineColor(x, bY,x + spread,y,255,255,255,255);
             count++;
 
         }

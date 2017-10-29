@@ -30,7 +30,9 @@
 
 #define MAXFPS 900.0
 
-
+#ifndef RENDER_OPENGL
+#define RENDER_OPENGL
+#endif // RENDER_OPENGL
 
 
 #define POOL_DEFAULT_THREADS 2
@@ -104,6 +106,8 @@
 #define LUA_INCLUDE <lua5.1/lua.hpp>
 
 #endif
+
+#define GLEW_LIB_HEADER <GL/glew.h>
 
 
 
