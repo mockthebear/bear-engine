@@ -255,6 +255,7 @@ BearTexture * Sprite::Preload(SDL_RWops* rw,std::string name,TextureLoadMethod h
         GLuint texId;
         glGenTextures(1, &texId);
         glBindTexture(GL_TEXTURE_2D, texId);
+
         hasAliasing.ApplyFilter();
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sizeX, sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
@@ -419,16 +420,7 @@ void Sprite::Render(PointInt pos,double angle){
                      (pos.y  + quadHeight/ 2.f  ),
                        0.f );
 
-        if (sprFlip == SDL_FLIP_HORIZONTAL){
-            texLeft = texLeft * -1.0f;
-            texRight = texRight * -1.0f;
-        }
-        if (sprFlip == SDL_FLIP_VERTICAL){
-            texTop = texTop * -1.0f;
-            texBottom = texBottom * -1.0f;
-        }
-
-        glScalef(scaleX, scaleY, 1.0f);
+        glScalef(scaleX * ( (sprFlip&SDL_FLIP_HORIZONTAL) != 0 ? -1.0f : 1.0f), scaleY * ( (sprFlip&SDL_FLIP_VERTICAL) != 0 ? -1.0f : 1.0f), 1.0f);
         glRotatef( angle, 0.f, 0.f, 1.f );
 
          glBindTexture( GL_TEXTURE_2D, textureShred.get()->id );
