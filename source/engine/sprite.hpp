@@ -532,7 +532,7 @@ class Sprite{
         float scaleX,scaleY,timeElapsed,frameTime;
         int over;
         int repeat;
-        int frameCount;
+        int frameCount,m_lf;
         PointInt currentFrame;
         PointInt grid;
         Rect dimensions;
@@ -633,7 +633,7 @@ class Animation{
         uint32_t sprY;
         uint32_t sprW;
         uint32_t sprH;
-        uint32_t MaxFrames,m_lf;
+        uint32_t MaxFrames;
         float SprDelay;
         float SprMaxDelay;
         bool CanRepeat;

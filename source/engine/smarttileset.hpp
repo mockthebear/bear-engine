@@ -69,7 +69,7 @@ class SmartTileset{
             The render will start at the position 0,0 and only subtextures inside camera rect will be rendered.
             @param layer layer it
         */
-        void RenderLayer(int layer);
+        void RenderLayer(int layer,bool showBoundary = false);
         /**
             *In some sdl versions, whenever you resize the sceen, textures with SDL_TEXTUREACCESS_TARGET get reseted in some drivers
             *So this will check for you if the screen has been resized or any need to remake the textures.
