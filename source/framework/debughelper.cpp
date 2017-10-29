@@ -14,6 +14,6 @@ void DebugHelper::DisplayGlError(){
     GLenum error = glGetError();
     if( error != GL_NO_ERROR )
     {
-        bear::out << "OpenGL error: " << (const char*)gluErrorString( error ) <<"\n";
+        bear::out << "OpenGL error: " << error <<"\n";
     }
 }
