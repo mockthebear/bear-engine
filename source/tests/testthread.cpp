@@ -9,9 +9,9 @@ void job(int from,int to,void*){
     int inside = 0;
     int total = to-from;
 
-
+    #ifndef _WIN32
     uint32_t s;
-
+    #endif // _WIN32
 
 
     float Pointx,Pointy,sq;

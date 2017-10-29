@@ -9,7 +9,7 @@ class Test_Scrolling: public State{
         Test_Scrolling(){
             requestQuit = requestDelete = false;
             bear::out << "Test\n";
-            duration = 200.0f;
+            duration = 300.0f;
             Camera::Initiate();
         };
         ~Test_Scrolling(){
@@ -24,7 +24,7 @@ class Test_Scrolling: public State{
                 tset->SetTile(0,i,0,110);
                 tset->SetTile(0,i,i,110);
             }
-            //tset->MakeMap();
+            tset->MakeMap();
             Camera::Follow(&follower,false);
             Camera::speed = 8.0f;
         };
@@ -32,7 +32,7 @@ class Test_Scrolling: public State{
         void Update(float dt){
             duration -= dt;
             tset->Update(dt);
-            if(  duration <= 0 ) {
+            if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
                 requestDelete = true;
             }
             follower.x += 37.0 * dt;
