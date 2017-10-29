@@ -134,6 +134,8 @@ class Particle: public GameObject{
         */
         void SetRotation(float r){Rotating = r;};
         void SetRotationModule(float r){rotation = r;};
+        void SetDepth(int r){Depth = r;};
+        void SetRepeat(int r){repeat = r;};
         /**
             Set the particle to decrease alpha in the same rate at the end of duration
         */

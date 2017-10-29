@@ -61,7 +61,7 @@ bool ScreenManager::SetupOpenGL(){
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetSwapInterval(1);
+    SDL_GL_SetSwapInterval(0);
 
     glewExperimental = GL_TRUE;
     GLenum glewError = glewInit();
@@ -287,7 +287,7 @@ void ScreenManager::RenderPresent(){
 }
 
 void ScreenManager::ResetViewpPort(){
-    glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
+    glViewport(0,0,m_screen.x, m_screen.y);
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
@@ -307,7 +307,7 @@ void ScreenManager::PreRender(){
 
 
 
-        glViewport(0,0,m_screen.x, m_screen.y+1);
+        glViewport(0,0,m_screen.x, m_screen.y);
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
         glBindTexture( GL_TEXTURE_2D, 0 );
         glClearColor( 0.f, 0.f, 0.f, 1.f );
