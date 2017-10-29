@@ -227,6 +227,7 @@ Uint32 RenderHelp::FormatARGB(int a,int r,int b,int g){
 GLint TargetTexture::lastbuffer = 0;
 
 void TargetTexture::Render(Point pos){
+
     //glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glLoadIdentity();
 
@@ -234,6 +235,7 @@ void TargetTexture::Render(Point pos){
 
 
         glBindTexture(GL_TEXTURE_2D, renderedTexture);
+
         glEnable(GL_TEXTURE_2D);
 
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -246,7 +248,7 @@ void TargetTexture::Render(Point pos){
         float quadHeight = size_h;
 
         glTranslatef(
-                        (pos.x + quadWidth / 2.f  ),
+                        (pos.x  + quadWidth / 2.f  ),
                         (pos.y + quadHeight/ 2.f  ),
                         0.f );
 
@@ -267,7 +269,15 @@ bool TargetTexture::Bind(){
     glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
     //glOrtho( 0.0, 100,100, 0.0, 1.0, -1.0 );
     Point gameCanvas = ScreenManager::GetInstance().GetGameSize();
-    glViewport(0,h-gameCanvas.y,gameCanvas.x,gameCanvas.y);
+    //glViewport(0,h-gameCanvas.y,size_w,gameCanvas.y);
+
+    glViewport(0, 0, size_w, size_h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, size_w, size_w, 0, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
 
     return true;
 }

@@ -61,7 +61,7 @@ bool ScreenManager::SetupOpenGL(){
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetSwapInterval(0);
+    SDL_GL_SetSwapInterval(1);
 
     glewExperimental = GL_TRUE;
     GLenum glewError = glewInit();
@@ -78,14 +78,18 @@ bool ScreenManager::SetupOpenGL(){
 	SDL_GL_SwapWindow(m_window);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+
 	glViewport( 0.f, 0.f, m_originalScreen.x, m_originalScreen.y );
-
-
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
+
+
+
 
     glPushMatrix();
     glClearColor( 1.f, 1.f, 1.f, 1.f );
@@ -237,10 +241,15 @@ void ScreenManager::RenderPresent(){
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
 
+
         /*g_shader.Bind();
+        Point p = g_input.GetMouse();
+                p.y = p.y/(float)SCREEN_SIZE_H;
+                p.x = p.x/(float)SCREEN_SIZE_W;
+                glUniform2f(g_shader.GetUniformLocation("Cent2d"),p.x,1.0f-p.y);
+        */
 
 
-*/
         glBindTexture(GL_TEXTURE_2D, fbo_texture);
         glEnable(GL_TEXTURE_2D);
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -267,7 +276,7 @@ void ScreenManager::RenderPresent(){
             glEnd();
 
 
-        //glPopMatrix();
+        glPopMatrix();
     }
     glFlush();
     SDL_GL_SwapWindow(m_window);
@@ -279,6 +288,11 @@ void ScreenManager::RenderPresent(){
 
 void ScreenManager::ResetViewpPort(){
     glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
 }
 void ScreenManager::PreRender(){
     #ifndef RENDER_OPENGL

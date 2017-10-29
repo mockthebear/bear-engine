@@ -55,32 +55,27 @@ SmartTileset::SmartTileset(PointInt tileSize,PointInt tilesetSize,int layers,Poi
     tileMap     = new int**[layers];
     for (int l=0;l<layers;l++){
         textureMap[l]   = new TargetTexture**[framesOnMap.y];
+        for (int y=0;y<framesOnMap.y;y++){
+            textureMap[l][y] = new TargetTexture*[framesOnMap.x];
+            for (int x=0;x<framesOnMap.x;x++){
+                textureMap[l][y][x] = new TargetTexture();
+                textureMap[l][y][x]->Generate(maxTextureSize.x, maxTextureSize.y);
+            }
+        }
+    }
+    for (int l=0;l<layers;l++){
         needRemake[l]   = new bool*[framesOnMap.y];
         for (int y=0;y<framesOnMap.y;y++){
             needRemake[l][y] = new bool[framesOnMap.x];
-            textureMap[l][y] = new TargetTexture*[framesOnMap.x];
             for (int x=0;x<framesOnMap.x;x++){
                 needRemake[l][y][x] = false;
-                if (!isOkay){
-                    textureMap[l][y][x] = nullptr;
-                }else{
-                    textureMap[l][y][x] = new TargetTexture();//SDL_CreateTexture( g_game.GetRenderer(), SDL_PIXELFORMAT_RGBA8888, fTUREACCESS_TARGET, maxTextureSize.x, maxTextureSize.y );
-                    textureMap[l][y][x]->Generate(maxTextureSize.x, maxTextureSize.y);//SDL_CreateTexture( g_game.GetRenderer(), SDL_PIXELFORMAT_RGBA8888, fTUREACCESS_TARGET, maxTextureSize.x, maxTextureSize.y );
-                    if (!textureMap[l][y][x]){
-                        bear::out << "Failed to create the texture "<<l<<"x"<<x<<"x"<<y<<" because "<<SDL_GetError()<<"\n";
-                        isOkay = false;
-                    }else{
-                        //SDL_SetTextureBlendMode(textureMap[l][y][x], SDL_BLENDMODE_BLEND);
-                        //SDL_SetTextureAlphaMod(textureMap[l][y][x], 255);
-                    }
-                }
             }
         }
-        tileMap[l]      = new int*[tilesetCompatSize.y];
+        tileMap[l] = new int*[tilesetCompatSize.y];
         for (int y=0;y<tilesetCompatSize.y;y++){
             tileMap[l][y]    = new int[tilesetCompatSize.x];
             for (int x=0;x<tilesetCompatSize.x;x++){
-                tileMap[l][y][x] = 1;
+                tileMap[l][y][x] = 0;
             }
         }
     }
@@ -114,7 +109,7 @@ void SmartTileset::SetSprite(Sprite spr){
     }
 }
 void SmartTileset::RenderTile(int x,int y,int index){
-    if (sheetSizes.x == 0 || sheetSizes.y == 0){
+    if (sheetSizes.x == 0 || sheetSizes.y == 0 || index == 0){
         return;
     }
     int cx = index%sheetSizes.x;
@@ -140,7 +135,15 @@ bool SmartTileset::MakeMap(){
                 SDL_SetRenderDrawColor(BearEngine->GetRenderer(), 0, 0, 0, 0);
                 SDL_RenderClear(BearEngine->GetRenderer());
                 SDL_SetRenderDrawBlendMode(BearEngine->GetRenderer(), SDL_BLENDMODE_BLEND);
-                needRemake[l][y][x] = false;*/
+                */
+                textureMap[l][y][x]->Bind();
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
+                RenderHelp::DrawSquareColor(Rect(0,0,maxTextureSize.x,maxTextureSize.y),0,0,0,0);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                TargetTexture::UnBind();
+
+
+                needRemake[l][y][x] = false;
             }
         }
     }
@@ -152,19 +155,15 @@ bool SmartTileset::MakeMap(){
                 tilePosition = tilePosition * tileSize;
                 PointInt tileOffset = PointInt(tilePosition.x%maxTextureSize.x,tilePosition.y%maxTextureSize.y);
                 TargetTexture *thisT = GetTextureFromPosition(l,tilePosition.x,tilePosition.y);
-                if (thisT != nullptr){
-                    if (thisT != lastTexture){
-                        TargetTexture::UnBind();
-                        lastTexture = thisT;
-                        thisT->Bind();
-                    }
-                }
+                thisT->Bind();
                 RenderTile(tileOffset.x,tileOffset.y,tileMap[l][y][x]);
+                thisT->UnBind();
             }
         }
     }
     bear::out << "Finished in " << float(timer.Get()/1000.0) << "\n";
     TargetTexture::UnBind();
+
 
     return true;
 }
@@ -172,7 +171,7 @@ bool SmartTileset::MakeMap(){
 void SmartTileset::SetTile(int l,int x,int y,int tile){
     if (!isValid)
         return;
-    if (l >= Layers){
+    /*if (l >= Layers){
         return;
     }
     if (x >= tilesetCompatSize.x){
@@ -180,7 +179,7 @@ void SmartTileset::SetTile(int l,int x,int y,int tile){
     }
     if (y >= tilesetCompatSize.y){
         return;
-    }
+    }*/
     tileMap[l][y][x] = tile;
     PointInt tilesPerBlock = maxTextureSize/tileSize;
     PointInt tilePosition = PointInt(x/tilesPerBlock.x,y/tilesPerBlock.y);
@@ -191,7 +190,7 @@ void SmartTileset::SetTile(int l,int x,int y,int tile){
 void SmartTileset::ResetFocus(){
     if (!isValid)
         return;
-    TargetTexture::UnBind();
+    //TargetTexture::UnBind();
     //ScreenManager::GetInstance().SetRenderTarget(nullptr,true);
     lastTarget = nullptr;
 }
@@ -229,12 +228,12 @@ void SmartTileset::SetTileDirect(int l,int x,int y,int tile){
         SDL_RenderFillRect(BearEngine->GetRenderer(), &d);
         SDL_SetRenderDrawBlendMode(BearEngine->GetRenderer(), SDL_BLENDMODE_BLEND);
         #else
-        textureMap[l][tilePosition.y][tilePosition.x]->Bind();
+        /*textureMap[l][tilePosition.y][tilePosition.x]->Bind();
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
         RenderHelp::DrawSquareColor(Rect(tileOffset.x,tileOffset.y,tileSize.x,tileSize.y),0,0,0,0);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         RenderTile(  tileOffset.x, tileOffset.y, tile);
-        TargetTexture::UnBind();
+        TargetTexture::UnBind();*/
         #endif // RENDER_OPENGL
 
 
@@ -253,9 +252,11 @@ void SmartTileset::Update(float dt){
                     textureMap[l][y][x]->Bind();
                     for (int tx = 0; tx < tilesPerBlock.x; tx++){
                         for (int ty = 0; ty < tilesPerBlock.y; ty++){
-                            int addy = (y * tilesPerBlock.y) + ty;
-                            int addx = (x * tilesPerBlock.x) + tx;
-                            RenderTile(  tx * tileSize.x, ty * tileSize.y,tileMap[l][ addy ][ addx ] );
+                            int addy = std::min((y * tilesPerBlock.y) + ty,tilesetCompatSize.y-1);
+                            int addx = std::min((x * tilesPerBlock.x) + tx,tilesetCompatSize.x-1);
+                            int tile = tileMap[l][ addy ][ addx ];
+                            RenderTile(  tx*tileSize.x , ty*tileSize.x ,tile );
+
                         }
                     }
                     TargetTexture::UnBind();
@@ -267,6 +268,7 @@ void SmartTileset::Update(float dt){
     if (g_input.OnScreenResize()){
         MakeMap();
     }
+
 
 }
 
@@ -291,7 +293,8 @@ void SmartTileset::RenderLayer(int layer){
                 SDL_RenderCopyEx(BearEngine->GetRenderer(), textureMap[layer][y][x], nullptr, &dimensions2, 0, NULL, SDL_FLIP_NONE );
                 //RenderHelp::DrawSquareColorA(canvasArea.x - Camera::pos.x,canvasArea.y - Camera::pos.y,canvasArea.w,canvasArea.h,0,0,0,255,true);
                 */
-                textureMap[layer][y][x]->Render(canvasArea.GetPos());
+                RenderHelp::DrawSquareColor(canvasArea.x - Camera::pos.x,canvasArea.y - Camera::pos.y,canvasArea.w,canvasArea.h,0,0,255,255,true);
+                textureMap[layer][y][x]->Render(Point(canvasArea.x - Camera::pos.x,canvasArea.y - Camera::pos.y));
             }
         }
     }

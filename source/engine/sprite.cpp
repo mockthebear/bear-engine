@@ -463,3 +463,4 @@ int Sprite::GetFrameHeight(){
 int Sprite::GetFrameWidth(){
     return clipRect.w*scaleX;
 }
+
