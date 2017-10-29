@@ -58,6 +58,9 @@ class BEInput{
         ~BEInput();
         bool RegisterInput(BEKeyBinds key,InputMethod method);
         void clear();
+
+
+
         bool IsKeyDown(BEKeyBinds key);
         bool IsKeyUp(BEKeyBinds key);
         bool KeyPress(BEKeyBinds key);
@@ -68,7 +71,7 @@ class BEInput{
 
         void Update(float dt);
 
-
+        void ForceKeyUp(BEKeyBinds key,float duration);
         void ForceKeyPress(BEKeyBinds key,float duration);
         void ResetForcedKeys();
     private:
