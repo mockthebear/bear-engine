@@ -4,36 +4,59 @@
 
 #include <vector>
 
+/**
+    @brief Basic tileset class for small tilesets
+    * If you are using big tilesets, its better use SmartTileset
+    *
+    * <B>This class won't store any tile data!</B>
+    *
+    * In bear engine all tileset works in this way:
+    *  - An sprite has like 100x100 pixels.
+    *  - Its set each tile have 10x10 pixels
+    * Now its sent to TileSet::Render with parameters 14 and some x,y cordinates.
+    * Its given, each tile have 10x10, the selected tile will be in the position 10 x 40 in the image
+    * Basically: X = Index / columns; Y = Index % columns
+*/
 
 class TileSet{
     public:
-        TileSet(){tileWidth=tileHeight=0;};
-        virtual ~TileSet() {};
-        virtual void Open (const char*s){};
-        virtual void Render (int ind,int x,int y)=0;
-        int GetTileWidth(){return tileWidth;};
-        int GetTileHeight(){return tileHeight;};
-        void SetTileHeight(int n){tileHeight=n;};
-        void SetTileWidth(int n){tileWidth=n;};
+        /** Constructor
+         * Empty constructor. Initialize everything with preset 16x16 size
+         */
+        TileSet();
+        /** Constructor
+         *
+         * @param tileWidth The tile width in pixels
+         * @param tileHeight The tile height in pixels
+         * @param tset The tileset image. Will be used to define the amount of rows and columns
+         */
+        TileSet(int tileWidth,int tileHeight,Sprite tset);
+        /** Query an sprite
+         * @param sp The tileset image. Will be used to define the amount of rows and columns
+         */
+        void SetSprite(Sprite &sp);
+        /** Render an tile
+         * @param index Tile index
+         * @param pos an Point vector containing x,y position
+         */
+        void Render(int index,Point pos);
+        /** Render an tile scaling it
+         * @param index Tile index
+         * @param pos an Point vector containing x,y position
+         * @param scaleX X scale factor
+         * @param scaleY Y scale factor
+         */
+        void RenderScaled(int index,Point pos,float scaleX,float scaleY);
+        /** Return the tile sile
+         * @return Point the sizes
+         */
+        Point GetTileSize();
     private:
-        int tileWidth;
-        int tileHeight;
-
-};
-
-class BlockTileSet: public TileSet{
-    public:
-        ~BlockTileSet(){};
-        BlockTileSet(int tileWidth,int tileHeight,Sprite tset);
-        void RawRender(int index,int x,int y);
-        void Render(int index,int x,int y);
-        void Render2(int index,int x,int y,float,float);
-        SDL_Texture *GetTexture();
         Sprite tileset;
-    private:
-
-        int rows;
-        int columns;
+        int m_tileWidth;
+        int m_tileHeight;
+        int m_rows;
+        int m_columns;
 
 };
 

@@ -18,8 +18,7 @@
     *
     * Suddenly, the counting finishes. The chek in update came first than the counting, so it will finish
     * without checking in update. So the  Timer::HasFinished() will return true only for the last of the current
-    * iteration. \n
-    * On the next update, the timer will be set to disabled, and this HasFinished() will return false.
+    * iteration.
 */
 class Timer{
     public:
@@ -79,21 +78,40 @@ class Timer{
 
         int   m_repeat;
 };
+/** @brief Object to count duration
+
+*/
 
 class Stopwatch{
     public:
+        /**
+            Constructor. Also calls Stopwatch::Reset
+        */
         Stopwatch(){
             Reset();
         };
-        void Set(int v){
-            begin = SDL_GetTicks()-v;
+        /** @brief Set the begin position
+         * Calling Set(0) or Set() has the same effect as Stopwatch::Reset
+         * @param Receives an offset
+         */
+        void Set(int v=0){
+            begin = SDL_GetTicks()+v;
         }
+        /**
+        *   Reset the counting
+        */
         void Reset(){
             begin = SDL_GetTicks();
         }
+        /**
+        *   @return The current tick offset since the begin
+        */
         uint32_t Get(){
             return SDL_GetTicks() - begin;
         };
+        /**
+        *   Necessary for lua interface templates
+        */
         void Kill(){};
     private:
         uint32_t begin;

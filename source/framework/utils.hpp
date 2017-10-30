@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <map>
+#include <memory>
 
 
 namespace utils {
@@ -120,6 +121,7 @@ namespace utils {
             void erase(){
                 if (Data){
                     delete [] Data;
+                    Data = nullptr;
                 }
             }
         private:

@@ -1,82 +1,62 @@
 #include "tilemap.hpp"
 #include <stdio.h>
 
-TileMap::TileMap(int mw,int mh,int ly,TileSet *s){
-    tileMatrix.resize(mw*mh*ly);
-    for(int i =tileMatrix.size() - 1; i >= 0; --i){
-        tileMatrix[i] = -1;
-    }
-    mapWidth = mw;
-    mapHeight = mh;
-    mapDepth = ly;
+TileMap::TileMap(){
+    mapWidth = mapHeight = mapDepth = 0;
+}
+
+TileMap::TileMap(int mapWidth,int mapHeight,int layers,TileSet tileSet):TileMap(){
+
+    this->mapWidth = mapWidth;
+    this->mapHeight = mapHeight;
+    this->mapDepth = mapDepth;
+    set = tileSet;
+    tileMatrix = utils::Mat3<int>(mapWidth,mapHeight,mapDepth);
+
+}
+
+void TileMap::SetTileSet(TileSet s){
+
     set = s;
+
 }
 
-TileMap::TileMap (char *str,TileSet* s){
-    set = s;
-    Load(str);
-}
-
-void TileMap::Load(char *str){
-	FILE *f = fopen(str,"r");
-    if (f){
-		fscanf(f,"%d,%d,%d,",&mapWidth,&mapHeight,&mapDepth);
-        printf("%d,%d,%d,\n",mapWidth,mapHeight,mapDepth);
-        tileMatrix.resize(mapWidth*mapHeight*mapDepth);
-        for(int i =tileMatrix.size() - 1; i >= 0; --i){
-            tileMatrix[i] = -1;
-        }
-
-        for (int d=0;d<mapDepth;d++){
-            for (int i=0;i<mapWidth;i++){
-                for (int j=0;j<mapHeight;j++){
-                   fscanf(f,"%d,",&tileMatrix[getIndex(j,i,d)]);
-                   tileMatrix[getIndex(j,i,d)]--;
-
-                }
-            }
-        }
-        fclose(f);
-
-    }else{
-        printf("Cannot load %s\n",str);
-    }
-}
-
-void TileMap::SetTileSet(TileSet* s){
-    set = s;
-}
 int& TileMap::At (int x,int y,int z){
-    return (tileMatrix[getIndex(x,y,z)]);
-}
-int TileMap::getIndex(int x,int y,int z){
-    return (z*mapWidth*mapHeight)+(y*mapWidth)+x;
-}
-void TileMap::Render (int cx,int cy){
 
-        int ww = set->GetTileWidth();
-        int hh = set->GetTileHeight();
+    return tileMatrix.at(x,y,z);
+}
 
-        for (int d = 0;d<mapDepth;d++){
-            for (int w=0;w<mapWidth;w++){
-                for (int h=0;h<mapHeight;h++){
-                    set->Render(tileMatrix[getIndex(w,h,d)],w*ww-cx,h*hh-cy);
-                }
+void TileMap::Render(Point pos){
+
+    Point tSize = set.GetTileSize();
+
+    for (int d = 0;d<mapDepth;d++){
+        for (int w=0;w<mapWidth;w++){
+            for (int h=0;h<mapHeight;h++){
+
+                Point auxPos(w,h);
+                auxPos = auxPos * tSize;
+                auxPos = auxPos + pos;
+                set.Render(tileMatrix.at(w,h,d),auxPos);
+
             }
         }
+    }
 }
 
-void TileMap::Render (int cx,int cy,int d){
+void TileMap::RenderLayer(Point pos,int layer){
 
-        int ww = set->GetTileWidth();
-        int hh = set->GetTileHeight();
+    Point tSize = set.GetTileSize();
 
+    for (int w=0;w<mapWidth;w++){
+        for (int h=0;h<mapHeight;h++){
 
-            for (int w=0;w<mapWidth;w++){
-                for (int h=0;h<mapHeight;h++){
+            Point auxPos(w,h);
+            auxPos = auxPos * tSize;
+            auxPos = auxPos + pos;
+            set.Render(tileMatrix.at(w,h,layer),auxPos);
 
-                    set->Render(tileMatrix[getIndex(w,h,d)],w*ww-cx,h*hh-cy);
-                }
-            }
+        }
+    }
 
 }

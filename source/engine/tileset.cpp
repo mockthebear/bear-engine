@@ -2,51 +2,69 @@
 #include "gamebase.hpp"
 #include <stdio.h>
 
+TileSet::TileSet(){
+    m_tileWidth = m_tileHeight = 16;
+    m_columns = m_rows = 1;
+}
 
-BlockTileSet::BlockTileSet(int tilew,int tileh,Sprite tset){
-    SetTileWidth(tilew);
-    SetTileHeight(tileh);
-    tileset = tset;
+TileSet::TileSet(int tilew,int tileh,Sprite tset):TileSet(){
+
+    m_tileWidth = tilew;
+    m_tileHeight = tileh;
+    SetSprite(tset);
+
+}
+
+void TileSet::SetSprite(Sprite &sp){
+
+    tileset = sp;
+
     if (tileset.IsLoaded()){
-        columns = tileset.GetWidth()/GetTileWidth();
-        rows = tileset.GetHeight()/GetTileHeight();
+
+        m_columns = tileset.GetWidth()/m_tileWidth;
+        m_rows = tileset.GetHeight()/m_tileHeight;
+
+    }else{
+
+        m_columns = 1;
+        m_rows = 1;
+
     }
 }
 
+void TileSet::Render(int index,Point pos){
 
-void BlockTileSet::Render(int index,int x,int y){
     if (tileset.IsLoaded()){
-        if (index <= columns*rows && index != -1){
-            int cx = index%columns;
-            int cy = index/columns;
-            tileset.SetClip(GetTileWidth()*cx,GetTileHeight()*cy,GetTileHeight(),GetTileWidth());
-            tileset.Render(x,y);
+        if (index <= m_columns*m_rows && index != -1){
+            int cx = index%m_columns;
+            int cy = index/m_columns;
+            tileset.SetClip(m_tileWidth*cx,m_tileHeight*cy,m_tileWidth,m_tileHeight);
+            tileset.Render(pos);
         }
     }
-}
-
-void BlockTileSet::RawRender(int index,int x,int y){
 
 }
 
-void BlockTileSet::Render2(int index,int x,int y,float cxe,float cye){
+
+
+void TileSet::RenderScaled(int index,Point pos,float cxe,float cye){
     if (tileset.IsLoaded()){
-        if (index <= columns*rows && index != -1){
-            int cx = index%columns;
-            int cy = index/columns;
+        if (index <= m_columns*m_rows && index != -1){
+            int cx = index%m_columns;
+            int cy = index/m_columns;
             tileset.SetScaleX(cxe);
             tileset.SetScaleY(cye);
-            tileset.SetClip(GetTileWidth()*cx,GetTileHeight()*cy,GetTileHeight(),GetTileWidth());
-            tileset.Render(x,y);
+            tileset.SetClip(m_tileWidth*cx,m_tileHeight*cy,m_tileWidth,m_tileHeight);
+            tileset.Render(pos);
             tileset.SetScaleX(1);
             tileset.SetScaleY(1);
         }
     }
 }
 
-SDL_Texture *BlockTileSet::GetTexture(){
-    //todo: remove blocktileset
-    return nullptr;
+Point TileSet::GetTileSize(){
+
+    return Point(m_tileWidth,m_tileHeight);
 
 }
 
