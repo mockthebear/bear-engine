@@ -89,13 +89,13 @@ class Test_TargetTexture: public State{
 
             g_shader.Bind();
             Point p = g_input.GetMouse();
-                p.y = p.y/(float)SCREEN_SIZE_H;
-                p.x = p.x/(float)SCREEN_SIZE_W;
-                glUniform2f(g_shader.GetUniformLocation("Cent2d"),p.x,1.0f-p.y);
+            p.y = p.y/(float)SCREEN_SIZE_H;
+            p.x = p.x/(float)SCREEN_SIZE_W;
+            p.y = 1.0f - p.y;
+            g_shader.SetUniform<Point>("Cent2d",p);
             targ.Render(Point(32,32));
 
             g_shader.Unbind();
-            //RenderHelp::DrawCircleColor(Point(400,400),200,0,0,255,155);
             tset->RenderLayer(0);
             tset->RenderLayer(1);
 
