@@ -14,6 +14,9 @@ enum ResizeAction{
 
 class ScreenManager{
     public:
+
+        static float ClearColor[4];
+
         ScreenManager();
         ~ScreenManager();
         SDL_Window* StartScreen(std::string name);
@@ -59,6 +62,7 @@ class ScreenManager{
 
         GLuint GetDefaultFrameBuffer();
         bool StartPostProcessing();
+
     private:
         bool postProcess;
         GLuint frameBuffer,fbo_texture,rbo_depth,fbo,vbo_fbo_vertices;

@@ -9,6 +9,9 @@
 #include "camera.hpp"
 #include <iostream>
 #include <stdlib.h>
+#include "../input/inputmanager.hpp"
+float ScreenManager::ClearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+
 ScreenManager::~ScreenManager(){
     TerminateScreen();
 }
@@ -219,7 +222,7 @@ SDL_Renderer* ScreenManager::StartRenderer(){
 
     return m_renderer;
 }
-#include "../input/inputmanager.hpp"
+
 void ScreenManager::RenderPresent(){
     #ifndef RENDER_OPENGL
     if (m_defaultScreen){
@@ -237,7 +240,7 @@ void ScreenManager::RenderPresent(){
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glLoadIdentity();
-        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClearColor(ClearColor[0],ClearColor[1],ClearColor[2],ClearColor[3]);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
 
