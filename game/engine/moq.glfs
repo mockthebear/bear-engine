@@ -1,0 +1,24 @@
+#version 120
+uniform sampler2D myTexture;
+//uniform vec2 Cent2d;
+
+uniform float dt;
+
+const float PI = 3.1415926535;
+varying vec2 vTexCoord;
+
+
+
+void main(void)
+
+{
+   	vec4 auxColor = texture2D(myTexture, vTexCoord).rgba;
+   	float kek = floor(gl_FragCoord.y);
+   	if (mod(kek,6.0) == 0.0 || mod(kek,6.0) == 1.0){
+   		auxColor = vec4(auxColor.r/4.0f,auxColor.b*dt,auxColor.b/4.0f,auxColor.a);
+   	}else{
+		auxColor = vec4(auxColor.r/4.0f,auxColor.b/4.0f,auxColor.b/4.0f,auxColor.a);   	
+   	}
+   	gl_FragColor = auxColor;
+
+}

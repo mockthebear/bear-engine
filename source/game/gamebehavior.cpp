@@ -23,6 +23,7 @@
 #include "../tests/testshapes.hpp"
 #include "../tests/testtargettexture.hpp"
 #include "../tests/testscrolling.hpp"
+#include "../tests/testshader.hpp"
 
 
 
@@ -87,6 +88,7 @@ bool GameBehavior::OnLoad(){
     Game::GetInstance()->AddState(new Test_Text());
     Game::GetInstance()->AddState(new Test_Scrolling());
     Game::GetInstance()->AddState(new Test_TargetTexture());
+    Game::GetInstance()->AddState(new Test_Shader());
     Game::GetInstance()->AddState(new Test_Sprite());
     Game::GetInstance()->AddState(new Test_Pool());
     Game::GetInstance()->AddState(new Test_Shapes());
