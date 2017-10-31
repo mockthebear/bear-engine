@@ -1,35 +1,48 @@
-// *** ADDED BY HEADER FIXUP ***
-#include <ctime>
-// *** END ***
-//////////////////////////////////////////////////////////////
-////////////////////MAIN FILE/////////////////////////////////
-//////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////
-#include <time.h>
 #include "gamebase.hpp"
-
-
+#include <ctime>
+#include <time.h>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+#include <csignal>
+#include <signal.h>
 #include "../luasystem/luainterface.hpp"
 #include "../framework/threadpool.hpp"
 #include "../framework/debughelper.hpp"
 #include "../framework/resourcemanager.hpp"
 #include "../framework/schedule.hpp"
-#include "timer.hpp"
-
 #include "parallelcollisionmanager.hpp"
-
 #include "../settings/definitions.hpp"
 #include "../performance/console.hpp"
 #include "../sound/soundsources.hpp"
 #include "../sound/soundloader.hpp"
+#include "timer.hpp"
+#include "../crashhandler/crashhandler.hpp"
 #include __BEHAVIOR_FOLDER__
 
 
+void exitHandler(int sig)
+{
+    static bool signaled = false;
+    switch(sig) {
+        case SIGTERM:
+        case SIGINT:
+            if(!signaled ) {
+                bear::out << "Received signal to close\n";
+                signaled = true;
+                Game::GetInstance()->isClosing = true;
+            }
+            break;
+        case SIGBREAK:
+            bear::out << "Received signal to break\n";
+            Game::Crashed = true;
+            Game::GetInstance()->isClosing = true;
+            break;
+    }
+}
 
-#ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#endif
+
+
 Game g_game;
 Game* Game::instance = NULL;
 
@@ -37,8 +50,9 @@ Game::Game(){isClosing=SDLStarted=canDebug=GameBegin=hasBeenClosed=HasAudio=fals
 
 uint32_t Game::startFlags = BEAR_FLAG_START_EVERYTHING;
 
+bool Game::Crashed = false;
+
 void Game::init(const char *name){
-    std::cout << "hi\n";
     if (instance == NULL){
         SDLStarted = false;
         Started = false;
@@ -52,10 +66,20 @@ void Game::init(const char *name){
         canDebug = false;
 
 
+
         GameBehavior::GetInstance().Begin();
 
+        signal(SIGINT, exitHandler);
+        signal(SIGTERM, exitHandler);
+        signal(SIGBREAK, exitHandler);
+        #ifdef CRASH_HANDLER
+        installCrashHandler();
+        #endif
 
-        //GameBehavior::GetInstance().OnOpen();
+        if (startFlags&BEAR_FLAG_START_CONSOLE){
+            Console::GetInstance(true);
+            Console::GetInstance().AddTextInfo("Starting...");
+        }
 
         if (startFlags&BEAR_FLAG_START_SDL){
             if (SDL_Init(BEAR_SDL_CONST_INIT) != 0){
@@ -63,11 +87,6 @@ void Game::init(const char *name){
             }else{
                 Console::GetInstance().AddTextInfo("SDL is on!");
             }
-        }
-
-        if (startFlags&BEAR_FLAG_START_CONSOLE){
-            Console::GetInstance(true);
-            Console::GetInstance().AddTextInfo("Starting...");
         }
 
         if (startFlags&BEAR_FLAG_START_TTF){

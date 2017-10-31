@@ -83,11 +83,14 @@ bool Console::AddText(std::string str,bool onlyGraphic){
                 if (i+1 < m_lines){
                     str = m_line[i+1]->GetText();
                 }
-                m_line[i]->SetText(str);
+                if (!Game::Crashed)
+                    m_line[i]->SetText(str);
             }
-            m_line[m_lines-1]->SetText(str);
+            if (!Game::Crashed)
+                m_line[m_lines-1]->SetText(str);
         }else{
-            m_line[counter]->SetText(str);
+            if (!Game::Crashed)
+                m_line[counter]->SetText(str);
             counter++;
         }
     }else{

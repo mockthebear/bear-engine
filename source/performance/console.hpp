@@ -66,7 +66,7 @@ class Console{
         /**
             The console when not started with Console::Begin will not show any text
         */
-        static Console& GetInstance(bool writeFile=false);
+        static Console& GetInstance(bool writeFile=true);
         /**
             Render the console on X Y at screen
         */

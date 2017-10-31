@@ -101,6 +101,7 @@ class Game{
             * Used on constructor
         */
         static Game* GetInstance (const char *name);
+        static bool Crashed;
         /**
             *Singleton.
             *This one is pointer because make difference in performance!
