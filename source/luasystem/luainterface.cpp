@@ -684,7 +684,7 @@ void LuaInterface::RegisterClasses()
     }));
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_input","IsAnyKeyPressed",std::function<bool()>([]()
     {
-        return g_input.IsAnyKeyPressed();
+        return g_input.IsAnyKeyPressed() != -1;
     }));
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_input","GetMouse",std::function<Point()>([]()
     {

@@ -37,7 +37,7 @@ function MakeLuaState()
 
 	state.update = function(this,dt)
 		this.timer = this.timer - 10 * dt
-		if this.timer <= 0 then
+		if this.timer <= 0 or g_input.IsAnyKeyPressed() then
 			this.data.canClose = true
 			MakeLuaStateWithObjects()
 		end
@@ -98,7 +98,7 @@ function MakeLuaStateWithObjects()
 
 	state.update = function(this,dt)
 		this.timer = this.timer - 10 * dt
-		if this.timer <= 0 then
+		if this.timer <= 0 or g_input.IsAnyKeyPressed() then
 			this.data.canClose = true
 			MakeLuaStateWithComplexObjects()
 		end
@@ -151,7 +151,7 @@ function MakeLuaStateWithComplexObjects()
 
 
 
-	state.timer = 15.0
+	state.timer = 200.0
 
 	state.text = Text("owo",12,{r=255,g=255,b=0,a=100})
 
@@ -165,7 +165,7 @@ function MakeLuaStateWithComplexObjects()
 
 
 		local w = widgets.Window({
-			size = {x=64,y=64},
+			size = {x=100,y=128},
 		})
 
 		w:AddComponent(widgets.Label({
@@ -183,6 +183,15 @@ function MakeLuaStateWithComplexObjects()
 			end,
 			alignment = { top = 'testlabel.bottom + 5',left = 'parent.left + 2', },
 		}))
+
+		w:AddComponent(widgets.Button({
+			str = "Next test",
+			action = function (thisButton,mouseKey)
+				this.data.canClose = true
+			end,
+			alignment = { bottom = 'parent.bottom -4',right = 'parent.right -4', },
+		}))
+
 		g_ui.AddWindow(w)
 		this.w = w;
 		MakeObject()
@@ -211,7 +220,7 @@ function MakeLuaStateWithComplexObjects()
 	state.render = function(this)
 		g_render.DrawFillSquare({x=0,y=0,w=640,h=480},0,0,state.timer,255)
 
-		this.text:Render({x=32,y=100})
+		this.text:Render({x=32,y=200})
 
 	end
 

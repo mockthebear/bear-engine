@@ -45,6 +45,10 @@ function widgets.ProcessAlignment(this)
 			if added:find("%+") then
 				added = added:gsub("%+","")
 			end
+			if added:find("%-") then
+				added = added:gsub("%-","")
+				added = (tonumber(added) or 0) * -1
+			end
 			thisExtra = tonumber(added) or 0
 		end
 		if obj == 'parent' then
