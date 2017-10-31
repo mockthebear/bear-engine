@@ -118,6 +118,8 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="crashhandler/crashhandler.hpp" />
+		<Unit filename="crashhandler/crashhandlerwin32.cpp" />
 		<Unit filename="engine/assetmanager.cpp" />
 		<Unit filename="engine/assetmanager.hpp" />
 		<Unit filename="engine/bear.cpp" />

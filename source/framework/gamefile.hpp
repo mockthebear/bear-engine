@@ -52,7 +52,7 @@ class GameFile{
             @param notify print on Console if fails
             @return true if sucess
         */
-        bool Open(std::string name,bool notify=false,bool useRelativePath = true);
+        bool Open(std::string name,bool notify=false,bool useRelativePath = true,bool isRead=true);
         /**
             *Close the file. Dont delete the cached stuff
             @return true if sucess
@@ -79,6 +79,8 @@ class GameFile{
             @return true if the file is open
         */
         bool Cache();
+
+        bool IsReading(){return m_isRead;};
         /**
             * Return the pointer to the cached data.
             * Its named Unsafe because it returns THE ADERESS, so it foi mess with
@@ -178,7 +180,7 @@ class GameFile{
 
     private:
         void ParseFile();
-
+        bool m_isRead;
         char *m_cache;
         uint64_t m_size;
         uint64_t m_filePos;

@@ -38,14 +38,20 @@ GameFile::~GameFile(){
     ClearCache();
 }
 
-bool GameFile::Open(std::string name,bool notify,bool useRelativePath){
+bool GameFile::Open(std::string name,bool notify,bool useRelativePath,bool isRead){
 	std::string aux = name;
+	m_isRead = isRead;
 	if (ResourceManager::IsValidResource(name)){
         m_filePointer = ResourceManager::GetInstance().GetFile(name); //safe
     }else{
         if (useRelativePath)
             name = DirManager::AdjustAssetsPath(name);
-        m_filePointer = SDL_RWFromFile(name.c_str(),"rb");
+        if (m_isRead){
+            m_filePointer = SDL_RWFromFile(name.c_str(),"rb");
+        }else{
+            m_filePointer = SDL_RWFromFile(name.c_str(),"wb");
+            m_size = 0;
+        }
         ParseFile();
         if (m_size == ULONG_MAX){
             Console::GetInstance().AddText(utils::format("File %s is a dir", name ) );
@@ -55,7 +61,12 @@ bool GameFile::Open(std::string name,bool notify,bool useRelativePath){
 
     }
     if (m_filePointer == NULL){
-        m_filePointer = SDL_RWFromFile(name.c_str(),"rb");
+         if (m_isRead){
+            m_filePointer = SDL_RWFromFile(name.c_str(),"rb");
+        }else{
+            m_filePointer = SDL_RWFromFile(name.c_str(),"wb");
+            m_size = 0;
+        }
         if (!m_filePointer){
             if (notify){
                 Console::GetInstance().AddText(utils::format("Cannost locate %s", name ) );
@@ -78,7 +89,7 @@ bool GameFile::Open(std::string name,bool notify,bool useRelativePath){
 }
 
 void GameFile::ParseFile(){
-    if (m_filePointer){
+    if (m_filePointer && m_isRead){
         SDL_RWseek(m_filePointer, 0L, RW_SEEK_END);
         m_size = SDL_RWtell(m_filePointer);
         SDL_RWseek(m_filePointer, 0L, RW_SEEK_SET);
@@ -96,7 +107,7 @@ bool GameFile::ClearCache(){
 }
 
 char *GameFile::PopCache(){
-    if (!IsOpen() || !IsCached())
+    if (!IsOpen() || !IsReading() || !IsCached())
         return NULL;
     char *oldCache = m_cache;
     m_cache = NULL;
@@ -112,7 +123,7 @@ bool GameFile::Close(){
 }
 
 char *GameFile::GetCache(){
-    if (!IsOpen() || !IsCached())
+    if (!IsOpen() || !IsReading() || !IsCached())
         return NULL;
     char *l_cache = new char[m_size+1];
     for (uint32_t i=0;i<m_size+1;i++){
@@ -122,7 +133,7 @@ char *GameFile::GetCache(){
 }
 
 bool GameFile::Cache(){
-    if (!IsOpen() || IsCached())
+    if (!IsOpen() || !IsReading() || IsCached())
         return false;
     m_cache = new char[m_size+1];
     SDL_RWread(m_filePointer,m_cache, 1, m_size);
@@ -131,9 +142,12 @@ bool GameFile::Cache(){
 };
 
 char GameFile::ReadByte(){
+    if (!IsReading()){
+        return EOF;
+    }
     if (IsCached()){
         if (m_filePos > m_size){
-            return 0;
+            return EOF;
         }
         char l_char = m_cache[m_filePos];
         m_filePos++;
@@ -148,6 +162,9 @@ char GameFile::ReadByte(){
     }
 }
 uint8_t GameFile::Read8(){
+    if (!IsReading()){
+        return EOF;
+    }
     if (IsCached()){
         if (m_filePos > m_size){
             return 0;
@@ -166,6 +183,9 @@ uint8_t GameFile::Read8(){
 }
 
 int GameFile::GetNumber(bool ignoreUntilFind){
+    if (!IsReading()){
+        return -1;
+    }
     int ret = 0;
     bool found = false;
     while (true){
@@ -187,6 +207,9 @@ int GameFile::GetNumber(bool ignoreUntilFind){
     return ret;
 }
 std::string GameFile::ReadWord(int n,char separator){
+    if (!IsReading()){
+        return "";
+    }
     std::string buffer = "";
     buffer = ReadUntil(separator);
     while (n > 0){
@@ -197,6 +220,9 @@ std::string GameFile::ReadWord(int n,char separator){
     return buffer;
 }
 std::string GameFile::ReadUntil(char rd){
+    if (!IsReading()){
+        return "";
+    }
     std::string buffer = "";
     while (m_filePos < m_size){
         char c = ReadByte();
@@ -219,6 +245,9 @@ uint32_t GameFile::Read(char *c,uint32_t size){
     return read;
 }
 std::string GameFile::Read(uint16_t size){
+    if (!IsReading()){
+        return "";
+    }
     std::string buffer = "";
     while (m_filePos < m_size || size > 0){
         char c = ReadByte();
@@ -230,6 +259,9 @@ std::string GameFile::Read(uint16_t size){
 }
 
 bool GameFile::GetLine(std::string &line){
+    if (!IsReading()){
+        return false;
+    }
     if (!IsOpen())
         return false;
     if (m_filePos > m_size)
@@ -264,6 +296,9 @@ bool GameFile::Seek(uint32_t pos){
     return SDL_RWseek(m_filePointer, pos, RW_SEEK_SET) == 0;
 }
 int GameFile::FindInt(){
+    if (!IsReading()){
+        return EOF;
+    }
     int i =0;
     char by = ReadByte();
     while (by <= '0' || by >= '9'){
