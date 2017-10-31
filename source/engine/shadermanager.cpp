@@ -4,8 +4,6 @@
 #include "../framework/gamefile.hpp"
 #include <glm/gtc/type_ptr.hpp>
 
-Shader g_shader;
-
 Shader::Shader(){
     m_shaderId = 0;
 }

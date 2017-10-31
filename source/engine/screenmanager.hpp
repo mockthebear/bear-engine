@@ -6,6 +6,7 @@
 #include SDL_LIB_HEADER
 #include <string>
 #include "../framework/geometry.hpp"
+#include "shadermanager.hpp"
 #include <GL/glew.h>
 enum ResizeAction{
     RESIZE_SCALE,
@@ -16,12 +17,14 @@ class ScreenManager{
     public:
 
         static float ClearColor[4];
+        static ScreenManager& GetInstance();
+
 
         ScreenManager();
         ~ScreenManager();
         SDL_Window* StartScreen(std::string name);
         SDL_Renderer* StartRenderer();
-        static ScreenManager& GetInstance();
+
         PointInt GetDisplaySize(){return m_display;};
         PointInt GetScreenSize(){return m_screen;};
         PointInt GetGameSize(){return m_originalScreen;};
@@ -32,7 +35,6 @@ class ScreenManager{
         void SetResizeAction();
         void SetMinimumScale(Point s){ MinimumScale = s;};
         Point GetMinimumScale(){ return MinimumScale;};
-        int SetRenderTarget(SDL_Texture *t,bool trueNull=false);
         void Resize(int w,int h);
         void SetScreenName(std::string name);
         void SetWindowSize(int w,int h);
@@ -45,9 +47,7 @@ class ScreenManager{
             ShakingDuration = duration;
             shaking = true;
         };
-        void ResetViewpPort();
-        bool MakeDefaultScreenAsTexture();
-        bool ClearScreenTexture();
+        void ResetViewPort();
         void RenderPresent();
         SDL_Texture * GetDefaultRenderer(){return m_defaultScreen;};
         void Render();
@@ -63,7 +63,16 @@ class ScreenManager{
         GLuint GetDefaultFrameBuffer();
         bool StartPostProcessing();
 
+        void SetTopShader(Shader &shdr){
+            storedShader = shdr;
+        }
+
+        Shader& GetTopShader(){
+            return storedShader;
+        }
+
     private:
+        Shader storedShader;
         bool postProcess;
         GLuint frameBuffer,fbo_texture,rbo_depth,fbo,vbo_fbo_vertices;
 

@@ -142,8 +142,6 @@ bool ScreenManager::StartPostProcessing(){
     glBufferData(GL_ARRAY_BUFFER, sizeof(fbo_vertices), fbo_vertices, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-
-    g_shader.Compile("engine/vertex.glvs","engine/color.glfs");
     DebugHelper::DisplayGlError();
     return true;
 }
@@ -157,19 +155,13 @@ SDL_Window* ScreenManager::StartScreen(std::string name){
     if (m_display.x != 0 && m_display.y != 0 && (m_display.x < m_screen.x || m_display.y < m_screen.y) ){
         bear::out << "[ScreenManager::StartScreen] Display size suported is "<<m_display.x<<"x"<<m_display.y<<".\n";
         bear::out << "[ScreenManager::StartScreen] Impossible to create"<<m_screen.x<<"x"<<m_screen.y<<" dummy display.\n";
-        //return NULL;
     }
     m_originalScreen = m_screen;
     Uint32 flags = 0;
-    //Todo: resizer
     if (ConfigManager::GetInstance().GetResizeAction() != RESIZE_BEHAVIOR_NORESIZE){
         flags |= SDL_WINDOW_RESIZABLE;
     }
     flags |= SDL_WINDOW_OPENGL;
-    //flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-
-
-    //SDL_WINDOW_OPENGL |  |
 
     m_window = SDL_CreateWindow( name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screen.x, m_screen.y,flags); //SDL_WINDOW_RESIZABLE
 
@@ -182,26 +174,6 @@ SDL_Window* ScreenManager::StartScreen(std::string name){
     //Disable any fullscreen on startup. Necessary on linux to dont break the display
     SDL_SetWindowFullscreen(m_window, SDL_FALSE);
     return m_window;
-}
-
-bool ScreenManager::MakeDefaultScreenAsTexture(){
-    if (m_defaultScreen){
-        return false;
-    }
-    m_defaultScreen = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET,m_originalScreen.x,m_originalScreen.y);
-    SetRenderTarget(nullptr,true);
-    return m_defaultScreen != nullptr;
-}
-
-bool ScreenManager::ClearScreenTexture(){
-    if (m_defaultScreen){
-        SDL_DestroyTexture(m_defaultScreen);
-        m_defaultScreen = nullptr;
-        SetRenderTarget(nullptr);
-        return true;
-    }else{
-        return false;
-    }
 }
 
 SDL_Renderer* ScreenManager::StartRenderer(){
@@ -217,9 +189,6 @@ SDL_Renderer* ScreenManager::StartRenderer(){
     if (m_renderer){
         SDL_SetRenderDrawBlendMode(m_renderer,SDL_BLENDMODE_BLEND);
     }
-    //m_defaultScreen = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET,m_originalScreen.x,m_originalScreen.y);
-
-
     return m_renderer;
 }
 
@@ -235,7 +204,6 @@ void ScreenManager::RenderPresent(){
     RenderHelp::DrawSquareColorA(-w/2.0,h,w*2,h/2.0,0,0,0,255);
     SDL_RenderPresent(m_renderer);
     #else
-
     if (postProcess){
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -243,53 +211,39 @@ void ScreenManager::RenderPresent(){
         glClearColor(ClearColor[0],ClearColor[1],ClearColor[2],ClearColor[3]);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
-
-
-        /*g_shader.Bind();
-        Point p = g_input.GetMouse();
-                p.y = p.y/(float)SCREEN_SIZE_H;
-                p.x = p.x/(float)SCREEN_SIZE_W;
-                glUniform2f(g_shader.GetUniformLocation("Cent2d"),p.x,1.0f-p.y);
-        */
-
-
+        if (storedShader.IsLoaded()){
+            storedShader.Bind();
+        }
         glBindTexture(GL_TEXTURE_2D, fbo_texture);
         glEnable(GL_TEXTURE_2D);
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
         float w = m_originalScreen.x;
         float h = m_originalScreen.y;
 
-        GLfloat  texLeft = 0.0f;
-        GLfloat  texRight =  1.0f;
-        GLfloat  texTop =  1.0f;
-        GLfloat  texBottom = 0.0f;
-        float quadWidth = w;
-        float quadHeight = h;
-
         glTranslatef(
-                        ( quadWidth / 2.f  ),
-                        ( quadHeight/ 2.f  ),
+                        ( w / 2.f  ),
+                        ( h / 2.f  ),
                         0.f );
 
         glBegin( GL_QUADS );
-                glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
-                glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
-                glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
-                glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
+                glTexCoord2f(  0.0f,    1.0f ); glVertex2f( -w / 2.f, -h / 2.f );
+                glTexCoord2f( 1.0f ,    1.0f ); glVertex2f(  w / 2.f, -h / 2.f );
+                glTexCoord2f( 1.0f , 0.0f ); glVertex2f(  w / 2.f,  h / 2.f );
+                glTexCoord2f(  0.0f , 0.0f ); glVertex2f( -w / 2.f,  h / 2.f );
             glEnd();
 
-
+        if (storedShader.IsLoaded()){
+            storedShader.Unbind();
+        }
         glPopMatrix();
     }
     glFlush();
     SDL_GL_SwapWindow(m_window);
-
-    if (postProcess)
-        g_shader.Unbind();
     #endif // RENDER_OPENGL
 }
 
-void ScreenManager::ResetViewpPort(){
+void ScreenManager::ResetViewPort(){
     glViewport(0,0,m_screen.x, m_screen.y);
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
@@ -310,14 +264,11 @@ void ScreenManager::PreRender(){
 
 
 
-        glViewport(0,0,m_screen.x, m_screen.y);
+        glViewport(shake.x,shake.y,m_screen.x, m_screen.y);
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
         glBindTexture( GL_TEXTURE_2D, 0 );
         glClearColor( 0.f, 0.f, 0.f, 1.f );
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //RenderHelp::DrawSquareColor(Rect(0,0,m_originalScreen.x,m_originalScreen.y-1),0,0,0,255);
-
-
     }else{
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         glClearColor( 0.f, 0.f, 0.f, 1.f );
@@ -420,8 +371,6 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
         m_screen.y = h;
     }
 
-
-    //todo: Screen size less than original
     if (w < m_originalScreen.x*m_scaleRatio.x || h < m_originalScreen.y*m_scaleRatio.y){
         Point ValidScale = m_scaleRatio;
         Point LocalScale = m_scaleRatio;
@@ -480,18 +429,4 @@ GLuint ScreenManager::GetDefaultFrameBuffer(){
     return frameBuffer;
 }
 
-int ScreenManager::SetRenderTarget(SDL_Texture *t,bool trueNull){
-    //todo: texture targeting
-    #ifndef RENDER_OPENGL
-    if (t == nullptr && m_defaultScreen){
-        //return SDL_SetRenderTarget(m_renderer,m_defaultScreen);
-    }
-    if (trueNull){
-        return SDL_SetRenderTarget(m_renderer,m_defaultScreen);
-    }
 
-    return SDL_SetRenderTarget(m_renderer,t);
-    #else
-    return -1;
-    #endif // RENDER_OPENGL
-}

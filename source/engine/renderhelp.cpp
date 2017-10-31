@@ -92,9 +92,7 @@ BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod
 }
 
 void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8_t b,uint8_t a,int sides){
-    #ifndef RENDER_OPENGL
-    //duh todo
-    #else
+    #ifdef RENDER_OPENGL
     glLoadIdentity();
     glTranslatef(p1.x, p1.y, 0.0f);
 
@@ -110,15 +108,13 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
       }
     glEnd();
 
-    //glPopMatrix();
+    glPopMatrix();
     #endif // RENDER_OPENGL
 }
 
 
 void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline,float angle){
-    #ifndef RENDER_OPENGL
-    //duh todo
-    #else
+    #ifdef RENDER_OPENGL
     glLoadIdentity();
     glTranslatef(box.x, box.y, 0.0f);
     if (!outline){
@@ -160,42 +156,7 @@ void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,u
     #endif
 
 }
-/*
-SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h){
-    //TODO: Remake
-    SDL_Texture *t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, w, h);
-    Uint32 * pixels = new Uint32[w * h];
-    DebugHelper::AssertAlloc(pixels,WHERE_ARG);
-    SDL_SetTextureBlendMode( t, SDL_BLENDMODE_BLEND );
 
-    for (int ya = 0;ya < h;ya++){
-        for (int xa=0;x<w;xa++){
-             pixels[ya * h + xa] = RenderHelp::FormatRGBA(rand()%255,rand()%255,rand()%255, rand()%255);
-        }
-    }
-    SDL_UpdateTexture(t, nullptr, pixels, w * sizeof(Uint32));
-	return new SmartTexture(t,pixels,x,y,h,w);
-
-}
-
-SmartTexture *RenderHelp::GeneratePatternTexture(int x,int y,int w,int h,std::function<Uint32 (Uint32 , int, int)> F){
-    //TODO: Remake
-    SDL_Texture *t = SDL_CreateTexture( BearEngine->GetRenderer(),SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, w, h);
-    Uint32 * pixels = new Uint32[w * h];
-    if (pixels == nullptr){
-        return nullptr;
-    }
-
-    SDL_SetTextureBlendMode( t, SDL_BLENDMODE_BLEND );
-    for (int ya = 0;ya < h;ya++){
-        for (int xa=0;xa<w;xa++){
-             pixels[ya * h + xa] = F(pixels[ya * h + xa],xa,ya);
-        }
-    }
-    SDL_UpdateTexture(t, NULL, pixels, w * sizeof(Uint32));
-	return new SmartTexture(t,pixels,x,y,h,w);
-}
-*/
 uint8_t RenderHelp::GetR(uint32_t r){
     return r&0xff;
 }
@@ -224,52 +185,45 @@ Uint32 RenderHelp::FormatARGB(int a,int r,int b,int g){
     return a+(r<<8)+(g<<16)+(b<<24);
 }
 
+
+/**
+    TARGET TEXTURE
+**/
+
 GLint TargetTexture::lastbuffer = 0;
 
 void TargetTexture::Render(Point pos){
 
-    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glLoadIdentity();
+    glLoadIdentity();
 
-        //
+    glBindTexture(GL_TEXTURE_2D, renderedTexture);
 
+    glEnable(GL_TEXTURE_2D);
 
-        glBindTexture(GL_TEXTURE_2D, renderedTexture);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-        glEnable(GL_TEXTURE_2D);
+    glTranslatef(
+                    (pos.x + size_w / 2.f  ),
+                    (pos.y + size_h/ 2.f  ),
+                    0.f );
 
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glBegin( GL_QUADS );
+        glTexCoord2f( 0.0f , 1.0f ); glVertex2f( -size_w / 2.f, -size_h / 2.f );
+        glTexCoord2f( 1.0f , 1.0f ); glVertex2f(  size_w / 2.f, -size_h / 2.f );
+        glTexCoord2f( 1.0f , 0.0f ); glVertex2f(  size_w / 2.f,  size_h / 2.f );
+        glTexCoord2f( 0.0f , 0.0f ); glVertex2f( -size_w / 2.f,  size_h / 2.f );
+    glEnd();
 
-        GLfloat  texLeft = 0.0f;
-        GLfloat  texRight =  1.0f;
-        GLfloat  texTop =  1.0f;
-        GLfloat  texBottom = 0.0f;
-        float quadWidth = size_w;
-        float quadHeight = size_h;
-
-        glTranslatef(
-                        (pos.x  + quadWidth / 2.f  ),
-                        (pos.y + quadHeight/ 2.f  ),
-                        0.f );
-
-        glBegin( GL_QUADS );
-                glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
-                glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
-                glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
-                glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
-            glEnd();
-
-        glDisable(GL_TEXTURE_2D);
-        glBindTexture( GL_TEXTURE_2D, 0 );
-        glPopMatrix();
-
+    glDisable(GL_TEXTURE_2D);
+    glBindTexture( GL_TEXTURE_2D, 0 );
+    glPopMatrix();
 }
+
 bool TargetTexture::Bind(){
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &lastbuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
-    //glOrtho( 0.0, 100,100, 0.0, 1.0, -1.0 );
     Point gameCanvas = ScreenManager::GetInstance().GetGameSize();
-    //glViewport(0,h-gameCanvas.y,size_w,gameCanvas.y);
+
 
     glViewport(0, 0, size_w, size_h);
     glMatrixMode(GL_PROJECTION);
@@ -289,7 +243,7 @@ bool TargetTexture::UnBind(){
     }
     glBindFramebuffer(GL_FRAMEBUFFER, lastbuffer);
     lastbuffer = 0;
-    ScreenManager::GetInstance().ResetViewpPort();
+    ScreenManager::GetInstance().ResetViewPort();
     return true;
 }
 

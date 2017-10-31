@@ -86,6 +86,8 @@ class Shader{
 
         Shader();
         Shader(std::string file);
+
+        bool IsLoaded(){return m_shaderId > 0;};
         void Close();
 
         bool Create();
@@ -107,6 +109,7 @@ class Shader{
 
 
     private:
+
         void ProgramError( GLuint program );
         void ShaderError( GLuint shader );
 
@@ -114,6 +117,3 @@ class Shader{
 
 };
 
-
-
-extern Shader g_shader;
