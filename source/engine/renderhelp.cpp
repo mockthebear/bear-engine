@@ -194,24 +194,30 @@ GLint TargetTexture::lastbuffer = 0;
 
 void TargetTexture::Render(Point pos){
 
+
     glLoadIdentity();
 
     glBindTexture(GL_TEXTURE_2D, renderedTexture);
 
     glEnable(GL_TEXTURE_2D);
 
+
+        float quadWidth = size_w;
+        float quadHeight = size_h;
+
+
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-    glTranslatef(
-                    (pos.x + size_w / 2.f  ),
-                    (pos.y + size_h/ 2.f  ),
-                    0.f );
+        glTranslatef(
+                (pos.x  + quadWidth / 2.f  ),
+                (pos.y + quadHeight/ 2.f  ),
+        0.f );
 
     glBegin( GL_QUADS );
-        glTexCoord2f( 0.0f , 1.0f ); glVertex2f( -size_w / 2.f, -size_h / 2.f );
-        glTexCoord2f( 1.0f , 1.0f ); glVertex2f(  size_w / 2.f, -size_h / 2.f );
-        glTexCoord2f( 1.0f , 0.0f ); glVertex2f(  size_w / 2.f,  size_h / 2.f );
-        glTexCoord2f( 0.0f , 0.0f ); glVertex2f( -size_w / 2.f,  size_h / 2.f );
+        glTexCoord2f(  0.0f , 1.0f ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
+        glTexCoord2f(  1.0f , 1.0f ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
+        glTexCoord2f(  1.0f , 0.0f ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
+        glTexCoord2f(  0.0f , 0.0f ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
     glEnd();
 
     glDisable(GL_TEXTURE_2D);

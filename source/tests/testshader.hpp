@@ -20,6 +20,9 @@ class Test_Shader: public State{
             bear::out << "Compile an shader\n";
             shdr.Compile("engine/vertex.glvs","engine/moq.glfs");
             background = Sprite("data/wall.jpg");
+
+            m_shader.Compile("engine/vertex.glvs","engine/lens.glfs");
+            ScreenManager::GetInstance().SetTopShader(m_shader);
         };
 
         void Update(float dt){
@@ -29,37 +32,36 @@ class Test_Shader: public State{
                 requestDelete = true;
             }
 
+            m_shader.Bind();
+            Point p = g_input.GetMouse();
+            p.y = 1.0f - p.y/(float)SCREEN_SIZE_H;
+            p.x = p.x/(float)SCREEN_SIZE_W;
+            m_shader.SetUniform<Point>("Cent2d",p);
+
+
             shdr.Bind();
 
             shdr.SetUniform<float>("dt", 0.3f + fabs(sin(sinner))*0.2f );
 
             shdr.Unbind();
 
-            g_shader.Bind();
-
-            Point p = g_input.GetMouse();
-            p.y = p.y/(float)SCREEN_SIZE_H;
-            p.x = p.x/(float)SCREEN_SIZE_W;
-
-
-            g_shader.SetUniform<Point>("Cent2d",p);
-            g_shader.Unbind();
-
-
         };
         void Render(){
 
 
             shdr.Bind();
-            //g_shader.Bind();
             background.Render(0,0,0);
-            //g_shader.Unbind();
             shdr.Unbind();
         };
         void Input();
         void Resume(){};
-        void End(){};
+        void End(){
+            m_shader.Close();
+            //This dont necessary clear the shader data
+            ScreenManager::GetInstance().DeleteTopShader();
+        };
     private:
+        Shader m_shader;
         float sinner;
         Shader shdr;
         Sprite background;

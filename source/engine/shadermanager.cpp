@@ -13,7 +13,7 @@ Shader::Shader(std::string str){
 }
 
 void Shader::Close(){
-    if (m_shaderId != 0){
+    if (m_shaderId != 0 && glIsProgram(m_shaderId)){
         glDeleteProgram(m_shaderId);
     }
     m_shaderId = 0;

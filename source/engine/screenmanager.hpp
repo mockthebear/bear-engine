@@ -67,6 +67,10 @@ class ScreenManager{
             storedShader = shdr;
         }
 
+        void DeleteTopShader(){
+            storedShader = Shader();
+        }
+
         Shader& GetTopShader(){
             return storedShader;
         }
