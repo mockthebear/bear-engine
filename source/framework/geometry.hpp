@@ -147,7 +147,7 @@ template <typename T=float> class GenericPoint{
         GenericPoint operator*(GenericPoint f) const {
            return GenericPoint(x*f.x,y*f.y);
         }
-        GenericPoint operator/(GenericPoint f) const {
+        GenericPoint operator/(GenericPoint& f) const {
            return GenericPoint(x/f.x,y/f.y);
         }
 
