@@ -5,16 +5,7 @@
 
 #include "../framework/geometry.hpp"
 
-
-
-// Essa é uma implementação do SAT feita pelo Lucas Neves.
-// Recebe dois Rects e suas rotações, e detecta se os retângulos colidem.
-// Mais informações sobre o método podem ser encontradas nos seguintes links:
-// http://www.metanetsoftware.com/technique/tutorialA.html
-// http://www.gamedev.net/page/resources/_/technical/game-programming/2d-rotated-rectangle-collision-r2604
-#ifndef COLH
-#define COLH
-
+#pragma once
 namespace Collision {
         static inline double distanceSquared( int x1, int y1, int x2, int y2 )
         {
@@ -67,9 +58,6 @@ namespace Collision {
             }
             return direction;
         }
-        /**
-            TODO: mudar saporra
-        */
 
         static inline bool IsColliding( Rect b,Point a ){
             return a.x > b.x && a.x < b.x+b.w && a.y > b.y && a.y < b.y+b.h;
@@ -269,8 +257,14 @@ namespace Collision {
             }else{
                 return -1;
             }
-
         }
+
+
+        // Essa é uma implementação do SAT feita pelo Lucas Neves.
+        // Recebe dois Rects e suas rotações, e detecta se os retângulos colidem.
+        // Mais informações sobre o método podem ser encontradas nos seguintes links:
+        // http://www.metanetsoftware.com/technique/tutorialA.html
+        // http://www.gamedev.net/page/resources/_/technical/game-programming/2d-rotated-rectangle-collision-r2604
         static inline bool IsColliding(Rect& a,  Rect& b, float angleOfA, float angleOfB) {
             Point A[] = { Point( a.x, a.y + a.h ),
                           Point( a.x + a.w, a.y + a.h ),
@@ -346,16 +340,3 @@ namespace Collision {
 
 
 };
-
-#endif
-// Aqui estão dois operadores que sua classe Point deve precisar, se já não tiver.
-// Se sua classe tiver métodos para Mag, Norm, Dot e/ou Rotate, você pode substituir
-// os usos desses métodos por usos dos seus, mas garanta que deem resultados corretos.
-
-// Point operator+(const Point& rhs) const {
-//    return Point(x + rhs.x, y + rhs.y);
-// }
-
-// Point operator-(const Point& rhs) const {
-//    return Point(x - rhs.x, y - rhs.y);
-// }
