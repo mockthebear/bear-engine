@@ -30,8 +30,8 @@ void DefaultBehavior::OnUpdate(float dt){
 }
 
 
-void DefaultBehavior::Begin(){
-
+bool DefaultBehavior::Begin(){
+    return true;
 }
 void DefaultBehavior::OnClose(){
     Text::Clear();

@@ -33,11 +33,13 @@ void exitHandler(int sig)
                 Game::GetInstance()->isClosing = true;
             }
             break;
+        #ifndef __linux__
         case SIGBREAK:
             bear::out << "Received signal to break\n";
             Game::Crashed = true;
             Game::GetInstance()->isClosing = true;
             break;
+        #endif // __linux__
     }
 }
 
@@ -67,11 +69,15 @@ void Game::init(const char *name){
 
 
 
-        GameBehavior::GetInstance().Begin();
+        if (!GameBehavior::GetInstance().Begin()){
+            return;
+        }
 
         signal(SIGINT, exitHandler);
         signal(SIGTERM, exitHandler);
+        #ifndef __linux__
         signal(SIGBREAK, exitHandler);
+        #endif // __linux__
         #ifdef CRASH_HANDLER
         installCrashHandler();
         #endif
@@ -104,10 +110,11 @@ void Game::init(const char *name){
             window = ScreenManager::GetInstance().StartScreen(name);
             if (window == NULL){
                 Console::GetInstance().AddTextInfo("Failed creating screen");
-                exit(1);
+                return;
             }else{
                 Console::GetInstance().AddTextInfo("Screen is on!");
             }
+            #ifndef RENDER_OPENGL
 
             renderer = ScreenManager::GetInstance().StartRenderer();
 
@@ -117,8 +124,10 @@ void Game::init(const char *name){
             }else{
                 Console::GetInstance().AddTextInfo("Renderer is on!");
             }
+            #else
             Console::GetInstance().AddTextInfo("Starting openGL");
             ScreenManager::GetInstance().SetupOpenGL();
+            #endif // RENDER_OPENGL
 
         }
         if (startFlags&BEAR_FLAG_LOAD_BASEFILES){
@@ -275,7 +284,7 @@ void Game::Close(){
 
     Console::GetInstance().AddTextInfo("Closing text");
     if (startFlags&BEAR_FLAG_START_TTF)
-    TTF_Quit();
+        TTF_Quit();
     Console::GetInstance().AddTextInfo("Closing sdl");
 
     Console::GetInstance().AddTextInfo("Quit game");

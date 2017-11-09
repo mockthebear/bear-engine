@@ -68,6 +68,6 @@ class DefaultBehavior: public Behavior{
         */
         void OnMinimized();
 
-        virtual void Begin();
+        virtual bool Begin();
 };
 #endif // DEFBEHAVRIORH

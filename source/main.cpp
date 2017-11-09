@@ -43,29 +43,23 @@ extern "C"
 
 #endif // __ANDROID__
 
-#ifdef USESTEAM
-#include "steam/steam_api.h"
-#endif
 
 int main (int argc, char** argv) {
 	ConfigManager::GetInstance().RegisterArgs(argc,argv);
-	#ifdef USESTEAM
-    SteamAPI_RestartAppIfNecessary(0);
-    if (!SteamAPI_Init()){
-        std::cout << "Failed steam!\n";
-		exit(0);
-    }
-
-    #endif
     g_game.init("Bear engine");
-    Game::GetInstance()->Begin();
-    #ifdef __EMSCRIPTEN__
-    emscripten_set_main_loop(GameLoop, 60, 1);
-    #else
-        while (!Game::GetInstance()->CanStop()){
-            Game::GetInstance()->Run();
-        }
-    #endif
+    if (g_game.IsStarted()){
+        Game::GetInstance()->Begin();
+        #ifdef __EMSCRIPTEN__
+        emscripten_set_main_loop(GameLoop, 60, 1);
+        #else
+            while (!Game::GetInstance()->CanStop()){
+                Game::GetInstance()->Run();
+            }
+        #endif
+
+    }else{
+        bear::out << "Startup aborted.\n";
+    }
     Game::GetInstance()->Close();
     exit(0);
 

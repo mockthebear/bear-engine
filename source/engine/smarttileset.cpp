@@ -19,6 +19,10 @@ SmartTileset::SmartTileset(PointInt tileSize,PointInt tilesetSize,int layers,Poi
     if (maxTextureSize.y == -1 || maxTextureSize.y > engineMaxSize.y){
         maxTextureSize.y = engineMaxSize.y;
     }
+    if (maxTextureSize.x <= 0 || maxTextureSize.y <= 0){
+        maxTextureSize = Point(SCREEN_SIZE_W,SCREEN_SIZE_H);
+        bear::out << "Max texture size is set to 0. This might cause issues. Setting to "<<maxTextureSize<<"\n";
+    }
 
     PointInt truncator = maxTextureSize/tileSize;
 

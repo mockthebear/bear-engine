@@ -234,7 +234,6 @@ void Joystick::Button(int button,int state){
             Buttons[button] = JUST_RELEASED;
         }
     }
-    bear::out << "["<<m_id<<"]Button 0 = "<<Buttons[0] <<" and "<< Buttons[1] << " ("<<button<<":"<<state<<")\n";
     if (HasCallButton){
         ButtonCallBack(m_id,button,Buttons[button]);
     }

@@ -34,7 +34,7 @@ class GameBehavior: public DefaultBehavior{
             @endcode
         */
         bool OnLoad();
-        void Begin();
+        bool Begin();
         /**
             Delete some global thing that you may have created. Or even save data
         */

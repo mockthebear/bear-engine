@@ -89,6 +89,7 @@ class ScreenManager{
         float ShakingDuration;
         float ShakingTick_original;
         float ShakingTick;
+        float m_ScreenRationMultiplier;
         Point lastValidScale;
         Point savedShake;
         Point shake;

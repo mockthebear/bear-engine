@@ -128,6 +128,7 @@ class Game{
             Check if the game has begin
         */
         bool IsGameBegin(){return GameBegin;};
+        bool IsStarted(){return Started;};
         /**
             Check if the SDL has started
         */

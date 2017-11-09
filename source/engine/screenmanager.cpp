@@ -19,6 +19,7 @@ ScreenManager::ScreenManager(){
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
     postProcess = true;
+    m_ScreenRationMultiplier = 2.0f;
     ShakingDuration = 0;
     shaking = 0;
     shaking = false;
@@ -231,7 +232,7 @@ void ScreenManager::RenderPresent(){
                 glTexCoord2f( 1.0f ,    1.0f ); glVertex2f(  w / 2.f, -h / 2.f );
                 glTexCoord2f( 1.0f , 0.0f ); glVertex2f(  w / 2.f,  h / 2.f );
                 glTexCoord2f(  0.0f , 0.0f ); glVertex2f( -w / 2.f,  h / 2.f );
-            glEnd();
+        glEnd();
 
         if (storedShader.IsLoaded()){
             storedShader.Unbind();
@@ -261,19 +262,15 @@ void ScreenManager::PreRender(){
     #else
 
     if (postProcess){
-
-
-
         glViewport(shake.x,shake.y,m_screen.x, m_screen.y);
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
         glBindTexture( GL_TEXTURE_2D, 0 );
-        glClearColor( 0.f, 0.f, 0.f, 1.f );
+        glClearColor(ClearColor[0],ClearColor[1],ClearColor[2],ClearColor[3]);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }else{
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-        glClearColor( 0.f, 0.f, 0.f, 1.f );
+        glClearColor(ClearColor[0],ClearColor[1],ClearColor[2],ClearColor[3]);
     }
-
 
     #endif // RENDER_OPENGL
 }
@@ -344,8 +341,8 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
     m_scaleRatio.x =  ( (double)w / (double)m_originalScreen.x);
     m_scaleRatio.y =  ( (double)h / (double)m_originalScreen.y);
 
-    m_scaleRatio.x = round(m_scaleRatio.x*8.0)/8.0;
-    m_scaleRatio.y = round(m_scaleRatio.y*8.0)/8.0;
+    m_scaleRatio.x = floor(m_scaleRatio.x*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
+    m_scaleRatio.y = floor(m_scaleRatio.y*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
 
     m_scaleRatio.x = std::max(1.0f,m_scaleRatio.x);
     m_scaleRatio.y = std::max(1.0f,m_scaleRatio.y);
@@ -375,10 +372,10 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
         Point ValidScale = m_scaleRatio;
         Point LocalScale = m_scaleRatio;
         while(m_originalScreen.x*LocalScale.x > w || m_originalScreen.y*LocalScale.y > h){
-            ValidScale.x -= 1.0/8.0;
-            ValidScale.y -= 1.0/8.0;
-            LocalScale.x = round(ValidScale.x*8.0)/8.0;
-            LocalScale.y = round(ValidScale.y*8.0)/8.0;
+            ValidScale.x -= 1.0/m_ScreenRationMultiplier;
+            ValidScale.y -= 1.0/m_ScreenRationMultiplier;
+            LocalScale.x = floor(ValidScale.x*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
+            LocalScale.y = floor(ValidScale.y*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
         }
         m_scaleRatio = LocalScale;
         Point aux = m_originalScreen;

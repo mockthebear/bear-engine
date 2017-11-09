@@ -45,6 +45,9 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++0x" />
+					<Add option="-pg" />
+					<Add option="-DIGNORESTEAM" />
+					<Add option="-DRENDER_OPENGL" />
 				</Compiler>
 				<Linker>
 					<Add option="-pg" />
@@ -73,8 +76,10 @@
 					<Add option="-pg" />
 					<Add option="-g" />
 					<Add option="-DIGNORESTEAM" />
+					<Add option="-DRENDER_OPENGL" />
 				</Compiler>
 				<Linker>
+					<Add option="-pg" />
 					<Add option="-pg -lgmon" />
 					<Add option="-llua51" />
 					<Add option="-lMinGW32" />
@@ -97,6 +102,8 @@
 					<Add option="-std=c++0x" />
 					<Add option="-pg" />
 					<Add option="-g" />
+					<Add option="-DCRASH_HANDLER" />
+					<Add option="-DRENDER_OPENGL" />
 				</Compiler>
 				<Linker>
 					<Add option="-pg" />
@@ -119,6 +126,7 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="crashhandler/crashhandler.hpp" />
+		<Unit filename="crashhandler/crashhandlerlinux.cpp" />
 		<Unit filename="crashhandler/crashhandlerwin32.cpp" />
 		<Unit filename="engine/assetmanager.cpp" />
 		<Unit filename="engine/assetmanager.hpp" />

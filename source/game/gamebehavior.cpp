@@ -50,7 +50,7 @@ GameBehavior::~GameBehavior(){
 }
 
 
-void GameBehavior::Begin(){
+bool GameBehavior::Begin(){
     Game::startFlags = 0;
     //Game::startFlags |= BEAR_FLAG_START_LUA;
     Game::startFlags |= BEAR_FLAG_START_SDL;
@@ -60,6 +60,7 @@ void GameBehavior::Begin(){
     Game::startFlags |= BEAR_FLAG_START_CONSOLE;
     //Game::startFlags |= BEAR_FLAG_START_CONSOLEGRAPHICAL;
     Game::startFlags |= BEAR_FLAG_START_TTF;
+    return true;
 }
 bool GameBehavior::OnLoad(){
     PointInt P = ScreenManager::GetInstance().GetDisplaySize();
