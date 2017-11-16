@@ -2,7 +2,7 @@
 #include "../engine/gamebase.hpp"
 #include "luaobject.hpp"
 
-
+#ifndef __EMSCRIPTEN__
 
 LuaObject::LuaObject(){
     OBJ_REGISTER(LuaObject);
@@ -61,3 +61,4 @@ void LuaObject::NotifyDamage(GameObject *bj,int n){
     LuaCaller::CallSelfField(LuaManager::L,this,"NotifyDamage",bj);
 
 }
+#endif // __EMSCRIPTEN__

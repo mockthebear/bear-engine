@@ -18,8 +18,10 @@ Title::Title(){
     /*
         Loading main lua script
     */
+    #ifndef __EMSCRIPTEN__
     LuaCaller::LoadFile(LuaManager::L,"lua/test.lua");
     LuaCaller::Pcall(LuaManager::L);
+    #endif // __EMSCRIPTEN__
 
     /*
         Starting camera
@@ -35,8 +37,9 @@ void Title::Begin(){
     /*
         Callin an lua function
     */
-
+    #ifndef __EMSCRIPTEN__
     LuaCaller::CallGlobalField(LuaManager::L,"onLoad");
+    #endif // __EMSCRIPTEN__
 
 
 

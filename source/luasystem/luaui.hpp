@@ -2,6 +2,8 @@
 #include "../ui/base.hpp"
 //#include "luatypewrapper.hpp"
 
+#ifndef __EMSCRIPTEN__
+
 class LuaUi : public UIBase{
     public:
         LuaUi();
@@ -73,3 +75,5 @@ template<> struct GenericLuaReturner<LuaUi*>{
     };
 };
 */
+
+#endif // __EMSCRIPTEN__

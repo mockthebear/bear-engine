@@ -1,4 +1,4 @@
-require("ex")
+
 
 
 local fileTypes = {"cpp","c"}
@@ -8,7 +8,7 @@ local COMPILER = "em++";
 local ASSETS_FOLDER = "game"
 local SOURCE_FOLDER = "source"
 local FILEOUT = "snakescape.html"
-local CFLAGS = "  -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s USE_SDL_TTF=2 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1 -std=c++11 -O1 -O2 -O3 -Oz"
+local CFLAGS = "  -s USE_SDL=2 -s USE_SDL_TTF=2 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1 -std=c++11 -O1 -O2 -O3 -Oz"
 
 
 local OUTSTR = ""
@@ -16,52 +16,26 @@ local FILES = "";
 local ASSETS = ""
 
 function parseFolderRecursively(Fold)
-
-	for i,b in os.dir(Fold) do
-		if i.type == "file" then
-			local found = false;
-			for _,ftype in pairs(ignore) do
-				if i.name:match("(.-)%."..ftype) then
-					found = true;
-					break;
+	local f,er = io.open("source/beargine.cbp","r")
+	if f then
+		local str = f:read("*a");
+		for i in str:gmatch("<Unit filename=\"(.-)\"%s*[/]*>") do 
+			if i:find("%.cpp") then
+				local line = COMPILER.." -c source/"..i.." -o obj/emscripten/"..i:gsub("%.cpp",".o").." -s USE_SDL=2 -s USE_SDL_TTF=2 -std=c++11"
+				FILES = FILES .. "obj/emscripten/"..i:gsub("%.cpp",".o").." "
+				--check the avaliability of the dir
+				local ret = os.execute(line)
+				print(ret,line)
+				if not ret then
+					return false
 				end
 			end
-			if not found then
-				for _,ftype in pairs(fileTypes) do
-					if i.name:match("(.-)%."..ftype) then
-						FILES = FILES .." ".. Fold..'/'..i.name
-						found = true;
-						break;
-					end
-				end
-				if not found then
-					for _,ftype in pairs(notAssets) do
-						if i.name:match("(.-)%."..ftype) then
-							found = true;
-							break;
-						end
-					end
-					if not found then
-						ASSETS = ASSETS .." --preload-file \""..Fold..'/'..i.name..'"'
-					end
-				end
-			end
-		elseif i.type == "directory" then
-			parseFolderRecursively(Fold..'/'..i.name)
 		end
 	end
+	return true;
 
 end
-parseFolderRecursively(SOURCE_FOLDER)
-parseFolderRecursively(ASSETS_FOLDER)
---print(FILES)
-
-OUTSTR = COMPILER .. " " .. FILES .." -o "..FILEOUT .." "..CFLAGS.." "..ASSETS
-print(OUTSTR)
-local ret = os.execute(OUTSTR)
-print("RET is "..ret)
-if ret == 0 then
-os.execute(FILEOUT)
-else
-	io.read()
+if parseFolderRecursively(SOURCE_FOLDER) then 
+	 os.execute("em++ -o kek.html "..FILES)
 end
+

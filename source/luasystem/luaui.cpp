@@ -2,7 +2,7 @@
 #include "luatools.hpp"
 
 
-
+#ifndef __EMSCRIPTEN__
 LuaUi::LuaUi():UIBase(){
     UI_REGISTER(LuaUi);
     other = 0;
@@ -75,3 +75,5 @@ void LuaUi::NotifyChildrens(){
         }
     }
 }
+
+#endif

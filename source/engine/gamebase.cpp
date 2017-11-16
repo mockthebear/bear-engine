@@ -20,7 +20,7 @@
 #include "../crashhandler/crashhandler.hpp"
 #include __BEHAVIOR_FOLDER__
 
-
+#ifndef __EMSCRIPTEN__
 void exitHandler(int sig)
 {
     static bool signaled = false;
@@ -42,7 +42,7 @@ void exitHandler(int sig)
         #endif // __linux__
     }
 }
-
+#endif // __EMSCRIPTEN__
 
 
 Game g_game;
@@ -72,7 +72,7 @@ void Game::init(const char *name){
         if (!GameBehavior::GetInstance().Begin()){
             return;
         }
-
+        #ifndef __EMSCRIPTEN__
         signal(SIGINT, exitHandler);
         signal(SIGTERM, exitHandler);
         #ifndef __linux__
@@ -81,6 +81,7 @@ void Game::init(const char *name){
         #ifdef CRASH_HANDLER
         installCrashHandler();
         #endif
+        #endif // __EMSCRIPTEN__
 
         if (startFlags&BEAR_FLAG_START_CONSOLE){
             Console::GetInstance(true);
@@ -389,7 +390,9 @@ void Game::Run(){
 
                 if (stateStack.top()->RequestedDeleted()){
                     stateStack.top()->End();
+                    #ifndef DISABLE_LUAINTERFACE
                     LuaCaller::CallClear(LuaManager::L,stateStack.top());
+                    #endif // DISABLE_LUAINTERFACE
 
                     justDeleted = true;
 

@@ -4,7 +4,7 @@
 #include "../engine/gamebase.hpp"
 #include "../settings/definitions.hpp"
 
-
+#ifndef __EMSCRIPTEN__
 
 LuaGameState::LuaGameState(){
     requestDelete = canClose = false;
@@ -53,3 +53,5 @@ void LuaGameState::Resume(GenericState *){
 void LuaGameState::Pause(GenericState *){
     LuaCaller::CallOtherField(LuaManager::L,other,this,"pause");
 }
+
+#endif

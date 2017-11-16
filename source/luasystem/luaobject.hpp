@@ -3,7 +3,7 @@
 
 #ifndef LUAOBJH
 #define LUAOBJH
-
+#ifndef __EMSCRIPTEN__
 
 
 class LuaObject: public GameObject{
@@ -44,6 +44,8 @@ class LuaObject: public GameObject{
         bool Active,forceUpdate,forceRender;
 
 };
+
+#endif // __EMSCRIPTEN__
 
 #endif //LuaObject
 
