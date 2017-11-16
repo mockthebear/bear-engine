@@ -67,7 +67,7 @@ bool ScreenManager::SetupOpenGL(){
     bear::out << "2\n";
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	bear::out << "3\n";
-    SDL_GL_SetSwapInterval(0);
+
 
     glewExperimental = GL_TRUE;
     bear::out << "4\n";
@@ -76,6 +76,11 @@ bool ScreenManager::SetupOpenGL(){
     {
         printf( "Error initializing GLEW! %s\n", glewGetErrorString( glewError ) );
     }
+
+
+    SDL_GL_SetSwapInterval(0);
+
+
     bear::out << "5\n";
     DebugHelper::DisplayGlError();
     bear::out << "6\n";
@@ -89,16 +94,21 @@ bool ScreenManager::SetupOpenGL(){
 	bear::out << "8\n";
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    bear::out << "9\n";
+    bear::out << "9 : "<<m_originalScreen.x << ","<<m_originalScreen.y << "\n";
 
 
 	glViewport( 0.f, 0.f, m_originalScreen.x, m_originalScreen.y );
+	bear::out << "10\n";
     glMatrixMode( GL_PROJECTION );
+    bear::out << "11\n";
     glLoadIdentity();
+    bear::out << "12\n";
     glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
+    bear::out << "13\n";
     glMatrixMode( GL_MODELVIEW );
+    bear::out << "14\n";
     glLoadIdentity();
-    bear::out << "10\n";
+    bear::out << "15\n";
 
 
 
@@ -106,12 +116,12 @@ bool ScreenManager::SetupOpenGL(){
     glPushMatrix();
     glClearColor( 1.f, 1.f, 1.f, 1.f );
     DebugHelper::DisplayGlError();
-    bear::out << "11\n";
+    bear::out << "a\n";
     if (postProcess){
-        bear::out << "12\n";
+        bear::out << "b\n";
         StartPostProcessing();
     }
-    bear::out << "13\n";
+    bear::out << "c\n";
     return true;
 }
 
