@@ -8,6 +8,8 @@ local COMPILER = "em++";
 local ASSETS_FOLDER = "game"
 local SOURCE_FOLDER = "source"
 local FILEOUT = "snakescape.html"
+local LDFLAGS = "-s LEGACY_GL_EMULATION=1"
+local PRELOADSTUFF = " --preload-file /game/data/@ --preload-file /game/ui/@"
 local CFLAGS = "-DRENDER_OPENGL -Walmost-asm -s USE_SDL=2 -s USE_SDL_TTF=2 -s USE_VORBIS=1 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1 -std=c++11 -O1 -O2 -O3 -Oz"
 
 
@@ -62,7 +64,7 @@ function parseFolderRecursively(Fold)
 					if ret == 1 then
 						return false
 					end
-				else 
+				else
 					FILES = FILES .. "obj/emscripten/"..i:gsub("%.cpp",".bc").." "
 				end
 			end
@@ -72,7 +74,7 @@ function parseFolderRecursively(Fold)
 
 end
 if parseFolderRecursively(SOURCE_FOLDER) then
-	local outp = FILES..' '..CFLAGS
+	local outp = FILES..' '..CFLAGS..' '..LDFLAGS.. ' '..PRELOADSTUFF
 	print("Ready files: ",outp)
 	os.execute("em++ -o kek.html "..outp)
 end

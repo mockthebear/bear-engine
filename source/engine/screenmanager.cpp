@@ -59,30 +59,37 @@ void ScreenManager::NotyifyScreenClosed(){
 }
 
 bool ScreenManager::SetupOpenGL(){
+    bear::out << "Stage:\n";
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-
+    bear::out << "1\n";
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-
+    bear::out << "2\n";
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	bear::out << "3\n";
     SDL_GL_SetSwapInterval(0);
 
     glewExperimental = GL_TRUE;
+    bear::out << "4\n";
     GLenum glewError = glewInit();
     if( glewError != GLEW_OK )
     {
         printf( "Error initializing GLEW! %s\n", glewGetErrorString( glewError ) );
     }
+    bear::out << "5\n";
     DebugHelper::DisplayGlError();
+    bear::out << "6\n";
 
 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	bear::out << "7\n";
 
 	SDL_GL_SwapWindow(m_window);
+	bear::out << "8\n";
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+    bear::out << "9\n";
 
 
 	glViewport( 0.f, 0.f, m_originalScreen.x, m_originalScreen.y );
@@ -91,6 +98,7 @@ bool ScreenManager::SetupOpenGL(){
     glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
+    bear::out << "10\n";
 
 
 
@@ -98,9 +106,12 @@ bool ScreenManager::SetupOpenGL(){
     glPushMatrix();
     glClearColor( 1.f, 1.f, 1.f, 1.f );
     DebugHelper::DisplayGlError();
+    bear::out << "11\n";
     if (postProcess){
+        bear::out << "12\n";
         StartPostProcessing();
     }
+    bear::out << "13\n";
     return true;
 }
 
