@@ -79,7 +79,6 @@
 					<Add option="-DRENDER_OPENGL" />
 				</Compiler>
 				<Linker>
-					<Add option="-pg" />
 					<Add option="-pg -lgmon" />
 					<Add option="-llua51" />
 					<Add option="-lMinGW32" />
@@ -88,6 +87,9 @@
 					<Add option="-lSDL2_ttf" />
 					<Add option="-lopenal32" />
 					<Add option="-lvorbisfile" />
+					<Add option="-lopengl32" />
+					<Add option="-lglew32" />
+					<Add option="-lglu32" />
 					<Add option="-pthread" />
 				</Linker>
 			</Target>
