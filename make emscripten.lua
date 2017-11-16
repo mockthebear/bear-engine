@@ -25,6 +25,28 @@ function hasFile(fname)
 	return false
 end
 
+
+function checkFile(fname,root)
+	root = root or ''
+	print("Locate: ",root..fname)
+	local f = io.open(root..fname,'w')
+	if not f then
+		local primaryDir,tail = fname:match("(.-)/(.+)")
+		print(root,fname,'---',primaryDir,tail)
+		if not hasFile(root..primaryDir.."/1.txt") then
+			print("Making dir: ",root..primaryDir)
+			os.execute("cd "..root.." && mkdir "..primaryDir)
+		else
+			os.execute("rm "..root..primaryDir.."/1.txt")
+		end
+		return checkFile(tail,root..primaryDir..'/')
+	else
+		os.execute("rm "..root..fname)
+		return true
+	end
+end
+
+
 function parseFolderRecursively(Fold)
 	local f,er = io.open("source/beargine.cbp","r")
 	if f then
@@ -34,6 +56,7 @@ function parseFolderRecursively(Fold)
 				local fileOut = "obj/emscripten/"..i:gsub("%.cpp",".o")
 
 				if not hasFile(fileOut) then
+					checkFile(fileOut)
 					local line = COMPILER.." -c source/"..i.." -o "..fileOut.." "..CFLAGS
 					FILES = FILES .. "obj/emscripten/"..i:gsub("%.cpp",".o").." "
 					--check the avaliability of the dir
