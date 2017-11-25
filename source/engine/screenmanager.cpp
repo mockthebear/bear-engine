@@ -68,14 +68,13 @@ bool ScreenManager::SetupOpenGL(){
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-
     #ifdef RENDER_OPENGL
 
     glewExperimental = GL_TRUE;
     GLenum glewError = glewInit();
     if( glewError != GLEW_OK )
     {
-        bear::out << "Error initializing GLEW! " << glewGetErrorString( glewError )  << "\n";
+        bear::out << "Error initializing GLEW!\n";
     }
 
 
@@ -116,6 +115,12 @@ bool ScreenManager::SetupOpenGL(){
     SDL_GL_SetSwapInterval(0);
 
     #endif // RENDER_OPENGL
+
+    GLint maxSize;
+	glGetIntegerv (GL_MAX_TEXTURE_SIZE, &maxSize);
+    m_maxTextureSize.x = maxSize;
+    m_maxTextureSize.y = maxSize;
+
     return true;
 }
 
