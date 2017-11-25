@@ -42,13 +42,9 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string al
             return TexturePtr();
         }
         if (forced && spriteMap[alias].get()){
-            #ifdef RENDER_OPENGL
             BearTexture *be = spriteMap[alias].get();
             glDeleteTextures( 1, &be->id );
             delete be;
-            #else
-            SDL_DestroyTexture( spriteMap[alias].get() );
-            #endif // RENDER_OPENGL
             spriteMap[alias].reset(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("FORCED: Made texture for [%s] in  manager %d",str,id);
@@ -73,13 +69,9 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,int ,float,int
             return TexturePtr();
         }
         if (forced && spriteMap[str].get()){
-            #ifdef RENDER_OPENGL
             BearTexture *be = spriteMap[str].get();
             glDeleteTextures( 1, &be->id );
             delete be;
-            #else
-            SDL_DestroyTexture( spriteMap[str].get() );
-            #endif // RENDER_OPENGL
             spriteMap[str].reset(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("FORCED: Made texture for [%s] in  manager %d",str,id);
@@ -105,13 +97,9 @@ TexturePtr AssetMannager::makeTexture(bool forced,SDL_RWops* rw,std::string str,
         }
 
         if (forced && spriteMap[str].get()){
-            #ifdef RENDER_OPENGL
             BearTexture *be = spriteMap[str].get();
             glDeleteTextures( 1, &be->id );
             delete be;
-            #else
-            SDL_DestroyTexture( spriteMap[str].get() );
-            #endif // RENDER_OPENGL
             spriteMap[str].reset(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("FORCED: Made texture RW for [%s] in  manager %d",str,id);
@@ -137,13 +125,9 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string al
         }
 
         if (forced && spriteMap[alias].get()){
-            #ifdef RENDER_OPENGL
             BearTexture *be = spriteMap[alias].get();
             glDeleteTextures( 1, &be->id );
             delete be;
-            #else
-            SDL_DestroyTexture( spriteMap[alias].get() );
-            #endif // RENDER_OPENGL
             spriteMap[alias].reset(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("FORCED: Made replace texture for [%s] in  manager %d",str,id);
@@ -166,13 +150,9 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,ColorReplacer 
         }
 
         if (forced && spriteMap[str].get()){
-            #ifdef RENDER_OPENGL
             BearTexture *be = spriteMap[str].get();
             glDeleteTextures( 1, &be->id );
             delete be;
-            #else
-            SDL_DestroyTexture( spriteMap[str].get() );
-            #endif // RENDER_OPENGL
             spriteMap[str].reset(c);
             if (setOutput)
                 Console::GetInstance().AddTextInfoF("FORCED: Made replace texture for [%s] in  manager %d",str,id);
@@ -232,13 +212,9 @@ SoundPtr AssetMannager::makeSound(bool forced,SDL_RWops* rw,std::string str){
 bool AssetMannager::erase(){
     for (auto &it : spriteMap){
         if (it.second.get()){
-            #ifdef RENDER_OPENGL
             BearTexture *be = it.second.get();
             glDeleteTextures( 1, &be->id );
             delete be;
-            #else
-            SDL_DestroyTexture( it.second.get() );
-            #endif // RENDER_OPENGL
             it.second.reset(nullptr);
             it.second.destroy();
         }

@@ -2,7 +2,7 @@
 #include "../engine/bear.hpp"
 #include <iostream>
 #include <stdio.h>
-#include <GL/glew.h>
+
 
 void DebugHelper::AssertAlloc(void *ptr,std::string file,std::string func,int line,std::string msg){
     if (ptr == NULL){
@@ -11,9 +11,9 @@ void DebugHelper::AssertAlloc(void *ptr,std::string file,std::string func,int li
     }
 }
 void DebugHelper::DisplayGlError(){
-    GLenum error = glGetError();
+    /*GLenum error = glGetError();
     if( error != GL_NO_ERROR )
     {
         bear::out << "OpenGL error: " << error <<"\n";
-    }
+    }*/
 }

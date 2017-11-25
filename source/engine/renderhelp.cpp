@@ -129,20 +129,33 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
         glVertex2f( 0,  box.h );
     glEnd();
     glPopMatrix();
+    #else
+
     #endif
 
 }
 
 void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thicc){
     #ifndef RENDER_OPENGL
-    double scaleRatioW = (ScreenManager::GetInstance().GetScaleRatioW());
-    double scaleRatioH = (ScreenManager::GetInstance().GetScaleRatioH());
-    SDL_SetRenderDrawColor(BearEngine->GetRenderer(), r, g,b, a);
-    SDL_RenderDrawLine(BearEngine->GetRenderer(),
-                       p1.x*scaleRatioW + ScreenManager::GetInstance().GetOffsetW(),
-                       p1.y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH(),
-                       p2.x*scaleRatioW + ScreenManager::GetInstance().GetOffsetW(),
-                       p2.y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH());
+    GLfloat line[] = {
+                     0,0,0,
+                     100,100,0
+                  };
+
+    GLfloat colors[] = {
+                            1.0f, 0.0f, 0.0f, 1.0f,
+                            0.0f, 1.0f, 0.0f, 1.0f,
+                            0.0f, 0.0f, 1.0f, 1.0f
+                        };
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    //glShadeModel(GL_SMOOTH);
+    //glVertexPointer(3, GL_FLOAT, 0, line);
+    glColorPointer(4, GL_FLOAT, 0, colors);
+
+    glClear(GL_COLOR_BUFFER_BIT);
+    glDrawArrays(GL_LINES, 0, 2);
+    glFlush();
     #else
         glLoadIdentity();
         glLineWidth(thicc);
@@ -194,7 +207,7 @@ GLint TargetTexture::lastbuffer = 0;
 
 void TargetTexture::Render(Point pos){
 
-
+    #ifdef RENDER_OPENGL
     glLoadIdentity();
 
     glBindTexture(GL_TEXTURE_2D, renderedTexture);
@@ -223,6 +236,7 @@ void TargetTexture::Render(Point pos){
     glDisable(GL_TEXTURE_2D);
     glBindTexture( GL_TEXTURE_2D, 0 );
     glPopMatrix();
+    #endif // RENDER_OPENGL
 }
 
 bool TargetTexture::Bind(){
@@ -230,13 +244,14 @@ bool TargetTexture::Bind(){
     glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
     Point gameCanvas = ScreenManager::GetInstance().GetGameSize();
 
-
+    #ifdef RENDER_OPENGL
     glViewport(0, 0, size_w, size_h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0, size_w, size_w, 0, -1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    #endif // RENDER_OPENGL
 
 
     return true;

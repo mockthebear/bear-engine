@@ -72,7 +72,7 @@ class Test_TargetTexture: public State{
             targ.Bind();
             background.Render(0,0,45);
 
-
+            #ifdef RENDER_OPENGL
             glLoadIdentity();
             glTranslatef(4,4, 0.0f);
 
@@ -84,6 +84,7 @@ class Test_TargetTexture: public State{
                 glVertex2f( 0,  32 );
             glEnd();
             glPopMatrix();
+            #endif // RENDER_OPENGL
 
             RenderHelp::DrawCircleColor(Point(400-64,400 - 64),32,255,0,255,255);
             targ.UnBind();

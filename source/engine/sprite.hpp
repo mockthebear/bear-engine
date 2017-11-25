@@ -15,7 +15,12 @@
 #include <memory>
 
 #include SDL_LIB_HEADER
-#include <GL/glew.h>
+#ifdef RENDER_OPENGLES
+    #define GL_GLEXT_PROTOTYPES 1
+    #include GLES_LIB
+#elif RENDER_OPENGL
+    #include GL_LIB
+#endif // RENDER_OPENGLES
 
 enum TextureLoadMethodEnum{
     TEXTURE_NEARST,
@@ -50,8 +55,6 @@ class TextureLoadMethod{
     TextureLoadMethodEnum mode;
 };
 
-#ifdef RENDER_OPENGL
-#include GLEW_LIB_HEADER
 
 
 class BearTexture{
@@ -85,9 +88,9 @@ class BearTexture{
 
 };
 typedef chain_ptr<BearTexture> TexturePtr;
-#else
-typedef chain_ptr<SDL_Texture> TexturePtr;
-#endif // RENDER_OPENGL
+//#else
+//typedef chain_ptr<SDL_Texture> TexturePtr;
+//#endif // RENDER_OPENGL
 
 /**
  * @brief Color replacing filter class to use on load
@@ -464,9 +467,6 @@ class Sprite{
             OUTR = Red/255.0f;
             OUTB = Blue/255.0f;
             OUTG = Green/255.0f;
-            #ifndef RENDER_OPENGL
-            SDL_SetTextureColorMod((textureShred.get()),OUTR*255,OUTB*255,OUTG*255);
-            #endif // RENDER_OPENGL
         };
         /**
             *Changed the sprite alpha
@@ -476,9 +476,6 @@ class Sprite{
         */
         void SetAlpha(uint8_t alpha){
             m_alpha = alpha/255.0f;
-            #ifndef RENDER_OPENGL
-            SDL_SetTextureAlphaMod((textureShred.get()),alpha);
-            #endif // RENDER_OPENGL
         };
 
         uint8_t GetAlpha(){

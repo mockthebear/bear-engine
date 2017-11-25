@@ -59,56 +59,44 @@ void ScreenManager::NotyifyScreenClosed(){
 }
 
 bool ScreenManager::SetupOpenGL(){
-    bear::out << "Stage:\n";
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    bear::out << "1\n";
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-    bear::out << "2\n";
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	bear::out << "3\n";
 
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
+
+    #ifdef RENDER_OPENGL
 
     glewExperimental = GL_TRUE;
-    bear::out << "4\n";
     GLenum glewError = glewInit();
     if( glewError != GLEW_OK )
     {
-        printf( "Error initializing GLEW! %s\n", glewGetErrorString( glewError ) );
+        bear::out << "Error initializing GLEW! " << glewGetErrorString( glewError )  << "\n";
     }
 
 
-    SDL_GL_SetSwapInterval(0);
-
-
-    bear::out << "5\n";
     DebugHelper::DisplayGlError();
-    bear::out << "6\n";
 
 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	bear::out << "7\n";
 
 	SDL_GL_SwapWindow(m_window);
-	bear::out << "8\n";
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    bear::out << "9 : "<<m_originalScreen.x << ","<<m_originalScreen.y << "\n";
-
 
 	glViewport( 0.f, 0.f, m_originalScreen.x, m_originalScreen.y );
-	bear::out << "10\n";
+	DebugHelper::DisplayGlError();
     glMatrixMode( GL_PROJECTION );
-    bear::out << "11\n";
     glLoadIdentity();
-    bear::out << "12\n";
     glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
-    bear::out << "13\n";
     glMatrixMode( GL_MODELVIEW );
-    bear::out << "14\n";
     glLoadIdentity();
-    bear::out << "15\n";
+
 
 
 
@@ -116,12 +104,18 @@ bool ScreenManager::SetupOpenGL(){
     glPushMatrix();
     glClearColor( 1.f, 1.f, 1.f, 1.f );
     DebugHelper::DisplayGlError();
-    bear::out << "a\n";
     if (postProcess){
-        bear::out << "b\n";
         StartPostProcessing();
     }
-    bear::out << "c\n";
+    SDL_GL_SetSwapInterval(0);
+    #elif RENDER_OPENGLES
+
+    SDL_GL_SwapWindow(m_window);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_AL
+    SDL_GL_SetSwapInterval(0);
+
+    #endif // RENDER_OPENGL
     return true;
 }
 
@@ -215,19 +209,8 @@ SDL_Renderer* ScreenManager::StartRenderer(){
 }
 
 void ScreenManager::RenderPresent(){
-    #ifndef RENDER_OPENGL
-    if (m_defaultScreen){
-        SetRenderTarget(m_defaultScreen);
-    }
-    int w = ConfigManager::GetInstance().GetScreenW();
-    int h = ConfigManager::GetInstance().GetScreenH();
-    RenderHelp::DrawSquareColorA(w,0,w/2.0,h + w/2.0,0,0,0,255);
-    RenderHelp::DrawSquareColorA(-w/2.0,0,w/2.0,h + w/2.0,0,0,0,255);
-    RenderHelp::DrawSquareColorA(-w/2.0,h,w*2,h/2.0,0,0,0,255);
-    SDL_RenderPresent(m_renderer);
-    #else
+    #ifdef RENDER_OPENGL
     if (postProcess){
-
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glLoadIdentity();
         glClearColor(ClearColor[0],ClearColor[1],ClearColor[2],ClearColor[3]);
@@ -262,25 +245,25 @@ void ScreenManager::RenderPresent(){
     }
     glFlush();
     SDL_GL_SwapWindow(m_window);
+    #else
+
+    SDL_GL_SwapWindow(m_window);
+    glFlush();
     #endif // RENDER_OPENGL
 }
 
 void ScreenManager::ResetViewPort(){
+    #ifdef RENDER_OPENGL
     glViewport(0,0,m_screen.x, m_screen.y);
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
+    #endif // RENDER_OPENGL
 }
 void ScreenManager::PreRender(){
-    #ifndef RENDER_OPENGL
-    if (m_defaultScreen){
-        SetRenderTarget(m_defaultScreen);
-    }
-    SDL_SetRenderDrawColor(m_renderer, 0,0,0, 0);
-    SDL_RenderClear( m_renderer );
-    #else
+    #ifdef RENDER_OPENGL
 
     if (postProcess){
         glViewport(shake.x,shake.y,m_screen.x, m_screen.y);
@@ -292,27 +275,13 @@ void ScreenManager::PreRender(){
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         glClearColor(ClearColor[0],ClearColor[1],ClearColor[2],ClearColor[3]);
     }
-
+    #else
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+        glClearColor(ClearColor[0],ClearColor[1],ClearColor[2],ClearColor[3]);
     #endif // RENDER_OPENGL
 }
 
 void ScreenManager::Render(){
-    #ifndef RENDER_OPENGL
-    if (m_defaultScreen)
-        SetRenderTarget(nullptr);
-    if (m_defaultScreen){
-        //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-        SDL_SetRenderDrawColor(m_renderer, 0,0,0, 0);
-        SDL_RenderClear( m_renderer );
-        SDL_Rect dimensions2;
-        dimensions2.x = m_offsetScreen.x;
-        dimensions2.y = m_offsetScreen.y;
-        dimensions2.h = m_originalScreen.y*m_scaleRatio.y;
-        dimensions2.w = m_originalScreen.x*m_scaleRatio.x;
-        SDL_RenderCopy(m_renderer,m_defaultScreen,nullptr,&dimensions2);
-        //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
-    }
-    #endif // RENDER_OPENGL
 
 }
 

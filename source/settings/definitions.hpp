@@ -30,10 +30,10 @@
 
 #define MAXFPS 900.0
 
-#ifndef RENDER_OPENGL
-#define RENDER_OPENGL
+/*#ifndef RENDER_OPENGLES
+#define RENDER_OPENGLES
 #endif // RENDER_OPENGL
-
+*/
 
 #define POOL_DEFAULT_THREADS 2
 //#define DISABLE_THREADPOOL
@@ -69,6 +69,8 @@
 #define JniCallFunction(Fname) JNICALL CAT2(FNAME,Fname)
 
 
+#define GL_LIB <GL/glew.h>
+#define GLES_LIB <SDL2/SDL_opengles2.h>
 
 
 #ifdef __ANDROID__

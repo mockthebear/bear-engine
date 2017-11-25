@@ -243,10 +243,7 @@ BearTexture *Sprite::Preload(const char *file,bool adjustDir,TextureLoadMethod H
 }
 
 BearTexture * Sprite::Preload(SDL_RWops* rw,std::string name,TextureLoadMethod hasAliasing){
-    #ifndef RENDER_OPENGL
-    if (HasAliasing)
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-    #endif // RENDER_OPENGL
+
     unsigned char* imageData = nullptr;
     int sizeX,sizeY,comp;
     uint64_t rsize;
@@ -273,10 +270,6 @@ BearTexture * Sprite::Preload(SDL_RWops* rw,std::string name,TextureLoadMethod h
         return ret;
     }
 
-    #ifndef RENDER_OPENGL
-    if (HasAliasing)
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
-    #endif // RENDER_OPENGL
 
     return nullptr;
 }
@@ -398,16 +391,8 @@ void Sprite::SetClip(int x, int y,int w,int h){
 }
 
 void Sprite::Render(PointInt pos,double angle){
-    #ifndef RENDER_OPENGL
-    double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
-    double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
-    dimensions2.x = pos.x*scaleRatioW + ScreenManager::GetInstance().GetOffsetW();
-    dimensions2.y = pos.y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH();
-    dimensions2.h = clipRect.h*scaleRatioH*scaleY;
-    dimensions2.w = clipRect.w*scaleRatioW*scaleX;
-    SDL_RenderCopyEx(BearEngine->GetRenderer(),textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip);
-    #else
     if (IsLoaded()){
+        #ifdef RENDER_OPENGL
         glLoadIdentity();
         glEnable(GL_TEXTURE_2D);
         glColor4f(OUTR, OUTG, OUTB, m_alpha);
@@ -440,9 +425,8 @@ void Sprite::Render(PointInt pos,double angle){
 
         glDisable(GL_TEXTURE_2D);
         glPopMatrix();
+        #endif // RENDER_OPENGL
     }
-    #endif // RENDER_OPENGL
-
 
 }
 void Sprite::Renderxy(int x,int y,double angle){

@@ -76,10 +76,10 @@ bool Shader::Link(){
 
 bool Shader::Compile(std::string vert,std::string frag){
 
-    if( !GLEW_VERSION_2_1 ){
+    /*if( !GLEW_VERSION_2_1 ){
         bear::out << "OpenGL 2.1 not supported!\n";
         return false;
-    }
+    }*/
 
     GameFile file_vert;
     GameFile file_frag;

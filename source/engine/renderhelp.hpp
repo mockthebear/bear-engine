@@ -6,6 +6,7 @@
 #include "../framework/typechecker.hpp"
 #include <functional>
 
+
 #define COLOR(r,g,b) { (Uint8)(r),(Uint8)(g),(Uint8)(b)}
 
 /**

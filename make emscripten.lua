@@ -8,9 +8,9 @@ local COMPILER = "em++";
 local ASSETS_FOLDER = "game"
 local SOURCE_FOLDER = "source"
 local FILEOUT = "snakescape.html"
-local LDFLAGS = "-s LEGACY_GL_EMULATION=1"
-local PRELOADSTUFF = " --preload-file /game/data/@ --preload-file /game/ui/@"
-local CFLAGS = "-DRENDER_OPENGL -Walmost-asm -s USE_SDL=2 -s USE_SDL_TTF=2 -s USE_VORBIS=1 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1 -std=c++11 -O1 -O2 -O3 -Oz"
+local LDFLAGS = ""
+local PRELOADSTUFF = " --preload-file /game/data/ --preload-file /game/ui/"
+local CFLAGS = "-s ASSERTIONS=1 -DRENDER_OPENGL -s USE_SDL=2 -s USE_SDL_TTF=2 -s USE_VORBIS=1 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1 -std=c++11"
 
 
 local OUTSTR = ""
@@ -76,7 +76,7 @@ end
 if parseFolderRecursively(SOURCE_FOLDER) then
 	local outp = FILES..' '..CFLAGS..' '..LDFLAGS.. ' '..PRELOADSTUFF
 	print("Ready files: ",outp)
-	os.execute("em++ -o kek.html "..outp)
+	os.execute("emcc -o kek.html "..outp)
 end
 
 --Build folder:

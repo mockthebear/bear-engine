@@ -1,6 +1,12 @@
 #pragma once
+#include "../settings/definitions.hpp"
+#ifdef RENDER_OPENGLES
+    #define GL_GLEXT_PROTOTYPES 1
+    #include GLES_LIB
+#elif RENDER_OPENGL
+    #include GL_LIB
+#endif // RENDER_OPENGLES
 
-#include <GL/glew.h>
 #include <glm/glm.hpp>
 
 #include "../framework/geometry.hpp"
