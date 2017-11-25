@@ -31,7 +31,7 @@ void DefaultBehavior::OnUpdate(float dt){
 
 
 bool DefaultBehavior::Begin(){
-    return true;
+	return true;
 }
 void DefaultBehavior::OnClose(){
     Text::Clear();

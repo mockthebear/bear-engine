@@ -59,6 +59,8 @@ class DefaultBehavior: public Behavior{
         void OnFocus(bool isFocused);
 
         void OnUpdate(float dt);
+
+        void OnPreRender(){};
         /**
             @brief Empty Can be used on android to know if the game came to background or left background
         */

@@ -10,6 +10,8 @@
 
 
 SmartTileset::SmartTileset(PointInt tileSize,PointInt tilesetSize,int layers,PointInt maxTextureSize):tileSize(PointInt(8,8)){
+    Stopwatch timer;
+    bear::out << "Begin at "<<float(timer.Get()/1000.0)<<"\n";
     isValid = false;
     lastTarget = nullptr;
     PointInt engineMaxSize = ScreenManager::GetInstance().GetMaxTextureSize();
@@ -18,10 +20,6 @@ SmartTileset::SmartTileset(PointInt tileSize,PointInt tilesetSize,int layers,Poi
     }
     if (maxTextureSize.y == -1 || maxTextureSize.y > engineMaxSize.y){
         maxTextureSize.y = engineMaxSize.y;
-    }
-    if (maxTextureSize.x <= 0 || maxTextureSize.y <= 0){
-        maxTextureSize = Point(SCREEN_SIZE_W,SCREEN_SIZE_H);
-        bear::out << "Max texture size is set to 0. This might cause issues. Setting to "<<maxTextureSize<<"\n";
     }
 
     PointInt truncator = maxTextureSize/tileSize;
@@ -86,6 +84,7 @@ SmartTileset::SmartTileset(PointInt tileSize,PointInt tilesetSize,int layers,Poi
     bear::out << "Textures were made.\n";
     if (isOkay)
         isValid = true;
+    bear::out << "Finished at "<<float(timer.Get()/1000.0)<<"\n";
 }
 
 TargetTexture *SmartTileset::GetTextureFromPosition(int layer,int x,int y){
@@ -118,15 +117,17 @@ void SmartTileset::RenderTile(int x,int y,int index){
     }
     int cx = index%sheetSizes.x;
     int cy = index/sheetSizes.x;
+    Shader::Unbind();
     sp.SetClip(tileSize.x*cx,tileSize.y*cy,tileSize.x,tileSize.y);
     sp.Render(x,y,0);
+    Shader::ReBind();
 }
 
 bool SmartTileset::MakeMap(){
     if (!isValid)
         return false;
     Stopwatch timer;
-    bear::out << "Making the map\n";
+    bear::out << "Making the map "<<float(timer.Get()/1000.0)<<"\n";
 
     for (int l=0;l<Layers;l++){
         for (int y=0;y<framesOnMap.y;y++){
@@ -138,11 +139,13 @@ bool SmartTileset::MakeMap(){
                 SDL_RenderClear(BearEngine->GetRenderer());
                 SDL_SetRenderDrawBlendMode(BearEngine->GetRenderer(), SDL_BLENDMODE_BLEND);
                 #else
-                textureMap[l][y][x]->Bind();
+                /*
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
                 RenderHelp::DrawSquareColor(Rect(0,0,maxTextureSize.x,maxTextureSize.y),0,0,0,0);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 TargetTexture::UnBind();
+                */
+
 
                 #endif // RENDER_OPENGL
                 needRemake[l][y][x] = false;
@@ -153,13 +156,17 @@ bool SmartTileset::MakeMap(){
     for (int l=0;l<Layers;l++){
         for (int y=0;y<tilesetCompatSize.y;y++){
             for (int x=0;x<tilesetCompatSize.x;x++){
-                PointInt tilePosition = PointInt(x,y);
-                tilePosition = tilePosition * tileSize;
-                PointInt tileOffset = PointInt(tilePosition.x%maxTextureSize.x,tilePosition.y%maxTextureSize.y);
-                TargetTexture *thisT = GetTextureFromPosition(l,tilePosition.x,tilePosition.y);
-                thisT->Bind();
-                RenderTile(tileOffset.x,tileOffset.y,tileMap[l][y][x]);
-                thisT->UnBind();
+                if (tileMap[l][y][x] > 0){
+                    Shader::Unbind();
+                    PointInt tilePosition = PointInt(x,y);
+                    tilePosition = tilePosition * tileSize;
+                    PointInt tileOffset = PointInt(tilePosition.x%maxTextureSize.x,tilePosition.y%maxTextureSize.y);
+                    TargetTexture *thisT = GetTextureFromPosition(l,tilePosition.x,tilePosition.y);
+                    thisT->Bind();
+                    RenderTile(tileOffset.x,tileOffset.y,tileMap[l][y][x]);
+                    thisT->UnBind();
+                    Shader::ReBind();
+                }
             }
         }
     }
@@ -190,7 +197,9 @@ void SmartTileset::SetTile(int l,int x,int y,int tile){
 void SmartTileset::ResetFocus(){
     if (!isValid)
         return;
-
+    #ifndef RENDER_OPENGL
+    ScreenManager::GetInstance().SetRenderTarget(nullptr,true);
+    #endif // RENDER_OPENGL
     lastTarget = nullptr;
 }
 void SmartTileset::SetTileDirect(int l,int x,int y,int tile){
@@ -209,15 +218,32 @@ void SmartTileset::SetTileDirect(int l,int x,int y,int tile){
     PointInt tilesPerBlock = maxTextureSize/tileSize;
     PointInt tilePosition = PointInt(x/tilesPerBlock.x,y/tilesPerBlock.y);
     if (tilePosition.x < framesOnMap.x && tilePosition.y < framesOnMap.y) {
-
+        #ifndef RENDER_OPENGL
+        if (lastTarget != textureMap[l][tilePosition.y][tilePosition.x]){
+            lastTarget = textureMap[l][tilePosition.y][tilePosition.x];
+            ScreenManager::GetInstance().SetRenderTarget(textureMap[l][tilePosition.y][tilePosition.x]);
+        }
+        #endif // RENDER_OPENGL
         PointInt tileOffset = PointInt((x * tileSize.x)%maxTextureSize.x,(y * tileSize.y)%maxTextureSize.y);
-
+        #ifndef RENDER_OPENGL
+        SDL_SetRenderDrawBlendMode(BearEngine->GetRenderer(), SDL_BLENDMODE_NONE);
+        SDL_SetRenderDrawColor(BearEngine->GetRenderer(), 255, 255, 255, 0);
+        SDL_Rect d;
+        d.x = tileOffset.x;
+        d.y = tileOffset.y;
+        d.w = d.h = tileSize;
+        SDL_RenderFillRect(BearEngine->GetRenderer(), &d);
+        SDL_SetRenderDrawBlendMode(BearEngine->GetRenderer(), SDL_BLENDMODE_BLEND);
+        #else
         textureMap[l][tilePosition.y][tilePosition.x]->Bind();
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
         RenderHelp::DrawSquareColor(Rect(tileOffset.x,tileOffset.y,tileSize.x,tileSize.y),0,0,0,0);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         RenderTile(  tileOffset.x, tileOffset.y, tile);
         TargetTexture::UnBind();
+        #endif // RENDER_OPENGL
+
+
     }
 }
 
@@ -264,9 +290,19 @@ void SmartTileset::RenderLayer(int layer,bool showBoundary){
             canvasArea.x = (x * canvasArea.w) ;
             canvasArea.y = (y * canvasArea.h) ;
             if (Collision::IsColliding(Camera::pos,canvasArea)){
+                #ifndef RENDER_OPENGL
+                SDL_Rect dimensions2;
+                double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
+                double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
 
+                dimensions2.h = canvasArea.w*scaleRatioH;
+                dimensions2.w = canvasArea.h*scaleRatioW;
+                dimensions2.x = (canvasArea.x - Camera::pos.x)*scaleRatioW+ ScreenManager::GetInstance().GetOffsetW();
+                dimensions2.y = (canvasArea.y - Camera::pos.y)*scaleRatioH+ ScreenManager::GetInstance().GetOffsetH();
+                SDL_RenderCopyEx(BearEngine->GetRenderer(), textureMap[layer][y][x], nullptr, &dimensions2, 0, NULL, SDL_FLIP_NONE );
+                #else
                 textureMap[layer][y][x]->Render(Point(canvasArea.x - Camera::pos.x,canvasArea.y - Camera::pos.y));
-
+                #endif // RENDER_OPENGL
                 if (showBoundary)
                     RenderHelp::DrawSquareColor(canvasArea.x - Camera::pos.x,canvasArea.y - Camera::pos.y,canvasArea.w,canvasArea.h,0,0,255,255,true);
             }

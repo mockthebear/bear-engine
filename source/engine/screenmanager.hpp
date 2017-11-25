@@ -7,14 +7,7 @@
 #include <string>
 #include "../framework/geometry.hpp"
 #include "shadermanager.hpp"
-
-#ifdef RENDER_OPENGLES
-    #define GL_GLEXT_PROTOTYPES 1
-    #include GLES_LIB
-#elif RENDER_OPENGL
-    #include GL_LIB
-#endif // RENDER_OPENGLES
-
+#include <GL/glew.h>
 enum ResizeAction{
     RESIZE_SCALE,
     RESIZE_FREE_SCALE,

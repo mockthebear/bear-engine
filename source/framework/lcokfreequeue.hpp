@@ -70,7 +70,7 @@ template <typename T>class LockFreeQueue{
                         True means busy
                     */
                     if (!isReady){
-                        //std::cout << queue[rthd][ind] << "\n";
+
                         queue[rthd][ind] = t;
                         flags[rthd][ind][FLAG_OK_READ].test_and_set(std::memory_order_acquire);
                         flags[rthd][ind][FLAG_ON_USE].clear(std::memory_order_release);

@@ -4,6 +4,10 @@
 #include "../framework/gamefile.hpp"
 #include <glm/gtc/type_ptr.hpp>
 
+
+GLuint Shader::lastShader = 0;
+
+
 Shader::Shader(){
     m_shaderId = 0;
 }
@@ -76,10 +80,10 @@ bool Shader::Link(){
 
 bool Shader::Compile(std::string vert,std::string frag){
 
-    /*if( !GLEW_VERSION_2_1 ){
+    if( !GLEW_VERSION_2_1 ){
         bear::out << "OpenGL 2.1 not supported!\n";
         return false;
-    }*/
+    }
 
     GameFile file_vert;
     GameFile file_frag;
@@ -150,10 +154,26 @@ bool Shader::Bind(){
 
     return true;
 }
+bool Shader::ReBind(){
+    glUseProgram(lastShader);
+    lastShader = 0;
+    return true;
+}
+
+
 bool Shader::Unbind(){
+    lastShader = Shader::GetCurrentShaderId();
     glUseProgram(0);
     return true;
 }
+
+
+GLuint Shader::GetCurrentShaderId(){
+    int par;
+    glGetIntegerv(GL_CURRENT_PROGRAM,&par);
+    return par;
+}
+
 
 
 void Shader::ProgramError( GLuint program ){

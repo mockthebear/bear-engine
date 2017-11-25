@@ -1,12 +1,6 @@
 #pragma once
-#include "../settings/definitions.hpp"
-#ifdef RENDER_OPENGLES
-    #define GL_GLEXT_PROTOTYPES 1
-    #include GLES_LIB
-#elif RENDER_OPENGL
-    #include GL_LIB
-#endif // RENDER_OPENGLES
 
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 
 #include "../framework/geometry.hpp"
@@ -103,7 +97,7 @@ class Shader{
 
         bool Compile(std::string vertexFilePath,std::string fragmentFilePath);
         bool Bind();
-        bool Unbind();
+
 
         GLint GetUniformLocation(const char* locName);
         bool HasUniform(const char *locName);
@@ -112,6 +106,10 @@ class Shader{
         template <typename T> bool SetUniform(const char *str,T var){
             return ShaderSetter<T>::SetUniform(m_shaderId,str,var);
         };
+        static bool Unbind();
+        static bool ReBind();
+        static GLuint GetCurrentShaderId();
+        static GLuint lastShader;
 
 
     private:
