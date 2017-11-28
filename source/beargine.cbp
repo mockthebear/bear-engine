@@ -257,6 +257,12 @@
 		<Unit filename="settings/configmanager.cpp" />
 		<Unit filename="settings/configmanager.hpp" />
 		<Unit filename="settings/definitions.hpp" />
+		<Unit filename="socket/socket.cpp" />
+		<Unit filename="socket/socket.hpp" />
+		<Unit filename="socket/socketdef.cpp" />
+		<Unit filename="socket/socketdef.hpp" />
+		<Unit filename="socket/tcp.cpp" />
+		<Unit filename="socket/tcp.hpp" />
 		<Unit filename="sound/sound.cpp" />
 		<Unit filename="sound/sound.hpp" />
 		<Unit filename="sound/sounddef.hpp" />
@@ -274,6 +280,7 @@
 		<Unit filename="tests/testscrolling.hpp" />
 		<Unit filename="tests/testshader.hpp" />
 		<Unit filename="tests/testshapes.hpp" />
+		<Unit filename="tests/testsocket.hpp" />
 		<Unit filename="tests/testsprite.hpp" />
 		<Unit filename="tests/testtargettexture.hpp" />
 		<Unit filename="tests/testtext.hpp" />

@@ -24,6 +24,7 @@
 #include "../tests/testtargettexture.hpp"
 #include "../tests/testscrolling.hpp"
 #include "../tests/testshader.hpp"
+#include "../tests/testsocket.hpp"
 
 
 
@@ -92,6 +93,7 @@ bool GameBehavior::OnLoad(){
     Game::GetInstance()->AddState(new Test_Shader());
     Game::GetInstance()->AddState(new Test_Sprite());
     Game::GetInstance()->AddState(new Test_Pool());
+    Game::GetInstance()->AddState(new Test_Socket());
     Game::GetInstance()->AddState(new Test_Shapes());
     Game::GetInstance()->AddState(new Test_Joystick());
     Game::GetInstance()->AddState(new Test_Files());
