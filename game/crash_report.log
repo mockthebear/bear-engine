@@ -1,0 +1,124 @@
+== application crashed
+build date: Nov 30 2017
+  at rip = 0x4162c7
+     rax = 0x200
+     rbx = 0x7c6ba0
+     rcx = 0x258
+     rdx = 0
+     rsi = 0
+     rdi = 0x4100
+     rbp = 0x7fd16e23cd60
+     rsp = 0x7fd16e23cd50
+     efl = 0x10206
+
+  backtrace:
+    1: /home/mock/~/bear-engine/game/bear() [0x4162c7]
+    2: /home/mock/~/bear-engine/game/bear() [0x416375]
+    3: /lib/x86_64-linux-gnu/libpthread.so.0(+0x76ba) [0x7fd1771a26ba]
+    4: /lib/x86_64-linux-gnu/libc.so.6(clone+0x6d) [0x7fd176ed83dd]
+
+== application crashed
+build date: Nov 30 2017
+  at rip = 0x559264
+     rax = 0x3298990
+     rbx = 0x10
+     rcx = 0x3362010
+     rdx = 0x32f9d80
+     rsi = 0x35c83680
+     rdi = 0x329898f
+     rbp = 0x3298820
+     rsp = 0x7f5754cb6620
+     efl = 0x10202
+
+  backtrace:
+    1: /home/mock/~/bear-engine/game/bear() [0x559264]
+    2: /home/mock/~/bear-engine/game/bear() [0x562a87]
+    3: /home/mock/~/bear-engine/game/bear() [0x55998d]
+    4: /home/mock/~/bear-engine/game/bear() [0x558c7b]
+    5: /home/mock/~/bear-engine/game/bear() [0x559aeb]
+    6: /home/mock/~/bear-engine/game/bear() [0x557176]
+    7: /home/mock/~/bear-engine/game/bear() [0x4195d4]
+    8: /home/mock/~/bear-engine/game/bear() [0x451c31]
+    9: /home/mock/~/bear-engine/game/bear() [0x416251]
+    10: /home/mock/~/bear-engine/game/bear() [0x4162f5]
+    11: /lib/x86_64-linux-gnu/libpthread.so.0(+0x76ba) [0x7f575dc0e6ba]
+    12: /lib/x86_64-linux-gnu/libc.so.6(clone+0x6d) [0x7f575d9443dd]
+
+== application crashed
+build date: Nov 30 2017
+  at rip = 0x416247
+     rax = 0x200
+     rbx = 0x7bcba0
+     rcx = 0x258
+     rdx = 0
+     rsi = 0
+     rdi = 0x4100
+     rbp = 0x7f76c36a8d60
+     rsp = 0x7f76c36a8d50
+     efl = 0x10206
+
+  backtrace:
+    1: /home/mock/~/bear-engine/game/bear() [0x416247]
+    2: /home/mock/~/bear-engine/game/bear() [0x4162f5]
+    3: /lib/x86_64-linux-gnu/libpthread.so.0(+0x76ba) [0x7f76cc6006ba]
+    4: /lib/x86_64-linux-gnu/libc.so.6(clone+0x6d) [0x7f76cc3363dd]
+
+== application crashed
+build date: Nov 30 2017
+  at rip = 0x416247
+     rax = 0x200
+     rbx = 0x7bcba0
+     rcx = 0x258
+     rdx = 0
+     rsi = 0
+     rdi = 0x4100
+     rbp = 0x7f1087012d60
+     rsp = 0x7f1087012d50
+     efl = 0x10206
+
+  backtrace:
+    1: /home/mock/~/bear-engine/game/bear() [0x416247]
+    2: /home/mock/~/bear-engine/game/bear() [0x4162f5]
+    3: /lib/x86_64-linux-gnu/libpthread.so.0(+0x76ba) [0x7f108ff6a6ba]
+    4: /lib/x86_64-linux-gnu/libc.so.6(clone+0x6d) [0x7f108fca03dd]
+
+== application crashed
+build date: Nov 30 2017
+  at rip = 0x41a7fa
+     rax = 0xbff0000000000000
+     rbx = 0x7f68c0000aa8
+     rcx = 0x9
+     rdx = 0
+     rsi = 0x504
+     rdi = 0x7f68c0000d10
+     rbp = 0x7ffd4d7d0680
+     rsp = 0x7ffd4d7d0660
+     efl = 0x10202
+
+  backtrace:
+    1: /home/mock/~/bear-engine/game/bear() [0x41a7fa]
+    2: /home/mock/~/bear-engine/game/bear() [0x414418]
+    3: /home/mock/~/bear-engine/game/bear() [0x418ff8]
+    4: /home/mock/~/bear-engine/game/bear(main+0x5c) [0x408cbc]
+
+== application crashed
+build date: Nov 30 2017
+  at rip = 0x42aac6
+     rax = 0x57aaa8
+     rbx = 0x34b57b0
+     rcx = 0x1
+     rdx = 0x1debd60
+     rsi = 0
+     rdi = 0
+     rbp = 0x7fc27db78d00
+     rsp = 0x7fc27db78c90
+     efl = 0x10206
+
+  backtrace:
+    1: /home/mock/~/bear-engine/game/bear() [0x42aac6]
+    2: /home/mock/~/bear-engine/game/bear() [0x444cd2]
+    3: /home/mock/~/bear-engine/game/bear() [0x4164c2]
+    4: /home/mock/~/bear-engine/game/bear() [0x4165bc]
+    5: /lib/x86_64-linux-gnu/libpthread.so.0(+0x76ba) [0x7fc286adf6ba]
+    6: /lib/x86_64-linux-gnu/libc.so.6(clone+0x6d) [0x7fc2868153dd]
+

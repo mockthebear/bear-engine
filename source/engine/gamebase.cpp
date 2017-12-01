@@ -64,6 +64,7 @@ void Game::init(const char *name){
         HasAudio = true;
         wasLocked = false;
         GameBegin = false;
+        frameId = 0;
         dt = frameStart = 0;
         canDebug = false;
 
@@ -218,6 +219,10 @@ void Game::init(const char *name){
         if (startFlags&BEAR_FLAG_START_CONSOLE){
             Console::GetInstance().AddTextInfo(utils::format("Bear started in %f seconds",GetDeltaTime()/10.0f));
         }
+        sem_init(&renderingSem, 0,1);
+        unlockAtFrameEnd = false;
+
+
         dt = frameStart = 0;
         Started = true;
     }else{
@@ -232,7 +237,11 @@ Game::~Game(){
         Close();
 }
 void Game::Close(){
+    sem_wait(&renderingSem);
     hasBeenClosed = true;
+    pthread_join(RenderWorker, NULL);
+    sem_post(&renderingSem);
+
     while (!stateStack.empty()){
         if (stateStack.top() != nullptr){
             stateStack.top()->End();
@@ -303,16 +312,12 @@ void Game::Close(){
 Game *Game::GetInstance(const char *name){
     return &g_game;
 }
-void Game::Update(){
-    float dt = std::min(GetDeltaTime(),1.2f );
+void Game::Update(float dt){
+    dt = std::min(dt,1.001f );
     if (startFlags&BEAR_FLAG_START_INPUT)
         InputManager::GetInstance().Update(dt);
 
     GameBehavior::GetInstance().OnUpdate(dt);
-
-
-    if (startFlags&BEAR_FLAG_START_SCREEN)
-        ScreenManager::GetInstance().PreRender();
 
     if (!CanStop()){
         Scheduler::GetInstance().Update(dt);
@@ -333,6 +338,8 @@ void Game::Update(){
 void Game::Render(){
     if ( (startFlags&BEAR_FLAG_START_SCREEN) == 0)
         return;
+    ScreenManager::GetInstance().PreRender();
+
     stateStack.top()->Render();
     ScreenManager::GetInstance().Render();
     InputManager::GetInstance().Render();
@@ -364,12 +371,10 @@ bool Game::CanStop(){
 }
 
 void Game::Run(){
-        //Stopwatch st;
+
         frameStart = dt;
         CalculateDeltaTime();
 
-        //uint32_t tu = st.Get();
-        //st.Reset();
         if (!CanStop()){
             if (startFlags&BEAR_FLAG_START_INPUT){
                 if (InputManager::GetInstance().KeyPress(SDLK_F3)){
@@ -390,6 +395,7 @@ void Game::Run(){
             if (!stateStack.empty()){
 
                 if (stateStack.top()->RequestedDeleted()){
+                    LockUpdate();
                     stateStack.top()->End();
                     #ifndef DISABLE_LUAINTERFACE
                     LuaCaller::CallClear(LuaManager::L,stateStack.top());
@@ -404,16 +410,19 @@ void Game::Run(){
                         stateStack.top()->Resume(oldState);
                     }
                     delete oldState;
+                    UnLockUpdate();
                     return;
                 }
             }
 
             if (!preStored.empty()){
+                LockUpdate();
                 if (!justDeleted && !stateStack.empty())
                     stateStack.top()->Pause(preStored.front());
                 stateStack.emplace(preStored.front());
                 preStored.pop();
                 stateStack.top()->p_StateTicks = 0;
+                UnLockUpdate();
                 return;
             }
             if (stateStack.empty() ){
@@ -424,7 +433,9 @@ void Game::Run(){
             }
             stateStack.top()->p_StateTicks++;
             if (stateStack.top()->p_StateTicks == 1){
+                 LockUpdate();
                  stateStack.top()->Begin();
+                 UnLockUpdate();
                  return;
             }
 
@@ -433,7 +444,9 @@ void Game::Run(){
             #ifdef CYCLYC_DEBUG
             bear::out << "[Update]";
             #endif
-            Update();
+            if (frameId == 0){
+                pthread_create(&RenderWorker, NULL, &Game::update_worker, (void*)this);
+            }
             #ifdef CYCLYC_DEBUG
             bear::out << "[\\Update]\n";
             #endif
@@ -445,20 +458,53 @@ void Game::Run(){
             bear::out << "[Render]";
             #endif
 
+
             Render();
+
+
 
             #ifdef CYCLYC_DEBUG
             bear::out << "[\\Render]\n";
             #endif
             //unsigneduint32_t tr = st.Get();
 
+            if(unlockAtFrameEnd){
+                sem_post(&renderingSem);
+                unlockAtFrameEnd = false;
+            }
+
             float delay = SDL_GetTicks()-dt;
             if ((1000.0f/ConfigManager::MaxFps) - delay > 0){
                 SDL_Delay( std::max( (1000.0f/ConfigManager::MaxFps) - delay,0.0f) );
             }
 
+            frameId++;
+
         }
 };
+
+void *Game::update_worker(void *OBJ){
+    Game *m_this = (Game*)OBJ;
+    float udt = SDL_GetTicks();
+    float delay = 0;
+    while(!m_this->hasBeenClosed){
+        //
+        sem_wait(&m_this->renderingSem);
+        udt = SDL_GetTicks()-udt;
+        delay = SDL_GetTicks();
+
+        m_this->Update(udt/100.0f);
+        udt = SDL_GetTicks();
+
+        delay = SDL_GetTicks()-delay;
+        sem_post(&m_this->renderingSem);
+        SDL_Delay( 10 - delay);
+
+
+        //SDL_Delay(80);
+    }
+}
+
 DefinedState &Game::GetCurrentState(){
     Game *g = GetInstance();
     return (*g->stateStack.top());

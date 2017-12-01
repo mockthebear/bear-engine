@@ -10,6 +10,8 @@
 #include <queue>
 #include <string.h>
 #include <stdio.h>
+#include <semaphore.h>
+#include <pthread.h>
 #include <functional>
 
 
@@ -141,12 +143,23 @@ class Game{
         void init(const char *name);
 
         static uint32_t startFlags;
+        static void *update_worker(void *OBJ);
+
+        void UnLockUpdate(){
+            sem_post(&renderingSem);
+            unlockAtFrameEnd = false;
+        }
+        void LockUpdate(){
+            sem_wait(&renderingSem);
+            unlockAtFrameEnd = true;
+        }
 
     private:
+        uint64_t frameId;
 
         bool wasLocked;
         inline void CalculateDeltaTime(){dt = SDL_GetTicks();};
-        void Update();
+        void Update(float dt);
         void Render();
         static Game* instance;
 
@@ -162,8 +175,11 @@ class Game{
         unsigned int nextUpdate;
         int frameStart;
         float dt;
+        pthread_t RenderWorker;
+        sem_t renderingSem;
 
         bool SDLStarted;
+        bool unlockAtFrameEnd;
 
         SDL_Renderer* renderer;
         SDL_Window* window;

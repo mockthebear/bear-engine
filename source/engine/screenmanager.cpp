@@ -18,7 +18,7 @@ ScreenManager::~ScreenManager(){
 ScreenManager::ScreenManager(){
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
-    postProcess = true;
+    postProcess = false;
     m_ScreenRationMultiplier = 2.0f;
     ShakingDuration = 0;
     shaking = 0;

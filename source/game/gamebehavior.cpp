@@ -74,14 +74,14 @@ bool GameBehavior::OnLoad(){
     /*
     Game::GetInstance()->AddState(new Test_());
     */
-    Game::GetInstance()->AddState(new Test_Light());
+    //Game::GetInstance()->AddState(new Test_Light());
     #ifdef THREADPOOLTEST
     //Game::GetInstance()->AddState(new Test_Threadpool());
     #endif // THREADPOOLTEST
 
 
     #ifdef LUATESTSUITE
-    Game::GetInstance()->AddState(new Test_Lua());
+    //Game::GetInstance()->AddState(new Test_Lua());
     #endif // LUATESTSUITE*/
 
 
@@ -93,10 +93,12 @@ bool GameBehavior::OnLoad(){
     Game::GetInstance()->AddState(new Test_Shader());
     Game::GetInstance()->AddState(new Test_Sprite());
     Game::GetInstance()->AddState(new Test_Pool());
-    Game::GetInstance()->AddState(new Test_Socket());
-    Game::GetInstance()->AddState(new Test_Shapes());
+    //Game::GetInstance()->AddState(new Test_Socket());
+
     Game::GetInstance()->AddState(new Test_Joystick());
     Game::GetInstance()->AddState(new Test_Files());
+
+    Game::GetInstance()->AddState(new Test_Shapes());
 
     return DefaultBehavior::GetInstance().OnLoad();
 }
