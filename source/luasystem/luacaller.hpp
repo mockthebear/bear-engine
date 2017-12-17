@@ -41,24 +41,49 @@ class LuaManager{
             }
             return (data);
         }
+        static int ErrorHandler(lua_State* L){
+            std::string err;
+            size_t len;
+            const char *c_str = lua_tolstring(L, -1, &len);
+            if(c_str && len > 0)
+                err.assign(c_str, len);
+
+
+            lua_pop(L,1);
+
+
+
+            lua_getglobal(L,"debug");
+            lua_getfield(L, -1, "traceback");
+            lua_remove(L,-2);
+
+            lua_pushlstring(L, err.c_str(), err.length());
+            lua_pushinteger(L, 1);
+            lua_call(L, 2, 1);
+
+            std::string error = lua_tostring(L, -1);
+            lua_pop(L,1);
+
+
+            lua_pushlstring(L, error.c_str(), error.length());
+            return 1;
+        }
+
         static bool Pcall(int arg = 0,int returns = 0,int ext = 0){
-            if (lua_pcall(L, arg, returns,  ext) != 0) {
-                Console::GetInstance().AddTextInfo(utils::format("Lua error: :c %s -> [%s]",lua_tostring(L, -1),lastCalled.c_str()));
-                lua_pop(L,1);
-                lua_getglobal(L, "debug");
-                if (!lua_istable(L, -1)) {
-                    lua_pop(L, 1);
-                    return false;
-                }
-                lua_getfield(L, -1, "traceback");
-                if (!lua_isfunction(L, -1)) {
-                    lua_pop(L, 2);
-                    return false;
-                }
-                lua_pushvalue(L, 1);  /* pass error message */
-                lua_pushinteger(L, 2);  /* skip this function and traceback */
-                lua_call(L, 2, 1);  /* call debug.traceback */
-                Console::GetInstance().AddTextInfo(utils::format("Trace: %s",lua_tostring(L, -1)));
+            int previousStackSize = lua_gettop(L);
+            int errorFuncIndex = previousStackSize - arg;
+            lua_pushcclosure(L, &LuaManager::ErrorHandler, 0);
+            lua_insert(L, errorFuncIndex);
+
+
+            int ret = lua_pcall(L, arg, returns,  errorFuncIndex);
+
+            lua_remove(L, errorFuncIndex);
+
+            if (ret != 0){
+
+                Console::GetInstance().AddTextInfo(utils::format("Lua error:  %s -> [%s]",lua_tostring(L, -1),lastCalled.c_str()));
+
 
                 return false;
             }
