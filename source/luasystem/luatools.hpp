@@ -278,14 +278,6 @@ class LuaCaller{
                 return 0;
             }
             int **self = LuaManager::GetSelfReference<int>();
-            /*
-            if (!self){
-				//std::cout << "[LuaCaller][LUA]could not call function because of an deleted reference "<< v << " : "<< N << " \n";
-                Console::GetInstance().AddTextInfo(utils::format("[LuaCaller][LUA]could not call function because of an deleted reference[addr %d] %d",v,N));
-                //lua_pushnil(L);
-                //return 1;
-            }
-            */
             (*(*v))(L);
             if (!self){
 
@@ -478,8 +470,6 @@ class LuaCaller{
                 return false;
             }
             bool ret = lua_toboolean(L,-1);
-            //lua_pop(L,1);
-            //std::cout << lua_gettop(L) << "\n";
             lua_pop(L,lua_gettop(L)-1);
 
             return ret;
@@ -555,13 +545,7 @@ template<typename T1,typename ClassObj,typename ... Types> struct internal_regis
 
     };*/
     template <typename ... Opt> static void LambdaRegisterStackOpt(lua_State *L,std::string str,int stackPos,T1 (ClassObj::*func)(Types ... args),Opt ... optionalArgs ){
-        //#if defined(__GNUC__) || defined(__GNUG__)
-        //LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
-       // #else
         LuaCFunctionLambda f = [func,str,optionalArgs...](lua_State *L2) -> int {
-       // #endif // defined
-
-
             LuaManager::lastCalled = str;
             int argCount = sizeof...(Types);
             int argNecessary = std::max(lua_gettop(L2)-2, int(sizeof...(Opt)));
@@ -575,11 +559,7 @@ template<typename T1,typename ClassObj,typename ... Types> struct internal_regis
             std::tuple<Types ...> ArgumentList;
             if (sizeof...(Types) > 0)
                 lua_pop(L2, 1);
-          //  #if defined(__GNUC__) || defined(__GNUG__)
-           // readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1);
-           // #else
             readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,optionalArgs...);
-           // #endif // defined
             T1 rData = expanderClass<sizeof...(Types),ClassObj,T1>::expand(ArgumentList,L2,func);
             GenericLuaReturner<T1>::Ret(rData,L2);
             return 1;
@@ -660,7 +640,6 @@ template<typename ClassObj,typename ... Types> struct internal_register<void,Cla
 };
 
 
-
 template<typename T1,typename ... Types> void LambdaClassRegister(lua_State *L,std::string str,int stackPos,std::function<T1(Types ... args)> func){
     LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
         LuaManager::lastCalled = str;
@@ -706,6 +685,9 @@ template<typename ... Types> void LambdaClassRegister(lua_State *L,std::string s
     lua_pushcclosure(L, LuaCaller::BaseEmpty<1>,1);
     lua_setfield(L, stackPos,  str.c_str());
 }
+
+
+
 
 template<typename T1,typename ... Types> void LambdaRegister(lua_State *L,std::string str,std::function<T1(Types ... args)> func){
     LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
@@ -1056,6 +1038,42 @@ template<typename T1> struct ClassRegister{
         lua_pushcfunction(L, MasterGC::Destroy<T1>);
         lua_setfield(L, -2,  "destroy");
         lua_pop(L, 1);
+    };
+
+
+    static void RegisterInheritedClass(lua_State *L,std::string name,
+		 std::function<T1*(lua_State*)> makerF = std::function<T1*(lua_State*)>(),
+                                      LuaCFunctionLambda *gc_func = nullptr){
+        RegisterClassOutside(L,name,makerF,gc_func );
+
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetX"        ,&GameObject::GetX);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetX"        ,&GameObject::SetX);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"Is"          ,&GameObject::Is);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetMyRef"    ,&GameObject::GetMyRef);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetX"        ,&GameObject::SetX);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetY"        ,&GameObject::SetY);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetY"        ,&GameObject::GetY);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetX"        ,&GameObject::GetX);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetWidth"    ,&GameObject::SetWidth);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetWidth"    ,&GameObject::GetWidth);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetHeight"   ,&GameObject::SetHeight);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetHeight"   ,&GameObject::GetHeight);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetBox"      ,&GameObject::SetBox);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetBox"      ,&GameObject::GetBox);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetBox"      ,&GameObject::GetBox);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetSolid"    ,&GameObject::GetSolid);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetSolid"    ,&GameObject::SetSolid);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"Kill"        ,&GameObject::Kill);
+
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"hasPerspective"        ,&GameObject::hasPerspective);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"canForceRender"        ,&GameObject::canForceRender);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"IsHash"        ,&GameObject::IsHash);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetHash"        ,&GameObject::GetHash);
+
+
+
+
+
     };
 
     static void RegisterClassVirtual(lua_State *L,std::string name,

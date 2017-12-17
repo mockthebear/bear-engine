@@ -5,7 +5,8 @@
 #include "luacaller.hpp"
 #include "luaui.hpp"
 
-#define isthis(type,arg) if (type == arg) vaav = #arg;
+#define isthis(type,arg) if (type == arg) {vaav = #arg;}
+
 
 struct QuickDebug{
     static void DisplayCurrent(lua_State *L){
@@ -42,19 +43,16 @@ template<typename T1> struct MakeLuaObject{
             lua_pushnil(L);
             return 1;
         }
-
         bool isNil = false;
         lua_getglobal(L, "__REFS"); // insert
         lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
         lua_gettable(L, -2 );
         lua_remove(L, -2);
 
-
-
-
         if (lua_isnil(L,-1)){
             bear::out << "errrrr\n";
         }
+
         lua_pushnumber(L,(uint64_t)obj);
         lua_gettable(L, -2 );
         lua_remove(L, -2);
@@ -67,10 +65,6 @@ template<typename T1> struct MakeLuaObject{
         }else{
             return 1;
         }
-
-
-
-
 
         if (lua_istable(L,1) && forceOutside == false){
             if (isNil){
@@ -97,20 +91,18 @@ template<typename T1> struct MakeLuaObject{
             lua_setfield(L, 1, "__index");
             T1 **usr = static_cast<T1**>(lua_newuserdata(L, sizeof(T1)));
             *usr = obj;
-
             lua_getglobal(L, name.c_str());
             lua_setmetatable(L, -2);
             lua_setfield(L, -2, "__self");
 
             if (isNil){
-                bear::out << "Made reference, getting stuff 2\n";
                 lua_settable(L, -3 );
-                lua_pop(L,1);
-
+                lua_pop(L,2);
 
                 lua_getglobal(L, "__REFS"); // request to return
                 lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
                 lua_gettable(L, -2 );
+
                 lua_remove(L, -2);
                 lua_pushnumber(L,(uint64_t)obj);
                 lua_gettable(L, -2);
@@ -138,7 +130,6 @@ template<typename T1> struct MakeLuaObject{
             lua_pushvalue(L,1);
             lua_setmetatable(L, -2);
 
-
             lua_pushvalue(L,1);
             lua_setmetatable(L, -2);
             lua_pushvalue(L,1);
@@ -147,17 +138,12 @@ template<typename T1> struct MakeLuaObject{
             T1 **usr = static_cast<T1**>(lua_newuserdata(L, sizeof(T1)));
             *usr = obj;
 
-
             lua_getglobal(L, name.c_str());
             lua_setmetatable(L, -2);
             lua_setfield(L, -2, "__self");
 
-
             luaL_getmetatable(L, name.c_str());
             lua_setmetatable(L, -2);
-
-
-
 
             if (isNil){
                 lua_settable(L, -3 );

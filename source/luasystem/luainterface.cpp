@@ -539,7 +539,7 @@ void LuaInterface::RegisterClasses()
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","MoveX",&LuaObject::MoveX);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","MoveY",&LuaObject::MoveY);
 
-    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"LuaObject","hasPerspective",&GameObject::hasPerspective);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","hasPerspective",&LuaObject::hasPerspective);
 
     TypeObserver<LuaObject,bool>::RegisterMethod(LuaManager::L,"forceUpdate",&LuaObject::forceUpdate);
     TypeObserver<LuaObject,bool>::RegisterMethod(LuaManager::L,"forceRender",&LuaObject::forceRender);
@@ -576,7 +576,6 @@ void LuaInterface::RegisterClasses()
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetHeight",&GameObject::GetHeight);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetBox",&GameObject::SetBox);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetBox",&GameObject::GetBox);
-    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetBox",&GameObject::GetBox);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetSolid",&GameObject::GetSolid);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetSolid",&GameObject::SetSolid);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","Kill",&GameObject::Kill);
@@ -589,7 +588,7 @@ void LuaInterface::RegisterClasses()
     GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_console");
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_console","Print",std::function<void(std::string)>([](std::string str)
     {
-        bear::out << "[Lua]: "<< str << "\n";
+        bear::out << str << "\n";
     }));
 
 
@@ -601,6 +600,13 @@ void LuaInterface::RegisterClasses()
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_collision","IsColliding",std::function< bool(Rect,Rect)>([](Rect r1,Rect r2)
     {
         return Collision::IsColliding(r1,r2);
+    }));
+
+
+
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_collision","GetNearObjects",std::function< std::vector<GameObject*>(GameObject* thisObject,int poolId)>([](GameObject* thisObject,int poolId)
+    {
+        return Collision::GetNearObjects(thisObject,BearEngine->GetCurrentState().Pool,poolId);
     }));
 
 
