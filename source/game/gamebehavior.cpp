@@ -61,6 +61,7 @@ bool GameBehavior::Begin(){
     Game::startFlags |= BEAR_FLAG_START_CONSOLE;
     //Game::startFlags |= BEAR_FLAG_START_CONSOLEGRAPHICAL;
     Game::startFlags |= BEAR_FLAG_START_TTF;
+    Game::startFlags |= BEAR_FLAG_START_SOCKET;
     return true;
 }
 bool GameBehavior::OnLoad(){

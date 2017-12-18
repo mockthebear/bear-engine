@@ -4,7 +4,7 @@
 #include <string>
 #include <string.h>
 #ifdef _WIN32
-#include <winsock.h>
+#include <winsock2.h>
 typedef sockaddr_in SocketAddr;
 #else
 #include <sys/types.h>
@@ -117,7 +117,11 @@ typedef SocketMessage_<1024> SocketMessage;
 
 class SocketClient{
     public:
+        #ifdef _WIN32
+        SocketClient():m_SocketHandler(INVALID_SOCKET){};
+        #else
         SocketClient():m_SocketHandler(-1){};
+        #endif // _WIN32
         virtual bool Connect(std::string addr,uint16_t port) = 0;
 
         virtual bool Receive(SocketMessage *msg,char breakpad = '\n') = 0;
@@ -125,7 +129,11 @@ class SocketClient{
         virtual bool Send(SocketMessage *msg) = 0;
         virtual bool IsConnected(){return false;};
     protected:
+        #ifdef _WIN32
+        SOCKET m_SocketHandler;
+        #else
         int m_SocketHandler;
+        #endif // _WIN32
         SocketAddr m_serverAddr;
 
 };
@@ -141,6 +149,9 @@ class SocketHost{
         uint32_t clients;
 };
 
-
+class BaseSocket{
+    public:
+        static bool StartSocket();
+};
 
 #endif // __EMSCRIPTEN__

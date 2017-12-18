@@ -59,6 +59,7 @@ enum SFlags{
     BEAR_FLAG_START_CONSOLEGRAPHICAL    = 128,
     BEAR_FLAG_START_LUA                 = 256,
     BEAR_FLAG_START_THREADS             = 512,
+    BEAR_FLAG_START_SOCKET              = 1024,
     BEAR_FLAG_START_EVERYTHING          = 65536 - 1,
 };
 

@@ -91,6 +91,7 @@
 					<Add option="-lglew32" />
 					<Add option="-lglu32" />
 					<Add option="-pthread" />
+					<Add option="-lws2_32" />
 				</Linker>
 			</Target>
 			<Target title="Debug Unix">

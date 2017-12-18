@@ -42,6 +42,9 @@
 */
 //#define DISABLE_LUAINTERFACE
 
+
+
+//#define DISABLE_SOCKET
 /*
     Android things
 */

@@ -16,6 +16,7 @@
 #include "../performance/console.hpp"
 #include "../sound/soundsources.hpp"
 #include "../sound/soundloader.hpp"
+#include "../socket/socketdef.hpp"
 #include "timer.hpp"
 #include "../crashhandler/crashhandler.hpp"
 #include __BEHAVIOR_FOLDER__
@@ -103,6 +104,12 @@ void Game::init(const char *name){
                 Console::GetInstance().AddTextInfo("TTF is on!");
             }
         }
+        if (startFlags&BEAR_FLAG_START_SOCKET){
+            if (!BaseSocket::StartSocket()){
+                Console::GetInstance().AddTextInfo("Failed to create socket context");
+            }
+        }
+
         if (startFlags&BEAR_FLAG_START_SOUND){
             ConfigManager::GetInstance().SetSound(HasAudio);
         }
