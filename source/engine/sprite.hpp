@@ -467,6 +467,9 @@ class Sprite{
             OUTR = Red/255.0f;
             OUTB = Blue/255.0f;
             OUTG = Green/255.0f;
+            #ifndef RENDER_OPENGL
+            SDL_SetTextureColorMod((textureShred.get()),OUTR*255,OUTB*255,OUTG*255);
+            #endif // RENDER_OPENGL
         };
         /**
             *Changed the sprite alpha
@@ -476,6 +479,9 @@ class Sprite{
         */
         void SetAlpha(uint8_t alpha){
             m_alpha = alpha/255.0f;
+            #ifndef RENDER_OPENGL
+            SDL_SetTextureAlphaMod((textureShred.get()),alpha);
+            #endif // RENDER_OPENGL
         };
 
         uint8_t GetAlpha(){

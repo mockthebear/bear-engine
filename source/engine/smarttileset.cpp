@@ -104,10 +104,11 @@ TargetTexture *SmartTileset::GetTextureFromPosition(int layer,int x,int y){
     return textureMap[layer][tilePosition.y][tilePosition.x];
 }
 void SmartTileset::SetSprite(Sprite spr){
-    sp = spr;
-    sheetSizes.x = sp.GetWidth()/tileSize.x;
-    sheetSizes.y = sp.GetHeight()/tileSize.y;
-    if (!sp.IsLoaded()){
+    if (spr.IsLoaded()){
+        sp = spr;
+        sheetSizes.x = sp.GetWidth()/tileSize.x;
+        sheetSizes.y = sp.GetHeight()/tileSize.y;
+    }else{
         bear::out << "[SmartTileset]Sprite from the tile was not loaded.\n";
     }
 }
@@ -316,6 +317,7 @@ SmartTileset::~SmartTileset(){
     for (int l=0;l<Layers;l++){
         for (int y=0;y<framesOnMap.y;y++){
             for (int x=0;x<framesOnMap.x;x++){
+                textureMap[l][y][x]->FreeTexture();
                 delete (textureMap[l][y][x]);
             }
             delete []textureMap[l][y];

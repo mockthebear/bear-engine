@@ -114,10 +114,7 @@ class CustomFont{
             return Render(std::string(c),x,y,alpha);
         };
         Point Render(std::string str,int x,int y,int alpha=255);
-        Point RenderCentered(std::string c,PointInt p,int alpha=255){
-            Point sz = GetSizes(c);
-            return Render(c,p.x-sz.x/2.0f,p.y,alpha);
-        }
+        Point RenderCentered(std::string c,PointInt p,int alpha=255);
         Point Renderl(std::string c,PointInt p,int alpha=255){
             return Render(std::string(c),p.x,p.y,alpha);
         }

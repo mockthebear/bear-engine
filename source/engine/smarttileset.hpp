@@ -32,7 +32,7 @@ class SmartTileset{
             @param maxTextureSize Max texture size. If your video card only support 120x120 textures, set it here  (or leave -1,-1 to automatic detection). Then the big texture will be split
             in many textures with the size of 120x120.
         */
-        SmartTileset(PointInt tileSize,PointInt tilesetSize,int layers=1,PointInt maxTextureSize=PointInt(-1,-1));
+        explicit SmartTileset(PointInt tileSize,PointInt tilesetSize,int layers=1,PointInt maxTextureSize=PointInt(-1,-1));
         /**
             *This does delete all references. See the SmartTileset::operator=
         */

@@ -70,20 +70,25 @@ Point CustomFont::GetSizes(std::string str_){
     Point p;
     p.x = 0;
     p.y = 0;
-    int lineY=0;
     if (!loaded)
         return p;
 
+
+
     unsigned char *str = (unsigned char *)str_.c_str();
-    int x=0,y=0;
+    int x=0;
+    int y=0,lineY=0;
+
+
     for (unsigned int i=0;i<str_.size();i++){
         if (!Letters[str[i]].valid){
             x += 6;
         }else{
             Letter l = Letters[str[i]];
 
-            sp.SetClip(l.x,l.y,l.w,l.h);
+
             lineY = std::max(lineY,l.h);
+
             x += l.w + l.padx;
             y += l.pady;
             if (l.resetX){
@@ -95,6 +100,10 @@ Point CustomFont::GetSizes(std::string str_){
         p.y = std::max(std::max((int)p.y,y),lineY);
     }
     return p;
+}
+Point CustomFont::RenderCentered(std::string c,PointInt p,int alpha){
+    Point sz = GetSizes(c);
+    return Render(c,p.x-sz.x/2.0f,p.y,alpha);
 }
 
 Point CustomFont::Render(std::string str_,int x_,int y_,int alpha){

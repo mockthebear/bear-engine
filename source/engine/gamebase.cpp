@@ -340,6 +340,7 @@ void Game::Update(){
 void Game::Render(){
     if ( (startFlags&BEAR_FLAG_START_SCREEN) == 0)
         return;
+    GameBehavior::GetInstance().OnPreRender();
     stateStack.top()->Render();
     ScreenManager::GetInstance().Render();
     InputManager::GetInstance().Render();

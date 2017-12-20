@@ -24,6 +24,7 @@ class TargetTexture : public BearTexture{
     bool Bind();
     static bool UnBind();
     void Render(Point pos);
+    bool FreeTexture();
 
     GLuint vbo_fbo_vertices;
     GLuint renderedTexture;

@@ -62,11 +62,12 @@ bool ScreenManager::SetupOpenGL(){
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+	SDL_GL_SetSwapInterval(0);
 
     #ifdef RENDER_OPENGL
 
@@ -214,7 +215,18 @@ SDL_Renderer* ScreenManager::StartRenderer(){
 }
 
 void ScreenManager::RenderPresent(){
-    #ifdef RENDER_OPENGL
+    #ifndef RENDER_OPENGL
+
+    if (m_defaultScreen){
+        SetRenderTarget(m_defaultScreen);
+    }
+    int w = ConfigManager::GetInstance().GetScreenW();
+    int h = ConfigManager::GetInstance().GetScreenH();
+    RenderHelp::DrawSquareColorA(w,0,w/2.0,h + w/2.0,0,0,0,255);
+    RenderHelp::DrawSquareColorA(-w/2.0,0,w/2.0,h + w/2.0,0,0,0,255);
+    RenderHelp::DrawSquareColorA(-w/2.0,h,w*2,h/2.0,0,0,0,255);
+    SDL_RenderPresent(m_renderer);
+    #else
     if (postProcess){
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glLoadIdentity();
@@ -287,7 +299,22 @@ void ScreenManager::PreRender(){
 }
 
 void ScreenManager::Render(){
-
+    #ifndef RENDER_OPENGL
+    if (m_defaultScreen)
+        SetRenderTarget(nullptr);
+    if (m_defaultScreen){
+        //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
+        SDL_SetRenderDrawColor(m_renderer, 0,0,0, 0);
+        SDL_RenderClear( m_renderer );
+        SDL_Rect dimensions2;
+        dimensions2.x = m_offsetScreen.x;
+        dimensions2.y = m_offsetScreen.y;
+        dimensions2.h = m_originalScreen.y*m_scaleRatio.y;
+        dimensions2.w = m_originalScreen.x*m_scaleRatio.x;
+        SDL_RenderCopy(m_renderer,m_defaultScreen,nullptr,&dimensions2);
+        //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
+    }
+    #endif // RENDER_OPENGL
 }
 
 void ScreenManager::NotifyResized(){
