@@ -80,6 +80,10 @@
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
+					<Add option="-Wl,-Bstatic" />
+					<Add option="-lenet" />
+					<Add option="-pthread" />
+					<Add option="-Wl,-Bdynamic" />
 					<Add option="-llua51" />
 					<Add option="-lMinGW32" />
 					<Add option="-lSDL2main" />
@@ -90,7 +94,6 @@
 					<Add option="-lopengl32" />
 					<Add option="-lglew32" />
 					<Add option="-lglu32" />
-					<Add option="-pthread" />
 					<Add option="-lws2_32" />
 				</Linker>
 			</Target>
@@ -258,6 +261,8 @@
 		<Unit filename="settings/configmanager.cpp" />
 		<Unit filename="settings/configmanager.hpp" />
 		<Unit filename="settings/definitions.hpp" />
+		<Unit filename="socket/reliableudp.cpp" />
+		<Unit filename="socket/reliableudp.hpp" />
 		<Unit filename="socket/socket.cpp" />
 		<Unit filename="socket/socket.hpp" />
 		<Unit filename="socket/socketdef.cpp" />
