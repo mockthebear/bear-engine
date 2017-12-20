@@ -1,4 +1,5 @@
 #ifndef __EMSCRIPTEN__
+#ifndef DISABLE_SOCKET
 #include <stdio.h>
 #include <stdint.h>
 #include <string>
@@ -154,4 +155,5 @@ class BaseSocket{
         static bool StartSocket();
 };
 
+#endif // DISABLE_SOCKET
 #endif // __EMSCRIPTEN__

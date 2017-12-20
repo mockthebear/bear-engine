@@ -1,5 +1,6 @@
 #include "reliableudp.hpp"
 
+#ifndef DISABLE_SOCKET
 bool ReliableUdpClient::StartedEnet = false;
 
 bool ReliableUdpClient::IsConnected(){
@@ -28,3 +29,4 @@ bool ReliableUdpClient::Connect(std::string addr,uint16_t port){
 
     return client != nullptr;
 }
+#endif

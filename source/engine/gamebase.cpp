@@ -104,11 +104,13 @@ void Game::init(const char *name){
                 Console::GetInstance().AddTextInfo("TTF is on!");
             }
         }
+        #ifndef DISABLE_SOCKET
         if (startFlags&BEAR_FLAG_START_SOCKET){
             if (!BaseSocket::StartSocket()){
                 Console::GetInstance().AddTextInfo("Failed to create socket context");
             }
         }
+        #endif // DISABLE_SOCKET
 
         if (startFlags&BEAR_FLAG_START_SOUND){
             ConfigManager::GetInstance().SetSound(HasAudio);

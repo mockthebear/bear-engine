@@ -1,4 +1,5 @@
 #include "socketdef.hpp"
+#ifndef DISABLE_SOCKET
 #include <enet/enet.h>
 
 class ReliableUdpClient: public SocketClient{
@@ -17,3 +18,4 @@ class ReliableUdpClient: public SocketClient{
         ENetHost * client;
 };
 
+#endif

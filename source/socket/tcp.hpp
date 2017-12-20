@@ -1,5 +1,6 @@
 #include "socketdef.hpp"
 
+#ifndef DISABLE_SOCKET
 
 class TcpClient: public SocketClient{
     public:
@@ -13,3 +14,5 @@ class TcpClient: public SocketClient{
 
         bool Connect(std::string addr,uint16_t port);
 };
+
+#endif

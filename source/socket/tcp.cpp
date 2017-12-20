@@ -1,4 +1,5 @@
 #include "tcp.hpp"
+#ifndef DISABLE_SOCKET
 #include "../engine/bear.hpp"
 #include "../framework/utils.hpp"
 #include <stdio.h>
@@ -140,3 +141,5 @@ bool TcpClient::Receive(SocketMessage *msg,char breakpad){
     msg->SetSize(bytesRead);
     return true;
 }
+
+#endif
