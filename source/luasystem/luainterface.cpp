@@ -604,6 +604,25 @@ void LuaInterface::RegisterClasses()
 
 
 
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_collision","AdjustCollisionIndependent",
+    std::function<Point3(Point ,float ,GameObject* ,std::vector<GameObject*>,float )>(
+                     [](Point speed,float dt,GameObject* dis,std::vector<GameObject*> vec,float msize)
+    {
+        Point3 ret(speed.x,speed.y,0);
+        ret.z = Collision::AdjustCollisionIndependent(ret.x,ret.y,dt,dis,vec,msize);
+        return ret;
+    }),0.2f);
+
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_collision","AdjustCollision",
+    std::function<Point3(Point ,float ,GameObject* ,std::vector<GameObject*> )>(
+                     [](Point speed,float dt,GameObject* dis,std::vector<GameObject*> vec)
+    {
+        Point3 ret(speed.x,speed.y,0);
+        ret.z = Collision::AdjustCollision(ret.x,ret.y,dt,dis,vec);
+        return ret;
+    }));
+
+
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_collision","GetNearObjects",std::function< std::vector<GameObject*>(GameObject* thisObject,int poolId)>([](GameObject* thisObject,int poolId)
     {
         return Collision::GetNearObjects(thisObject,BearEngine->GetCurrentState().Pool,poolId);
