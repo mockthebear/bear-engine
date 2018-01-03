@@ -18,4 +18,15 @@ class ReliableUdpClient: public SocketClient{
         ENetHost * client;
 };
 
+
+class ReliableUdpServer: public SocketClient{
+    public:
+        ReliableUdpServer():SocketClient(),server(nullptr){};
+
+        bool Host(uint16_t port);
+    private:
+        static bool StartedEnet;
+        ENetHost * server;
+};
+
 #endif

@@ -240,6 +240,7 @@ int Sound::PlayOncePiched(const char *s,int ptch,bool global,int volume,Point3 p
 void Sound::Kill(){
     Stop();
     snd.destroy();
+
 }
 
 

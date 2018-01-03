@@ -2,7 +2,7 @@
 
 #ifndef DISABLE_SOCKET
 
-#endif // DISABLE_SOCKET
+
 #ifdef _WIN32
 #include <winsock2.h>
 #endif // _WIN32

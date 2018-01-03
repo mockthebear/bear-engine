@@ -262,10 +262,6 @@ void ScreenManager::RenderPresent(){
     }
     glFlush();
     SDL_GL_SwapWindow(m_window);
-    #else
-
-    SDL_GL_SwapWindow(m_window);
-    glFlush();
     #endif // RENDER_OPENGL
 }
 

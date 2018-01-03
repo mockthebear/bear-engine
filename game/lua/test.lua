@@ -60,13 +60,16 @@ end
 
 
 function MakeLuaStateWithObjects()
+
 	local state = LuaGameState()
 
 	state.timer = 255.0
 
 	state.begin = function(this)
-		--Should initiate the camera system. Everything outside screen is ignored
+		print("Hello state with objects")
 		g_camera.Initiate()
+		--Should initiate the camera system. Everything outside screen is ignored
+
 
 		local Obj = LuaObject(32,32)
 
@@ -110,7 +113,7 @@ function MakeLuaStateWithObjects()
 	end
 
 
-
+	print("Is set")
 	state:Setup()
 end
 
@@ -128,6 +131,7 @@ function MakeObject()
 	Obj:SetHeight(32 )
 
 	Obj.spr = Sprite("test:bear.png")
+
 	Obj.Update = function(self,dt)
 		local gObj = self:GetMyObj()
 		gObj:SetX( gObj:GetX() + self.speed * dt)
@@ -136,9 +140,10 @@ function MakeObject()
 			collectgarbage()
 		end
 	end
+
 	Obj.Render = function(self)
 		g_render.DrawFillSquare(self:GetBox(),math.random(0,255),math.random(0,255),0,255)
-		self.spr:Render(self:GetBox()) --Also works: {x = posX, y = posY}
+		self.spr:Render({x=80,y=80}) --Also works: {x = posX, y = posY}
 	end
 	return Obj
 end
@@ -194,11 +199,12 @@ function MakeLuaStateWithComplexObjects()
 
 		g_ui.AddWindow(w)
 		this.w = w;
+
 		MakeObject()
 	end
 
 	state.finish = function(this)
-		g_assets.EraseResource("test")
+		--g_assets.EraseResource("test")
 	end
 
 	state.resume = function(this)
