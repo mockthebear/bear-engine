@@ -20,6 +20,18 @@ function MakeLuaState()
 	state.timer = 255.0
 
 	state.begin = function(this)
+	    print("hi")
+		--g_test.showInt(123)
+		--g_test.showInt(g_test.Sum(120,3) * 10 + 4)
+
+		g_test.testOptional({1,2,3})
+		g_test.testOptional({1,2,3},1)
+		g_test.testOptional({1,2,3},1,2)
+		g_test.testOptional({1,2,3},1,2,3)
+
+
+
+
 		print("Hello state!")
 	end
 
@@ -139,11 +151,12 @@ function MakeObject()
 			self:Destroy()
 			collectgarbage()
 		end
+
 	end
 
 	Obj.Render = function(self)
 		g_render.DrawFillSquare(self:GetBox(),math.random(0,255),math.random(0,255),0,255)
-		self.spr:Render({x=80,y=80}) --Also works: {x = posX, y = posY}
+		self.spr:Render(self:GetBox(),0) --Also works: {x = posX, y = posY}
 	end
 	return Obj
 end

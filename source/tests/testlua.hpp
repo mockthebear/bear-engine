@@ -28,12 +28,28 @@ class Test_Lua: public State{
                 state by itself. But as we're post starting, the register
                 should be called right the way!
             */
-            LuaCaller::StartupState(LuaManager::L,this,nullptr);
 
+            GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_test");
+            GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_test","showInt",std::function<void(int)>([](int a){ bear::out << "Int is: " << a << "\n";}));
+            GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_test","Sum",std::function<int(int,int)>([](int a,int b){return a+ b;}));
+
+            GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_test","testOptional",
+            std::function<int(std::vector<int>,int,float,float )>([](std::vector<int>kek ,int a,float b,float c){
+                for (auto &it : kek){
+                    std::cout << "Table member: " << it << "\n";
+                }
+                std::cout << "Arguments:" << a << ", "<<b<<", "<<c<<"\n";
+                return 1;
+            }),13.37f,133.7f,13337);
+
+            LuaCaller::StartupState(LuaManager::L,this,nullptr);
             bear::out << "Load file lua/test.lua\n";
             LuaCaller::LoadFile(LuaManager::L,"lua/test.lua");
             LuaCaller::Pcall(LuaManager::L);
             bear::out << "Call onLoad\n";
+
+
+
             LuaCaller::CallGlobalField(LuaManager::L,"onLoad");
 
 
