@@ -33,6 +33,8 @@
 					<Add option="-lglew32" />
 					<Add option="-lglu32" />
 					<Add option="-pthread" />
+					<Add option="-lenet" />
+					<Add option="-lws2_32" />
 				</Linker>
 			</Target>
 			<Target title="Release Unix">
@@ -71,7 +73,6 @@
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
 				<Compiler>
-					<Add option="-O2" />
 					<Add option="-std=c++0x" />
 					<Add option="-pg" />
 					<Add option="-g" />
@@ -287,6 +288,7 @@
 		<Unit filename="tests/testshader.hpp" />
 		<Unit filename="tests/testshapes.hpp" />
 		<Unit filename="tests/testsocket.hpp" />
+		<Unit filename="tests/testsound.hpp" />
 		<Unit filename="tests/testsprite.hpp" />
 		<Unit filename="tests/testtargettexture.hpp" />
 		<Unit filename="tests/testtext.hpp" />
