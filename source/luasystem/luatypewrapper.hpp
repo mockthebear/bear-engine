@@ -851,11 +851,8 @@ template<class T>
             Console::GetInstance().AddText("[LuaBase][Warning]Argument %d is nil",lua_gettop(L));
         }else{
             if (!lua_istable(L,stackPos)){
-                Console::GetInstance().AddText("[LuaBase][Warning][%s]Argument %d is not a table",typeid(T).name(),lua_gettop(L));
+                Console::GetInstance().AddText("[LuaBase][Warning] Expected a table of [%s] Argument %d is not a table",typeid(T).name(),lua_gettop(L));
             }else{
-                std::string disName = typeid(T).name();
-                //bool typeFine = false;
-                std::string otherType = "?";
                 lua_pushnil(L);
                 while(lua_next(L, -2) != 0)
                 {

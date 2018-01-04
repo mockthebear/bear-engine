@@ -112,11 +112,33 @@ struct LuaTyper<std::string>{
     lua using GenericLuaGetter<Type>::Call or simply from defined optional values.
 */
 
+template<class T> class LuaTypeConverterThing{
+    public:
+
+    static T& Convert(T &thing){
+        return thing;
+    };
+    static T Convert(T thing){
+        return thing;
+    };
+
+    template<typename T2> static T& Convert(T2 &thing){
+        static T st;
+        bear::out << "[Warning] Converting arguments might lose precision or data: " <<typeid(T2).name() << " and "<<typeid(T).name()<<"\n";
+        st = (T)thing;
+        return st;
+    };
+};
+
+
 
 template<int N>
     struct readLuaValues {
-    template<typename Tuple> static void Read(Tuple& tuple,lua_State *L,int stackpos = -1,int offsetStack=-1) {
+    template<typename Tuple> static void Read(Tuple& tuple,lua_State *L,int stackpos = -1,int offsetStack=0) {
         typedef typename std::tuple_element<N-1, Tuple>::type ValueType;
+        #ifdef DEBUG_LUA_CALLS
+        bear::out << "Requesting arg " << N << " at 1\n";
+        #endif // DEBUG_LUA_CALLS
         ValueType v = GenericLuaGetter<ValueType>::Call(L,stackpos);
         std::get<N-1>(tuple) = v;
         readLuaValues<N-1>::Read(tuple,L,stackpos,offsetStack);
@@ -124,34 +146,51 @@ template<int N>
 
     template<typename Tuple,typename K,typename ... Opt> static void Read(Tuple& tuple,lua_State *L,int stackpos,int offsetStack,K& head, Opt& ... tail) {
         typedef typename std::tuple_element<N-1, Tuple>::type ValueType;
-        int argNecessary = lua_gettop(L)-offsetStack;
-        if (N > argNecessary){
-            ValueType v = LuaTyper<ValueType>::GetTypeIfSame(ValueType(),head);
-            std::get<N-1>(tuple) = v;
-            readLuaValues<N-1>::Read(tuple,L,stackpos,offsetStack, tail...);
-        }else{
+
+        int argCountLua = lua_gettop(L);
+        #ifdef DEBUG_LUA_CALLS
+        bear::out << "Requesting arg " << N << " ["<<argCountLua<<" : "<< offsetStack<<"] at 2 Expected: "<<typeid(ValueType).name() << "\n";
+        #endif // DEBUG_LUA_CALLS
+        if (N <= argCountLua){
+            #ifdef DEBUG_LUA_CALLS
+            bear::out << "call for lua\n";
+            #endif // DEBUG_LUA_CALLS
             ValueType v = GenericLuaGetter<ValueType>::Call(L,stackpos);
             std::get<N-1>(tuple) = v;
             readLuaValues<N-1>::Read(tuple,L,stackpos,offsetStack,head,tail...);
+        }else{
+            #ifdef DEBUG_LUA_CALLS
+            bear::out << "Returning head\n";
+            #endif // DEBUG_LUA_CALLS
+            ValueType v = LuaTyper<ValueType>::GetTypeIfSame(ValueType(),head);
+            std::get<N-1>(tuple) = v;
+            readLuaValues<N-1>::Read(tuple,L,stackpos,offsetStack, tail...);
         }
     }
 
      template<typename Tuple,typename K> static void Read(Tuple& tuple,lua_State *L,int stackpos,int offsetStack,K &headEnd) {
         typedef typename std::tuple_element<N-1, Tuple>::type ValueType;
-        int argNecessary = lua_gettop(L)-offsetStack;
-        if (N > argNecessary){
-            ValueType v = headEnd;
+
+        int argCountLua = lua_gettop(L);
+        #ifdef DEBUG_LUA_CALLS
+        bear::out << "Requesting arg " << N << " ["<<argCountLua<<"  : "<< offsetStack<<"] at 3 Expected: "<<typeid(ValueType).name() << "\n";
+        #endif // DEBUG_LUA_CALLS
+        if (N <= argCountLua){
+            #ifdef DEBUG_LUA_CALLS
+            bear::out << "call for lua\n";
+            #endif // DEBUG_LUA_CALLS
+            ValueType v = GenericLuaGetter<ValueType>::Call(L,stackpos);
             std::get<N-1>(tuple) = v;
             readLuaValues<N-1>::Read(tuple,L,stackpos,offsetStack);
         }else{
-            ValueType v = GenericLuaGetter<ValueType>::Call(L,stackpos);
-            //std::cout << "[2]Read arg from lua" << v << "\n";
+            #ifdef DEBUG_LUA_CALLS
+            bear::out << "Returning head\n";
+            #endif // DEBUG_LUA_CALLS
+            ValueType v = LuaTypeConverterThing<ValueType>::Convert(headEnd);
             std::get<N-1>(tuple) = v;
             readLuaValues<N-1>::Read(tuple,L,stackpos,offsetStack);
         }
     }
-
-
 };
 
 
@@ -160,10 +199,15 @@ template<int N>
 
 template<>
     struct readLuaValues<0> {
-        template<typename Tuple> static void Read(Tuple& tuple,lua_State *L,int stackpos=-1) { };
-        template<typename Tuple,typename K> static void Read(Tuple& tuple,lua_State *L,int stackpos, K k) { };
-        template<typename Tuple,typename K,typename ... Opt> static void Read(Tuple& tuple,lua_State *L,int stackpos,K k,Opt ... aux) { };
+        template<typename Tuple> static void Read(Tuple& tuple,lua_State *L,int stackpos=-1,int offsetStack=0) { };
+        template<typename Tuple,typename K> static void Read(Tuple& tuple,lua_State *L,int stackpos,int offsetStack, K k) { };
+        template<typename Tuple,typename K,typename ... Opt> static void Read(Tuple& tuple,lua_State *L,int stackpos,int offsetStack,K k,Opt ... aux) { };
 };
+
+
+
+
+
 
 
 template<typename Ret> struct finalCaller {
@@ -525,32 +569,7 @@ template<typename T1,typename ... Types> void FunctionRegister(lua_State *L,std:
 
 
 template<typename T1,typename ClassObj,typename ... Types> struct internal_register{
-     /*static void LambdaRegisterStack(lua_State *L,std::string str,int stackPos,T1 (ClassObj::*func)(Types ... args) ){
-        LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
-            LuaManager::lastCalled = str;
-            int argCount = sizeof...(Types);
-            int argNecessary = lua_gettop(L2)-2;
-            if (argCount < argNecessary){
-                Console::GetInstance().AddTextInfo(utils::format("[LUA][3]Too few arguments on function %s. Expected %d got %d",str,argCount,argNecessary));
-            }
-            if (argCount > argNecessary){
-                Console::GetInstance().AddTextInfo(utils::format("[LUA][3]Too much arguments on function %s. Expected %d got %d",str,argCount,argNecessary));
-            }
-            std::tuple<Types ...> ArgumentList;
-            if (sizeof...(Types) > 0)
-                lua_pop(L2, 1);
-            readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1);
-            T1 rData = expanderClass<sizeof...(Types),ClassObj,T1>::expand(ArgumentList,L2,func);
-            GenericLuaReturner<T1>::Ret(rData,L2);
-            return 1;
-        };
-        LuaCFunctionLambda** baseF = static_cast<LuaCFunctionLambda**>(lua_newuserdata(L, sizeof(LuaCFunctionLambda) ));
-        (*baseF) = new LuaCFunctionLambda(f);
-        LuaManager::AddReference((*baseF));
-        lua_pushcclosure(L, LuaCaller::Base<1>,1);
-        lua_setfield(L, stackPos,  str.c_str());
 
-    };*/
     template <typename ... Opt> static void LambdaRegisterStackOpt(lua_State *L,std::string str,int stackPos,T1 (ClassObj::*func)(Types ... args),Opt ... optionalArgs ){
         LuaCFunctionLambda f = [func,str,optionalArgs...](lua_State *L2) -> int {
             LuaManager::lastCalled = str;
@@ -566,7 +585,7 @@ template<typename T1,typename ClassObj,typename ... Types> struct internal_regis
             std::tuple<Types ...> ArgumentList;
             if (sizeof...(Types) > 0)
                 lua_pop(L2, 1);
-            readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,-1,optionalArgs...);
+            readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,int(sizeof...(Opt)),optionalArgs...);
             T1 rData = expanderClass<sizeof...(Types),ClassObj,T1>::expand(ArgumentList,L2,func);
             GenericLuaReturner<T1>::Ret(rData,L2);
             return 1;
@@ -581,32 +600,7 @@ template<typename T1,typename ClassObj,typename ... Types> struct internal_regis
 };
 
 template<typename ClassObj,typename ... Types> struct internal_register<void,ClassObj,Types...>{
-     /*static void LambdaRegisterStack(lua_State *L,std::string str,int stackPos,void (ClassObj::*func)(Types ... args) ){
-        LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
-            LuaManager::lastCalled = str;
-            int argCount = sizeof...(Types);
-            int argNecessary = lua_gettop(L2)-2;
-            if (argCount < argNecessary){
-                Console::GetInstance().AddTextInfo(utils::format("[LUA][3]Too few arguments on function %s. Expected %d got %d",str,argCount,argNecessary));
-            }
-            if (argCount > argNecessary){
-                Console::GetInstance().AddTextInfo(utils::format("[LUA][3]Too much arguments on function %s. Expected %d got %d",str,argCount,argNecessary));
-            }
-            std::tuple<Types ...> ArgumentList;
-            if (sizeof...(Types) > 0)
-                lua_pop(L2, 1);
-            readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1);
-            expanderClass<sizeof...(Types),ClassObj,void>::expand(ArgumentList,L2,func);
-            GenericLuaReturner<void>::Ret(0,L2);
-            return 1;
-        };
-        LuaCFunctionLambda** baseF = static_cast<LuaCFunctionLambda**>(lua_newuserdata(L, sizeof(LuaCFunctionLambda) ));
-        (*baseF) = new LuaCFunctionLambda(f);
-        LuaManager::AddReference((*baseF));
-        lua_pushcclosure(L, LuaCaller::Base<1>,1);
-        lua_setfield(L, stackPos,  str.c_str());
 
-    };*/
     template <typename ... Opt> static void LambdaRegisterStackOpt(lua_State *L,std::string str,int stackPos,void (ClassObj::*func)(Types ... args),Opt ... optionalArgs ){
         //#if defined(__GNUC__) || defined(__GNUG__)
         //LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
@@ -627,11 +621,8 @@ template<typename ClassObj,typename ... Types> struct internal_register<void,Cla
             if (sizeof...(Types) > 0)
                 lua_pop(L2, 1);
 
-            //#if defined(__GNUC__) || defined(__GNUG__)
-            //readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1);
-            //#else
-            readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,-1,optionalArgs...);
-            //#endif // defined
+            readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,int(sizeof...(Opt)),optionalArgs...);
+
             expanderClass<sizeof...(Types),ClassObj,void>::expand(ArgumentList,L2,func);
             GenericLuaReturner<void>::Ret(0,L2);
 
@@ -686,9 +677,10 @@ template<typename T1,typename ... Types,typename ... Opt> void LambdaClassRegist
 
         std::tuple<Types ...> ArgumentList;
 
-        readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,0,optionalArgs...);
+        readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,int(sizeof...(Opt)),optionalArgs...);
         T1 rData = expander<sizeof...(Types),T1>::expand(ArgumentList,L2,func);
         GenericLuaReturner<T1>::Ret(rData,L2);
+        Console::GetInstance().AddTextInfo("done");
         return 1;
     };
     LuaCFunctionLambda** baseF = static_cast<LuaCFunctionLambda**>(lua_newuserdata(L, sizeof(LuaCFunctionLambda) ));
@@ -709,7 +701,7 @@ template<typename ... Types> void LambdaClassRegister(lua_State *L,std::string s
             Console::GetInstance().AddTextInfo(utils::format("[LUA][5]Too much arguments on function %s. Expected %d got %d",str,argCount,lua_gettop(L2)-2));
         }
         std::tuple<Types ...> ArgumentList;
-        readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,-1);
+        readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,0);
         expander<sizeof...(Types),void>::expand(ArgumentList,L2,func);
         //GenericLuaReturner<T1>::Ret(rData,L2);
         return 0;
@@ -735,7 +727,7 @@ template<typename T1,typename ... Types> void LambdaRegister(lua_State *L,std::s
             Console::GetInstance().AddTextInfo(utils::format("[LUA][6]Too much arguments on function %s. Expected %d got %d",str,argCount,lua_gettop(L2)));
         }
         std::tuple<Types ...> ArgumentList;
-        readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,-1);
+        readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,0);
         T1 rData = expander<sizeof...(Types),T1>::expand(ArgumentList,L2,func);
         GenericLuaReturner<T1>::Ret(rData,L2);
         return 1;
@@ -755,7 +747,6 @@ class MasterGC{
         if (part){
             LuaReferenceCounter<T>::ReleaseReference(*part);
             (*part) = nullptr;
-            //delete part;
         }
         return 0;
     }
@@ -767,12 +758,7 @@ class MasterGC{
             LuaCaller::CallSelfField(LuaManager::L,(*part),"Close");
             LuaCaller::DeleteField(L,(*part));
             LuaReferenceCounter<T>::ReleaseReference(*part);
-            //(*part)->Kill();
-            /*
-                Erase reference
-            */
             (*part) = nullptr;
-            //delete part;
         }
         return 0;
     }
@@ -820,7 +806,6 @@ template<typename T1,typename ObjT> struct TypeObserver{
         std::string field = lua_tostring(L,-2);
         ObjT         data = GenericLuaGetter<ObjT>::Call(L,-1);
         std::map<std::string,ObjT T1::*> &fieldData = TypeObserver<T1,ObjT>::getAddr();
-        //std::map<std::string,std::string> &fieldName = TypeObserver<T1>::getAddrNames();
         T1 *self = LuaManager::GetSelf<T1>();
         if (!self){
             Console::GetInstance().AddTextInfo(utils::format("[LUA]Setting field %s where its userdata is nullptr.",field));
