@@ -34,11 +34,17 @@ class Test_Lua: public State{
             GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_test","Sum",std::function<int(int,int)>([](int a,int b){return a+ b;}));
 
             GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_test","testOptional",
+            std::function<int(int,float,float )>([](int a,float b,float c){
+                bear::out << "Arguments:" << a << ", "<<b<<", "<<c<<"\n";
+                return 1;
+            }),13.37f,133.7f,13337);
+
+            GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_test","testOptionalVec",
             std::function<int(std::vector<int>,int,float,float )>([](std::vector<int>kek ,int a,float b,float c){
                 for (auto &it : kek){
-                    std::cout << "Table member: " << it << "\n";
+                    bear::out << "Table member: " << it << "\n";
                 }
-                std::cout << "Arguments:" << a << ", "<<b<<", "<<c<<"\n";
+                bear::out << "Arguments:" << a << ", "<<b<<", "<<c<<"\n";
                 return 1;
             }),13.37f,133.7f,13337);
 

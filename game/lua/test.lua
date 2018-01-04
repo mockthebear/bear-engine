@@ -24,10 +24,16 @@ function MakeLuaState()
 		--g_test.showInt(123)
 		--g_test.showInt(g_test.Sum(120,3) * 10 + 4)
 
-		g_test.testOptional({1,2,3})
-		g_test.testOptional({1,2,3},1)
-		g_test.testOptional({1,2,3},1,2)
-		g_test.testOptional({1,2,3},1,2,3)
+
+		g_test.testOptional()
+		g_test.testOptional(1)
+		g_test.testOptional(1,2)
+		g_test.testOptional(1,2,3)
+
+		g_test.testOptionalVec({1,2,3})
+		g_test.testOptionalVec({1,2,3},1)
+		g_test.testOptionalVec({1,2,3},1,2)
+		g_test.testOptionalVec({1,2,3},1,2,3)
 
 
 
