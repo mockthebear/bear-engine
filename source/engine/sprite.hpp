@@ -18,7 +18,9 @@
 #ifdef RENDER_OPENGLES
     #define GL_GLEXT_PROTOTYPES 1
     #include GLES_LIB
-#elif RENDER_OPENGL
+#endif // RENDER_OPENGLES
+
+#ifdef RENDER_OPENGL
     #include GL_LIB
 #endif // RENDER_OPENGLES
 
@@ -160,6 +162,7 @@ class Sprite{
         */
 
 
+        Sprite(TexturePtr texture):Sprite(){};
         Sprite(TexturePtr texture,std::string name,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
         Sprite(TexturePtr texture,std::string name,std::string alias,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
 

@@ -49,6 +49,10 @@ class AssetMannager{
         template<typename ...Args> TexturePtr gen(bool forced,Sprite spr,std::string str,Args ...args){
             return makeTexture(forced,str,args...);
         }
+
+        template<typename ...Args> TexturePtr gen(bool forced,Sprite spr){
+            return makeTexture(forced);
+        }
         /**
             *Specialized template function gen.
             *Use AssetMannager::make<T> to create an texture
@@ -60,6 +64,10 @@ class AssetMannager{
         */
        template<typename ...Args> SoundPtr gen(bool forced,Sound snd,std::string str,Args ...args){
             return makeSound(forced,str,args...);
+        }
+
+        template<typename ...Args> SoundPtr gen(bool forced,Sound snd){
+            return makeSound(forced);
         }
         /**
             * Reload an given asset. This will affect all other instances using its reference.
@@ -119,6 +127,9 @@ class AssetMannager{
             return std::shared_ptr<T>(new T);
         }
 
+        TexturePtr makeTexture(bool forced){
+            return TexturePtr();
+        }
         TexturePtr makeTexture(bool forced,std::string str,int fcount,float ftime,int rep=1,TextureLoadMethod aliasignMethod = TextureLoadMethod());
 
 
@@ -131,6 +142,10 @@ class AssetMannager{
         TexturePtr makeTexture(bool forced,std::string fileName,ColorReplacer &r,TextureLoadMethod aliasignMethod= TextureLoadMethod());
         TexturePtr makeTexture(bool forced,std::string fileName,std::string alias,ColorReplacer &r,TextureLoadMethod aliasignMethod= TextureLoadMethod());
 
+
+        SoundPtr makeSound(bool forced){
+            return SoundPtr();
+        }
 
         SoundPtr makeSound(bool forced,std::string fileName);
         SoundPtr makeSound(bool forced,SDL_RWops* rw,std::string str);

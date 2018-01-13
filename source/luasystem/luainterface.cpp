@@ -352,12 +352,27 @@ void LuaInterface::RegisterClasses()
 
 
 
-    ClassRegister<Sound>::RegisterClassOutside(L,"Sound");
+
+
+    ClassRegister<Sound>::RegisterClassOutside(LuaManager::L,"Sound",[](lua_State* L)
+    {
+        std::string name;
+        if (lua_gettop(L) == 2)
+        {
+            name = GenericLuaGetter<std::string>::Call(L);
+            return LuaReferenceCounter<Sound>::makeReference(Game::GetCurrentState().Assets.make<Sound>(name.c_str()));
+        }else{
+            return new Sound();
+        }
+
+    });
+
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","Open",&Sound::Open);
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","SetVolume",&Sound::SetVolume);
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","Play",&Sound::Play,false);
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","SetRepeat",&Sound::SetRepeat);
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","Stop",&Sound::Stop);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","Kill",&Sound::Kill);
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","Pause",&Sound::Pause);
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","Resume",&Sound::Resume);
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","Toggle",&Sound::Toggle);
@@ -366,10 +381,13 @@ void LuaInterface::RegisterClasses()
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","IsOpen",&Sound::IsOpen);
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","IsPlaying",&Sound::IsPlaying);
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","IsPaused",&Sound::IsPaused);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","PrePlay",&Sound::PrePlay);
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","GetFileName",&Sound::GetFileName);
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","SetClassType",&Sound::SetClassType);
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","GetClassType",&Sound::GetClassType);
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","SetPitch",&Sound::SetPitch);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","FadeOut",&Sound::FadeOut,0.0f,1.0f);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","FadeIn",&Sound::FadeIn,128.0f,1.0f);
 
     //ClassRegister<Sound>::RegisterClassMethod(L,"Sound","Owo",&Sound::Owo,"owo",1212,5445);
 
@@ -448,9 +466,12 @@ void LuaInterface::RegisterClasses()
             Sprite *t = LuaReferenceCounter<Sprite>::makeReference(Game::GetCurrentState().Assets.make<Sprite>(name,r));
             return t;
         }
-        else
+        else if (lua_gettop(L) == 2)
         {
             name = GenericLuaGetter<std::string>::Call(L);
+        }else{
+
+            return new Sprite();
         }
         Sprite *t = LuaReferenceCounter<Sprite>::makeReference(Game::GetCurrentState().Assets.make<Sprite>(name));
         return t;
@@ -601,7 +622,6 @@ void LuaInterface::RegisterClasses()
     {
         return Collision::IsColliding(r1,r2);
     }));
-
 
 
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_collision","AdjustCollisionIndependent",

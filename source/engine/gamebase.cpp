@@ -16,7 +16,9 @@
 #include "../performance/console.hpp"
 #include "../sound/soundsources.hpp"
 #include "../sound/soundloader.hpp"
+#ifndef DISABLE_SOCKET
 #include "../socket/socketdef.hpp"
+#endif // DISABLE_SOCKET
 #include "timer.hpp"
 #include "../crashhandler/crashhandler.hpp"
 #include __BEHAVIOR_FOLDER__
@@ -283,6 +285,8 @@ void Game::Close(){
 
     if (startFlags&BEAR_FLAG_START_SOUND)
         if (HasAudio){
+
+            SoundWorker::Clear();
             Console::GetInstance().AddTextInfo("Closing audio");
 
             SoundPool::GetInstance().Close();
@@ -316,6 +320,9 @@ void Game::Update(){
     float dt = std::min(GetDeltaTime(),1.2f );
     if (startFlags&BEAR_FLAG_START_INPUT)
         InputManager::GetInstance().Update(dt);
+
+    if (startFlags&BEAR_FLAG_START_SOUND)
+        SoundWorker::Update(dt);
 
     GameBehavior::GetInstance().OnUpdate(dt);
 
