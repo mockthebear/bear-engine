@@ -48,13 +48,10 @@ bool Sound::SetMasterVolume(uint8_t vol,int classType_){
     return true;
 }
 
-Sound::Sound(){
-    working = ConfigManager::GetInstance().IsWorkingAudio();
-    volume = MAX_VOL_SIZE;
-    classType = 0;
-    pitch = 1.0;
-    sourceID = 0;
+Sound::~Sound(){
+
 }
+
 
 Sound::Sound(SoundPtr snda,const char *s):Sound(){
     snd = snda;
@@ -240,7 +237,6 @@ int Sound::PlayOncePiched(const char *s,int ptch,bool global,int volume,Point3 p
 void Sound::Kill(){
     Stop();
     snd.destroy();
-
 }
 
 
@@ -330,6 +326,18 @@ void Sound::SetRepeat(bool repeat){
     alSourcei(sourceID, AL_LOOPING, repeat);
     SoundLoader::ShowError("on loop");
 }
+
+void Sound::PrePlay(){
+    bufferId = snd.get()->buffer;
+    int lastBuffer;
+    alGetBufferi(sourceID, AL_BUFFER, &lastBuffer);
+    if (lastBuffer != bufferId)
+        alSourcei(sourceID, AL_BUFFER, bufferId);
+    SetPitch(pitch);
+    SetPosition(pos);
+    SetVolume(-1);
+}
+
 bool Sound::Play(bool repeat){
     if (!working)
         return false;
@@ -340,11 +348,8 @@ bool Sound::Play(bool repeat){
             bear::out << "Cant find any source\n";
             return false;
         }
-        alSourcei(sourceID, AL_BUFFER, snd.get()->buffer);
-        SetPitch(pitch);
+        PrePlay();
         SetRepeat(repeat);
-        SetPosition(pos);
-        SetVolume(-1);
         alSourcePlay(sourceID);
         SoundLoader::ShowError("on play");
         return true;
@@ -368,6 +373,7 @@ void Sound::SetPitch(float f){
         return;
     alSourcef(sourceID, AL_PITCH, pitch);
 }
+
 void Sound::Toggle(){
     if (IsPlaying()){
         Pause();
@@ -375,6 +381,36 @@ void Sound::Toggle(){
         Resume();
     }
 }
+
+
+bool Sound::FadeOut(float speed,float minVol){
+    bear::out << speed << ","<<minVol << "\n";
+    if (!IsPlaying()){
+        return false;
+    }
+    if (speed > 0){
+        speed = - speed;
+    }
+    minVol = MasterVolume[classType]*((float)minVol/MAX_VOL_SIZE);
+    float curSound = MasterVolume[classType]*((float)volume/MAX_VOL_SIZE);
+    SoundWorker::FaderList.emplace_back( SoundFaderInstance(curSound,sourceID,snd,minVol,speed));
+    return true;
+}
+
+bool Sound::FadeIn(float speed,float maxVol){
+    if (IsPlaying()){
+        return false;
+    }
+    SetVolume(0);
+    Play(false);
+    bear::out << maxVol << " set to " << MasterVolume[classType] << "\n";
+    maxVol = MasterVolume[classType]*((float)maxVol/MAX_VOL_SIZE);
+    bear::out << maxVol << " is now \n";
+    SoundWorker::FaderList.emplace_back( SoundFaderInstance(0.0f,sourceID,snd,maxVol,speed));
+    return true;
+}
+
+
 bool Sound::checkSource(){
     ALint buffid;
     if (sourceID == 0){
@@ -408,7 +444,7 @@ void Sound::Stop(){
     if (!working || !checkSource())
         return;
     alSourceStop(sourceID);
-        //Mix_HaltChannel(channel);
+    alSourcei(sourceID, AL_BUFFER, 0);
 }
 void Sound::Pause(){
     if (!working || !checkSource())

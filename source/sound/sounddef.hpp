@@ -3,6 +3,10 @@
 #include "../framework/chainptr.hpp"
 #include <AL/al.h>
 #include <AL/alc.h>
+#include <vector>
+#define MAX_VOL_TYPES 16
+#define MAX_VOL_SIZE 128.0f
+
 class BufferData{
     public:
     BufferData():buffer(0),format(0),freq(0){};
@@ -36,3 +40,25 @@ struct RIFF_Header {
   char format[4];
 };
 
+
+class SoundFaderInstance{
+    public:
+        SoundFaderInstance():volume(0.0f),max(0.0f),sourceID(0),snd(),increase(0.0f),dead(true){};
+        SoundFaderInstance(float baseVol,ALuint source,SoundPtr p,float maxm,float increasee):volume(baseVol),max(maxm),sourceID(source),snd(p),increase(increasee),dead(false){};
+        float volume;
+        float max;
+        ALuint sourceID;
+        SoundPtr snd;
+        float increase;
+        bool dead;
+};
+
+class SoundWorker{
+    public:
+        SoundWorker();
+        ~SoundWorker();
+        static void Clear();
+        static void Update(float dt);
+
+        static  std::vector<SoundFaderInstance> FaderList;
+};

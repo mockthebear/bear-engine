@@ -11,8 +11,7 @@
 #include <iostream>
 #include <AL/al.h>
 #include <AL/alc.h>
-#define MAX_VOL_TYPES 16
-#define MAX_VOL_SIZE 128.0f
+
 
 /**
     @brief Basic sound class
@@ -20,12 +19,17 @@
 static volatile float MasterVolume[MAX_VOL_TYPES] = {1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,
                                  1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
 
+
 class Sound{
     public:
-        Sound();
+        Sound():classType(0),volume(MAX_VOL_SIZE),pitch(1.0f),pos(0.0f,0.0f,0.0f),file(""),sourceID(0),bufferId(0){
+            working = ConfigManager::GetInstance().IsWorkingAudio();
+        };
+        ~Sound();
         Sound(char *s,int classType=0);
         Sound(const char *s,int classType=0);
         Sound(SoundPtr snd,const char *s);
+        Sound(SoundPtr snd):Sound(){};
         bool Open(std::string str);
         void SetVolume(int vol);
         bool Play (bool repeat=false);
@@ -34,6 +38,11 @@ class Sound{
         void Pause();
         void Resume();
         void Toggle();
+
+        void PrePlay();
+
+        bool FadeOut(float speed=1.0f,float minVol = 0.0f);
+        bool FadeIn(float speed=1.0f,float maxVol = MAX_VOL_SIZE);
 
         void SetPosition(float pos);
         float GetPosition();
@@ -78,6 +87,7 @@ class Sound{
 
         std::string file;
         ALuint sourceID;
+        ALuint bufferId;
         SoundPtr snd;
 
 };
