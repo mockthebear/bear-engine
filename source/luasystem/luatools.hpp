@@ -130,14 +130,12 @@ template<class T> class LuaTypeConverterThing{
     };
 };
 
-
-
 template<int N>
     struct readLuaValues {
     template<typename Tuple> static void Read(Tuple& tuple,lua_State *L,int stackpos = -1,int offsetStack=0) {
         typedef typename std::tuple_element<N-1, Tuple>::type ValueType;
         #ifdef DEBUG_LUA_CALLS
-        bear::out << "Requesting arg " << N << " at 1\n";
+        bear::out << "Requesting arg " << N << " ["<<(lua_gettop(L)-1)<<" : "<< offsetStack<<"]/"<<stackpos<<" at 1 Expected: "<<typeid(ValueType).name() << "\n";
         #endif // DEBUG_LUA_CALLS
         ValueType v = GenericLuaGetter<ValueType>::Call(L,stackpos);
         std::get<N-1>(tuple) = v;
@@ -147,7 +145,7 @@ template<int N>
     template<typename Tuple,typename K,typename ... Opt> static void Read(Tuple& tuple,lua_State *L,int stackpos,int offsetStack,K& head, Opt& ... tail) {
         typedef typename std::tuple_element<N-1, Tuple>::type ValueType;
 
-        int argCountLua = lua_gettop(L);
+        int argCountLua = lua_gettop(L)-offsetStack;
         #ifdef DEBUG_LUA_CALLS
         bear::out << "Requesting arg " << N << " ["<<argCountLua<<" : "<< offsetStack<<"] at 2 Expected: "<<typeid(ValueType).name() << "\n";
         #endif // DEBUG_LUA_CALLS
@@ -171,7 +169,7 @@ template<int N>
      template<typename Tuple,typename K> static void Read(Tuple& tuple,lua_State *L,int stackpos,int offsetStack,K &headEnd) {
         typedef typename std::tuple_element<N-1, Tuple>::type ValueType;
 
-        int argCountLua = lua_gettop(L);
+        int argCountLua = lua_gettop(L)-offsetStack;
         #ifdef DEBUG_LUA_CALLS
         bear::out << "Requesting arg " << N << " ["<<argCountLua<<"  : "<< offsetStack<<"] at 3 Expected: "<<typeid(ValueType).name() << "\n";
         #endif // DEBUG_LUA_CALLS
@@ -585,7 +583,7 @@ template<typename T1,typename ClassObj,typename ... Types> struct internal_regis
             std::tuple<Types ...> ArgumentList;
             if (sizeof...(Types) > 0)
                 lua_pop(L2, 1);
-            readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,int(sizeof...(Opt)),optionalArgs...);
+            readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,1,optionalArgs...);
             T1 rData = expanderClass<sizeof...(Types),ClassObj,T1>::expand(ArgumentList,L2,func);
             GenericLuaReturner<T1>::Ret(rData,L2);
             return 1;
@@ -621,7 +619,7 @@ template<typename ClassObj,typename ... Types> struct internal_register<void,Cla
             if (sizeof...(Types) > 0)
                 lua_pop(L2, 1);
 
-            readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,int(sizeof...(Opt)),optionalArgs...);
+            readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,0,optionalArgs...);
 
             expanderClass<sizeof...(Types),ClassObj,void>::expand(ArgumentList,L2,func);
             GenericLuaReturner<void>::Ret(0,L2);
@@ -677,10 +675,9 @@ template<typename T1,typename ... Types,typename ... Opt> void LambdaClassRegist
 
         std::tuple<Types ...> ArgumentList;
 
-        readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,int(sizeof...(Opt)),optionalArgs...);
+        readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,0,optionalArgs...);
         T1 rData = expander<sizeof...(Types),T1>::expand(ArgumentList,L2,func);
         GenericLuaReturner<T1>::Ret(rData,L2);
-        Console::GetInstance().AddTextInfo("done");
         return 1;
     };
     LuaCFunctionLambda** baseF = static_cast<LuaCFunctionLambda**>(lua_newuserdata(L, sizeof(LuaCFunctionLambda) ));
