@@ -413,18 +413,20 @@ void ScreenManager::SetScreenName(std::string name){
 void ScreenManager::Update(float dt){
     if (shaking){
         ShakingDuration -= dt;
-        if (ShakingDuration <= 0){
-            shaking = false;
-            shake = Point(0,0);
-            savedShake = Point(0,0);
-        }
         ShakingTick -= dt;
         if (ShakingTick <= 0){
             ShakingTick = ShakingTick_original;
             shake.x = (int)(GetScaleRatioW()*savedShake.x) - rand()%(int)(std::max(savedShake.x*2*GetScaleRatioW(),2.0));
             shake.y = (int)(GetScaleRatioH()*savedShake.y) - rand()%(int)(std::max(savedShake.y*2*GetScaleRatioH(),2.0));
         }
+        if (ShakingDuration <= 0){
+            shaking = false;
+            shake = Point(0,0);
+            savedShake = Point(0,0);
+        }
 
+    }else{
+        shake = Point(0,0);
     }
     m_frames++;
     m_frameDelay -= dt;
