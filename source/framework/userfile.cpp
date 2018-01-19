@@ -36,7 +36,7 @@ std::string UserFile::GetFilePath(){
 
 uint32_t UserFile::Write8(char c){
     if (fptr){
-        fputc(c,fptr);
+        ufputc(c);
         writePos++;
         return writePos;
     }
@@ -44,7 +44,7 @@ uint32_t UserFile::Write8(char c){
 }
 uint32_t UserFile::WriteU8(uint8_t c){
     if (fptr){
-        fputc(c,fptr);
+        ufputc(c);
         writePos++;
         return writePos;
     }
@@ -52,31 +52,31 @@ uint32_t UserFile::WriteU8(uint8_t c){
 }
 uint32_t UserFile::WriteU16(uint16_t c){
     if (fptr){
-        fputc(c&255,fptr);
-        fputc((c >> 8)&255,fptr);
+        ufputc(c&255);
+        ufputc((c >> 8)&255);
     }
     return 0;
 }
 uint32_t UserFile::WriteU32(uint32_t c){
     if (fptr){
-        fputc(c&255,fptr);
-        fputc((c >> 8)&255,fptr);
-        fputc((c >> 16)&255,fptr);
-        fputc((c >> 24)&255,fptr);
+        ufputc(c&255);
+        ufputc((c >> 8)&255);
+        ufputc((c >> 16)&255);
+        ufputc((c >> 24)&255);
     }
     return 0;
 }
 
 uint32_t UserFile::WriteU64(uint64_t c){
     if (fptr){
-        fputc(c&255,fptr);
-        fputc((c >> 8)&255,fptr);
-        fputc((c >> 16)&255,fptr);
-        fputc((c >> 24)&255,fptr);
-        fputc((c >> 32)&255,fptr);
-        fputc((c >> 40)&255,fptr);
-        fputc((c >> 48)&255,fptr);
-        fputc((c >> 56)&255,fptr);
+        ufputc(c&255);
+        ufputc((c >> 8)&255);
+        ufputc((c >> 16)&255);
+        ufputc((c >> 24)&255);
+        ufputc((c >> 32)&255);
+        ufputc((c >> 40)&255);
+        ufputc((c >> 48)&255);
+        ufputc((c >> 56)&255);
     }
     return 0;
 }

@@ -41,7 +41,7 @@ class UserFile{
             return *this;
         }
     private:
-        void fputc(char c,SDL_RWops * fptr2){
+        void ufputc(char c){
             const char c2 = c;;
             SDL_RWwrite(fptr,&c2,1,1);
         };
