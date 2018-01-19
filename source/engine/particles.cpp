@@ -199,6 +199,8 @@ void Particle::Update(float dt){
             sp.ResetAnimation();
             repeat--;
             currentFrame = 0;
+        }else{
+            currentFrame = Frame;
         }
     }
     if (IsDead() && txt.IsWorking()){
@@ -207,7 +209,9 @@ void Particle::Update(float dt){
 }
 
 void Particle::Render(){
-
+    if (IsDead()){
+        return;
+    }
     if(HasSprite){
         sp.SetAlpha(Alpha);
         sp.SetScale(Point(Scale,Scale));
