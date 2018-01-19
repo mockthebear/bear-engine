@@ -104,7 +104,17 @@ struct LuaTyper<std::string>{
     static std::string GetTypeIfSame(std::string aux,const char*& karg){
         return std::string(karg);
     };
+    static std::string GetTypeIfSame(std::string aux,TextCenterStyle karg){
+        return std::string("?");
+    };
 };
+/*template<>
+struct LuaTyper<TextCenterStyle>{
+    static TextCenterStyle GetTypeIfSame(TextCenterStyle aux,const char*& karg){
+        return TEXT_CENTER_BOTH;
+    };
+};*/
+
 
 
 /**
@@ -125,7 +135,9 @@ template<class T> class LuaTypeConverterThing{
     template<typename T2> static T& Convert(T2 &thing){
         static T st;
         bear::out << "[Warning] Converting arguments might lose precision or data: " <<typeid(T2).name() << " and "<<typeid(T).name()<<"\n";
-        st = (T)thing;
+        T2 *aux = &thing;
+
+        st = *((T*)(aux));
         return st;
     };
 };
@@ -609,17 +621,17 @@ template<typename ClassObj,typename ... Types> struct internal_register<void,Cla
             int argCount = sizeof...(Types);
             int argNecessary = std::max(lua_gettop(L2)-2, int(sizeof...(Opt)));
             if (argCount < argNecessary){
-                Console::GetInstance().AddTextInfo(utils::format("[LUA][1]Too much arguments on function %s. Expected %d got %d",str,argCount,argNecessary));
+                Console::GetInstance().AddTextInfo(utils::format("[LUA][1.1]Too much arguments on function %s. Expected %d got %d",str,argCount,argNecessary));
             }
             if (argCount > argNecessary){
                 if (argCount > lua_gettop(L2)-2 + int(sizeof...(Opt)) )
-                    Console::GetInstance().AddTextInfo(utils::format("[LUA][1]Too few arguments on function %s. Expected %d got %d and opt %d",str,argCount,argNecessary,int(sizeof...(Opt))));
+                    Console::GetInstance().AddTextInfo(utils::format("[LUA][1.1]Too few arguments on function %s. Expected %d got %d and opt %d",str,argCount,argNecessary,int(sizeof...(Opt))));
             }
             std::tuple<Types ...> ArgumentList;
             if (sizeof...(Types) > 0)
                 lua_pop(L2, 1);
 
-            readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,0,optionalArgs...);
+            readLuaValues<sizeof...(Types)>::Read(ArgumentList,L2,-1,1,optionalArgs...);
 
             expanderClass<sizeof...(Types),ClassObj,void>::expand(ArgumentList,L2,func);
             GenericLuaReturner<void>::Ret(0,L2);
@@ -1071,9 +1083,13 @@ template<typename T1> struct ClassRegister{
 
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"hasPerspective"        ,&GameObject::hasPerspective);
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"canForceRender"        ,&GameObject::canForceRender);
-        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"IsHash"        ,&GameObject::IsHash);
-        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetHash"        ,&GameObject::GetHash);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"canForceUpdate"        ,&GameObject::canForceUpdate);
 
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"NotifyDamage"        ,&GameObject::NotifyDamage);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"NotifyCollision"        ,&GameObject::NotifyCollision);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"Render"        ,&GameObject::Render);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"Update"        ,&GameObject::Update);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"IsDead"        ,&GameObject::IsDead);
 
 
 

@@ -2,47 +2,54 @@
 
 
 function choose(...)
-	local arg = { n = select("#", ...); ... }
-	if #arg.n == 0 then
+	local arg = {...}
+	if #arg == 0 then
 		return nil
 	end
-	return arg[math.random(1,arg.n)]
+	return arg[math.random(1,#arg)]
 end
 
 
-
-
-
-luaPrint = print
-
-_G.print = function(...)
-	local args = { n = select("#", ...); ... }
-	if args.n == 0 then
-		g_console.Print("<empty>")
-	end
-	local str = ""
-	for i = 1, args.n do
-		str = str .. tostring(args[i])..'\t ,'
-	end
-	if #args > 0 and str:len() > 3 then
-		str = str:sub(1,str:len()-3)
-	end
-	g_console.Print(str)
+function getDistance(p1,p2)
+	return math.sqrt( (p1.x-p2.x)^2 + (p1.y-p2.y)^2 )
 end
 
+function getCenter(p1)
+	return {x = p1.x + p1.w/2,y = p1.y + p1.h/2}
+end
 
-function IsColliding(a,b)
-	if( a.y + (a.h or 1) < b.y ) then
-		return false;
-    end
-	if( a.y > b.y + (b.h or 1) ) then
-		return false;
-    end
-	if( (a.x + (a.w or 1)) < b.x ) then
-		return false;
-    end
-	if( a.x >  b.x + (b.w or 1)) then
-		return false;
+function isColliding(obj1,obj2)
+	local box1 = obj1
+	local box2 = obj2
+	if not obj1.x and obj1.id then
+		box1 = obj1:GetBox()
 	end
-	return true;
+	if not obj2.x and obj2.id  then
+		box2 = obj2:GetBox()
+	end
+	if box1.x < box2.x + box2.w then
+		return true
+	end
+	if box1.y < box2.y + box2.h then
+		return true
+	end
+
+	if box2.x < box1.x + box1.w then
+		return true
+	end
+
+	if box2.y < box1.y + box1.h then
+		return true
+	end
+
+	return false
+end
+
+function hasFile(path)
+	local f = io.open(path,'r')
+	if f then
+		f:close()
+		return true
+	end
+	return false
 end

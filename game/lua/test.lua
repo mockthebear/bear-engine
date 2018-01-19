@@ -19,7 +19,7 @@ function MakeLuaState()
 
 	state.timer = 255.0
 
-	state.begin = function(this)
+	state.OnBegin = function(this)
 	    print("hi")
 		--g_test.showInt(123)
 		--g_test.showInt(g_test.Sum(120,3) * 10 + 4)
@@ -41,19 +41,19 @@ function MakeLuaState()
 		print("Hello state!")
 	end
 
-	state.finish = function(this)
+	state.OnFinish = function(this)
 		print("bye state")
 	end
 
-	state.resume = function(this)
+	state.OnResume = function(this)
 
 	end
 
-	state.pause = function(this)
+	state.OnPause = function(this)
 
 	end
 
-	state.update = function(this,dt)
+	state.OnUpdate = function(this,dt)
 		this.timer = this.timer - 10 * dt
 		if this.timer <= 0 or g_input.IsAnyKeyPressed() then
 			this.data.canClose = true
@@ -61,7 +61,7 @@ function MakeLuaState()
 		end
 	end
 
-	state.render = function(this)
+	state.OnRender = function(this)
 		g_render.DrawFillSquare({x=0,y=0,w=640,h=480},state.timer,0,0,255)
 
 	end
@@ -83,7 +83,7 @@ function MakeLuaStateWithObjects()
 
 	state.timer = 255.0
 
-	state.begin = function(this)
+	state.OnBegin = function(this)
 		print("Hello state with objects")
 		g_camera.Initiate()
 		--Should initiate the camera system. Everything outside screen is ignored
@@ -105,19 +105,19 @@ function MakeLuaStateWithObjects()
 
 	end
 
-	state.finish = function(this)
+	state.OnFinish = function(this)
 
 	end
 
-	state.resume = function(this)
+	state.OnResume = function(this)
 
 	end
 
-	state.pause = function(this)
+	state.OnPause = function(this)
 
 	end
 
-	state.update = function(this,dt)
+	state.OnUpdate = function(this,dt)
 		this.timer = this.timer - 10 * dt
 		if this.timer <= 0 or g_input.IsAnyKeyPressed() then
 			this.data.canClose = true
@@ -125,7 +125,7 @@ function MakeLuaStateWithObjects()
 		end
 	end
 
-	state.render = function(this)
+	state.OnRender = function(this)
 		g_render.DrawFillSquare({x=0,y=0,w=640,h=480},0,state.timer,0,255)
 
 	end
@@ -150,7 +150,7 @@ function MakeObject()
 
 	Obj.spr = Sprite("test:bear.png")
 
-	Obj.Update = function(self,dt)
+	Obj.OnUpdate = function(self,dt)
 		local gObj = self:GetMyObj()
 		gObj:SetX( gObj:GetX() + self.speed * dt)
 		if self:GetX() >= 400 then
@@ -160,7 +160,7 @@ function MakeObject()
 
 	end
 
-	Obj.Render = function(self)
+	Obj.OnRender = function(self)
 		g_render.DrawFillSquare(self:GetBox(),math.random(0,255),math.random(0,255),0,255)
 		self.spr:Render(self:GetBox(),0) --Also works: {x = posX, y = posY}
 	end
@@ -181,7 +181,7 @@ function MakeLuaStateWithComplexObjects()
 
 
 
-	state.begin = function(this)
+	state.OnBegin = function(this)
 		--Should initiate the camera system. Everything outside screen is ignored
 		g_camera.Initiate()
 
@@ -222,19 +222,19 @@ function MakeLuaStateWithComplexObjects()
 		MakeObject()
 	end
 
-	state.finish = function(this)
+	state.OnFinish = function(this)
 		--g_assets.EraseResource("test")
 	end
 
-	state.resume = function(this)
+	state.OnResume = function(this)
 
 	end
 
-	state.pause = function(this)
+	state.OnPause = function(this)
 
 	end
 
-	state.update = function(this,dt)
+	state.OnUpdate = function(this,dt)
 		this.timer = this.timer - dt
 		if this.timer <= 0 then
 			this.data.canClose = true
@@ -242,7 +242,7 @@ function MakeLuaStateWithComplexObjects()
 		this.text:SetText(tostring(this.timer))
 	end
 
-	state.render = function(this)
+	state.OnRender = function(this)
 		g_render.DrawFillSquare({x=0,y=0,w=640,h=480},0,0,state.timer,255)
 
 		this.text:Render({x=32,y=200})

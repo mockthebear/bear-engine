@@ -33,7 +33,7 @@ void LuaUi::Input(){
 void LuaUi::Render(Point where){
     if (GetHidden())
         return;
-    LuaCaller::CallSelfField(LuaManager::L,this,"Render",where);
+    LuaCaller::CallSelfField(LuaManager::L,this,"OnRender",where);
     UIBase::Render(where);
 
 }
@@ -41,7 +41,7 @@ void LuaUi::Update(float dt){
     if (GetHidden())
         return;
     UIBase::Update(dt);
-    LuaCaller::CallSelfField(LuaManager::L,this,"Update",dt);
+    LuaCaller::CallSelfField(LuaManager::L,this,"OnUpdate",dt);
 }
 
 void LuaUi::ClearChildrens(){

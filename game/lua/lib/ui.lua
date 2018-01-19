@@ -143,7 +143,7 @@ function widgets.Window(data)
 	ui:SetTextObj(tex)
 	ui.texSize = tex:GetHeight()
 
-	ui.Update = function(this,dt)
+	ui.OnUpdate = function(this,dt)
 		if not this.interact then
 			if this.canMove then
 				if this.dragging then
@@ -153,8 +153,8 @@ function widgets.Window(data)
 				end
 			end
 			this.pressed = false
-			if this.update then
-				this.update(this,dt)
+			if this.OnUpdate then
+				this.OnUpdate(this,dt)
 			end
 		else
 			if g_input.IsMouseReleased(1) then
@@ -179,7 +179,7 @@ function widgets.Window(data)
 	end
 
 
-	ui.Render = function(this)
+	ui.OnRender = function(this)
 		g_render.DrawFillSquare({x=this:GetScreenX(),y=this:GetScreenY(),w=this:GetWidth(),h=this:GetHeight()},
 		this.bgcolor.r,this.bgcolor.g,this.bgcolor.b,this.bgcolor.a)
 		g_render.DrawOutlineSquare({x=this:GetScreenX(),y=this:GetScreenY(),w=this:GetWidth(),h=this:GetHeight()},
@@ -209,7 +209,7 @@ function widgets.SpriteLabel(data,spr)
 	ui:SetWidth(spr:GetFrameWidth())
 	ui:SetHeight(spr:GetFrameHeight())
 
-	ui.Update = function(this)
+	ui.OnUpdate = function(this)
 		widgets.ProcessAlignment(this)
 		local mousePos = g_input.GetMouse()
 		local MyRect = {x=this:GetScreenX()-1,y=this:GetScreenY()-1,w=this:GetWidth()+2,h=this:GetHeight()+2}
@@ -220,7 +220,7 @@ function widgets.SpriteLabel(data,spr)
 		end
 	end
 
-	ui.Render = function(this)
+	ui.OnRender = function(this)
 		this.spr:Render({x=this:GetScreenX(),y=this:GetScreenY()},0)
 		local MyRect = {x=this:GetScreenX()-1,y=this:GetScreenY()-1,w=this:GetWidth()+2,h=this:GetHeight()+2}
 		g_render.DrawOutlineSquare(MyRect, this.bordercolor.r,this.bordercolor.g,this.bordercolor.b,this.bordercolor.a)
@@ -301,11 +301,11 @@ function widgets.Label(data)
 		this:SetHeight(ui.maxHeight)
 	end
 
-	ui.Update = function(this)
+	ui.OnUpdate = function(this)
 		widgets.ProcessAlignment(this)
 	end
 
-	ui.Render = function(this)
+	ui.OnRender = function(this)
 		this.maxHeight = 0
 		for i,b in pairs(this.texts) do
 
@@ -348,7 +348,7 @@ function widgets.Checkbox(data)
 	ui:SetX(ui.pos.x)
 	ui:SetY(ui.pos.y)
 
-	ui.Render = function(this)
+	ui.OnRender = function(this)
 
 		if this.state == 1 then
 			this.spr:SetClip(0,0,16,16)
@@ -362,7 +362,7 @@ function widgets.Checkbox(data)
 			this.tex:Render({x=this:GetScreenX()+17,y=this:GetScreenY()})
 		end
 	end
-	ui.Update = function(this)
+	ui.OnUpdate = function(this)
 		widgets.ProcessAlignment(this)
 	end
 
@@ -426,7 +426,7 @@ function widgets.Button(data)
 	ui.SetEnable = function(this,en)
 		this.enabled = en
 	end
-	ui.Render = function(this)
+	ui.OnRender = function(this)
 
 
 		local mousePos = g_input.GetMouse()
@@ -445,7 +445,7 @@ function widgets.Button(data)
 
 	end
 
-	ui.Update = function(this,dt)
+	ui.OnUpdate = function(this,dt)
 		widgets.ProcessAlignment(this)
 		local mousePos = g_input.GetMouse()
 		local MyRect = {x=this:GetScreenX()-1,y=this:GetScreenY()-1,w=this:GetWidth()+2,h=this:GetHeight()+2}

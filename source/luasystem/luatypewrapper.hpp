@@ -7,6 +7,35 @@
 
 #define isthis(type,arg) if (type == arg) {vaav = #arg;}
 
+#define REGISTER_ENUM(name) template<> struct GenericLuaReturner<name>{\
+     static void Ret(name vr,lua_State *L,bool forceTable = false){\
+         lua_pushnumber(L,(int)vr);\
+    };\
+};\
+\
+template<>\
+    struct GenericLuaGetter<name> {\
+     static name Call(lua_State *L,int stackPos = -1,bool pop=true){\
+        name n = (name)0;\
+        if (lua_isnil(L,stackPos)){\
+            QuickDebug::DisplayCurrent(L);\
+            Console::GetInstance().AddText("[LuaBase][Warning]Argument %d is nil",lua_gettop(L));\
+        }\
+        n = (name)lua_tonumber(L,stackPos);\
+        if (pop)\
+            lua_pop(L,1);\
+        return n;\
+    };\
+    static name Empty;\
+};\
+\
+template<>\
+    struct GenericLuaType<name>{\
+        static bool Is(lua_State *L,int stack=-1){\
+            return lua_isnumber(L,-1);\
+        };\
+}
+
 
 struct QuickDebug{
     static void DisplayCurrent(lua_State *L){
@@ -291,6 +320,10 @@ template<>
             return lua_isnumber(L,-1);
         };
 };
+
+REGISTER_ENUM(SDL_RendererFlip);
+REGISTER_ENUM(TextCenterStyle);
+
 
 /*
     uint8

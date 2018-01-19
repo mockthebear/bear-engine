@@ -25,7 +25,7 @@ void LuaGameState::Setup(){
     other = uint64_t(this) ;
 }
 void LuaGameState::Update(float dt){
-   LuaCaller::CallOtherField(LuaManager::L,other,this,"update",dt);
+   LuaCaller::CallOtherField(LuaManager::L,other,this,"OnUpdate",dt);
    requestDelete = canClose;
 
    UpdateInstances(dt);
@@ -35,23 +35,23 @@ void LuaGameState::Update(float dt){
 }
 void LuaGameState::Render(){
 
-    LuaCaller::CallOtherField(LuaManager::L,other,this,"render");
+    LuaCaller::CallOtherField(LuaManager::L,other,this,"OnRender");
     RenderInstances();
 
     RenderWindowses();
 }
 void LuaGameState::Begin(){
    Pool.Register<LuaObject>(1500);
-   LuaCaller::CallOtherField(LuaManager::L,other,this,"begin");
+   LuaCaller::CallOtherField(LuaManager::L,other,this,"OnBegin");
 }
 void LuaGameState::End(){
-    LuaCaller::CallOtherField(LuaManager::L,other,this,"finish");
+    LuaCaller::CallOtherField(LuaManager::L,other,this,"OnFinish");
 }
 void LuaGameState::Resume(GenericState *){
-    LuaCaller::CallOtherField(LuaManager::L,other,this,"resume");
+    LuaCaller::CallOtherField(LuaManager::L,other,this,"OnResume");
 }
 void LuaGameState::Pause(GenericState *){
-    LuaCaller::CallOtherField(LuaManager::L,other,this,"pause");
+    LuaCaller::CallOtherField(LuaManager::L,other,this,"OnPause");
 }
 
 #endif

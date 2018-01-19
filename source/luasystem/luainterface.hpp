@@ -99,9 +99,21 @@ class LuaInterface{
         static int AddEvent(lua_State *L);
 
     private:
+        void RegisterTimerEvents();
+        void RegisterSound();
+        void RegisterFonts();
+        void RegisterObjects();
+        void RegisterCollision();
+        void RegisterCamera();
+        void RegisterAssets();
         void RegisterClasses();
         void RegisterGameObjectClass();
         void RegisterParticleClass();
+
+        void RegisterSprite();
+        void RegisterInput();
+        void RegisterUI();
+        void RegisterScreenRender();
 
 };
 

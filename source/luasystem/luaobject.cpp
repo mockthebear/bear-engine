@@ -37,28 +37,28 @@ void LuaObject::Destroy(){
 }
 
 void LuaObject::Update(float dt){
-    LuaCaller::CallSelfField(LuaManager::L,this,"Update",dt);
+    LuaCaller::CallSelfField(LuaManager::L,this,"OnUpdate",dt);
 }
 void LuaObject::Render(){
-    LuaCaller::CallSelfField(LuaManager::L,this,"Render");
+    LuaCaller::CallSelfField(LuaManager::L,this,"OnRender");
 }
 
 
 bool LuaObject::Is(int is){
-    return IsHash(is) || LuaCaller::CallSelfField(LuaManager::L,this,"Is",is);
+    return IsHash(is) || LuaCaller::CallSelfField(LuaManager::L,this,"OnIs",is);
 }
 bool LuaObject::IsDead(){
-    return !Active || LuaCaller::CallSelfField(LuaManager::L,this,"IsDead");
+    return !Active || LuaCaller::CallSelfField(LuaManager::L,this,"OnIsDead");
 }
 void LuaObject::NotifyCollision(GameObject *obj){
-    LuaCaller::CallSelfField(LuaManager::L,this,"NotifyCollision",obj);
+    LuaCaller::CallSelfField(LuaManager::L,this,"OnNotifyCollision",obj);
 }
 void LuaObject::NotifyInPool(void*){
-    LuaCaller::CallSelfField(LuaManager::L,this,"NotifyInPool",GetPoolIndex());
+    LuaCaller::CallSelfField(LuaManager::L,this,"OnNotifyInPool",GetPoolIndex());
 }
 void LuaObject::NotifyDamage(GameObject *bj,int n){
 
-    LuaCaller::CallSelfField(LuaManager::L,this,"NotifyDamage",bj);
+    LuaCaller::CallSelfField(LuaManager::L,this,"OnNotifyDamage",bj);
 
 }
 #endif // __EMSCRIPTEN__
