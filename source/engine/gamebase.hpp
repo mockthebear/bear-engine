@@ -173,6 +173,7 @@ class Game{
         ALCdevice *device;
         ALCcontext *ctx;
 
+        void DisplayBearInfo();
 
 
 };

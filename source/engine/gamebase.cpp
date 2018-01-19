@@ -23,6 +23,8 @@
 #include "../crashhandler/crashhandler.hpp"
 #include __BEHAVIOR_FOLDER__
 
+#define BEAR_VERSION "4.3"
+
 #ifndef __EMSCRIPTEN__
 void exitHandler(int sig)
 {
@@ -59,6 +61,8 @@ bool Game::Crashed = false;
 
 void Game::init(const char *name){
     if (instance == NULL){
+
+
         SDLStarted = false;
         Started = false;
         isClosing = false;
@@ -90,6 +94,8 @@ void Game::init(const char *name){
             Console::GetInstance(true);
             Console::GetInstance().AddTextInfo("Starting...");
         }
+
+        DisplayBearInfo();
 
         if (startFlags&BEAR_FLAG_START_SDL){
             /*if (SDL_Init(BEAR_SDL_CONST_INIT) != 0){
@@ -480,6 +486,16 @@ DefinedState &Game::GetCurrentState(){
     Game *g = GetInstance();
     return (*g->stateStack.top());
 }
+
+void Game::DisplayBearInfo(){
+    bear::out << "Bear engine V " << BEAR_VERSION <<"\n";
+    bear::out << "Start flags: "<< startFlags <<"\n";
+    bear::out << "Built at: "<<__DATE__ << " "<< __TIME__<<"\n";
+    #ifndef DISABLE_LUAINTERFACE
+    bear::out << "Has lua support enabled\n";
+    #endif // DISABLE_LUAINTERFACE
+}
+
 
 void Game::AddState(DefinedState *s,int forcedId){
     static int Ids = 0;
