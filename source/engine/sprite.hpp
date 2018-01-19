@@ -558,7 +558,7 @@ class Sprite{
 class Animation{
     public:
 
-        Animation():Loops(0),sprX(0),sprY(0),sprW(0),sprH(0),MaxFrames(01),SprDelay(1.0f),SprMaxDelay(1.0f),CanRepeat(true),
+        Animation():Loops(0),sprX(0),sprY(0),sprW(0),sprH(0),MaxFrames(01),SprDelay(1.0f),SprMaxDelay(1.0f),CanRepeat(true),LastFrame(0),
         pause(false),finishedFrame(false),finishedSingleFrame(false),isFormated(false){};
         Animation(float w,float h):Animation(){
            sprW = w;
@@ -572,6 +572,7 @@ class Animation{
             SprDelay -= dt;
             if (SprDelay <= 0){
                 finishedSingleFrame = true;
+                LastFrame = sprX;
                 sprX++;
                 SprDelay = SprMaxDelay;
                 if (sprX >= MaxFrames){
@@ -580,6 +581,7 @@ class Animation{
                         sprX = 0;
                     }else{
                         sprX--;
+                        finishedSingleFrame = false;
                     }
                     finishedFrame = true;
                 }
@@ -594,7 +596,7 @@ class Animation{
         bool IsFrameEnd(){
             return finishedSingleFrame;
         }
-        void SetAnimation(int y,int maxFrames,float timer=-1){
+        void SetAnimation(int y=0,int maxFrames=0,float timer=-1){
             if (timer >= 0){
                 SetAnimationTime(timer);
             }
@@ -643,6 +645,7 @@ class Animation{
         float SprDelay;
         float SprMaxDelay;
         bool CanRepeat;
+        uint32_t LastFrame;
     private:
         bool pause;
         bool finishedFrame;
