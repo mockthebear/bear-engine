@@ -101,9 +101,9 @@ Point CustomFont::GetSizes(std::string str_){
     }
     return p;
 }
-Point CustomFont::RenderCentered(std::string c,PointInt p,int alpha){
+Point CustomFont::RenderCentered(std::string c,PointInt p,int alpha,TextCenterStyle align){
     Point sz = GetSizes(c);
-    return Render(c,p.x-sz.x/2.0f,p.y,alpha);
+    return Render(c,p.x- (align&TEXT_CENTER_HORIZONTAL ? sz.x/2.0f : 0),p.y - (align&TEXT_CENTER_VERTICAL ? sz.y/2.0f : 0) ,alpha);
 }
 
 Point CustomFont::Render(std::string str_,int x_,int y_,int alpha){

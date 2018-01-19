@@ -21,6 +21,13 @@ enum TextStyle{
     TEXT_BLENDED
 };
 
+enum TextCenterStyle{
+    TEXT_CENTER_NONE            = 0b0000,
+    TEXT_CENTER_HORIZONTAL      = 0b0001,
+    TEXT_CENTER_VERTICAL        = 0b0010,
+    TEXT_CENTER_BOTH            = 0b0011,
+};
+
 enum TextRenderStyle{
     TEXT_RENDER_TOPLEFT     = 0b0000,
     TEXT_RENDER_TOPRIGHT    = 0b0001,
@@ -114,7 +121,7 @@ class CustomFont{
             return Render(std::string(c),x,y,alpha);
         };
         Point Render(std::string str,int x,int y,int alpha=255);
-        Point RenderCentered(std::string c,PointInt p,int alpha=255);
+        Point RenderCentered(std::string c,PointInt p,int alpha=255,TextCenterStyle align = TEXT_CENTER_HORIZONTAL);
         Point Renderl(std::string c,PointInt p,int alpha=255){
             return Render(std::string(c),p.x,p.y,alpha);
         }
