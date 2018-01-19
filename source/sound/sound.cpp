@@ -328,8 +328,11 @@ void Sound::SetRepeat(bool repeat){
 }
 
 void Sound::PrePlay(){
+    if (!snd.get()){
+        return;
+    }
     bufferId = snd.get()->buffer;
-    int lastBuffer;
+    ALint lastBuffer;
     alGetBufferi(sourceID, AL_BUFFER, &lastBuffer);
     if (lastBuffer != bufferId)
         alSourcei(sourceID, AL_BUFFER, bufferId);
