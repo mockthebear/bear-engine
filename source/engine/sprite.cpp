@@ -445,7 +445,20 @@ void Sprite::Render(int x,int y,double angle){
 }
 
 
-
+void  Sprite::Format(Animation anim,int dir){
+    if (IsLoaded()){
+            return;
+    }
+    if (dir == 0){
+        SetFlip(SDL_FLIP_NONE);
+    }else if (dir == 1){
+        SetFlip(SDL_FLIP_HORIZONTAL);
+    }else if (dir == 2){
+        SetFlip(SDL_FLIP_VERTICAL);
+    }
+    SetClip(anim.sprX * anim.sprW, anim.sprY * anim.sprH,anim.sprW,anim.sprH);
+    anim.isFormated = true;
+}
 
 int Sprite::GetWidth(){
     return dimensions.w*scaleX;

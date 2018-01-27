@@ -213,17 +213,18 @@ class PlainRand{
             Size = n;
         }
         int Generate(){
-            int MinNum = 9999;
+            int MinNum = 0xffffff;
             for (int i=0;i<Size;i++){
                 if (SelectorMap[i] < MinNum){
                     MinNum = SelectorMap[i];
                 }
             }
             while (1){
-                int Selected = rand()%Size;
-                while (Selected == last){
+                int Selected;
+                do{
                     Selected = rand()%Size;
-                }
+                } while (Selected == last);
+
                 if (SelectorMap[Selected] == MinNum){
                     last = Selected;
                     SelectorMap[Selected]++;

@@ -405,7 +405,7 @@ void LuaInterface::RegisterSound(){
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","GetClassType",&Sound::GetClassType);
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","SetPitch",&Sound::SetPitch);
     ClassRegister<Sound>::RegisterClassMethod(L,"Sound","FadeOut",&Sound::FadeOut,0.0f,1.0f);
-    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","FadeIn",&Sound::FadeIn,128.0f,1.0f);
+    ClassRegister<Sound>::RegisterClassMethod(L,"Sound","FadeIn",&Sound::FadeIn,false,128.0f,1.0f);
 }
 
 void LuaInterface::RegisterFonts(){
@@ -516,10 +516,12 @@ void LuaInterface::RegisterObjects(){
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","Render"        ,&LuaObject::Render);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","Update"        ,&LuaObject::Update);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","IsDead"        ,&LuaObject::IsDead);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","Is"        ,&LuaObject::Is);
 
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","hasPerspective",&LuaObject::hasPerspective);
 
     TypeObserver<LuaObject,bool>::RegisterMethod(LuaManager::L,"forceUpdate",&LuaObject::forceUpdate);
+    TypeObserver<LuaObject,bool>::RegisterMethod(LuaManager::L,"active",&LuaObject::Active);
     TypeObserver<LuaObject,bool>::RegisterMethod(LuaManager::L,"forceRender",&LuaObject::forceRender);
     TypeObserver<LuaObject,int>::RegisterMethod(LuaManager::L,"perspective",&LuaObject::perspective);
 
@@ -603,10 +605,10 @@ void LuaInterface::RegisterCollision(){
     }));
 
 
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_collision","GetNearObjects",std::function< std::vector<GameObject*>(GameObject* thisObject,int poolId)>([](GameObject* thisObject,int poolId)
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_collision","GetNearObjects",std::function< std::vector<GameObject*>(GameObject* thisObject,int poolId,bool onlyS)>([](GameObject* thisObject,int poolId,bool onlyS)
     {
-        return Collision::GetNearObjects(thisObject,BearEngine->GetCurrentState().Pool,poolId);
-    }));
+        return Collision::GetNearObjects(thisObject,BearEngine->GetCurrentState().Pool,poolId,4,onlyS);
+    }),true);
 
 }
 
@@ -877,6 +879,33 @@ void LuaInterface::RegisterInput(){
     }));
 }
 void LuaInterface::RegisterSprite(){
+    ClassRegister<Animation>::RegisterClassOutside(LuaManager::L,"Animation",[](lua_State* L)
+    {
+        return LuaReferenceCounter<Animation>::makeReference(Animation());
+    });
+
+    ClassRegister<Animation>::RegisterClassMethod(L,"Animation","SetGridSize",&Animation::SetGridSize);
+    ClassRegister<Animation>::RegisterClassMethod(L,"Animation","Update",&Animation::Update);
+    ClassRegister<Animation>::RegisterClassMethod(L,"Animation","Pause",&Animation::Pause);
+    ClassRegister<Animation>::RegisterClassMethod(L,"Animation","IsAnimationEnd",&Animation::IsAnimationEnd);
+    ClassRegister<Animation>::RegisterClassMethod(L,"Animation","IsFrameEnd",&Animation::IsFrameEnd);
+    ClassRegister<Animation>::RegisterClassMethod(L,"Animation","SetAnimation",&Animation::SetAnimation,-1.0f,0,0);
+    ClassRegister<Animation>::RegisterClassMethod(L,"Animation","ResetAnimation",&Animation::ResetAnimation);
+    ClassRegister<Animation>::RegisterClassMethod(L,"Animation","SetAnimationTime",&Animation::SetAnimationTime);
+    ClassRegister<Animation>::RegisterClassMethod(L,"Animation","Render",&Animation::RenderL);
+
+    TypeObserver<Animation,bool>::RegisterMethod(LuaManager::L,"CanRepeat",&Animation::CanRepeat);
+    TypeObserver<Animation,uint32_t>::RegisterMethod(LuaManager::L,"Loops",&Animation::Loops);
+    TypeObserver<Animation,uint32_t>::RegisterMethod(LuaManager::L,"sprX",&Animation::sprX);
+    TypeObserver<Animation,uint32_t>::RegisterMethod(LuaManager::L,"sprY",&Animation::sprY);
+    TypeObserver<Animation,uint32_t>::RegisterMethod(LuaManager::L,"sprW",&Animation::sprW);
+    TypeObserver<Animation,uint32_t>::RegisterMethod(LuaManager::L,"sprH",&Animation::sprH);
+    TypeObserver<Animation,uint32_t>::RegisterMethod(LuaManager::L,"MaxFrames",&Animation::MaxFrames);
+    TypeObserver<Animation,uint32_t>::RegisterMethod(LuaManager::L,"LastFrame",&Animation::LastFrame);
+    TypeObserver<Animation,float>::RegisterMethod(LuaManager::L,"SprDelay",&Animation::SprDelay);
+    TypeObserver<Animation,float>::RegisterMethod(LuaManager::L,"SprMaxDelay",&Animation::SprMaxDelay);
+
+
     ClassRegister<Sprite>::RegisterClassOutside(LuaManager::L,"Sprite",[](lua_State* L)
     {
         std::string name;

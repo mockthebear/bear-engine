@@ -107,6 +107,9 @@ struct LuaTyper<std::string>{
     static std::string GetTypeIfSame(std::string aux,TextCenterStyle karg){
         return std::string("?");
     };
+    static std::string GetTypeIfSame(std::string aux,const int){
+        return std::string("000");
+    };
 };
 /*template<>
 struct LuaTyper<TextCenterStyle>{
@@ -891,6 +894,9 @@ template<typename T1> struct IndexerHelper{
 
         }else if (TypeObserver<T1,bool>::HasField(field)){
             return TypeObserver<T1,bool>::Newindex(L);
+
+        }else if (TypeObserver<T1,uint32_t>::HasField(field)){
+            return TypeObserver<T1,uint32_t>::Newindex(L);
         }
         return 0;
     };
@@ -913,6 +919,10 @@ template<typename T1> struct IndexerHelper{
 
         }else if (TypeObserver<T1,bool>::HasField(field)){
             return TypeObserver<T1,bool>::Index(L);
+
+        }else if (TypeObserver<T1,uint32_t>::HasField(field)){
+            return TypeObserver<T1,uint32_t>::Index(L);
+
         }
         return 0;
     };

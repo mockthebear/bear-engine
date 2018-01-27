@@ -133,7 +133,7 @@ class ColorReplacer{
 };
 
 class AssetMannager;
-
+class Animation;
 
 
 /**
@@ -526,11 +526,11 @@ class Sprite{
             Placeholder function. Not used
         */
         void Kill();
+        void Format(Animation a,int dir);
     private:
         TextureLoadMethod aliasing;
         TexturePtr textureShred;
         friend class AssetMannager;
-
         SDL_RendererFlip sprFlip;
         std::string fname;
         float OUTR,OUTB,OUTG;
@@ -559,8 +559,12 @@ class Animation{
     public:
 
         Animation():Loops(0),sprX(0),sprY(0),sprW(0),sprH(0),MaxFrames(01),SprDelay(1.0f),SprMaxDelay(1.0f),CanRepeat(true),LastFrame(0),
-        pause(false),finishedFrame(false),finishedSingleFrame(false),isFormated(false){};
+        pause(false),finishedFrame(false),finishedSingleFrame(false),isFormated(false),LockedFinished(true){};
         Animation(float w,float h):Animation(){
+           SetGridSize(w,h);
+           ResetAnimation();
+        };
+        void SetGridSize(float w,float h){
            sprW = w;
            sprH = h;
         };
@@ -568,9 +572,12 @@ class Animation{
             if (pause){
                 return;
             }
-            finishedFrame = finishedSingleFrame = false;
+            if (LockedFinished)
+                finishedFrame = false;
+            finishedSingleFrame = false;
             SprDelay -= dt;
             if (SprDelay <= 0){
+                isFormated = false;
                 finishedSingleFrame = true;
                 LastFrame = sprX;
                 sprX++;
@@ -581,6 +588,7 @@ class Animation{
                         sprX = 0;
                     }else{
                         sprX--;
+                        LockedFinished = false;
                         finishedSingleFrame = false;
                     }
                     finishedFrame = true;
@@ -600,15 +608,18 @@ class Animation{
             if (timer >= 0){
                 SetAnimationTime(timer);
             }
+            isFormated = false;
             sprY = y;
             MaxFrames = maxFrames;
             ResetAnimation();
         }
         void ResetAnimation(){
+            LockedFinished = true;
             sprX = 0;
             SprDelay = SprMaxDelay;
             finishedFrame = false;
             finishedSingleFrame = false;
+            isFormated = false;
             Loops = 0;
         }
         void SetAnimationTime(float time){
@@ -629,6 +640,14 @@ class Animation{
             sp.SetClip(sprX * sprW, sprY * sprH,sprW,sprH);
             isFormated = true;
         }
+        void RenderL(float x,float y,Sprite sp,int dir,float angle=0){
+            if (!isFormated){
+                FormatSprite(sp,dir);
+            }
+            sp.Render(PointInt(x,y),angle);
+            isFormated = false;
+        }
+
         void Render(float x,float y,Sprite& sp,int dir,float angle=0){
             if (!isFormated){
                 FormatSprite(sp,dir);
@@ -647,10 +666,12 @@ class Animation{
         bool CanRepeat;
         uint32_t LastFrame;
     private:
+        friend class Sprite;
         bool pause;
         bool finishedFrame;
         bool finishedSingleFrame;
         bool isFormated;
+        bool LockedFinished;
 };
 
 #endif
