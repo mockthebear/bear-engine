@@ -272,7 +272,9 @@ bool TargetTexture::FreeTexture(){
     glDeleteBuffers(1,&vbo_fbo_vertices);
     glDeleteFramebuffers(1,&Framebuffer);
     glDeleteRenderbuffers(1, &depthrenderbuffer);
-    glDeleteRenderbuffers(1, &renderedTexture);
+	glDeleteTextures(1, &renderedTexture);
+
+    //glDeleteRenderbuffers(1, &renderedTexture);
     return true;
 }
 
@@ -321,6 +323,8 @@ bool TargetTexture::Generate(int wa,int ha){
     glBindTexture( GL_TEXTURE_2D, 0 );
     glBindFramebuffer(GL_FRAMEBUFFER, lastbuffer);
     lastbuffer = 0;
+    DebugHelper::DisplayGlError();
+
     return true;
 
 }

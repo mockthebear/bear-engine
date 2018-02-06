@@ -58,6 +58,7 @@ void ScreenManager::NotyifyScreenClosed(){
     m_window = NULL;
 }
 
+
 bool ScreenManager::SetupOpenGL(){
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -80,6 +81,7 @@ bool ScreenManager::SetupOpenGL(){
 
 
     DebugHelper::DisplayGlError();
+    //glDebugMessageCallback(openglErrF, nullptr);
 
 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -108,6 +110,13 @@ bool ScreenManager::SetupOpenGL(){
         StartPostProcessing();
     }
     SDL_GL_SetSwapInterval(0);
+
+    GLint maxSize;
+	glGetIntegerv (GL_MAX_TEXTURE_SIZE, &maxSize);
+    m_maxTextureSize.x = maxSize;
+    m_maxTextureSize.y = maxSize;
+
+
     #elif RENDER_OPENGLES
 
     SDL_GL_SwapWindow(m_window);
@@ -117,10 +126,7 @@ bool ScreenManager::SetupOpenGL(){
 
     #endif // RENDER_OPENGL
 
-    GLint maxSize;
-	glGetIntegerv (GL_MAX_TEXTURE_SIZE, &maxSize);
-    m_maxTextureSize.x = maxSize;
-    m_maxTextureSize.y = maxSize;
+
 
     return true;
 }
