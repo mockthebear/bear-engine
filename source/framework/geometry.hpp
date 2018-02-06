@@ -296,6 +296,15 @@ template <typename T=float>class GenericRect{
             return *this;
         }
 
+        GenericRect<T> operator+(GenericRect<T> r){
+            w += r.w;
+            x += r.x;
+            h += r.h;
+            y += r.y;
+            return *this;
+        }
+
+
         SDL_Rect operator<<(const SDL_Rect& rhs) const {
             rhs.w = w;
             rhs.x = x;
