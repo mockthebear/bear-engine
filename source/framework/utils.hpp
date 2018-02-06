@@ -169,13 +169,19 @@ namespace utils {
             MatN(){
                 Data = nullptr;
             };
-            template <typename ... Types> MatN(Types ... args){
-                if ((sizeof...(Types)) != N){
+            template <typename ... Types> MatN(Types ... args):MatN(){
+				if ((sizeof...(Types)) != N){
                     bear::out << "wrong argument size1\n";
                     return;
                 }
                 TotalSize = expander<sizeof...(Types)>::expand(N,coordSizes,args...);
-                Data = new T[ TotalSize ];
+				try {
+					Data = new T[ TotalSize ];
+				}
+				catch (const std::bad_alloc& e) {
+					bear::out << "Allocation failed: " << e.what() << '\n';
+					getchar();
+				}
                 if (!Data){
                     bear::out << "Cannot allocate an matrix sized with "<<(TotalSize*sizeof(T)) << " bytes\n";
                 }
