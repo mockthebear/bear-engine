@@ -21,6 +21,14 @@ end
 function isColliding(obj1,obj2)
 	local box1 = obj1
 	local box2 = obj2
+	if not box2.w or box2.h then
+		box2.w = 1
+		box2.h = 1
+	end
+	if not box1.w or box1.h then
+		box1.w = 1
+		box1.h = 1
+	end
 	if not obj1.x and obj1.id then
 		box1 = obj1:GetBox()
 	end

@@ -95,11 +95,11 @@ function MakeLuaStateWithObjects()
 		Obj:SetHeight(32)
 
 
-		Obj.Update = function(self,dt)
+		Obj.OnUpdate = function(self,dt)
 			self:SetX( self:GetX() + 3.0 * dt)
 		end
 
-		Obj.Render = function(self)
+		Obj.OnRender = function(self)
 			g_render.DrawFillSquare(self:GetBox(),math.random(0,255),math.random(0,255),0,255)
 		end
 

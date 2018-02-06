@@ -153,9 +153,7 @@ function widgets.Window(data)
 				end
 			end
 			this.pressed = false
-			if this.OnUpdate then
-				this.OnUpdate(this,dt)
-			end
+
 		else
 			if g_input.IsMouseReleased(1) then
 				this.interact = nil
@@ -213,7 +211,7 @@ function widgets.SpriteLabel(data,spr)
 		widgets.ProcessAlignment(this)
 		local mousePos = g_input.GetMouse()
 		local MyRect = {x=this:GetScreenX()-1,y=this:GetScreenY()-1,w=this:GetWidth()+2,h=this:GetHeight()+2}
-		if g_input.IsMousePressed(1) and IsColliding(MyRect,mousePos) then
+		if g_input.IsMousePressed(1) and isColliding(MyRect,mousePos) then
 			this.bordercolor = this.PressedColor
 		else
 			this.bordercolor = this.Released
@@ -431,7 +429,7 @@ function widgets.Button(data)
 
 		local mousePos = g_input.GetMouse()
 		local MyRect = {x=this:GetScreenX()-1,y=this:GetScreenY()-1,w=this:GetWidth()+2,h=this:GetHeight()+2}
-		if IsColliding(MyRect,mousePos) or not this.enabled then
+		if isColliding(MyRect,mousePos) or not this.enabled then
 			g_render.DrawFillSquare(MyRect, this.bgcolor2.r,this.bgcolor2.g,this.bgcolor2.b,this.bgcolor2.a)
 		else
 			g_render.DrawFillSquare(MyRect, this.bgcolor.r,this.bgcolor.g,this.bgcolor.b,this.bgcolor.a)
@@ -449,7 +447,7 @@ function widgets.Button(data)
 		widgets.ProcessAlignment(this)
 		local mousePos = g_input.GetMouse()
 		local MyRect = {x=this:GetScreenX()-1,y=this:GetScreenY()-1,w=this:GetWidth()+2,h=this:GetHeight()+2}
-		if not this.enabled or g_input.IsMousePressed(1) and IsColliding(MyRect,mousePos) then
+		if not this.enabled or g_input.IsMousePressed(1) and isColliding(MyRect,mousePos) then
 			this.bgcolor2 = this.PressedColor
 		else
 			this.bgcolor2 = this.Released
