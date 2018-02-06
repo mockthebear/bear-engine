@@ -808,6 +808,8 @@ void LuaInterface::RegisterUI(){
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetTrueY",&LuaUi::GetTrueY);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetX",&LuaUi::SetX);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetY",&LuaUi::SetY);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetBox",&LuaUi::SetBox);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetBox",&LuaUi::GetBox);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetScreenY",&LuaUi::GetScreenY);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetScreenX",&LuaUi::GetScreenX);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetWidth",&LuaUi::SetWidth);

@@ -410,6 +410,8 @@ function widgets.Button(data)
 
 
 	ui:SetWidth(tex:GetWidth())
+
+	print(tex:GetWidth(),ui:GetWidth())
 	ui:SetHeight(tex:GetHeight())
 	ui:SetTextObj(tex)
 
@@ -468,6 +470,8 @@ function widgets.Button(data)
 			this.action(this,button)
 		end
 	end
+
+
 	return ui
 
 end

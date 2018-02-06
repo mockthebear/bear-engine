@@ -21,11 +21,11 @@ end
 function isColliding(obj1,obj2)
 	local box1 = obj1
 	local box2 = obj2
-	if not box2.w or box2.h then
+	if not box2.w or not box2.h then
 		box2.w = 1
 		box2.h = 1
 	end
-	if not box1.w or box1.h then
+	if not box1.w or not box1.h then
 		box1.w = 1
 		box1.h = 1
 	end
@@ -35,22 +35,23 @@ function isColliding(obj1,obj2)
 	if not obj2.x and obj2.id  then
 		box2 = obj2:GetBox()
 	end
-	if box1.x < box2.x + box2.w then
-		return true
+
+	if box1.y + box1.h < box2.y then
+		return false
 	end
-	if box1.y < box2.y + box2.h then
-		return true
+	if box1.y > box2.y + box2.h then
+		return false
 	end
 
-	if box2.x < box1.x + box1.w then
-		return true
+	if box1.x + box1.w < box2.w then
+		return false
 	end
 
-	if box2.y < box1.y + box1.h then
-		return true
+	if box1.x > box1.x + box1.w then
+		return false
 	end
 
-	return false
+	return trhe
 end
 
 function hasFile(path)

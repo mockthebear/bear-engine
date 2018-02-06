@@ -272,6 +272,7 @@
 		<Unit filename="socket/tcp.hpp" />
 		<Unit filename="sound/sound.cpp" />
 		<Unit filename="sound/sound.hpp" />
+		<Unit filename="sound/sounddef.cpp" />
 		<Unit filename="sound/sounddef.hpp" />
 		<Unit filename="sound/soundloader.cpp" />
 		<Unit filename="sound/soundloader.hpp" />
