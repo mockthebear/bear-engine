@@ -12,6 +12,7 @@ namespace bear {
             void printme(int n);
             void printme(unsigned int n);
             void printme(long unsigned int n);
+            void printme(uint64_t n);
             void printme(float n);
             void printme(double n);
             void printme(const char *c);
@@ -37,6 +38,11 @@ namespace bear {
         long unsigned Int specializer
     */
     static inline bear::outstream &operator << ( bear::outstream &o ,long unsigned int n){
+        o.printme(n);
+        return o;
+    }
+
+    static inline bear::outstream &operator << ( bear::outstream &o ,uint64_t n){
         o.printme(n);
         return o;
     }
