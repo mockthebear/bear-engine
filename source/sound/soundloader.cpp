@@ -2,6 +2,8 @@
 #include "../engine/bear.hpp"
 #include "../framework/dirmanager.hpp"
 #include <vorbis/vorbisfile.h>
+char SoundLoader::array[BUFFER_SIZE];
+
 
 size_t AR_readOgg(void* dst, size_t size1, size_t size2, void* fh)
 {
@@ -69,7 +71,6 @@ BufferData *SoundLoader::loadOggFileRW(SDL_RWops* soundFile){
         delete ret;
         return nullptr;
     }
-	char *array = new char[BUFFER_SIZE];                // Local fixed size array
     // end if
 
     vorbis_info *pInfo;
@@ -84,7 +85,6 @@ BufferData *SoundLoader::loadOggFileRW(SDL_RWops* soundFile){
     if (ov_open_callbacks((void *)soundFile, &oggFile, NULL, -1, callbacks) != 0){
         bear::out << "Error opening rw for decoding...\n";
         delete ret;
-		delete[] array;
         return nullptr;
     }
     // end if
@@ -118,17 +118,16 @@ BufferData *SoundLoader::loadOggFileRW(SDL_RWops* soundFile){
         // end if
 
         // Append to end of buffer
+        //bear::out << "S: " << (uint64_t)bufferData.size() << " + "<<(uint64_t)bytes<<"\n";
         bufferData.insert(bufferData.end(), array, array + bytes);
         }
     while (bytes > 0);
 
     // Clean up!
     ov_clear(&oggFile);
-
     alGenBuffers(1, &ret->buffer);
     alBufferData(ret->buffer, ret->format, &bufferData[0], static_cast<ALsizei>(bufferData.size()), ret->freq);
     bufferData.clear();
-	delete[] array;
     //alSourcei(sourceID, AL_BUFFER, bufferID);
     return ret;
 }

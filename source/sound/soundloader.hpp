@@ -10,4 +10,6 @@ class SoundLoader{
         static BufferData* loadOggFileRW(SDL_RWops* soundFile);
 
         static void ShowError(std::string where = "");
+    private:
+        static char array[BUFFER_SIZE];
 };

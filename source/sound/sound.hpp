@@ -42,7 +42,7 @@ class Sound{
         void PrePlay();
 
         bool FadeOut(float speed=1.0f,float minVol = 0.0f);
-        bool FadeIn(float speed=1.0f,float maxVol = MAX_VOL_SIZE);
+        bool FadeIn(float speed=1.0f,float maxVol = MAX_VOL_SIZE,bool repeat=false);
 
         void SetPosition(float pos);
         float GetPosition();
@@ -87,7 +87,7 @@ class Sound{
 
         std::string file;
         ALuint sourceID;
-        ALuint bufferId;
+        ALint bufferId;
         SoundPtr snd;
 
 };

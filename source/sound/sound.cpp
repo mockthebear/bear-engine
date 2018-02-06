@@ -387,7 +387,6 @@ void Sound::Toggle(){
 
 
 bool Sound::FadeOut(float speed,float minVol){
-    bear::out << speed << ","<<minVol << "\n";
     if (!IsPlaying()){
         return false;
     }
@@ -400,15 +399,13 @@ bool Sound::FadeOut(float speed,float minVol){
     return true;
 }
 
-bool Sound::FadeIn(float speed,float maxVol){
+bool Sound::FadeIn(float speed,float maxVol,bool looped){
     if (IsPlaying()){
         return false;
     }
     SetVolume(0);
-    Play(false);
-    bear::out << maxVol << " set to " << MasterVolume[classType] << "\n";
+    Play(looped);
     maxVol = MasterVolume[classType]*((float)maxVol/MAX_VOL_SIZE);
-    bear::out << maxVol << " is now \n";
     SoundWorker::FaderList.emplace_back( SoundFaderInstance(0.0f,sourceID,snd,maxVol,speed));
     return true;
 }
