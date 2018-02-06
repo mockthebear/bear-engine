@@ -494,15 +494,17 @@ void LuaInterface::RegisterObjects(){
 
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","Destroy",&LuaObject::Destroy);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","Kill",&LuaObject::Kill);
-    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetX",&LuaObject::SetX);
-    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetY",&LuaObject::SetY);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetX",&LuaObject::SetX, false);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetY",&LuaObject::SetY, false);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetX",&LuaObject::SetSolid, false);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetY",&LuaObject::GetY);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetX",&LuaObject::GetX);
-    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetWidth",&LuaObject::SetWidth);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetX",&LuaObject::GetSolid);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetWidth",&LuaObject::SetWidth, false);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetWidth",&LuaObject::GetWidth);
-    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetHeight",&LuaObject::SetHeight);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetHeight",&LuaObject::SetHeight, false);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetHeight",&LuaObject::GetHeight);
-    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetBox",&LuaObject::SetBox);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetBox",&LuaObject::SetBox, false);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetBox",&LuaObject::GetBox);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetPoolIndex",&LuaObject::GetPoolIndex);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetMyRef",&LuaObject::GetMyRef);
@@ -546,18 +548,18 @@ void LuaInterface::RegisterObjects(){
 
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","Is",&GameObject::Is);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetMyRef",&GameObject::GetMyRef);
-    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetX",&GameObject::SetX);
-    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetY",&GameObject::SetY);
+    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetX",&GameObject::SetX, false);
+    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetY",&GameObject::SetY, false);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetY",&GameObject::GetY);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetX",&GameObject::GetX);
-    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetWidth",&GameObject::SetWidth);
+    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetWidth",&GameObject::SetWidth, false);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetWidth",&GameObject::GetWidth);
-    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetHeight",&GameObject::SetHeight);
+    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetHeight",&GameObject::SetHeight, false);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetHeight",&GameObject::GetHeight);
-    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetBox",&GameObject::SetBox);
+    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetBox",&GameObject::SetBox, false);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetBox",&GameObject::GetBox);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetSolid",&GameObject::GetSolid);
-    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetSolid",&GameObject::SetSolid);
+    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetSolid",&GameObject::SetSolid, false);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","Kill",&GameObject::Kill);
 
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","hasPerspective"        ,&GameObject::hasPerspective);
@@ -806,13 +808,13 @@ void LuaInterface::RegisterUI(){
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetY",&LuaUi::GetY);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetTrueX",&LuaUi::GetTrueX);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetTrueY",&LuaUi::GetTrueY);
-    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetX",&LuaUi::SetX);
-    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetY",&LuaUi::SetY);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetX",&LuaUi::SetX, false);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetY",&LuaUi::SetY, false);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetScreenY",&LuaUi::GetScreenY);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetScreenX",&LuaUi::GetScreenX);
-    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetWidth",&LuaUi::SetWidth);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetWidth",&LuaUi::SetWidth , false);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetWidth",&LuaUi::GetWidth);
-    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetHeight",&LuaUi::SetHeight);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetHeight",&LuaUi::SetHeight, false);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetHeight",&LuaUi::GetHeight);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetId",&LuaUi::SetId);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetId",&LuaUi::GetId);
