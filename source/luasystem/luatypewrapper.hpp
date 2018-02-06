@@ -21,7 +21,7 @@ template<>\
             QuickDebug::DisplayCurrent(L);\
             Console::GetInstance().AddText("[LuaBase][Warning]Argument %d is nil",lua_gettop(L));\
         }\
-        n = (name)lua_tonumber(L,stackPos);\
+        n = (name)(int)lua_tonumber(L,stackPos);\
         if (pop)\
             lua_pop(L,1);\
         return n;\
