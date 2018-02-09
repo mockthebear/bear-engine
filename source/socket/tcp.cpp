@@ -23,7 +23,7 @@
 #endif // _WIN32
 #include <stdio.h>
 
-bool TcpClient::Connect(std::string addr,uint16_t port){
+bool TcpClient::Connect(std::string addr,uint16_t port,int dur){
     if (IsConnected()){
         return false;
     }
@@ -116,6 +116,9 @@ bool TcpClient::ReceiveBytes(SocketMessage *msg,uint16_t amount){
     msg->SetSize(amount);
     return true;
 }
+
+void TcpClient::Update(float dt){}
+
 
 bool TcpClient::Receive(SocketMessage *msg,char breakpad){
     if (!IsConnected() || msg == nullptr){

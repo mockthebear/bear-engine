@@ -1,9 +1,12 @@
+#pragma once
 #ifndef __EMSCRIPTEN__
 #ifndef DISABLE_SOCKET
 #include <stdio.h>
 #include <stdint.h>
 #include <string>
 #include <string.h>
+#include <queue>
+#include <map>
 #ifdef _WIN32
 #include <winsock2.h>
 typedef sockaddr_in SocketAddr;
@@ -35,6 +38,9 @@ template <int MsgSize=1024> class SocketMessage_{
             m_pointer = 0;
         }
         bool SetStream(char *stream,uint16_t size=0){
+            if (!stream){
+                return false;
+            }
             if (size >= MsgSize){
                 return false;
             }
@@ -70,6 +76,17 @@ template <int MsgSize=1024> class SocketMessage_{
             m_readPointer++;
             return ret;
         }
+
+        bool AddString(const char *c){
+            if (m_pointer+strlen(c) >= MsgSize){
+                return false;
+            }
+            for (int i=0;c[i] != '\0';i++){
+                StaticStream[m_pointer] = c[i];
+                m_pointer++;
+            }
+            return true;
+        };
 
         bool AddByte(char b){
             if (m_pointer >= MsgSize){
@@ -123,7 +140,9 @@ class SocketClient{
         #else
         SocketClient():m_SocketHandler(-1){};
         #endif // _WIN32
-        virtual bool Connect(std::string addr,uint16_t port) = 0;
+        virtual bool Connect(std::string addr,uint16_t port,int duration) = 0;
+
+        virtual void Update(float dt) = 0;
 
         virtual bool Receive(SocketMessage *msg,char breakpad = '\n') = 0;
         virtual bool ReceiveBytes(SocketMessage *msg,uint16_t amount) = 0;
@@ -141,13 +160,14 @@ class SocketClient{
 
 class SocketHost{
     public:
-        SocketHost();
-        virtual bool Open(std::string addr,uint16_t port) = 0;
-
-        virtual bool Receive(SocketMessage *msg) = 0;
-        virtual bool Send(SocketMessage *msg) = 0;
+        SocketHost():m_lastPid(0){};
+        virtual bool Bind(uint16_t port) = 0;
+        virtual void Update(float dt) = 0;
+        virtual bool Receive(SocketMessage *msg,int pid) = 0;
+        virtual bool Send(SocketMessage *msg,int pid = -1) = 0;
     protected:
-        uint32_t clients;
+        uint64_t m_lastPid;
+        std::map<uint64_t,std::queue<SocketMessage>> m_messages;
 };
 
 class BaseSocket{
