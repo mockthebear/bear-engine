@@ -70,6 +70,10 @@ function widgets.ProcessAlignment(this)
 				pt.x = obj:GetX()
 			elseif where == 'right' then
 				pt.x = obj:GetX()+obj:GetWidth()
+			elseif i == 'vcenter' or i == "verticalcenter" then
+				pt.x = obj:GetX()+obj:GetWidth()/2
+			elseif i == 'hcenter' or i == "horizontalcenter" then
+				pt.y = obj:GetY()+obj:GetHeight()/2
 			elseif where == 'center' then
 				pt.x = obj:GetX()+obj:GetWidth()/2
 				pt.y = obj:GetY()+obj:GetHeight()/2
@@ -391,6 +395,112 @@ function widgets.Checkbox(data)
 end
 
 
+function widgets.TextInput(data)
+	local ui = LuaUi()
+
+	ui = widgets.SwapStyle(ui,"bgcolor",{r=255,g=255,b=255,a=255})
+	ui = widgets.SwapStyle(ui,"bgcolor2",{r=200,g=200,b=200,a=255})
+	ui = widgets.SwapStyle(ui,"enabled",true)
+	ui = widgets.SwapStyle(ui,"maxsize",150)
+	ui = widgets.SwapStyle(ui,"focus",false)
+
+
+	ui = widgets.FormatPattern(data,ui)
+
+
+	local tex = Text(ui.str or ui.text,ui.textsize,ui.textcolor)
+	ui.tex = tex
+
+	ui.caret = {timer = 0, duration = 5.0,show=true}
+
+	tex:SetFont(ui.font)
+	--ui:SetTextObj(tex)
+
+
+
+
+	if ui.id then
+		ui:SetId(tostring(ui.id))
+	end
+	function ui:GetText()
+		return self.str
+	end
+
+	function ui:SetText(text,append)
+		if not append then
+			self.str = text
+		else
+			self.str = self.str..text
+		end
+		self.tex:SetText(self.str)
+	end
+
+
+	ui:SetHeight(math.max(tex:GetHeight(),16) )
+	ui:SetWidth(ui.maxsize)
+
+	function ui:OnRender()
+		local MyRect = {x=self:GetScreenX()-1,y=self:GetScreenY()-1,w=self:GetWidth()+2,h=self:GetHeight()+2}
+		if self.focus then
+			g_render.DrawFillSquare(MyRect, self.bgcolor.r,self.bgcolor.g,self.bgcolor.b,self.bgcolor.a)
+		else
+			g_render.DrawFillSquare(MyRect, self.bgcolor2.r,self.bgcolor2.g,self.bgcolor2.b,self.bgcolor2.a)
+		end
+
+		g_render.DrawOutlineSquare(MyRect, self.bordercolor.r,self.bordercolor.g,self.bordercolor.b,self.bordercolor.a)
+
+		self.tex:Render({x=self:GetScreenX()+2,y=self:GetScreenY()})
+		if self.focus and self.caret.show then
+			g_render.DrawLineColor({x=self:GetScreenX() + self.tex:GetWidth() + 1,y=self:GetScreenY() +1},{x=self:GetScreenX() + self.tex:GetWidth(),y=self:GetScreenY() + self.tex:GetHeight() -2},0,0,0,255)
+		end
+	end
+
+	function ui:OnUpdate(dt)
+
+		widgets.ProcessAlignment(self)
+		local mousePos = g_input.GetMouse()
+		local MyRect = self:GetBox()
+		if g_input.MousePress(1) then
+			if isColliding(MyRect,mousePos) then
+				self.focus = true
+				self.caret.show = true
+			else
+				self.focus = false
+			end
+		end
+		self.caret.timer = self.caret.timer - dt
+		if self.caret.timer  <= 0 then
+			self.caret.timer = self.caret.duration
+			self.caret.show = not self.caret.show
+		end
+		if self.focus then
+			if g_input.GetPressedKey() > 0 then
+				local key = g_input.GetPressedKey()
+				if key >= 32 and key <= 126 then
+					local char = string.char(key)
+					if g_input.IsKeyDown(SDLK_RSHIFT) or g_input.IsKeyDown(SDLK_LSHIFT) then
+						char = char:upper()
+					end
+					self:SetText(char,true)
+				end
+				--backspace
+				if key == 8 and self.str:len() > 0 then
+					self:SetText(self.str:sub(1,self.str:len()-1),false)
+				end
+			end
+			if g_input.IsKeyDown(SDLK_RCTRL) or g_input.IsKeyDown(SDLK_LCTRL) then
+				if g_input.KeyPress(SDLK_v) then
+
+					self:SetText(g_input.GetClipboard(),true)
+				end
+			end
+		end
+
+	end
+
+	return ui
+end
+
 function widgets.Button(data)
 	local ui = LuaUi()
 
@@ -411,7 +521,7 @@ function widgets.Button(data)
 
 	ui:SetWidth(tex:GetWidth())
 
-	print(tex:GetWidth(),ui:GetWidth())
+
 	ui:SetHeight(tex:GetHeight())
 	ui:SetTextObj(tex)
 

@@ -19,39 +19,40 @@ function getCenter(p1)
 end
 
 function isColliding(obj1,obj2)
-	local box1 = obj1
-	local box2 = obj2
-	if not box2.w or not box2.h then
-		box2.w = 1
-		box2.h = 1
+	local a = obj1
+	local b = obj2
+	if not b.w or not b.h then
+		b.w = 1
+		b.h = 1
 	end
-	if not box1.w or not box1.h then
-		box1.w = 1
-		box1.h = 1
+	if not a.w or not a.h then
+		a.w = 1
+		a.h = 1
 	end
 	if not obj1.x and obj1.id then
-		box1 = obj1:GetBox()
+		a = obj1:GetBox()
 	end
 	if not obj2.x and obj2.id  then
-		box2 = obj2:GetBox()
+		b = obj2:GetBox()
 	end
 
-	if box1.y + box1.h < box2.y then
-		return false
-	end
-	if box1.y > box2.y + box2.h then
-		return false
-	end
+	if (a.y + a.h) < b.y then
 
-	if box1.x + box1.w < box2.w then
+		return false
+	end
+	if a.y > (b.y + b.h) then
 		return false
 	end
 
-	if box1.x > box1.x + box1.w then
+	if (a.x + a.w) < b.x then
 		return false
 	end
 
-	return trhe
+	if a.x >  (b.x + b.w) then
+		return false
+	end
+
+	return true
 end
 
 function hasFile(path)
