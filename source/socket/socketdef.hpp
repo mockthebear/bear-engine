@@ -25,6 +25,9 @@ template <int MsgSize=1024> class SocketMessage_{
                 StaticStream[i] = 0;
             }
         };
+        SocketMessage_(const char *c):SocketMessage_(){
+            SetStream((char *)c);
+        }
         uint32_t GetMaxBuffer(){
             return MsgSize;
         }
@@ -71,6 +74,10 @@ template <int MsgSize=1024> class SocketMessage_{
             return true;
         }
 
+        char Peek(){
+            return StaticStream[m_readPointer];
+        }
+
         char ReadByte(){
             char ret = StaticStream[m_readPointer];
             m_readPointer++;
@@ -101,7 +108,7 @@ template <int MsgSize=1024> class SocketMessage_{
             if (m_pointer+sizeof(T) >= MsgSize){
                 return false;
             }
-            char addr = (T*)StaticStream[m_pointer];
+            T *addr = (T*)&StaticStream[m_pointer];
             m_pointer += sizeof(T);
             memcpy(addr,&obj,sizeof(T));
             return true;
@@ -111,7 +118,7 @@ template <int MsgSize=1024> class SocketMessage_{
             if (m_readPointer+sizeof(T) >= m_pointer){
                 return T();
             }
-            T ret = *(T*)StaticStream[m_readPointer];
+            T ret = *((T*) (StaticStream + m_readPointer) );
             m_readPointer += sizeof(T);
             return ret;
         }
