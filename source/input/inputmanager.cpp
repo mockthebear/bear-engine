@@ -329,6 +329,9 @@ bool InputManager::IsKeyUp(int key){
     return keyboard.keyState[key] == JUST_RELEASED || keyboard.keyState[key] == RELEASED;
 }
 
+std::string InputManager::GetClipboard(){
+    return std::string(SDL_GetClipboardText());
+}
 int InputManager::IsAnyKeyPressed(bool considerJoystick,bool considerTap){
     if (keyboard.anyKeyPressed != -1)
         return keyboard.anyKeyPressed;

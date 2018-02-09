@@ -255,6 +255,8 @@ class InputManager{
         */
         Joystick* GetJoystick(int id);
 
+        std::string GetClipboard();
+
         bool OnScreenResize(){return onResize;};
         bool IsHalted(){return halt;};
         void HaltInput(){halt = true;};
