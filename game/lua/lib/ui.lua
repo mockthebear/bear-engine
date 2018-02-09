@@ -407,11 +407,14 @@ function widgets.TextInput(data)
 
 	ui = widgets.FormatPattern(data,ui)
 
+	ui.caretPos = 0
+
 
 	local tex = Text(ui.str or ui.text,ui.textsize,ui.textcolor)
 	ui.tex = tex
 
-	ui.caret = {timer = 0, duration = 5.0,show=true}
+	ui.caret = {timer = 0, duration = 5.0,show=true,posX=tex:GetWidth()}
+
 
 	tex:SetFont(ui.font)
 	--ui:SetTextObj(tex)
@@ -426,13 +429,28 @@ function widgets.TextInput(data)
 		return self.str
 	end
 
+	function ui:UpdateCaret()
+		self.tex:SetText(self.str:sub(1,self.caretPos))
+		self.caret.posX=self.tex:GetWidth()
+		self.caret.show = true
+		self.tex:SetText(self.str)
+	end
+
 	function ui:SetText(text,append)
 		if not append then
 			self.str = text
+			self.caretPos = self.str:len()
+			self:UpdateCaret()
 		else
-			self.str = self.str..text
+			self.caretPos = self.caretPos + text:len()
+			if self.caretPos < text:len() then
+				self.str = self.str..text
+			else
+				self.str = self.str:sub(1,self.caretPos-1)..text..self.str:sub(self.caretPos,-1)
+			end
+			self:UpdateCaret()
 		end
-		self.tex:SetText(self.str)
+
 	end
 
 
@@ -451,7 +469,7 @@ function widgets.TextInput(data)
 
 		self.tex:Render({x=self:GetScreenX()+2,y=self:GetScreenY()})
 		if self.focus and self.caret.show then
-			g_render.DrawLineColor({x=self:GetScreenX() + self.tex:GetWidth() + 1,y=self:GetScreenY() +1},{x=self:GetScreenX() + self.tex:GetWidth(),y=self:GetScreenY() + self.tex:GetHeight() -2},0,0,0,255)
+			g_render.DrawLineColor({x=self:GetScreenX() + self.caret.posX + 1,y=self:GetScreenY() +1},{x=self:GetScreenX() + self.caret.posX +1,y=self:GetScreenY() + self.tex:GetHeight() -2},0,0,0,255)
 		end
 	end
 
@@ -463,7 +481,8 @@ function widgets.TextInput(data)
 		if g_input.MousePress(1) then
 			if isColliding(MyRect,mousePos) then
 				self.focus = true
-				self.caret.show = true
+				self.caretPos = self.str:len()
+				self:UpdateCaret()
 			else
 				self.focus = false
 			end
@@ -476,6 +495,13 @@ function widgets.TextInput(data)
 		if self.focus then
 			if g_input.GetPressedKey() > 0 then
 				local key = g_input.GetPressedKey()
+				print(key)
+				if g_input.IsKeyDown(SDLK_RCTRL) or g_input.IsKeyDown(SDLK_LCTRL) then
+					if g_input.KeyPress(SDLK_v) then
+						self:SetText(g_input.GetClipboard(),true)
+						return
+					end
+				end
 				if key >= 32 and key <= 126 then
 					local char = string.char(key)
 					if g_input.IsKeyDown(SDLK_RSHIFT) or g_input.IsKeyDown(SDLK_LSHIFT) then
@@ -485,15 +511,30 @@ function widgets.TextInput(data)
 				end
 				--backspace
 				if key == 8 and self.str:len() > 0 then
-					self:SetText(self.str:sub(1,self.str:len()-1),false)
+					self.caretPos = self.caretPos -1
+					self.caretPos = math.max(self.caretPos,0)
+					local oldCaret = self.caretPos
+					if self.caretPos < self.str:len() then
+						self:SetText(self.str:sub(1,self.caretPos)..self.str:sub(self.caretPos+2,-1),false)
+					else
+						self:SetText(self.str:sub(1,self.caretPos),false)
+					end
+					self.caretPos = oldCaret
+					self:UpdateCaret()
+				end
+				--guide arrows
+				if key == SDLK_LEFT then
+					self.caretPos = self.caretPos -1
+					self.caretPos = math.max(self.caretPos,0)
+					self:UpdateCaret()
+				end
+				if key == SDLK_RIGHT then
+					self.caretPos = self.caretPos +1
+					self.caretPos = math.min(self.caretPos,self.str:len())
+					self:UpdateCaret()
 				end
 			end
-			if g_input.IsKeyDown(SDLK_RCTRL) or g_input.IsKeyDown(SDLK_LCTRL) then
-				if g_input.KeyPress(SDLK_v) then
 
-					self:SetText(g_input.GetClipboard(),true)
-				end
-			end
 		end
 
 	end
