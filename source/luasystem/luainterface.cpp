@@ -543,6 +543,11 @@ void LuaInterface::RegisterObjects(){
         return t;
     },&GarbageCollectorFunction);
 
+    GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_state");
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_state","Signal",std::function< bool (SignalRef)>([](SignalRef sr){
+        return Game::GetCurrentState().Signal(sr);
+    }));
+
 
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","Is",&GameObject::Is);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetMyRef",&GameObject::GetMyRef);
@@ -823,10 +828,16 @@ void LuaInterface::RegisterUI(){
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetMother",&LuaUi::GetMother);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetChilds",&LuaUi::GetChilds);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetAsMain",&LuaUi::SetAsMain);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","Destroy",&LuaUi::Destroy);
 }
 
 void LuaInterface::RegisterInput(){
     GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_input");
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_input","GetKeyByName",std::function<int(std::string)>([](std::string kname)
+    {
+        return (int)SDL_GetKeyFromName(kname.c_str());
+    }));
+
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_input","KeyPress",std::function<bool(int)>([](int key)
     {
         return g_input.KeyPress(key);
@@ -846,6 +857,10 @@ void LuaInterface::RegisterInput(){
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_input","IsAnyKeyPressed",std::function<bool()>([]()
     {
         return g_input.IsAnyKeyPressed() != -1;
+    }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_input","GetPressedKey",std::function<int()>([]()
+    {
+        return g_input.IsAnyKeyPressed();
     }));
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_input","GetMouse",std::function<Point()>([]()
     {
@@ -875,11 +890,15 @@ void LuaInterface::RegisterInput(){
     {
         return (int)g_input.GetKeyState(key);
     }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_input","GetClipboard",std::function<std::string()>([](){
+        return g_input.GetClipboard();
+    }));
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_input","HaltInput",std::function<void()>([]()
     {
         g_input.HaltInput();
     }));
 }
+
 void LuaInterface::RegisterSprite(){
     ClassRegister<Animation>::RegisterClassOutside(LuaManager::L,"Animation",[](lua_State* L)
     {

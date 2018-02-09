@@ -14,6 +14,78 @@
 #include <vector>
 #include <list>
 
+enum TypeSignal{
+    SIGNAL_TYPE_EMPTY=0,
+    SIGNAL_TYPE_INT,
+    SIGNAL_TYPE_FLOAT,
+    SIGNAL_TYPE_DOUBLE,
+    SIGNAL_TYPE_UINT,
+    SIGNAL_TYPE_UINT64,
+    SIGNAL_TYPE_VOID,
+    SIGNAL_TYPE_STR,
+};
+
+union SignalContainer{
+    int i;
+    float f;
+    double lf;
+    uint32_t ui;
+    uint64_t uli;
+    void *v;
+    const char *str;
+};
+
+class SignalRef{
+    public:
+        SignalRef():type(SIGNAL_TYPE_EMPTY){scont.uli = 0;};
+
+
+
+        int GetInt(){ return scont.i; };
+        float GetFloat(){ return scont.f; };
+        double GetDouble(){ return scont.lf; };
+        uint32_t GetUint(){ return scont.ui; };
+        uint64_t GetUint64(){ return scont.uli; };
+        void* GetVoid(){ return scont.v; };
+        const char *GetStr(){ return scont.str; };
+
+
+        void SetInt(int var){
+            type = SIGNAL_TYPE_INT;
+            scont.i = var;
+        }
+        void SetFloat(float var){
+            type = SIGNAL_TYPE_FLOAT;
+            scont.f = var;
+        }
+        void SetDouble(double var){
+            type = SIGNAL_TYPE_DOUBLE;
+            scont.lf = var;
+        }
+        void SetUint(uint32_t var){
+            type = SIGNAL_TYPE_UINT;
+            scont.ui = var;
+        }
+        void SetUint64(uint64_t var){
+            type = SIGNAL_TYPE_UINT64;
+            scont.uli = var;
+        }
+        void SetVoid(void *var){
+            type = SIGNAL_TYPE_VOID;
+            scont.v = var;
+        }
+        void SetString(const char *var){
+            type = SIGNAL_TYPE_STR;
+            scont.str = var;
+        }
+
+        TypeSignal GetType(){ return type;};
+
+    private:
+        TypeSignal type;
+        SignalContainer scont;
+};
+
 /**
  * @brief Basic game state
  *
@@ -190,6 +262,8 @@ class GenericState{
         void UpdateWindowses(float dt);
         void RenderWindowses();
         void AddWindow(UIBase *b);
+
+        virtual bool Signal(SignalRef s){ return false;};
 
         uint64_t GetTicks(){ return p_StateTicks;};
     protected:
