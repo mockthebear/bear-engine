@@ -156,6 +156,7 @@ Text::Text(std::string textArg,int sizeArg,SDL_Color colorArg):Text("engine:defa
 }
 Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string textp, SDL_Color colot,int x,int y):Text(){
     angle = 0;
+    emptyText = false;
     font = nullptr;
     texturespr = nullptr;
     box.x = x;
@@ -262,7 +263,7 @@ void Text::Close(){
 }
 void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
 
-    if (!isWorking){
+    if (!isWorking || emptyText){
 
         return;
     }
@@ -437,8 +438,13 @@ void Text::Clear(){
 void Text::RemakeTexture(bool Destory){
     if (!isWorking)
         return;
-    if (text == "")
+    if (text == ""){
+        box.w = 0;
+        emptyText = true;
         return;
+    }else{
+        emptyText = false;
+    }
     if (Game::GetInstance()->isClosing)
         return;
     if (!font && texturespr){
