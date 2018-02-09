@@ -933,6 +933,50 @@ template<>
 };
 
 template<>
+    struct GenericLuaGetter<SignalRef> {
+     static SignalRef Call(lua_State *L,int stackPos = -1,bool pop=true){
+        SignalRef rf;
+        if (lua_isnil(L,stackPos)){
+            Console::GetInstance().AddText("[LuaBase][Warning]Argument %d is nil",lua_gettop(L));
+        }else{
+            if (!lua_istable(L,stackPos)){
+                Console::GetInstance().AddText("[LuaBase][Warning]Argument %d is not a table",lua_gettop(L));
+            }else{
+                lua_pushnil(L);
+                while(lua_next(L, stackPos-1) != 0)
+                {
+                    if (std::string(lua_tostring(L, -2)) == "int"){
+                        rf.SetInt(lua_tonumber(L, -1));
+                    }
+                    if (std::string(lua_tostring(L, -2)) == "float"){
+                        rf.SetFloat(lua_tonumber(L, -1));
+                    }
+                    if (std::string(lua_tostring(L, -2)) == "double"){
+                        rf.SetDouble(lua_tonumber(L, -1));
+                    }
+                    if (std::string(lua_tostring(L, -2)) == "uint"){
+                        rf.SetUint(lua_tonumber(L, -1));
+                    }
+                    if (std::string(lua_tostring(L, -2)) == "uint64"){
+                        rf.SetUint64(lua_tonumber(L, -1));
+                    }
+                    if (std::string(lua_tostring(L, -2)) == "void"){
+                        rf.SetVoid(lua_touserdata(L, -1));
+                    }
+                    if (std::string(lua_tostring(L, -2)) == "str"){
+                        rf.SetString(lua_tostring(L, -1));
+                    }
+                    lua_pop(L,1);
+                }
+            }
+        }
+        if (pop)
+            lua_pop(L,1);
+        return rf;
+    };
+};
+
+template<>
     struct GenericLuaGetter<Rect> {
      static Rect Call(lua_State *L,int stackPos = -1,bool pop=true){
         Rect pt;

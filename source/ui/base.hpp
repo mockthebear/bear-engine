@@ -102,6 +102,9 @@ class UIBase{
         int GetID(){
             return ID;
         };
+        void Destroy(){
+            close = true;
+        }
         bool IsDead(){
             return close;
         }
