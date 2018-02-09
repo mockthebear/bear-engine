@@ -24,6 +24,7 @@ void ReliableUdpClient::Close(){
     }
 }
 
+
 void ReliableUdpClient::Update(float dt){
     if (!client || !peer){
         return;
@@ -42,7 +43,6 @@ void ReliableUdpClient::Update(float dt){
                 SocketMessage msg;
                 msg.SetStream((char*)event.packet -> data,event.packet -> dataLength);
                 m_messages.push(msg);
-                bear::out << "Received from [server] : {"<<msg.GetStream()<<"}\n";
                 enet_packet_destroy (event.packet);
                 break;
             }
@@ -59,7 +59,7 @@ void ReliableUdpClient::Update(float dt){
 
 bool ReliableUdpClient::Send(SocketMessage *msg){
     if (peer){
-        ENetPacket * packet = enet_packet_create (msg->GetStream(),  msg->GetMessageSize(), ENET_PACKET_FLAG_RELIABLE);
+        ENetPacket * packet = enet_packet_create (msg->GetStream(),  msg->GetMessageSize()+1, ENET_PACKET_FLAG_RELIABLE);
         enet_peer_send(peer, 0, packet);
         return true;
     }else{
@@ -69,8 +69,14 @@ bool ReliableUdpClient::Send(SocketMessage *msg){
 bool ReliableUdpClient::ReceiveBytes(SocketMessage *msg,uint16_t amount){
     return true;
 }
+
 bool ReliableUdpClient::Receive(SocketMessage *msg,char breakpad){
-    return true;
+    if (peer && m_messages.size() > 0){
+        (*msg) = SocketMessage(m_messages.front());
+        m_messages.pop();
+        return true;
+    }
+    return false;
 }
 
 bool ReliableUdpClient::Start(){
@@ -147,6 +153,7 @@ void ReliableUdpServer::Update(float dt){
             case ENET_EVENT_TYPE_CONNECT:{
                 event.peer->data = (void*)m_lastPid;
                 peers[m_lastPid] = event.peer;
+                peerIds.emplace_back(m_lastPid);
                 printf ("%d connect on server. = %d  from : %x\n", (int)m_lastPid,event.peer,event.peer -> address.host);
                 m_lastPid++;
                 break;
@@ -156,18 +163,24 @@ void ReliableUdpServer::Update(float dt){
                 uint32_t pid = (int)event.peer -> data;
                 msg.SetStream((char*)event.packet -> data,event.packet -> dataLength);
                 m_messages[pid].push(msg);
-                bear::out << "Received from ["<<pid<<"] : {"<<msg.GetStream()<<"}\n";
                 enet_packet_destroy (event.packet);
                 break;
             }
 
             case ENET_EVENT_TYPE_DISCONNECT:{
                 printf ("%d disconnected.\n", (int)event.peer -> data);
+                peerIds.remove(m_lastPid);
             }
         }
     }
 }
 bool ReliableUdpServer::Receive(SocketMessage *msg,int pid){
+    ENetPeer *peer = peers[pid];
+    if (peer && m_messages[pid].size() > 0){
+        (*msg) = SocketMessage(m_messages[pid].front());
+        m_messages[pid].pop();
+        return true;
+    }
     return false;
 }
 
@@ -180,7 +193,7 @@ bool ReliableUdpServer::Send(SocketMessage *msg,int pid){
     }else{
         ENetPeer *peer = peers[pid];
         if (peer){
-            ENetPacket * packet = enet_packet_create (msg->GetStream(),  msg->GetMessageSize(), ENET_PACKET_FLAG_RELIABLE);
+            ENetPacket * packet = enet_packet_create (msg->GetStream(),  msg->GetMessageSize()+1, ENET_PACKET_FLAG_RELIABLE);
             enet_peer_send(peer, 0, packet);
             return true;
         }else{

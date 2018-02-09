@@ -3,6 +3,7 @@
 #pragma once
 #include <enet/enet.h>
 #include <queue>
+#include <list>
 
 class ReliableUdpClient: public SocketClient{
     public:
@@ -13,6 +14,11 @@ class ReliableUdpClient: public SocketClient{
         void Update(float dt);
 
         bool Send(SocketMessage *msg);
+        bool Send(SocketMessage msg){
+            static SocketMessage svd;
+            svd = msg;
+            return Send(&svd);
+        };
         bool ReceiveBytes(SocketMessage *msg,uint16_t amount);
         bool Receive(SocketMessage *msg,char breakpad = '\n');
 
@@ -39,10 +45,11 @@ class ReliableUdpServer: public SocketHost{
         void Update(float dt);
         bool Receive(SocketMessage *msg,int pid);
         bool Send(SocketMessage *msg,int pid);
-
         void Close();
+        std::list<int> GetPeers(){ return peerIds;};
+        int GetPeersOnline(){ return peerIds.size();};
     private:
-
+        std::list<int> peerIds;
         ENetHost *server;
         ENetEvent event;
         ENetPeer *peers[100];
