@@ -11,6 +11,7 @@
 
 #include "../image/stb_image.h"
 
+TextureLoadMethod TextureLoadMethod::DefaultLoadingMethod = TEXTURE_NEAREST;
 
 ColorReplacer::ColorReplacer(){
 
@@ -48,6 +49,9 @@ Sprite::Sprite(){
 }
 
 Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,TextureLoadMethod hasAliasing):Sprite(){
+    if (hasAliasing.mode == TEXTURE_DEFAULT){
+        hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
+    }
     textureShred = texture_;
     fname = alias;
     aliasing = hasAliasing;
@@ -60,6 +64,9 @@ Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,TextureLoa
 
 
 Sprite::Sprite(TexturePtr texture_,std::string name,TextureLoadMethod hasAliasing):Sprite(){
+    if (hasAliasing.mode == TEXTURE_DEFAULT){
+        hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
+    }
     textureShred = texture_;
     fname = name;
     aliasing = hasAliasing;
@@ -71,6 +78,9 @@ Sprite::Sprite(TexturePtr texture_,std::string name,TextureLoadMethod hasAliasin
 }
 
 Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
+    if (hasAliasing.mode == TEXTURE_DEFAULT){
+        hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
+    }
     textureShred = texture_;
     frameCount = fcount;
     repeat = rep;
@@ -85,6 +95,9 @@ Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,int fcount
 }
 
 Sprite::Sprite(TexturePtr texture_,std::string name,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
+    if (hasAliasing.mode == TEXTURE_DEFAULT){
+        hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
+    }
     textureShred = texture_;
      frameCount = fcount;
     repeat = rep;
@@ -99,6 +112,9 @@ Sprite::Sprite(TexturePtr texture_,std::string name,int fcount,float ftime,int r
 }
 
 Sprite::Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
+    if (hasAliasing.mode == TEXTURE_DEFAULT){
+        hasAliasing.mode= TextureLoadMethod::DefaultLoadingMethod.mode;
+    }
     frameCount = fcount;
     repeat = rep;
     frameTime = ftime;
@@ -112,6 +128,9 @@ Sprite::Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount,
 }
 
 Sprite::Sprite(std::string file,ColorReplacer &r,bool replacer,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
+    if (hasAliasing.mode == TEXTURE_DEFAULT){
+        hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
+    }
     frameCount = fcount;
     repeat = rep;
     frameTime = ftime;
@@ -130,6 +149,9 @@ Sprite::Sprite(std::string file,ColorReplacer &r,bool replacer,int fcount,float 
 
 
 Sprite::Sprite(SDL_RWops* file,std::string name,int fcount,float ftime,int rep,TextureLoadMethod hasAliasingg):Sprite(){
+    if (hasAliasingg.mode == TEXTURE_DEFAULT){
+        hasAliasingg.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
+    }
     frameCount = fcount;
     repeat = rep;
     frameTime = ftime;
@@ -140,13 +162,27 @@ Sprite::Sprite(SDL_RWops* file,std::string name,int fcount,float ftime,int rep,T
     SetAlpha(255);
 }
 
-Sprite::Sprite(std::string file,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
+Sprite::Sprite(std::string file,TextureLoadMethod hasAliasing):Sprite(){
+    if (hasAliasing.mode == TEXTURE_DEFAULT){
+        hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
+    }
+    fname = file;
+    Open(file,hasAliasing);
+    SetGrid(GetWidth()/frameCount,GetHeight());
+    SetFrame(0);
+    SetAlpha(255);
+}
 
+Sprite::Sprite(std::string file,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
+    if (hasAliasing.mode == TEXTURE_DEFAULT){
+        hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
+    }
     frameCount = fcount;
     fname = file;
     frameTime = ftime;
     repeat = rep;
     Open(file,hasAliasing);
+    frameCount = std::max(1,frameCount);
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
     SetAlpha(255);
@@ -200,7 +236,9 @@ Sprite::~Sprite(){}
 
 
 BearTexture *Sprite::Preload(const char *file,bool adjustDir,TextureLoadMethod HasAliasing){
-
+    if (HasAliasing.mode == TEXTURE_DEFAULT){
+        HasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
+    }
     char sprn[1024];
     strcpy(sprn,file);
     std::string stdnamee(sprn);
@@ -243,7 +281,9 @@ BearTexture *Sprite::Preload(const char *file,bool adjustDir,TextureLoadMethod H
 }
 
 BearTexture * Sprite::Preload(SDL_RWops* rw,std::string name,TextureLoadMethod hasAliasing){
-
+    if (hasAliasing.mode == TEXTURE_DEFAULT){
+        hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
+    }
     unsigned char* imageData = nullptr;
     int sizeX,sizeY,comp;
     uint64_t rsize;
@@ -274,6 +314,9 @@ BearTexture * Sprite::Preload(SDL_RWops* rw,std::string name,TextureLoadMethod h
     return nullptr;
 }
 BearTexture * Sprite::Preload(std::string fileName,ColorReplacer &r,TextureLoadMethod hasAliasing){
+    if (hasAliasing.mode == TEXTURE_DEFAULT){
+        hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
+    }
     if (fileName == ""){
         return nullptr;
     }
@@ -339,6 +382,9 @@ void Sprite::Query(TexturePtr ptr){
 }
 
 bool Sprite::Open(std::string filepath,TextureLoadMethod hasAliasing){
+    if (hasAliasing.mode == TEXTURE_DEFAULT){
+        hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
+    }
     scaleX = scaleY = 1;
     std::string stdnamee(filepath);
     std::string aux = stdnamee;
@@ -414,15 +460,27 @@ void Sprite::Render(PointInt pos,double angle){
 
         GLfloat quadWidth = clipRect.w ;
         GLfloat quadHeight = clipRect.h ;
-        glTranslatef(
-                     (pos.x  + quadWidth / 2.f  ),
-                     (pos.y  + quadHeight/ 2.f  ),
-                       0.f );
 
-        glScalef(scaleX * ( (sprFlip&SDL_FLIP_HORIZONTAL) != 0 ? -1.0f : 1.0f), scaleY * ( (sprFlip&SDL_FLIP_VERTICAL) != 0 ? -1.0f : 1.0f), 1.0f);
+
+        //glScalef(scaleX * ( (sprFlip&SDL_FLIP_HORIZONTAL) != 0 ? -1.0f : 1.0f), scaleY * ( (sprFlip&SDL_FLIP_VERTICAL) != 0 ? -1.0f : 1.0f), 1.0f);
+        glScalef(scaleX , scaleY , 1.0f);
         glRotatef( angle, 0.f, 0.f, 1.f );
+        glTranslatef(
+            (pos.x * (1.0f/scaleX)  + quadWidth  / 2.f  ),
+            (pos.y * (1.0f/scaleY)  + quadHeight / 2.f  ),
+        0.f);
 
-         glBindTexture( GL_TEXTURE_2D, textureShred.get()->id );
+        glBindTexture( GL_TEXTURE_2D, textureShred.get()->id );
+        if ((sprFlip&SDL_FLIP_HORIZONTAL) != 0){
+            float holder =  texLeft;
+            texLeft = texRight;
+            texRight = holder;
+        }
+        if ((sprFlip&SDL_FLIP_VERTICAL) != 0){
+            float holder =  texTop;
+            texTop = texBottom;
+            texBottom = holder;
+        }
 
         glBegin( GL_QUADS );
             glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );

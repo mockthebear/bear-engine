@@ -59,7 +59,7 @@ void ReliableUdpClient::Update(float dt){
 
 bool ReliableUdpClient::Send(SocketMessage *msg){
     if (peer){
-        ENetPacket * packet = enet_packet_create (msg->GetStream(),  msg->GetMessageSize()+1, ENET_PACKET_FLAG_RELIABLE);
+        ENetPacket * packet = enet_packet_create (msg->GetStream(),  msg->GetMessageSize()+1, sendMode);
         enet_peer_send(peer, 0, packet);
         return true;
     }else{
@@ -193,7 +193,7 @@ bool ReliableUdpServer::Send(SocketMessage *msg,int pid){
     }else{
         ENetPeer *peer = peers[pid];
         if (peer){
-            ENetPacket * packet = enet_packet_create (msg->GetStream(),  msg->GetMessageSize()+1, ENET_PACKET_FLAG_RELIABLE);
+            ENetPacket * packet = enet_packet_create (msg->GetStream(),  msg->GetMessageSize()+1, sendMode);
             enet_peer_send(peer, 0, packet);
             return true;
         }else{

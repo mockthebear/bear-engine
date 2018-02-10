@@ -189,7 +189,7 @@ class Text{
         color({255,255,255,255}),alpha(255),font(nullptr),texture(nullptr),texturespr(nullptr),isWorking(false),aliasing(false),keepAlive(false){};
         #else
         Text():box(),bg({100,100,120,255}),angle(0),fontfile(""),text(""),style(TEXT_SOLID),size(),scaleY(1.0f),scaleX(1.0f),
-        color({255,255,255,255}),alpha(255),font(nullptr),isWorking(false),texture(nullptr),aliasing(TEXTURE_LINEAR),texturespr(nullptr),keepAlive(false),emptyText(true){};
+        color({255,255,255,255}),alpha(255),font(nullptr),isWorking(false),texture(nullptr),aliasing(TEXTURE_DEFAULT),texturespr(nullptr),keepAlive(false),emptyText(true){};
         #endif // RENDER_OPENGL
 
 

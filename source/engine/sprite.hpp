@@ -25,22 +25,24 @@
 #endif // RENDER_OPENGLES
 
 enum TextureLoadMethodEnum{
-    TEXTURE_NEARST,
+    TEXTURE_DEFAULT,
+    TEXTURE_NEAREST,
     TEXTURE_LINEAR,
     TEXTURE_TRILINEAR,
 };
 
 class TextureLoadMethod{
     public:
+    static TextureLoadMethod DefaultLoadingMethod;
     TextureLoadMethod(){
-        mode = TEXTURE_NEARST;
+        mode = TEXTURE_NEAREST;
     };
     TextureLoadMethod(TextureLoadMethodEnum md){
         mode = md;
     };
     void ApplyFilter(){
         switch (mode){
-            case TEXTURE_NEARST:
+            case TEXTURE_NEAREST:
                 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
                 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
                 break;
@@ -51,6 +53,10 @@ class TextureLoadMethod{
             case TEXTURE_TRILINEAR:
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+                break;
+            case TEXTURE_DEFAULT:
+                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
                 break;
         }
     }
@@ -65,7 +71,7 @@ class BearTexture{
             id = 0;
             w = h = c = 0;
             size_w = size_h = 0;
-            textureMode = TEXTURE_NEARST;
+            textureMode = TEXTURE_NEAREST;
         };
         GLuint DropTexture(){
            GLuint ret = id;
@@ -147,7 +153,6 @@ class Animation;
 class Sprite{
     public:
 
-
         /**
             *LEL, dont waste your time on empty constructor. srsly
             *it just start with 0 on everything
@@ -163,20 +168,21 @@ class Sprite{
 
 
         Sprite(TexturePtr texture):Sprite(){};
-        Sprite(TexturePtr texture,std::string name,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
-        Sprite(TexturePtr texture,std::string name,std::string alias,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+        Sprite(TexturePtr texture,std::string name,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
+        Sprite(TexturePtr texture,std::string name,std::string alias,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
 
-        Sprite(TexturePtr texture,std::string name,int fcount,float ftime,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
-        Sprite(TexturePtr texture,std::string name,std::string alias,int fcount,float ftime,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+        Sprite(TexturePtr texture,std::string name,int fcount,float ftime,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
+        Sprite(TexturePtr texture,std::string name,std::string alias,int fcount,float ftime,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
 
-        Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+        Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
 
-        Sprite(SDL_RWops* rw,std::string name,int fcount,float ftime,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+        Sprite(SDL_RWops* rw,std::string name,int fcount,float ftime,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
 
 
-        Sprite(std::string file,int fcount=1.0f,float ftime=1.0f,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+        Sprite(std::string file,int fcount=1.0f,float ftime=1.0f,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
+        Sprite(std::string file,TextureLoadMethod);
 
-        Sprite(std::string file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+        Sprite(std::string file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
 
 
 
@@ -197,7 +203,7 @@ class Sprite{
             @param file The path or the asset tweak asset:file
         */
 
-        static BearTexture* Preload(const char *file,bool adjustDir=true,TextureLoadMethod hasAliasing=TEXTURE_NEARST);
+        static BearTexture* Preload(const char *file,bool adjustDir=true,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
         /**
             *Works like Sprite::Preload(char *file)
             *You have to pass an RWops and set an alias to work on Sprite::assetTable
@@ -211,15 +217,15 @@ class Sprite{
             SDL_RWclose(file);
             @endcode
         */
-        static BearTexture* Preload(SDL_RWops* rw,std::string name,TextureLoadMethod AliasingMethod=TEXTURE_NEARST);
+        static BearTexture* Preload(SDL_RWops* rw,std::string name,TextureLoadMethod AliasingMethod=TEXTURE_DEFAULT);
         /**
-            *Works like Sprite::Preload(char *file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod AliasingMethod=TEXTURE_NEARST)
+            *Works like Sprite::Preload(char *file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod AliasingMethod=TEXTURE_DEFAULT)
             *You have to pass an RWops and set an alias to work on Sprite::assetTable
             @param fileName file name. Accept an alias like assets:file.png
             @param r an color replace filer.
             @param HasAliasing mark as true to load the sprite using antialiasing.
         */
-        static BearTexture *Preload(std::string fileName,ColorReplacer &r,TextureLoadMethod AliasingMethod=TEXTURE_NEARST);
+        static BearTexture *Preload(std::string fileName,ColorReplacer &r,TextureLoadMethod AliasingMethod=TEXTURE_DEFAULT);
         Sprite* GetMe(){
             return this;
         }
@@ -234,10 +240,10 @@ class Sprite{
             @param reopen Default is false. When you call this, a new texture will be created and dont be added to the Sprite::assetTable
             @return An texture
         */
-       bool Openrw(SDL_RWops* rw,std::string name,TextureLoadMethod AliasingMethod=TEXTURE_NEARST){
+       bool Openrw(SDL_RWops* rw,std::string name,TextureLoadMethod AliasingMethod=TEXTURE_DEFAULT){
             return Open(rw,name,AliasingMethod);
        };
-       bool Open(SDL_RWops* rw,std::string name,TextureLoadMethod AliasingMethod=TEXTURE_NEARST);
+       bool Open(SDL_RWops* rw,std::string name,TextureLoadMethod AliasingMethod=TEXTURE_DEFAULT);
         /**
             *Can be used when you create an sprite with empty constructor.
             @param file The path. Accept resource tweak.
@@ -245,10 +251,10 @@ class Sprite{
             @param reopen Default is false. When you call this, a new texture will be created and dont be added to the Sprite::assetTable
             @return An texture
         */
-        bool Openf(std::string file,TextureLoadMethod AliasingMethod=TEXTURE_NEARST){
+        bool Openf(std::string file,TextureLoadMethod AliasingMethod=TEXTURE_DEFAULT){
             return Open(file.c_str(),AliasingMethod);
         }
-        bool Open(std::string file,TextureLoadMethod AliasingMethod=TEXTURE_NEARST);
+        bool Open(std::string file,TextureLoadMethod AliasingMethod=TEXTURE_DEFAULT);
         /**
             *Set clip on the sprite. Clipping stuff.
             *When call Sprite::Render, the rendered thing will be only the clipped area.

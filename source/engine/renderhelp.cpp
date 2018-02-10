@@ -50,6 +50,9 @@ BearTexture* RenderHelp::CreateTexture(int width,int height,TextureLoadMethod al
 }
 
 BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod aliasing){
+    if (aliasing.mode == TEXTURE_DEFAULT){
+        aliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
+    }
     if (!surface){
         return nullptr;
     }
