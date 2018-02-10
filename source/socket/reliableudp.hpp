@@ -7,7 +7,7 @@
 
 class ReliableUdpClient: public SocketClient{
     public:
-        ReliableUdpClient():SocketClient(),client(nullptr),peer(nullptr){};
+        ReliableUdpClient():SocketClient(),sendMode(ENET_PACKET_FLAG_RELIABLE),client(nullptr),peer(nullptr){};
         ~ReliableUdpClient();
         bool IsConnected();
 
@@ -26,10 +26,12 @@ class ReliableUdpClient: public SocketClient{
         bool Connect(std::string addr,uint16_t port,int wait=1000);
         static bool StartedEnet;
 
+        void SetSendMode(ENetPacketFlag mode){ sendMode = mode;};
+
         void Close();
     private:
 
-
+        ENetPacketFlag sendMode;
         ENetHost * client;
         ENetPeer *peer;
         ENetEvent event;
@@ -40,7 +42,7 @@ class ReliableUdpClient: public SocketClient{
 class ReliableUdpServer: public SocketHost{
     public:
         ~ReliableUdpServer();
-        ReliableUdpServer():SocketHost(),server(nullptr){for (int i=0;i<100;i++) peers[i] = nullptr;};
+        ReliableUdpServer():SocketHost(),sendMode(ENET_PACKET_FLAG_RELIABLE),server(nullptr){for (int i=0;i<100;i++) peers[i] = nullptr;};
         bool Bind(uint16_t port);
         void Update(float dt);
         bool Receive(SocketMessage *msg,int pid);
@@ -48,7 +50,9 @@ class ReliableUdpServer: public SocketHost{
         void Close();
         std::list<int> GetPeers(){ return peerIds;};
         int GetPeersOnline(){ return peerIds.size();};
+        void SetSendMode(ENetPacketFlag mode){ sendMode = mode;};
     private:
+        ENetPacketFlag sendMode;
         std::list<int> peerIds;
         ENetHost *server;
         ENetEvent event;
