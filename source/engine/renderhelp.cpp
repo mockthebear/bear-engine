@@ -120,18 +120,20 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
     #ifdef RENDER_OPENGL
     glLoadIdentity();
     glTranslatef(box.x, box.y, 0.0f);
+
     if (!outline){
         glBegin( GL_QUADS );
     }else{
         glBegin( GL_LINE_LOOP );
     }
         glColor4ub( r,g,b,a );
-        glVertex2f( 0,0 );
-        glVertex2f(  box.w, 0 );
+        glVertex2f( 0.0f,0.0f );
+        glVertex2f(  box.w, 0.0f );
         glVertex2f( box.w,  box.h );
-        glVertex2f( 0,  box.h );
+        glVertex2f( 0.0f,  box.h );
     glEnd();
     glPopMatrix();
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     #else
 
     #endif
@@ -164,8 +166,8 @@ void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,u
         glLineWidth(thicc);
         glColor4ub( r,g,b,a );
         glBegin(GL_LINES);
-            glVertex3f(p1.x, p1.y, 0.0);
-            glVertex3f(p2.x, p2.y, 0);
+            glVertex3f(p1.x, p1.y, 0.0f);
+            glVertex3f(p2.x, p2.y, 0.0f);
         glEnd();
         glLineWidth(1);
         glPopMatrix();
