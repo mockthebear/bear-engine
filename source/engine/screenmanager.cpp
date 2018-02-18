@@ -90,6 +90,8 @@ bool ScreenManager::SetupOpenGL(){
 	SDL_GL_SwapWindow(m_window);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendEquation(GL_FUNC_ADD);
+
 
 	glViewport( 0.f, 0.f, m_originalScreen.x, m_originalScreen.y );
 	DebugHelper::DisplayGlError();
@@ -106,6 +108,7 @@ bool ScreenManager::SetupOpenGL(){
     glPushMatrix();
     glClearColor( 1.f, 1.f, 1.f, 1.f );
     DebugHelper::DisplayGlError();
+
     if (postProcess){
         StartPostProcessing();
     }
@@ -133,6 +136,7 @@ bool ScreenManager::SetupOpenGL(){
 
 bool ScreenManager::StartPostProcessing(){
     postProcess = true;
+
     glActiveTexture(GL_TEXTURE0);
     glGenTextures(1, &fbo_texture);
     glBindTexture(GL_TEXTURE_2D, fbo_texture);
@@ -166,10 +170,12 @@ bool ScreenManager::StartPostProcessing(){
         -1,  -1,
         1,  -1,
     };
+    glClearColor( 1.f, 1.f, 1.f, 1.f );
     glGenBuffers(1, &vbo_fbo_vertices);
     glBindBuffer(GL_ARRAY_BUFFER, vbo_fbo_vertices);
     glBufferData(GL_ARRAY_BUFFER, sizeof(fbo_vertices), fbo_vertices, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 
     DebugHelper::DisplayGlError();
     return true;
@@ -235,10 +241,17 @@ void ScreenManager::RenderPresent(){
     SDL_RenderPresent(m_renderer);
     #else
     if (postProcess){
+
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         glLoadIdentity();
         glClearColor(ClearColor[0],ClearColor[1],ClearColor[2],ClearColor[3]);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+        glDisable(GL_BLEND);
         glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
         if (storedShader.IsLoaded()){
             storedShader.Bind();
@@ -266,6 +279,7 @@ void ScreenManager::RenderPresent(){
             storedShader.Unbind();
         }
         glPopMatrix();
+        glEnable(GL_BLEND);
     }
     glFlush();
     SDL_GL_SwapWindow(m_window);
