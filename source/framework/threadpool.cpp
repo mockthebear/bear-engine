@@ -286,7 +286,9 @@ bool ThreadPool::SpreadJobs(){
 void *ThreadPool::thread_pool_worker(void *OBJ){
     parameters *P = (parameters*)OBJ;
     ThreadPool *This = (ThreadPool*)P->me;
+    #ifndef GL_LIGHT
     Light *luz = Light::GetInstance();
+    #endif // GL_LIGHT
     P->working = false;
     unsigned long int iteration = 0;
     while(true){
@@ -349,11 +351,17 @@ void *ThreadPool::thread_pool_worker(void *OBJ){
                         return nullptr;
                     #endif // DISABLE_THREADPOOL
                 }else if (todo.Type == JOB_SHADE){
+                    #ifndef GL_LIGHT
                     luz->Shade(P,todo);
+                    #endif // GL_LIGHT
                 }else if (todo.Type == JOB_REDUCE){
+                    #ifndef GL_LIGHT
                     luz->Reduce(P,todo);
+                    #endif // GL_LIGHT
                 }else if (todo.Type == JOB_GEN){
+                    #ifndef GL_LIGHT
                     luz->Gen(P,todo);
+                    #endif // GL_LIGHT
                 }
                 todo.Type = JOB_NOTHING;
             }else{

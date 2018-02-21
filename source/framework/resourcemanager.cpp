@@ -99,9 +99,10 @@ char* ResourceManager::GetFileData(std::string assetAlias,std::string fileName){
 }
 SDL_RWops* ResourceManager::GetFile(std::string assetAlias,std::string fileName){
     if (!resources[assetAlias]){
-        if (!Load(assetAlias))
+        if (!Load(assetAlias)){
             Console::GetInstance().AddTextInfo(utils::format("Cannot load file %s:%s",assetAlias.c_str(),fileName.c_str()));
             return NULL;
+        }
     }
     return resources[assetAlias]->GetFile(fileName);
 }
