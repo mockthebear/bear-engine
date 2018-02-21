@@ -337,7 +337,7 @@ void Game::Update(){
         ScreenManager::GetInstance().PreRender();
 
     if (!CanStop()){
-        Scheduler::GetInstance().Update(dt);
+        g_scheduler.Update(dt);
         #ifndef DISABLE_LUAINTERFACE
         if (startFlags&BEAR_FLAG_START_LUA)
             LuaInterface::Instance().Update(dt);

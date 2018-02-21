@@ -26,6 +26,7 @@
 #include "../tests/testshader.hpp"
 #include "../tests/testsocket.hpp"
 #include "../tests/testsound.hpp"
+#include "../tests/testrenderspeed.hpp"
 
 
 
@@ -90,10 +91,12 @@ bool GameBehavior::OnLoad(){
 
 
     Game::GetInstance()->AddState(new Test_PathFind());
-    Game::GetInstance()->AddState(new Test_Text());
+
     Game::GetInstance()->AddState(new Test_Scrolling());
     Game::GetInstance()->AddState(new Test_TargetTexture());
     Game::GetInstance()->AddState(new Test_Shader());
+    Game::GetInstance()->AddState(new Test_RenderSpeed());
+    Game::GetInstance()->AddState(new Test_Text());
     Game::GetInstance()->AddState(new Test_Sprite());
     Game::GetInstance()->AddState(new Test_Pool());
     //Game::GetInstance()->AddState(new Test_Socket());
