@@ -225,12 +225,12 @@ void TargetTexture::Render(Point pos){
 
 
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
+    glScalef(scale.x , scale.y, 1.0f);
         glTranslatef(
                 (pos.x  + quadWidth / 2.f  ),
                 (pos.y + quadHeight/ 2.f  ),
         0.f );
-
+    //scale
     glBegin( GL_QUADS );
         glTexCoord2f(  0.0f , 1.0f ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
         glTexCoord2f(  1.0f , 1.0f ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
@@ -253,7 +253,7 @@ bool TargetTexture::Bind(){
     glViewport(0, 0, size_w, size_h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, size_w, size_w, 0, -1, 1);
+    glOrtho(0, size_w, size_h, 0, -1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     #endif // RENDER_OPENGL
