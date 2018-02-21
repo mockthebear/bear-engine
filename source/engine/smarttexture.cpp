@@ -79,13 +79,13 @@ void SmartTexture::Render(PointInt pos,float angle,Point scale){
     texRight = (  t->size_w ) / (float)t->w;
     texBottom = ( t->size_h ) / (float)t->h;
 
-
+    glScalef(scale.x,scale.y, 1.0f);
     glTranslatef(
                     (pos.x   + quadWidth / 2.f  ),
                     (pos.y  + quadHeight/ 2.f  ),
                     0.f );
 
-    glScalef(scale.x,scale.y, 1.0f);
+
     glRotatef( angle, 0.f, 0.f, 1.f );
 
     glBindTexture( GL_TEXTURE_2D, t->id );
