@@ -1073,22 +1073,20 @@ template<typename T1> struct ClassRegister{
         RegisterClassOutside(L,name,makerF,gc_func );
 
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetX"        ,&GameObject::GetX);
-        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetX"        ,&GameObject::SetX);
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"Is"          ,&GameObject::Is);
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetMyRef"    ,&GameObject::GetMyRef);
-        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetX"        ,&GameObject::SetX);
-        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetY"        ,&GameObject::SetY);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetX"        ,&GameObject::SetX, false);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetY"        ,&GameObject::SetY, false);
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetY"        ,&GameObject::GetY);
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetX"        ,&GameObject::GetX);
-        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetWidth"    ,&GameObject::SetWidth);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetWidth"    ,&GameObject::SetWidth, false);
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetWidth"    ,&GameObject::GetWidth);
-        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetHeight"   ,&GameObject::SetHeight);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetHeight"   ,&GameObject::SetHeight, false);
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetHeight"   ,&GameObject::GetHeight);
-        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetBox"      ,&GameObject::SetBox);
-        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetBox"      ,&GameObject::GetBox);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetBox"      ,&GameObject::SetBox, false);
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetBox"      ,&GameObject::GetBox);
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetSolid"    ,&GameObject::GetSolid);
-        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetSolid"    ,&GameObject::SetSolid);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetSolid"    ,&GameObject::SetSolid, false);
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"Kill"        ,&GameObject::Kill);
 
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"hasPerspective"        ,&GameObject::hasPerspective);

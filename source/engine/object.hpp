@@ -45,7 +45,7 @@ enum ObjType{
 
 };
 
-#define REGISTER_GETSETTER(Nm,type,var) type Get ## Nm (){return var;}; void Set ## Nm(type arg){ var = arg;}
+#define REGISTER_GETSETTER(Nm,type,var) type Get ## Nm (){return var;}; void Set ## Nm(type arg,bool relative= false){ var = relative ? (var+arg) : arg;}
 #define OBJ_REGISTER(Type) hashIt(Types::Get<Type>());
 
 /**
