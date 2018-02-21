@@ -26,6 +26,54 @@ template<> struct ShaderSetter<Point>{
     };
 };
 
+template<> struct ShaderSetter<std::vector<Point>>{
+    static uint32_t maxSize;
+    static float *arr;
+    static bool SetUniform(GLuint shdr,const char *str,std::vector<Point> var){
+        GLint loc = glGetUniformLocation(shdr, str );
+        if (loc == -1){
+            return false;
+        }
+        if (arr == nullptr || (var.size() * 2) > maxSize){
+            arr = new float[var.size() * 2];
+            maxSize = var.size() * 2;
+        }
+        int cnter = 0;
+        for (auto &it : var){
+            arr[cnter] = it.x;
+            arr[cnter+1] = it.y;
+            cnter += 2;
+        }
+        glUniform2fv(loc,var.size(), arr );
+
+        return true;
+    };
+};
+
+template<> struct ShaderSetter<std::vector<Point3>>{
+    static uint32_t maxSize;
+    static float *arr;
+    static bool SetUniform(GLuint shdr,const char *str,std::vector<Point3> var){
+        GLint loc = glGetUniformLocation(shdr, str );
+        if (loc == -1){
+            return false;
+        }
+        if (arr == nullptr || (var.size() * 3) > maxSize){
+            arr = new float[var.size() * 3];
+            maxSize = var.size() * 3;
+        }
+        int cnter = 0;
+        for (auto &it : var){
+            arr[cnter] = it.x;
+            arr[cnter+1] = it.y;
+            arr[cnter+2] = it.z;
+            cnter += 3;
+        }
+        glUniform3fv(loc,var.size(), arr );
+        return true;
+    };
+};
+
 template<> struct ShaderSetter<Point3>{
     static bool SetUniform(GLuint shdr,const char *str,Point3 var){
         GLint loc = glGetUniformLocation(shdr, str );
@@ -44,6 +92,32 @@ template<> struct ShaderSetter<Rect>{
             return false;
         }
         glUniform4f(loc,var.x,var.y,var.w,var.h);
+        return true;
+    };
+};
+
+template<> struct ShaderSetter<std::vector<Rect>>{
+    static uint32_t maxSize;
+    static float *arr;
+    static bool SetUniform(GLuint shdr,const char *str,std::vector<Rect> var){
+        GLint loc = glGetUniformLocation(shdr, str );
+        if (loc == -1){
+            return false;
+        }
+        if (arr == nullptr || (var.size() * 4) > maxSize){
+            arr = new float[var.size() * 4];
+            maxSize = var.size() * 4;
+        }
+
+        int cnter = 0;
+        for (auto &it : var){
+            arr[cnter] = it.x;
+            arr[cnter+1] = it.y;
+            arr[cnter+2] = it.w;
+            arr[cnter+3] = it.h;
+            cnter += 4;
+        }
+        glUniform4fv(loc,var.size(), arr );
         return true;
     };
 };

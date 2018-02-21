@@ -3,7 +3,12 @@
 #include <iostream>
 #include "../framework/gamefile.hpp"
 #include <glm/gtc/type_ptr.hpp>
-
+uint32_t ShaderSetter<std::vector<Rect>>::maxSize = 0;
+float *ShaderSetter<std::vector<Rect>>::arr = nullptr;
+uint32_t ShaderSetter<std::vector<Point>>::maxSize = 0;
+float *ShaderSetter<std::vector<Point>>::arr = nullptr;
+uint32_t ShaderSetter<std::vector<Point3>>::maxSize = 0;
+float *ShaderSetter<std::vector<Point3>>::arr = nullptr;
 
 GLuint Shader::lastShader = 0;
 
