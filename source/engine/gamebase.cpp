@@ -98,11 +98,11 @@ void Game::init(const char *name){
         DisplayBearInfo();
 
         if (startFlags&BEAR_FLAG_START_SDL){
-            /*if (SDL_Init(BEAR_SDL_CONST_INIT) != 0){
+            if (SDL_Init(BEAR_SDL_CONST_INIT) != 0){
                 Console::GetInstance().AddTextInfo( utils::format("SDL may nor work because [%s]",SDL_GetError()) );
             }else{
                 Console::GetInstance().AddTextInfo("SDL is on!");
-            }*/
+            }
         }
 
         if (startFlags&BEAR_FLAG_START_TTF){
