@@ -124,6 +124,7 @@ SDL_RWops* ResourceFile::GetFile(std::string name){
             if (ptr){
                 delete []ptr;
             }
+            ptr = nullptr;
             return 0;
         };
         return rw;
