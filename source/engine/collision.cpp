@@ -5,7 +5,7 @@
 
 int Collision::AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,PoolManager &pool,PoolGroupId gid,bool onlySolid){
     Rect tempXY(dis->box.x+sx*dt,dis->box.y+sy*dt,dis->box.w,dis->box.h);
-    if (sx != 0.0f || sy != 0.0f){
+    if (sx != 0.0f || sy != 0.0f)
         for (auto &obj : pool.ForGroup(gid))
         {
             if (obj != dis && !obj->IsDead()){
@@ -25,8 +25,8 @@ int Collision::AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,Pool
                 }
             }
         }
-    }
-    return -1;
+        return -1;
+
 }
 
 Rect Collision::GetIntersectRect(Rect& a,  Rect& b){
