@@ -140,12 +140,12 @@ bool SmartTileset::MakeMap(){
                 SDL_RenderClear(BearEngine->GetRenderer());
                 SDL_SetRenderDrawBlendMode(BearEngine->GetRenderer(), SDL_BLENDMODE_BLEND);
                 #else
-                /*
+
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
                 RenderHelp::DrawSquareColor(Rect(0,0,maxTextureSize.x,maxTextureSize.y),0,0,0,0);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 TargetTexture::UnBind();
-                */
+
 
 
                 #endif // RENDER_OPENGL
