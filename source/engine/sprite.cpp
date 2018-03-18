@@ -435,7 +435,6 @@ void Sprite::SetClip(int x, int y,int w,int h){
     clipRect.w = w;
 
 }
-
 void Sprite::Render(PointInt pos,double angle){
     if (IsLoaded()){
         #ifndef RENDER_OPENGL
@@ -460,27 +459,15 @@ void Sprite::Render(PointInt pos,double angle){
 
         GLfloat quadWidth = clipRect.w ;
         GLfloat quadHeight = clipRect.h ;
-
-
-        //glScalef(scaleX * ( (sprFlip&SDL_FLIP_HORIZONTAL) != 0 ? -1.0f : 1.0f), scaleY * ( (sprFlip&SDL_FLIP_VERTICAL) != 0 ? -1.0f : 1.0f), 1.0f);
-        glScalef(scaleX , scaleY , 1.0f);
-        glRotatef( angle, 0.f, 0.f, 1.f );
         glTranslatef(
-            (pos.x * (1.0f/scaleX)  + quadWidth  / 2.f  ),
-            (pos.y * (1.0f/scaleY)  + quadHeight / 2.f  ),
-        0.f);
+                     (pos.x  + quadWidth / 2.f  ),
+                     (pos.y  + quadHeight/ 2.f  ),
+                       0.f );
 
-        glBindTexture( GL_TEXTURE_2D, textureShred.get()->id );
-        if ((sprFlip&SDL_FLIP_HORIZONTAL) != 0){
-            float holder =  texLeft;
-            texLeft = texRight;
-            texRight = holder;
-        }
-        if ((sprFlip&SDL_FLIP_VERTICAL) != 0){
-            float holder =  texTop;
-            texTop = texBottom;
-            texBottom = holder;
-        }
+        glScalef(scaleX * ( (sprFlip&SDL_FLIP_HORIZONTAL) != 0 ? -1.0f : 1.0f), scaleY * ( (sprFlip&SDL_FLIP_VERTICAL) != 0 ? -1.0f : 1.0f), 1.0f);
+        glRotatef( angle, 0.f, 0.f, 1.f );
+
+         glBindTexture( GL_TEXTURE_2D, textureShred.get()->id );
 
         glBegin( GL_QUADS );
             glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
