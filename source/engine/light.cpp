@@ -1,4 +1,125 @@
 #include "light.hpp"
+
+#ifndef DISABLE_THREADPOOL
+pthread_mutex_t Light::GCritical;
+#endif
+
+Light* Light::Slight = nullptr;
+
+#ifdef GL_LIGHT
+
+
+Light::Light(){
+    m_bufferTexture = nullptr;
+}
+
+Light* Light::Startup(Point screenSize,Point scalerr){
+    #ifndef DISABLE_THREADPOOL
+    pthread_mutex_init(&GCritical,nullptr);
+    #endif // DISABLE_THREADPOOL
+
+
+    Light *l = GetInstance();
+    l->InternalStartup(screenSize,scalerr);
+    return l;
+}
+bool Light::Shutdown(){
+    if (m_bufferTexture){
+        delete []m_bufferTexture;
+        m_bufferTexture = nullptr;
+        return true;
+    }
+    return false;
+}
+void Light::InternalStartup(Point screenSize,Point scale){
+    Shutdown();
+    if (!m_bufferTexture){
+        m_lightShader.Compile("engine/vertex.glvs","data/light.glfs");
+        m_blurShader.Compile("engine/vertex.glvs","data/blur.glfs");
+        m_bufferTexture = new TargetTexture();
+        canvasSize = screenSize;
+        scaler = scale;
+        m_bufferTexture->Generate(canvasSize.x*scaler.x,canvasSize.y*scaler.y);
+    }
+}
+
+
+Light* Light::GetInstance(){
+    #ifndef DISABLE_THREADPOOL
+    pthread_mutex_lock(&GCritical);
+    #endif
+    if (Slight == nullptr){
+        Slight = new Light();
+    }
+    #ifndef DISABLE_THREADPOOL
+    pthread_mutex_unlock(&GCritical);
+    #endif
+    return Slight;
+}
+
+bool Light::AddLight(Point pos,float strenght,float distanceMultiplier){
+    m_lights.emplace_back(Rect(pos.x*scaler.x,pos.y*scaler.y,strenght*scaler.x,distanceMultiplier));
+}
+void Light::AddBlock(Rect block,float opacity){
+    auto t = std::make_tuple(block,Point(opacity,0));
+    m_blocks.emplace_back(t);
+}
+
+void Light::Update(float dt){
+    m_vertices.clear();
+    for (auto &obj : m_blocks){
+        auto &it = std::get<0>(obj);
+        /*m_vertices.emplace_back(Rect(it.x, it.y, (it.x + it.w), it.y)); //top line
+        m_vertices.emplace_back(Rect( (it.x+it.w) ,it.y, (it.x+it.w) , (it.y+it.h) )); //right
+        m_vertices.emplace_back(Rect( it.x, (it.y+it.h) , (it.x+it.w) , (it.y+it.h) )); //bottom
+        m_vertices.emplace_back(Rect( it.x,  it.y , (it.x) , (it.y+it.h) )); //left*/
+        m_vertices.emplace_back(Rect( it.x*scaler.x, it.y*scaler.y , (it.x+it.w)*scaler.x , (it.y+it.h)*scaler.y ));
+        for (auto &lpoint : m_lights){
+            if (Collision::IsColliding(it,Point(lpoint.x,lpoint.y))){
+                lpoint.w = 0;
+            }
+        }
+    }
+
+}
+
+void Light::Render(Point pos,float maxDarkness){
+    if (m_bufferTexture){
+        m_bufferTexture->Bind();
+        //Clear current texture
+        glDisable(GL_BLEND);
+        RenderHelp::DrawSquareColorA(Rect(0,0,canvasSize.x*scaler.x,canvasSize.y*scaler.y),0,0,0,0);
+        glEnable(GL_BLEND);
+        //Enable shading shader
+        m_lightShader.Bind();
+        ShaderSetter<Point>::SetUniform(m_lightShader.GetCurrentShaderId(),"screenSize",canvasSize*scaler);
+        ShaderSetter<float>::SetUniform(m_lightShader.GetCurrentShaderId(),"minDark",maxDarkness);
+
+        ShaderSetter<std::vector<Rect>>::SetUniform(m_lightShader.GetCurrentShaderId(),"light",m_lights);
+        ShaderSetter<int>::SetUniform(m_lightShader.GetCurrentShaderId(),"lightPoints",m_lights.size());
+
+        ShaderSetter<std::vector<Rect>>::SetUniform(m_lightShader.GetCurrentShaderId(),"blockade",m_vertices);
+        ShaderSetter<int>::SetUniform(m_lightShader.GetCurrentShaderId(),"lightBlockades",m_vertices.size());
+        //Draw the shadows to the m_bufferTexture
+        RenderHelp::DrawSquareColorA(Rect(0,0,SCREEN_SIZE_W*scaler.x,SCREEN_SIZE_H*scaler.y),255,0,0,255);
+        m_lightShader.Unbind();
+        //Now unbind the texture and blur it
+        m_bufferTexture->UnBind();
+
+        m_blurShader.Bind();
+        ShaderSetter<Point>::SetUniform(m_blurShader.GetCurrentShaderId(),"resolution",canvasSize*scaler);
+        m_bufferTexture->SetScale(Point(1.0/scaler.x,1.0/scaler.y));
+        m_bufferTexture->Render(Point(0,0));
+        m_blurShader.Unbind();
+    }
+    m_lights.clear();
+    m_blocks.clear();
+}
+
+
+
+#else
+
 #include "camera.hpp"
 #include "screenmanager.hpp"
 #include "gamebase.hpp"
@@ -6,10 +127,7 @@
 #include "renderhelp.hpp"
 #include "../performance/console.hpp"
 
-Light* Light::Slight = nullptr;
-#ifndef DISABLE_THREADPOOL
-pthread_mutex_t Light::GCritical;
-#endif
+
 
 Light::Light(){
     out = nullptr;
@@ -189,12 +307,11 @@ bool Light::Shutdown(){
 
     delete []ShadeMap;
     delete []DataMap;
-    if (MapMap){
-        for (int i=0;i<maxAlloc;i++){
-            delete []MapMap[i];
-        }
-        delete []MapMap;
+
+    for (int i=0;i<maxAlloc;i++){
+        delete []MapMap[i];
     }
+    delete []MapMap;
     MapMap = nullptr;
     out = nullptr;
     Console::GetInstance().AddTextInfo("Light deleted.");
@@ -436,8 +553,10 @@ void Light::Render(Point pos){
     SDL_RenderCopyEx(BearEngine->GetRenderer(),out->GetTexture(),nullptr,&dimensions2,0,nullptr,SDL_FLIP_NONE);*/
 
     out->Render(Point(
-        pos.x - (extraX - ExtraSize.x/4) + size.x/4,
-        pos.y  -(extraY - ExtraSize.y/4 + blockSize*4) + size.y/4
+        pos.x - (extraX  + blockSize*4) ,
+        pos.y  -(extraY  + blockSize*4)
                       ),0,Point(size.x/sizeX, size.y/sizeY));
 
 }
+
+#endif // RENDER_OPENGL
