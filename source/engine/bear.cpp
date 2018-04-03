@@ -16,9 +16,6 @@ void bear::outstream::printme(long unsigned int n){
     Console::GetInstance().Store("%lud",n);
 }
 
-void bear::outstream::printme(uint64_t n){
-    Console::GetInstance().Store("%lud",n);
-}
 
 void bear::outstream::printme(float n){
     Console::GetInstance().Store("%f",n);
@@ -28,6 +25,9 @@ void bear::outstream::printme(double n){
     Console::GetInstance().Store("%lf",n);
 }
 
+void bear::outstream::printme(void *n){
+    Console::GetInstance().Store("%d",n);
+}
 
 void bear::outstream::printme(const char *c){
     bool found = false;
