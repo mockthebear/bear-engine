@@ -166,6 +166,18 @@ class AssetMannager{
             return stuff;
         }
 
+
+        /**
+            Only for lua
+        */
+        bool lua_loadSprite(std::string str,std::string alias){
+            return load<Sprite>(str,alias);
+        }
+        /*bool lua_loadSound(std::string str,std::string alias){
+            return load<Sound>(str,alias);
+        }*/
+
+
     private:
 
 
