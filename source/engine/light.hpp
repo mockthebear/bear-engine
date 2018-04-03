@@ -54,7 +54,7 @@ enum LightStep{
 #else
 
 
-    #ifndef DISABLE_THREADPOOL
+
     #include "smarttexture.hpp"
     #include "../framework/threadpool.hpp"
 
@@ -123,6 +123,6 @@ enum LightStep{
             bool doneAuto;
             int LightJobs;
     };
-    #endif // LIGHTH
+
 
 #endif // LIGHTH
