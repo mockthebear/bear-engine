@@ -14,7 +14,7 @@ class Test_Lua: public State{
     public:
         Test_Lua(){
             requestQuit = requestDelete = false;
-            duration = 1.0f;
+            duration = 10.0f;
         };
         ~Test_Lua(){
 
@@ -53,10 +53,11 @@ class Test_Lua: public State{
             LuaCaller::LoadFile(LuaManager::L,"lua/test.lua");
             LuaCaller::Pcall(LuaManager::L);
             bear::out << "Call onLoad\n";
+            ResourceManager::GetInstance().Load("test.burr","test");
 
-
-
+            sp = Sprite("test:bear.png");
             LuaCaller::CallGlobalField(LuaManager::L,"onLoad");
+
 
 
         };
@@ -73,12 +74,13 @@ class Test_Lua: public State{
 
         };
         void Render(){
-
+            LuaCaller::CallGlobalField(LuaManager::L,"OnRender", &sp);
         };
         void Input();
         void Resume(){};
         void End(){};
     private:
+        Sprite sp;
         float duration;
 };
 

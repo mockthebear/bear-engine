@@ -44,8 +44,8 @@ struct QuickDebug{
         lua_getinfo(L, "nSl", &ar);
         Console::GetInstance().AddText("At %s line %d %s",ar.source, ar.currentline,LuaManager::lastCalled.c_str()  );
     };
-    static void DumpLua(lua_State *L){
-        for (int i=0;i<10;i++){
+    static void DumpLua(lua_State *L,int start=0){
+        for (int i=start;i<10;i++){
             int type = lua_type(L,-i);
             std::string vaav = "?";
             isthis(type,LUA_TNIL);
@@ -72,7 +72,6 @@ template<typename T1> struct MakeLuaObject{
             lua_pushnil(L);
             return 1;
         }
-        bool isNil = false;
         lua_getglobal(L, "__REFS"); // insert
         lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
         lua_gettable(L, -2 );
@@ -87,21 +86,17 @@ template<typename T1> struct MakeLuaObject{
         lua_remove(L, -2);
 
         if (lua_isnil(L,-1)){
-            isNil = true;
-            //Pop the table and the nil value that is the top
             lua_pop(L,1);
-
         }else{
             return 1;
         }
 
         if (lua_istable(L,1) && forceOutside == false){
-            if (isNil){
-                lua_getglobal(L, "__REFS"); // insert
-                lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
-                lua_gettable(L, -2 );
-                lua_pushnumber(L,(uint64_t)obj);
-            }
+            lua_getglobal(L, "__REFS"); // insert
+            lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
+            lua_gettable(L, -2 );
+            lua_pushnumber(L,(uint64_t)obj);
+
 
             luaL_checktype(L, 1, LUA_TTABLE);
             lua_newtable(L);
@@ -114,82 +109,89 @@ template<typename T1> struct MakeLuaObject{
             lua_pushstring(L,"data");
 
             ClassRegister<T1>::MakeTypeObserver(L,obj,IndexerHelper<T1>::Index,IndexerHelper<T1>::Newindex);
+
             lua_pushvalue(L,1);
             lua_setmetatable(L, -2);
-            lua_pushvalue(L,1);
-            lua_setfield(L, 1, "__index");
+
+            lua_pushvalue(L,1); // cv = T
+            lua_setfield(L, 1, "__index"); // cv.__index = T
+
+
+
             T1 **usr = static_cast<T1**>(lua_newuserdata(L, sizeof(T1)));
             *usr = obj;
             lua_getglobal(L, name.c_str());
             lua_setmetatable(L, -2);
             lua_setfield(L, -2, "__self");
 
-            if (isNil){
-                lua_settable(L, -3 );
-                lua_pop(L,2);
 
-                lua_getglobal(L, "__REFS"); // request to return
-                lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
-                lua_gettable(L, -2 );
+            lua_settable(L, -3 );
+            lua_pop(L,2);
 
-                lua_remove(L, -2);
-                lua_pushnumber(L,(uint64_t)obj);
-                lua_gettable(L, -2);
-                lua_remove(L, -2);
-            }
+            lua_getglobal(L, "__REFS"); // request to return
+            lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
+            lua_gettable(L, -2 );
+
+            lua_remove(L, -2);
+            lua_pushnumber(L,(uint64_t)obj);
+            lua_gettable(L, -2);
+            lua_remove(L, -2);
+
 
             return 1;
         }else{
-            if (isNil){
-                lua_getglobal(L, "__REFS"); // insert
-                lua_pushnumber(L, uint64_t(&Game::GetCurrentState()) );
-                lua_gettable(L, -2 );
-                lua_pushnumber(L,(uint64_t)obj);
-            }
+            lua_getglobal(L, "__REFS"); // insert
+            lua_pushnumber(L, uint64_t(&Game::GetCurrentState()) );
+            lua_gettable(L, -2 );
+            lua_pushnumber(L,(uint64_t)obj);
 
+
+            //Make table T
             lua_newtable(L);
+
+
+            //T.id = objptr
             lua_pushstring(L,"id");
             lua_pushnumber(L,(uint64_t)obj);
             lua_settable(L,-3);
+
+            //T.type = name
             lua_pushstring(L,"type");
             lua_pushstring(L,typeid(T1).name());
             lua_settable(L,-3);
+
+            //T.data = dataTable_lookup
             lua_pushstring(L,"data");
             ClassRegister<T1>::MakeTypeObserver(L,obj,IndexerHelper<T1>::Index,IndexerHelper<T1>::Newindex);
-            lua_pushvalue(L,1);
-            lua_setmetatable(L, -2);
 
-            lua_pushvalue(L,1);
-            lua_setmetatable(L, -2);
-            lua_pushvalue(L,1);
-
-            lua_setfield(L, 0, "__index");
             T1 **usr = static_cast<T1**>(lua_newuserdata(L, sizeof(T1)));
             *usr = obj;
-
             lua_getglobal(L, name.c_str());
             lua_setmetatable(L, -2);
             lua_setfield(L, -2, "__self");
 
-            luaL_getmetatable(L, name.c_str());
-            lua_setmetatable(L, -2);
-
-            if (isNil){
-                lua_settable(L, -3 );
-                lua_pop(L,2);
-
-                lua_getglobal(L, "__REFS"); // request to return
-                lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
-                lua_gettable(L, -2 );
-                lua_remove(L, -2);
-                lua_pushnumber(L,(uint64_t)obj);
-                lua_gettable(L, -2);
-                lua_remove(L, -2);
-
-            }
 
 
-            return 1;
+           lua_pushstring(L,"__index");
+           lua_pushvalue(L,-2);
+           lua_getglobal(L, name.c_str());
+           lua_setmetatable(L, -2);
+           lua_settable(L, -3 );
+
+
+           lua_settable(L, -3 );
+           lua_pop(L,2);
+
+           lua_getglobal(L, "__REFS"); // request to return
+           lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
+           lua_gettable(L, -2 );
+
+           lua_remove(L, -2);
+           lua_pushnumber(L,(uint64_t)obj);
+           lua_gettable(L, -2);
+           lua_remove(L, -2);
+
+           return 1;
         }
     };
 };
