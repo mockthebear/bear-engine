@@ -656,6 +656,12 @@ template<>
     todo
 */
 
+template<> struct GenericLuaReturner<AssetMannager*>{
+    static void Ret(AssetMannager* vr,lua_State *L,bool forceTable = false){
+        MakeLuaObject<AssetMannager>::Make(L,vr,"AssetMannager",forceTable);
+    };
+};
+
 template<> struct GenericLuaReturner<Sprite*>{
     static void Ret(Sprite* vr,lua_State *L,bool forceTable = false){
         MakeLuaObject<Sprite>::Make(L,vr,"Sprite",forceTable);
