@@ -1,5 +1,6 @@
 #include "beinput.hpp"
 #include "inputmanager.hpp"
+#include "../engine/bear.hpp"
 
 
 BEInput g_beinput;
@@ -65,6 +66,30 @@ void BEInput::Update(float dt){
 
 void BEInput::clear(){
     keyData.clear();
+}
+
+void BEInput::clearMethod(InputMethodIdentifier method){
+    for (auto &it : keyData){
+        auto fnd = std::find(it.second.begin(), it.second.end(), IM_JOYSTICK);
+        if (fnd != it.second.end()){
+            it.second.erase(fnd);
+        }
+    }
+}
+
+InputMethodIdentifier BEInput::GetPressedKeyMode(BEKeyBinds key){
+    for (auto &it : keyData[key]){
+        InputState state;
+        if (forcedData[key].dur > 0){
+            state = forcedData[key].key;
+        }else{
+            state = GetKeyStatus(it);
+        }
+        if (state == JUST_PRESSED || state == PRESSED){
+            return it.method;
+        }
+    }
+    return IM_NONE;
 }
 bool BEInput::IsKeyDown(BEKeyBinds key){
     for (auto &it : keyData[key]){

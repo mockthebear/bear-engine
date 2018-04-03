@@ -36,6 +36,13 @@ class InputMethod{
         DeviceId = 0;
         type = IT_BUTTON;
     }
+    bool operator==(const InputMethod p2){
+        return this->method == p2.method;
+    }
+
+    bool operator==(const InputMethodIdentifier p2){
+        return this->method == p2;
+    }
     InputMethodIdentifier method;
     IM_InputType type;
     int Key;
@@ -58,8 +65,9 @@ class BEInput{
         ~BEInput();
         bool RegisterInput(BEKeyBinds key,InputMethod method);
         void clear();
+        void clearMethod(InputMethodIdentifier method);
 
-
+        InputMethodIdentifier GetPressedKeyMode(BEKeyBinds key);
 
         bool IsKeyDown(BEKeyBinds key);
         bool IsKeyUp(BEKeyBinds key);
