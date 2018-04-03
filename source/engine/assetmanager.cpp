@@ -51,11 +51,11 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string al
             #endif // RENDER_OPENGL
             spriteMap[alias].reset(c);
             if (setOutput)
-                Console::GetInstance().AddTextInfoF("FORCED: Made texture for [%s] in  manager %d",str,id);
+                Console::GetInstance().AddTextInfoF("FORCED: Made texture for [%s] = [%s in  manager %d",str,alias.c_str(),id);
         }else{
             spriteMap[alias] = chain_ptr<BearTexture>::make(c);
             if (setOutput)
-                Console::GetInstance().AddTextInfoF("Made texture for [%s] in  manager %d",str,id);
+                Console::GetInstance().AddTextInfoF("Made texture for [%s] = [%s] in  manager %d",str,alias.c_str(),id);
         }
         return spriteMap[alias];
     }
@@ -86,7 +86,7 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,int ,float,int
         }else{
             spriteMap[str] = chain_ptr<BearTexture>::make(c);
             if (setOutput)
-                Console::GetInstance().AddTextInfoF("Made texture for [%s] in  manager %d",str,id);
+                Console::GetInstance().AddTextInfoF("Made texture for [%s] no alias in  manager %d",str,id);
         }
         return spriteMap[str];
     }
@@ -118,7 +118,7 @@ TexturePtr AssetMannager::makeTexture(bool forced,SDL_RWops* rw,std::string str,
         }else{
             spriteMap[str] = chain_ptr<BearTexture>::make(c);
             if (setOutput)
-                Console::GetInstance().AddTextInfoF("Made texture RW for [%s] in  manager %d",str,id);
+                Console::GetInstance().AddTextInfoF("Made texture RW for [%s] no alias in  manager %d",str,id);
         }
         return spriteMap[str];
     }
@@ -150,7 +150,7 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string al
         }else{
             spriteMap[alias] = chain_ptr<BearTexture>::make(c);
             if (setOutput)
-                Console::GetInstance().AddTextInfoF("Made replace texture for [%s] in  manager %d",str,id);
+                Console::GetInstance().AddTextInfoF("Made replace texture for [%s] = [%s] in  manager %d",str,alias,id);
         }
         return spriteMap[alias];
     }
@@ -179,7 +179,7 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,ColorReplacer 
         }else{
             spriteMap[str] = chain_ptr<BearTexture>::make(c);
             if (setOutput)
-                Console::GetInstance().AddTextInfoF("Made replace texture for [%s] in  manager %d",str,id);
+                Console::GetInstance().AddTextInfoF("Made replace texture for [%s] no alias in  manager %d",str,id);
         }
         return spriteMap[str];
     }
