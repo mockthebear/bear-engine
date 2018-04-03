@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <typeindex>
 #include "../framework/geometry.hpp"
 /**
     @brief Custom outstream from bear engine
@@ -16,6 +17,7 @@ namespace bear {
             void printme(float n);
             void printme(double n);
             void printme(const char *c);
+            void printme(void *c);
     };
     static outstream out;
     const char endl = '\n';
@@ -38,11 +40,6 @@ namespace bear {
         long unsigned Int specializer
     */
     static inline bear::outstream &operator << ( bear::outstream &o ,long unsigned int n){
-        o.printme(n);
-        return o;
-    }
-
-    static inline bear::outstream &operator << ( bear::outstream &o ,uint64_t n){
         o.printme(n);
         return o;
     }
@@ -86,9 +83,18 @@ namespace bear {
 
         return o;
     }
+
+    template<typename T> static inline bear::outstream &operator << ( bear::outstream &o ,T *n){
+        o.printme(typeid(T).name());
+        o.printme("_ptr");
+        o.printme(static_cast<void*>(n));
+        return o;
+    }
+
     /**
         used to avoid warnings.
     */
+
     class randomStuff{
         bear::outstream out2;
         randomStuff(int a):out2(out){

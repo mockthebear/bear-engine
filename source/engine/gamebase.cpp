@@ -59,6 +59,7 @@ uint32_t Game::startFlags = BEAR_FLAG_START_EVERYTHING;
 
 bool Game::Crashed = false;
 
+
 void Game::init(const char *name){
     if (instance == NULL){
 
@@ -215,7 +216,9 @@ void Game::init(const char *name){
 
         srand(time(nullptr));
         if (startFlags&BEAR_FLAG_START_THREADS){
-            ThreadPool::GetInstance(POOL_DEFAULT_THREADS);
+            Console::GetInstance().AddText("Starting threads");
+            ThreadPool::GetInstance();
+            ThreadPool::GetInstance().Begin(POOL_DEFAULT_THREADS);
         }
         if (startFlags&BEAR_FLAG_START_CONSOLEGRAPHICAL){
             Console::GetInstance().AddText("Opening console graphical");
@@ -399,7 +402,7 @@ void Game::Run(){
                     static bool full = false;
                     if (!full){
                         //ScreenManager::GetInstance().MakeDefaultScreenAsTexture();
-                        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+                        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
                     }else{
                         //ScreenManager::GetInstance().ClearScreenTexture();
                         SDL_SetWindowFullscreen(window, SDL_FALSE);
@@ -516,3 +519,10 @@ void Game::AddState(DefinedState *s,int forcedId){
     #endif // DISABLE_LUAINTERFACE
     Ids++;
 };
+
+bool Game::IsClosed(){
+    if (instance){
+        return instance->hasBeenClosed;
+    }
+    return false;
+}

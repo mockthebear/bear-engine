@@ -143,6 +143,8 @@ class Game{
 
         static uint32_t startFlags;
 
+        static bool IsClosed();
+
     private:
 
         bool wasLocked;
