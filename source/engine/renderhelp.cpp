@@ -330,6 +330,12 @@ bool TargetTexture::Generate(int wa,int ha){
     lastbuffer = 0;
     DebugHelper::DisplayGlError();
 
+    Bind();
+    glDisable(GL_BLEND);
+    RenderHelp::DrawSquareColor(Rect(0,0,wa,ha),0,0,0,0);
+    glEnable(GL_BLEND);
+    UnBind();
+
     return true;
 
 }
