@@ -15,6 +15,13 @@
 
 #define LUA_LAYER_UI 0
 
+enum ReturnType{
+    RETURN_NIL = -3,
+    RETURN_ERROR = -2,
+    RETURN_NOTFOUND = -1,
+    RETURN_FALSE = 0,
+    RETURN_TRUE = 1,
+};
 
 
 template<class T> class LuaReferenceCounter{
@@ -441,20 +448,27 @@ class LuaCaller{
         }
 
 
-        template <typename ... Types> static bool CallGlobalField(lua_State *L,std::string field,Types ... args){
+        template <typename ... Types> static ReturnType CallGlobalField(lua_State *L,std::string field,Types ... args){
             if (!L){
-                return false;
+                return RETURN_ERROR;
             }
             lua_getglobal(L, field.c_str());
             if(!lua_isfunction(L, -1) ){
                 lua_pop(L, 1);
-                return false;
+                return RETURN_NOTFOUND;
             }
             LuaManager::lastCalled = field;
             pexpander::expand(L,args...);
-            LuaManager::Pcall(sizeof...(Types), 1);
-            bool ret = lua_toboolean(L,-1);
-            lua_pop(L,1);
+            if (!LuaManager::Pcall(sizeof...(Types), 1)){
+                return RETURN_ERROR;
+            }
+            if (lua_isnil(L, -1)){
+                lua_pop(L,1);
+                return RETURN_NIL;
+            }
+
+            ReturnType ret = lua_toboolean(L,-1) ? RETURN_TRUE : RETURN_FALSE;
+            lua_pop(L,-1);
             return ret;
         }
 
@@ -465,6 +479,7 @@ class LuaCaller{
             }
             lua_getglobal(L, "CallOnField");
             if(!lua_isfunction(L, -1) ){
+                lua_pop(L, 1);
                 return false;
             }
             LuaManager::lastCalled = field;
@@ -484,13 +499,14 @@ class LuaCaller{
             return ret;
         }
 
-        template <typename Obj,typename ... Types> static bool CallOtherField(lua_State *L,uint64_t old,Obj *obj,std::string field,Types ... args){
+        template <typename Obj,typename ... Types> static ReturnType CallOtherField(lua_State *L,uint64_t old,Obj *obj,std::string field,Types ... args){
             if (!L){
-                return false;
+                return RETURN_ERROR;
             }
             lua_getglobal(L, "CallFromField");
             if(!lua_isfunction(L, -1) ){
-                return false;
+                lua_pop(L, 1);
+                return RETURN_ERROR;
             }
             LuaManager::lastCalled = field;
             uint64_t index = uint64_t(obj);
@@ -500,25 +516,27 @@ class LuaCaller{
             lua_pushstring(L, field.c_str());
             pexpander::expand(L,args...);
 
-            LuaManager::Pcall(3 + (sizeof...(Types)), 1, 0);
+            if(!LuaManager::Pcall(3 + (sizeof...(Types)), 1, 0)){
+                return RETURN_ERROR;
+            }
 
             if (lua_isnil(L, -1)){
-                return false;
+                return RETURN_NIL;
             }
-            bool ret = lua_toboolean(L,-1);
-            lua_pop(L,1);
+            ReturnType ret = lua_toboolean(L,-1) ? RETURN_TRUE : RETURN_FALSE;
+            lua_pop(L,lua_gettop(L)-1);
             return ret;
         }
 
-        template <typename Obj,typename ... Types> static bool CallSelfField(lua_State *L,Obj *obj,std::string field,Types ... args){
+        template <typename Obj,typename ... Types> static ReturnType CallSelfField(lua_State *L,Obj *obj,std::string field,Types ... args){
             if (!L){
-                return false;
+                return RETURN_ERROR;
             }
             lua_getglobal(L, "CallFromField");
 
             if(!lua_isfunction(L, -1) ){
                 lua_pop(L,1);
-                return false;
+                return RETURN_ERROR;
             }
             LuaManager::lastCalled = field;
             uint64_t index = uint64_t(obj);
@@ -528,12 +546,15 @@ class LuaCaller{
             lua_pushstring(L, field.c_str());
             pexpander::expand(L,args...);
 
-            LuaManager::Pcall(3 + (sizeof...(Types)), 1, 0);
+            if(!LuaManager::Pcall(3 + (sizeof...(Types)), 1, 0)){
+                return RETURN_ERROR;
+            }
 
             if (lua_isnil(L, -1)){
-                return false;
+                return RETURN_NIL;
             }
-            bool ret = lua_toboolean(L,-1);
+
+            ReturnType ret = lua_toboolean(L,-1) ? RETURN_TRUE : RETURN_FALSE;
             lua_pop(L,lua_gettop(L)-1);
 
             return ret;
@@ -847,10 +868,10 @@ template<typename T1,typename ObjT> struct TypeObserver{
         }
         return 0;
     };
-    template<typename mType> static int RegisterMethod(lua_State *L,std::string luaname,mType T1::*fieldaddr){
+    template<typename mType,typename T2> static int RegisterMethod(lua_State *L,std::string luaname,mType T2::*fieldaddr){
         std::map<std::string,ObjT T1::*> &fieldData = TypeObserver<T1,ObjT>::getAddr();
        // std::map<std::string,std::string> &fieldName = TypeObserver<T1>::getAddrNames();
-        fieldData[luaname] = (ObjT T1::*)fieldaddr;
+        fieldData[luaname] = (ObjT T2::*)fieldaddr;
         //fieldName[luaname] = typeid(mType).name();
         return 1;
     }

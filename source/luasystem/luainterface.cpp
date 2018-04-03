@@ -691,11 +691,30 @@ void LuaInterface::RegisterAssets(){
     ClassRegister<ColorReplacer>::RegisterClassMethod(L,"ColorReplacer","Get",&ColorReplacer::Get);
 
 
+
+
+    ClassRegister<AssetMannager>::RegisterClassOutside(LuaManager::L,"AssetMannager",[](lua_State* L)
+    {
+        return LuaReferenceCounter<AssetMannager>::makeReference(AssetMannager());
+    });
+
+    ClassRegister<AssetMannager>::RegisterClassMethod(L,"AssetMannager","LoadSprite",&AssetMannager::lua_loadSprite,"");
+    //ClassRegister<AssetMannager>::RegisterClassMethod(L,"AssetMannager","LoadSound",&AssetMannager::lua_loadSound,"");
+
+
+
     GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_assets");
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_assets","LoadResources",std::function<bool(std::string,std::string)>([](std::string file,std::string alias)
     {
         return ResourceManager::GetInstance().Load(file,alias);
     }));
+
+    /*GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_assets","CreateAlias",std::function<bool(std::string,std::string)>([](std::string file,std::string alias){
+        return Game::GetCurrentState().Assets.load<Sprite>(file,alias);
+    }));*/
+
+
+
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_assets","EraseResource",std::function<void(std::string)>([](std::string alias)
     {
         ResourceManager::GetInstance().Erase(alias);
@@ -813,15 +832,15 @@ void LuaInterface::RegisterUI(){
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetY",&LuaUi::GetY);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetTrueX",&LuaUi::GetTrueX);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetTrueY",&LuaUi::GetTrueY);
-    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetX",&LuaUi::SetX);
-    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetY",&LuaUi::SetY);
-    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetBox",&LuaUi::SetBox);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetX",&LuaUi::SetX, false);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetY",&LuaUi::SetY, false);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetBox",&LuaUi::SetBox, false);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetBox",&LuaUi::GetBox);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetScreenY",&LuaUi::GetScreenY);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetScreenX",&LuaUi::GetScreenX);
-    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetWidth",&LuaUi::SetWidth);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetWidth",&LuaUi::SetWidth , false);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetWidth",&LuaUi::GetWidth);
-    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetHeight",&LuaUi::SetHeight);
+    ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetHeight",&LuaUi::SetHeight, false);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetHeight",&LuaUi::GetHeight);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","SetId",&LuaUi::SetId);
     ClassRegister<LuaUi>::RegisterClassMethod(LuaManager::L,"LuaUi","GetId",&LuaUi::GetId);
@@ -839,7 +858,6 @@ void LuaInterface::RegisterInput(){
     {
         return (int)SDL_GetKeyFromName(kname.c_str());
     }));
-
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_input","KeyPress",std::function<bool(int)>([](int key)
     {
         return g_input.KeyPress(key);
@@ -900,7 +918,6 @@ void LuaInterface::RegisterInput(){
         g_input.HaltInput();
     }));
 }
-
 void LuaInterface::RegisterSprite(){
     ClassRegister<Animation>::RegisterClassOutside(LuaManager::L,"Animation",[](lua_State* L)
     {
