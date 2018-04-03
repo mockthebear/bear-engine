@@ -86,7 +86,6 @@ class Test_Joystick: public State{
                 for (int i=0;i<j1->GetAxisCount();i++){
 
                     float s = j1->GetAxis(i);
-                    //std::cout << "["<<i<<"] " << s << "\n";
 
                     float fSize = 330.0f;
 

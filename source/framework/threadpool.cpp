@@ -8,6 +8,7 @@
 #include "../settings/configmanager.hpp"
 #include "../performance/console.hpp"
 #include "../engine/gamebase.hpp"
+#include "../engine/light.hpp"
 #include <math.h>
 #include <stdlib.h>
 #ifndef DISABLE_THREADPOOL

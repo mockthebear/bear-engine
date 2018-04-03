@@ -1,4 +1,5 @@
 #include "schedule.hpp"
+#include "../engine/bear.hpp"
 #include <iostream>
 
 Scheduler g_scheduler;
