@@ -17,7 +17,7 @@ ResourceFile::~ResourceFile(){
     Close();
 }
 
-bool ResourceFile::Open(std::string dir){
+bool ResourceFile::Open(std::string dir, CacheLevel cache){
 
 	l_file.Open(dir,true);
     if (!l_file.IsOpen()){
@@ -25,10 +25,14 @@ bool ResourceFile::Open(std::string dir){
         return false;
     }
 
-    //l_file.Cache();
+    if (cache == RF_CACHE_GLOBAL){
+        l_file.Cache();
+    }
 
     m_fileSize = l_file.GetSize();
-    m_cached = l_file.PopCache();
+    if (cache == RF_CACHE_LOCAL){
+        m_cached = l_file.PopCache();
+    }
 
 
     if (m_cached == NULL){
@@ -121,10 +125,10 @@ SDL_RWops* ResourceFile::GetFile(std::string name){
         rw->hidden.unknown.data1 = auxB;
         rw->close = [](SDL_RWops * me) -> int{
             char *ptr = (char*)me->hidden.unknown.data1;
-            if (ptr){
+            if (ptr)
                 delete []ptr;
-            }
-            ptr = nullptr;
+
+            me->hidden.unknown.data1 = nullptr;
             return 0;
         };
         return rw;
@@ -173,10 +177,10 @@ SDL_RWops* ResourceFile::GetFile(std::string name,int &size){
         rw->hidden.unknown.data1 = auxB;
         rw->close = [](SDL_RWops * me) -> int{
             char *ptr = (char*)me->hidden.unknown.data1;
-            if (ptr){
+            if (ptr)
                 delete ptr;
-            }
-            return 0;
+            me->hidden.unknown.data1 = nullptr;
+                return 0;
         };
         return rw;
     }

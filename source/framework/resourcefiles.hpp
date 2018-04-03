@@ -16,6 +16,13 @@
  * Note that this files will be read only.
 
  */
+
+enum CacheLevel{
+    RF_CACHE_NOTHING,
+    RF_CACHE_LOCAL,
+    RF_CACHE_GLOBAL,
+};
+
 class ResourceFile{
     public:
         /**
@@ -37,7 +44,7 @@ class ResourceFile{
             @param dir Use like: "assets:map.burr"
             @return true or false
         */
-        bool Open(std::string dir);
+        bool Open(std::string dir,CacheLevel cacheLevel=RF_CACHE_NOTHING);
         /**
             *Close an current open file
         */
