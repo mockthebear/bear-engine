@@ -69,6 +69,17 @@ class LuaManager{
             return 1;
         }
 
+        static bool Rawcall(int arg = 0,int returns = 0,int ext = 0){
+            int ret = lua_pcall(L, arg, returns, ext );
+            if (ret != 0){
+
+                Console::GetInstance().AddTextInfo(utils::format("Lua error:  %s -> [%s]",lua_tostring(L, -1),lastCalled.c_str()));
+
+
+                return false;
+            }
+            return true;
+        }
         static bool Pcall(int arg = 0,int returns = 0,int ext = 0){
             int previousStackSize = lua_gettop(L);
             int errorFuncIndex = previousStackSize - arg;
