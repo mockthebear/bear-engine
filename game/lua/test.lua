@@ -3,9 +3,13 @@
 	Called from c++
 ]]
 
+local sp = nil
 function onLoad()
-	print("Hello from onLoad")
+	Sprite()
+end
 
+function OnRender(sp)
+	sp:Render({x=math.random(1,100),y=math.random(1,100)},0)
 end
 
 --[[
