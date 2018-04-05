@@ -5,7 +5,6 @@
 
 local sp = nil
 function onLoad()
-	Sprite()
 end
 
 function OnRender(sp)

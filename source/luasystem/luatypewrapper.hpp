@@ -5,7 +5,7 @@
 #include "luacaller.hpp"
 #include "luaui.hpp"
 
-#define isthis(type,arg) if (type == arg) {vaav = #arg;}
+#define isthis(type,arg,FNC) if (type == arg) {vaav = std::string(#arg); if (FNC(L,i)){ std::stringstream S; S << FNC(L,i) << ";"; vaav = vaav +" "+ S.str(); }}
 
 #define REGISTER_ENUM(name) template<> struct GenericLuaReturner<name>{\
      static void Ret(name vr,lua_State *L,bool forceTable = false){\
@@ -44,20 +44,20 @@ struct QuickDebug{
         lua_getinfo(L, "nSl", &ar);
         Console::GetInstance().AddText("At %s line %d %s",ar.source, ar.currentline,LuaManager::lastCalled.c_str()  );
     };
-    static void DumpLua(lua_State *L,int start=0){
+    static void DumpLua(lua_State *L,int start=0,std::string msg=""){
         for (int i=start;i<10;i++){
             int type = lua_type(L,-i);
             std::string vaav = "?";
-            isthis(type,LUA_TNIL);
-            isthis(type,LUA_TNUMBER);
-            isthis(type,LUA_TBOOLEAN);
-            isthis(type,LUA_TSTRING);
-            isthis(type,LUA_TTABLE);
-            isthis(type,LUA_TFUNCTION);
-            isthis(type,LUA_TUSERDATA);
-            isthis(type,LUA_TTHREAD);
-            isthis(type,LUA_TLIGHTUSERDATA);
-            Console::GetInstance().AddText("[Dump: %d] %s",-i,vaav.c_str());
+            isthis(type,LUA_TNIL,lua_topointer);
+            isthis(type,LUA_TNUMBER,lua_tonumber);
+            isthis(type,LUA_TBOOLEAN,lua_tonumber);
+            isthis(type,LUA_TSTRING,lua_tostring);
+            isthis(type,LUA_TTABLE,lua_topointer);
+            isthis(type,LUA_TFUNCTION,lua_topointer);
+            isthis(type,LUA_TUSERDATA,lua_topointer);
+            isthis(type,LUA_TTHREAD,lua_topointer);
+            isthis(type,LUA_TLIGHTUSERDATA,lua_topointer);
+            Console::GetInstance().AddText("%s[Dump: %d] %s",msg.c_str(),-i,vaav.c_str());
         }
     };
 };
@@ -140,12 +140,16 @@ template<typename T1> struct MakeLuaObject{
 
             return 1;
         }else{
+
             lua_getglobal(L, "__REFS"); // insert
-            lua_pushnumber(L, uint64_t(&Game::GetCurrentState()) );
+            lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
             lua_gettable(L, -2 );
             lua_pushnumber(L,(uint64_t)obj);
 
 
+            //Pull the global class table. (G)
+            lua_getglobal(L, name.c_str());
+            luaL_checktype(L, -1, LUA_TTABLE);
             //Make table T
             lua_newtable(L);
 
@@ -164,32 +168,38 @@ template<typename T1> struct MakeLuaObject{
             lua_pushstring(L,"data");
             ClassRegister<T1>::MakeTypeObserver(L,obj,IndexerHelper<T1>::Index,IndexerHelper<T1>::Newindex);
 
+            //T set matatable of G
+            lua_pushvalue(L,-2);
+            lua_setmetatable(L, -2);
+
+            //T.__index = G
+            lua_pushvalue(L,-2);
+            lua_setfield(L, -3, "__index");
+
+            //Userdata set metatable G
             T1 **usr = static_cast<T1**>(lua_newuserdata(L, sizeof(T1)));
             *usr = obj;
             lua_getglobal(L, name.c_str());
             lua_setmetatable(L, -2);
+
+            //T.__self = userdata
             lua_setfield(L, -2, "__self");
+            //Drop G
+            lua_remove(L,-2);
 
+            //__REFS[state][ptr] = T
+            lua_settable(L,-3);
+            //drop __REFS[state][ptr] and G
+            lua_pop(L,2);
 
-
-           lua_pushstring(L,"__index");
-           lua_pushvalue(L,-2);
-           lua_getglobal(L, name.c_str());
-           lua_setmetatable(L, -2);
-           lua_settable(L, -3 );
-
-
-           lua_settable(L, -3 );
-           lua_pop(L,2);
-
-           lua_getglobal(L, "__REFS"); // request to return
-           lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
-           lua_gettable(L, -2 );
-
-           lua_remove(L, -2);
-           lua_pushnumber(L,(uint64_t)obj);
-           lua_gettable(L, -2);
-           lua_remove(L, -2);
+            //Query the just added value
+            lua_getglobal(L, "__REFS");
+            lua_pushnumber(L, uint64_t(&Game::GetCurrentState()));
+            lua_gettable(L, -2 );
+            lua_remove(L, -2);
+            lua_pushnumber(L,(uint64_t)obj);
+            lua_gettable(L, -2);
+            lua_remove(L, -2);
 
            return 1;
         }
