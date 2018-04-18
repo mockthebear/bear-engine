@@ -18,7 +18,7 @@ ScreenManager::~ScreenManager(){
 ScreenManager::ScreenManager(){
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
-    postProcess = true;
+    postProcess = false;
     m_ScreenRationMultiplier = 2.0f;
     ShakingDuration = 0;
     shaking = 0;
@@ -337,6 +337,12 @@ void ScreenManager::NotifyResized(){
             glBindRenderbuffer(GL_RENDERBUFFER, 0);
         }else{
             glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
+            glMatrixMode( GL_PROJECTION );
+            glLoadIdentity();
+            glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
+            glMatrixMode( GL_MODELVIEW );
+            glLoadIdentity();
+            glPushMatrix();
         }
     }
 
@@ -347,14 +353,16 @@ void ScreenManager::SetWindowSize(int w,int h){
     Resize(w,h);
     ConfigManager::GetInstance().SetScreenSize(w,h);
 
-    m_originalScreen.x=w;
-    m_originalScreen.y=h;
+
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
 }
 
 void ScreenManager::Resize(int w,int h){
-
+    m_screen.x = w;
+    m_screen.y = h;
+    m_originalScreen.x=w;
+    m_originalScreen.y=h;
     SDL_SetWindowSize(m_window,w,h);
 }
 void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
