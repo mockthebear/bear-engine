@@ -187,6 +187,8 @@ void InputManager::Update(float dt){
             }else{
                 Console::GetInstance().AddText( "Unhooked[SDL_WINDOWEVENT] event id %d",event.window.event);
             }
+        }else if(event.type == SDL_DROPFILE){
+            GameBehavior::GetInstance().DropFile(event.drop.file);
         /*
             Android/ios
         */
