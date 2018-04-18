@@ -7,6 +7,7 @@
 #include "bear.hpp"
 #include <string>
 #include <typeinfo>
+#include <vector>
 
 template <typename T> struct ShaderSetter{
      static bool SetUniform(GLuint shdr,const char *str,T var){

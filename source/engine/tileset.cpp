@@ -32,14 +32,14 @@ void TileSet::SetSprite(Sprite &sp){
     }
 }
 
-void TileSet::Render(int index,Point pos){
+void TileSet::Render(int index,Point pos,float angle){
 
     if (tileset.IsLoaded()){
         if (index <= m_columns*m_rows && index != -1){
             int cx = index%m_columns;
             int cy = index/m_columns;
             tileset.SetClip(m_tileWidth*cx,m_tileHeight*cy,m_tileWidth,m_tileHeight);
-            tileset.Render(pos);
+            tileset.Render(pos,angle);
         }
     }
 

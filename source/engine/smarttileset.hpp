@@ -18,6 +18,13 @@
     * But if lets say, the texture are on the size 160 x 1600, it will means the tile 10, will actually be at position X = 0 and Y = 1.
     * This will be automatic.
 */
+class TileInfo{
+    public:
+        TileInfo():id(0),rotation(0){};
+        int id;
+        int rotation;
+};
+
 class SmartTileset{
     public:
         /**
@@ -52,7 +59,7 @@ class SmartTileset{
             @param y y position
             @param tile tile
         */
-        void SetTile(int layer,int x,int y,int tile);
+        void SetTile(int layer,int x,int y,int tile,double angle=0);
         /**
             *Erase the current data in the position and replace the data with what you requested. Use as an single use.
             *If you need to call this multiple times, instead call SmartTileset::SetTile then SmartTileset::MakeMap once you finish
@@ -63,7 +70,7 @@ class SmartTileset{
             @param tile tile
 
         */
-        void SetTileDirect(int layer,int x,int y,int tile);
+        void SetTileDirect(int layer,int x,int y,int tile, double angle=0);
         /**
             Render an single layer.
             The render will start at the position 0,0 and only subtextures inside camera rect will be rendered.
@@ -94,18 +101,19 @@ class SmartTileset{
         }
     private:
 
-        void RenderTile(int x,int y,int tile);
-        TargetTexture *GetTextureFromPosition(int layer,int x,int y);
+        void RenderTile(int x, int y, TileInfo &t);
+        TargetTexture*& GetTextureFromPosition(int layer,int x,int y);
         PointInt framesOnMap;
         PointInt tileSize;
         PointInt tilesetSize;
         PointInt tilesetCompatSize;
         PointInt maxTextureSize;
         int Layers;
-        int    ***tileMap;
+        TileInfo    ***tileMap;
         TargetTexture ****textureMap;
         TargetTexture *lastTarget;
         bool ***needRemake;
+        bool ***m_isUsed;
         bool isOnStream;
         bool isValid;
 

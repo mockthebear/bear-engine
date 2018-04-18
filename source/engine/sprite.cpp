@@ -461,13 +461,16 @@ void Sprite::Render(PointInt pos,double angle){
         GLfloat quadWidth = clipRect.w ;
         GLfloat quadHeight = clipRect.h ;
 
+
         glScalef(scaleX , scaleY , 1.0f);
-        glRotatef( angle, 0.f, 0.f, 1.f );
+
 
         glTranslatef(
             (pos.x * (1.0f/scaleX)  + quadWidth  / 2.f  ) + (- center.x* (scaleX)  + center.x),
             (pos.y * (1.0f/scaleY)  + quadHeight / 2.f  ) + (- center.y* (scaleY)  + center.y),
         0.f);
+
+        glRotatef( angle, 0.f, 0.f, 1.f );
 
 
         glBindTexture( GL_TEXTURE_2D, textureShred.get()->id );

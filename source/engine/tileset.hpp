@@ -39,7 +39,7 @@ class TileSet{
          * @param index Tile index
          * @param pos an Point vector containing x,y position
          */
-        void Render(int index,Point pos);
+        void Render(int index,Point pos,float angle=0);
         /** Render an tile scaling it
          * @param index Tile index
          * @param pos an Point vector containing x,y position
