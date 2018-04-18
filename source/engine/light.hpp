@@ -1,7 +1,10 @@
 #pragma once
 
 
+#ifndef DISABLE_THREADPOOL
+#define HAVE_STRUCT_TIMESPEC
 #include <pthread.h>
+#endif
 #include <tuple>
 enum LightStep{
     LIGHT_BEGIN,
