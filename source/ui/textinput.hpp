@@ -12,6 +12,7 @@ class TextInput : public UIBase{
         bool Upper;
         float caret;
         bool showCaret;
+        float delayDelete;
 };
 
 

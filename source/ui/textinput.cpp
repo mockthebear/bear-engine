@@ -16,6 +16,7 @@ TextInput::TextInput(Point pos,std::string str,UIBase *owner):UIBase(){
     Upper = false;
     showCaret = true;
     caret = 4.0f;
+    delayDelete = 5.0f;
 }
 
 
@@ -34,10 +35,11 @@ void TextInput::Input(){
     if (focused){
         int key = InputManager::GetInstance().IsAnyKeyPressed();
 
-        if (key != -1){
+        if (key != -1 || delayDelete <= 0){
             std::stringstream S;
 
-            if (key == SDLK_BACKSPACE){
+            if (key == SDLK_BACKSPACE || delayDelete <= 0){
+                delayDelete = key == SDLK_BACKSPACE ? 5.0f : 1.0f;
                 if (txt.GetText().size() > 1){
                     txt.SetText(txt.GetText().substr(0,txt.GetText().size()-1));
                 }else{
@@ -58,6 +60,7 @@ void TextInput::Input(){
                 txt.SetText(S.str());
             }
         }
+
     }
 
 
@@ -68,6 +71,9 @@ void TextInput::Update(float dt){
         caret = 4.0f;
         showCaret = !showCaret;
 
+    }
+    if (InputManager::GetInstance().IsKeyDown(SDLK_BACKSPACE)){
+        delayDelete -= dt;
     }
     UIBase::Update(dt);
 }

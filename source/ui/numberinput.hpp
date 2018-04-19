@@ -14,6 +14,7 @@ class NumberInput : public UIBase{
         int *addr;
         float caret;
         bool showCaret;
+        float delayDelete;
 };
 
 
