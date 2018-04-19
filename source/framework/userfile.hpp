@@ -17,8 +17,10 @@
 class UserFile{
     public:
         UserFile();
+        void SetUseStream(){m_useStream = true;};
         bool Open(std::string name);
         bool Close();
+
         uint32_t Write(std::string str);
         template<typename... arg>uint32_t Printf(const char *s,const arg&... a){
             std::string str = utils::format(s,a...);
@@ -40,10 +42,37 @@ class UserFile{
             Write8(c);
             return *this;
         }
+
+        template<typename T> uint32_t WriteData(T *data){
+            if (!fptr){
+                return 0;
+            }
+            uint32_t dataSize = sizeof(T);
+            writePos += dataSize;
+            if (m_useStream){
+                char *dVec = (char*)data;
+                for (uint32_t i=0;i<dataSize;i++){
+                    m_stream.emplace_back(dVec[i]);
+                }
+            }else{
+                SDL_RWwrite(fptr,data,dataSize,1);
+                return writePos;
+            }
+        }
+
+        void WriteStream();
     private:
+
+        bool m_useStream;
+        std::vector<uint8_t> m_stream;
+
         void ufputc(char c){
-            const char c2 = c;;
-            SDL_RWwrite(fptr,&c2,1,1);
+            if (m_useStream){
+                m_stream.emplace_back(c);
+            }else{
+                const char c2 = c;;
+                SDL_RWwrite(fptr,&c2,1,1);
+            }
         };
         uint32_t writePos;
         std::string fname;
