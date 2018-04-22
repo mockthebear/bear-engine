@@ -192,6 +192,8 @@ class InputManager{
         */
         inline Point GetMouse(){return Point(float(GetMouseX()),float(GetMouseY()));};
 
+        inline Point GetRawMouse(){return mouse.position;};
+
         /**
             *This can be used of calibration
             *When you see your touchscreen with a offset from where are your finger.
