@@ -46,6 +46,12 @@ class ConfigManager{
 
         std::vector<std::string> GetArgs(){return args;};
 
+        void SetScreenMode(TextureLoadMethodEnum md){
+            screenMode.mode = md;
+        }
+
+        TextureLoadMethod screenMode;
+
         bool pause;
     private:
         ResizeBehavior m_rbheavior;

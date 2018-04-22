@@ -21,6 +21,8 @@ ConfigManager::ConfigManager(){
 
     MinimumDT = 1000.0f/(float)MinFps;
 
+    screenMode.mode = TEXTURE_NEAREST;
+
 }
 
 void ConfigManager::SetWindowIcon(std::string icon,ColorReplacer &r){
