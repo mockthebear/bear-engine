@@ -84,8 +84,7 @@ class AssetMannager{
         template<class T,typename ...Args> T reload(Args ...args){
             auto t = gen(true,T(),args...);
             if (t.get()){
-                T sp(t,args...);
-                return sp;
+                return T(t,args...);;
             }
             return T();
         }
@@ -104,8 +103,7 @@ class AssetMannager{
         template<class T,typename ...Args> T make(Args ...args){
             auto t = gen(false,T(),args...);
             if (t.get()){
-                T sp(t,args...);
-                return sp;
+                return T(t,args...);;
             }
             return T();
         }
