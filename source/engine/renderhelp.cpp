@@ -237,7 +237,7 @@ void TargetTexture::Render(Point pos){
 
     glDisable(GL_TEXTURE_2D);
     glBindTexture( GL_TEXTURE_2D, 0 );
-    glPopMatrix();
+
     #endif // RENDER_OPENGL
 }
 

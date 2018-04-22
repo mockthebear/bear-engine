@@ -83,7 +83,7 @@ class Test_TargetTexture: public State{
                 glVertex2f( 32,32 );
                 glVertex2f( 0,  32 );
             glEnd();
-            glPopMatrix();
+
             #endif // RENDER_OPENGL
 
             RenderHelp::DrawCircleColor(Point(400-64,400 - 64),32,255,0,255,255);

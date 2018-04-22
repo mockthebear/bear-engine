@@ -71,5 +71,7 @@ class DefaultBehavior: public Behavior{
         void OnMinimized();
 
         virtual bool Begin();
+
+        virtual void DropFile(const char *c){};
 };
 #endif // DEFBEHAVRIORH

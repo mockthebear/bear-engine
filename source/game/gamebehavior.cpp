@@ -90,7 +90,7 @@ bool GameBehavior::OnLoad(){
 
 
 
-    /*Game::GetInstance()->AddState(new Test_PathFind());
+    Game::GetInstance()->AddState(new Test_PathFind());
 
     Game::GetInstance()->AddState(new Test_Scrolling());
     Game::GetInstance()->AddState(new Test_TargetTexture());
@@ -102,7 +102,7 @@ bool GameBehavior::OnLoad(){
     //Game::GetInstance()->AddState(new Test_Socket());
     //Game::GetInstance()->AddState(new Test_Sound());
     Game::GetInstance()->AddState(new Test_Shapes());
-    Game::GetInstance()->AddState(new Test_Joystick());*/
+    Game::GetInstance()->AddState(new Test_Joystick());
     Game::GetInstance()->AddState(new Test_Files());
 
     return DefaultBehavior::GetInstance().OnLoad();
