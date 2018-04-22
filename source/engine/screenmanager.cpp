@@ -18,7 +18,7 @@ ScreenManager::~ScreenManager(){
 ScreenManager::ScreenManager(){
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
-    postProcess = false;
+    postProcess = true;
     m_ScreenRationMultiplier = 2.0f;
     ShakingDuration = 0;
     shaking = 0;
@@ -37,7 +37,12 @@ ScreenManager& ScreenManager::GetInstance(){
     return teste;
 }
 void ScreenManager::TerminateScreen(){
-
+    if (postProcess){
+        glDeleteTextures(1, &fbo_texture);
+        glDeleteRenderbuffers(1, &rbo_depth);
+        glDeleteFramebuffers(1, &fbo);
+        postProcess = false;
+    }
     if (m_renderer != NULL){
         bear::out << "[Terminating renderer]...";
         SDL_DestroyRenderer( m_renderer );
@@ -64,7 +69,7 @@ bool ScreenManager::SetupOpenGL(){
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -80,7 +85,7 @@ bool ScreenManager::SetupOpenGL(){
     }
 
 
-    DebugHelper::DisplayGlError();
+    DebugHelper::DisplayGlError("1");
     //glDebugMessageCallback(openglErrF, nullptr);
 
 
@@ -92,7 +97,7 @@ bool ScreenManager::SetupOpenGL(){
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glViewport( 0.f, 0.f, m_originalScreen.x, m_originalScreen.y );
-	DebugHelper::DisplayGlError();
+	DebugHelper::DisplayGlError("2");
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
@@ -100,12 +105,9 @@ bool ScreenManager::SetupOpenGL(){
     glLoadIdentity();
 
 
-
-
-
     glPushMatrix();
     glClearColor( 1.f, 1.f, 1.f, 1.f );
-    DebugHelper::DisplayGlError();
+    DebugHelper::DisplayGlError("3");
     if (postProcess){
         StartPostProcessing();
     }
@@ -133,13 +135,17 @@ bool ScreenManager::SetupOpenGL(){
 
 bool ScreenManager::StartPostProcessing(){
     postProcess = true;
+
     glActiveTexture(GL_TEXTURE0);
     glGenTextures(1, &fbo_texture);
     glBindTexture(GL_TEXTURE_2D, fbo_texture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+
+    ConfigManager::GetInstance().screenMode.ApplyFilter();
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_originalScreen.x, m_originalScreen.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -170,7 +176,7 @@ bool ScreenManager::StartPostProcessing(){
     glBufferData(GL_ARRAY_BUFFER, sizeof(fbo_vertices), fbo_vertices, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    DebugHelper::DisplayGlError();
+    DebugHelper::DisplayGlError("StartPostProcessing");
     return true;
 }
 
@@ -254,7 +260,7 @@ void ScreenManager::RenderPresent(){
                         ( h / 2.f  ),
                         0.f );
 
-        glBegin( GL_QUADS );
+        glBegin( GL_TRIANGLE_FAN );
                 glTexCoord2f(  0.0f,    1.0f ); glVertex2f( -w / 2.f, -h / 2.f );
                 glTexCoord2f( 1.0f ,    1.0f ); glVertex2f(  w / 2.f, -h / 2.f );
                 glTexCoord2f( 1.0f , 0.0f ); glVertex2f(  w / 2.f,  h / 2.f );
@@ -264,9 +270,9 @@ void ScreenManager::RenderPresent(){
         if (storedShader.IsLoaded()){
             storedShader.Unbind();
         }
-        glPopMatrix();
+        DebugHelper::DisplayGlError("RenderPresent");
     }
-    glFlush();
+    glFinish();
     SDL_GL_SwapWindow(m_window);
     #endif // RENDER_OPENGL
 }
@@ -335,6 +341,8 @@ void ScreenManager::NotifyResized(){
             glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
             glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_screen.x, m_screen.y);
             glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+
         }else{
             glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
             glMatrixMode( GL_PROJECTION );
@@ -351,43 +359,65 @@ void ScreenManager::NotifyResized(){
 void ScreenManager::SetWindowSize(int w,int h){
 
     Resize(w,h);
-    ConfigManager::GetInstance().SetScreenSize(w,h);
-
 
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
+
+
+
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    glOrtho( 0.0, w,h, 0.0, 1.0, -1.0 );
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
+
+
+
 }
 
 void ScreenManager::Resize(int w,int h){
-    m_screen.x = w;
-    m_screen.y = h;
+
     m_originalScreen.x=w;
     m_originalScreen.y=h;
+    m_screen.x = w;
+    m_screen.y = h;
+
     SDL_SetWindowSize(m_window,w,h);
+
+    if (postProcess){
+        glDeleteTextures(1, &fbo_texture);
+        glDeleteRenderbuffers(1, &rbo_depth);
+        glDeleteFramebuffers(1, &fbo);
+        glDeleteBuffers(1, &vbo_fbo_vertices);
+        StartPostProcessing();
+    }
 }
 void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
-    if (w < ConfigManager::GetInstance().GetScreenW()*MinimumScale.x || h < ConfigManager::GetInstance().GetScreenH()*MinimumScale.y){
-        Resize(ConfigManager::GetInstance().GetScreenW()*MinimumScale.x,ConfigManager::GetInstance().GetScreenH()*MinimumScale.y);
-        return;
+    if (behave != RESIZE_FREE_SCALE){
+        if (w < ConfigManager::GetInstance().GetScreenW()*MinimumScale.x || h < ConfigManager::GetInstance().GetScreenH()*MinimumScale.y){
+            Resize(ConfigManager::GetInstance().GetScreenW()*MinimumScale.x,ConfigManager::GetInstance().GetScreenH()*MinimumScale.y);
+            return;
+        }
     }
     m_scaleRatio.x =  ( (double)w / (double)m_originalScreen.x);
     m_scaleRatio.y =  ( (double)h / (double)m_originalScreen.y);
+    if (behave != RESIZE_FREE_SCALE){
 
-    m_scaleRatio.x = floor(m_scaleRatio.x*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
-    m_scaleRatio.y = floor(m_scaleRatio.y*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
+        m_scaleRatio.x = floor(m_scaleRatio.x*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
+        m_scaleRatio.y = floor(m_scaleRatio.y*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
 
-    m_scaleRatio.x = std::max(1.0f,m_scaleRatio.x);
-    m_scaleRatio.y = std::max(1.0f,m_scaleRatio.y);
+
+        m_scaleRatio.x = std::max(1.0f,m_scaleRatio.x);
+        m_scaleRatio.y = std::max(1.0f,m_scaleRatio.y);
+    }
 
     m_trueScaleRatio = m_scaleRatio;
 
 
-    if (behave == RESIZE_SCALE){
+    if (behave == RESIZE_SCALE ){
         /*
             Strech screen to maintain an scale ratio
         */
-        m_scaleRatio.x = std::min(m_scaleRatio.x,m_scaleRatio.y);
-        m_scaleRatio.y = std::min(m_scaleRatio.x,m_scaleRatio.y);
 
         Point aux = m_originalScreen;
         aux.x *= m_scaleRatio.x;
@@ -400,25 +430,32 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
         m_screen.y = h;
     }
 
-    if (w < m_originalScreen.x*m_scaleRatio.x || h < m_originalScreen.y*m_scaleRatio.y){
-        Point ValidScale = m_scaleRatio;
-        Point LocalScale = m_scaleRatio;
-        while(m_originalScreen.x*LocalScale.x > w || m_originalScreen.y*LocalScale.y > h){
-            ValidScale.x -= 1.0/m_ScreenRationMultiplier;
-            ValidScale.y -= 1.0/m_ScreenRationMultiplier;
-            LocalScale.x = floor(ValidScale.x*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
-            LocalScale.y = floor(ValidScale.y*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
+    if (behave != RESIZE_FREE_SCALE){
+        if (w < m_originalScreen.x*m_scaleRatio.x || h < m_originalScreen.y*m_scaleRatio.y){
+            Point ValidScale = m_scaleRatio;
+            Point LocalScale = m_scaleRatio;
+            while(m_originalScreen.x*LocalScale.x > w || m_originalScreen.y*LocalScale.y > h){
+                ValidScale.x -= 1.0/m_ScreenRationMultiplier;
+                ValidScale.y -= 1.0/m_ScreenRationMultiplier;
+                LocalScale.x = floor(ValidScale.x*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
+                LocalScale.y = floor(ValidScale.y*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
+            }
+            m_scaleRatio = LocalScale;
+            Point aux = m_originalScreen;
+            aux.x *= m_scaleRatio.x;
+            aux.y *= m_scaleRatio.y;
+            m_screen.x = aux.x;
+            m_screen.y = aux.y;
         }
-        m_scaleRatio = LocalScale;
-        Point aux = m_originalScreen;
-        aux.x *= m_scaleRatio.x;
-        aux.y *= m_scaleRatio.y;
-        m_screen.x = aux.x;
-        m_screen.y = aux.y;
+    }
+    if (behave != RESIZE_FREE_SCALE){
+        m_offsetScreen.x = m_originalScreen.x == w ? 0 : w/2 - m_screen.x/2;
+        m_offsetScreen.y = m_originalScreen.y == h ? 0 : h/2 - m_screen.y/2;
+    }else{
+        m_offsetScreen.x = 0;
+        m_offsetScreen.y = 0;
     }
 
-    m_offsetScreen.x = m_originalScreen.x == w ? 0 : w/2 - m_screen.x/2;
-    m_offsetScreen.y = m_originalScreen.y == h ? 0 : h/2 - m_screen.y/2;
 }
 
 void ScreenManager::SetScreenName(std::string name){

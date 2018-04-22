@@ -110,19 +110,17 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
          glVertex2f( cos(angle) *  radius, sin(angle) *  radius);
       }
     glEnd();
-
-    glPopMatrix();
     #endif // RENDER_OPENGL
 }
 
 
 void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline,float angle){
     #ifdef RENDER_OPENGL
+    glDisable(GL_TEXTURE_2D);
     glLoadIdentity();
     glTranslatef(box.x, box.y, 0.0f);
-
     if (!outline){
-        glBegin( GL_QUADS );
+        glBegin( GL_TRIANGLE_FAN );
     }else{
         glBegin( GL_LINE_LOOP );
     }
@@ -132,8 +130,7 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
         glVertex2f( box.w,  box.h );
         glVertex2f( 0.0f,  box.h );
     glEnd();
-    glPopMatrix();
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    DebugHelper::DisplayGlError("DrawSquareColor");
     #else
 
     #endif
@@ -170,7 +167,7 @@ void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,u
             glVertex3f(p2.x, p2.y, 0.0f);
         glEnd();
         glLineWidth(1);
-        glPopMatrix();
+        DebugHelper::DisplayGlError("DrawLineColor");
     #endif
 
 }
@@ -231,7 +228,7 @@ void TargetTexture::Render(Point pos){
                 (pos.y + quadHeight/ 2.f  ),
         0.f );
     //scale
-    glBegin( GL_QUADS );
+    glBegin( GL_TRIANGLE_FAN );
         glTexCoord2f(  0.0f , 1.0f ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
         glTexCoord2f(  1.0f , 1.0f ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
         glTexCoord2f(  1.0f , 0.0f ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
