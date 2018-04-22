@@ -39,9 +39,9 @@ class LuaUi : public UIBase{
         float GetScreenY(){return box.y;};
         float GetScreenX(){return box.x;};
 
-        REGISTER_GETSETTEROBJ(Box,Rect,box);
-        REGISTER_GETSETTEROBJ(Width,float,box.w);
-        REGISTER_GETSETTEROBJ(Height,float,box.h);
+        REGISTER_GETSETTER(Box,Rect,box);
+        REGISTER_GETSETTER(Width,float,box.w);
+        REGISTER_GETSETTER(Height,float,box.h);
 
         void NotifyChildrens();
 
