@@ -90,7 +90,7 @@ void SmartTexture::Render(PointInt pos,float angle,Point scale){
 
     glBindTexture( GL_TEXTURE_2D, t->id );
 
-    glBegin( GL_QUADS );
+    glBegin( GL_TRIANGLE_FAN );
         glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
         glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
         glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
@@ -98,6 +98,5 @@ void SmartTexture::Render(PointInt pos,float angle,Point scale){
     glEnd();
 
     glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
     #endif // RENDER_OPENGL
 }
