@@ -133,6 +133,10 @@ class ColorReplacer{
             *Get the given color that can correspond to the one you gave
         */
         uint32_t Get(uint32_t color);
+
+        uint32_t Size(){
+            return Replace.size();
+        };
     private:
         std::map<uint32_t,bool> canReplace;
         std::map<uint32_t,uint32_t> Replace;

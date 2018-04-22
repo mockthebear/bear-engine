@@ -8,7 +8,7 @@
 #include "camera.hpp"
 #include "smarttexture.hpp"
 #include "../framework/resourcemanager.hpp"
-
+#include "../framework/debughelper.hpp"
 #include "../image/stb_image.h"
 
 TextureLoadMethod TextureLoadMethod::DefaultLoadingMethod = TEXTURE_NEAREST;
@@ -314,6 +314,7 @@ BearTexture * Sprite::Preload(SDL_RWops* rw,std::string name,TextureLoadMethod h
     return nullptr;
 }
 BearTexture * Sprite::Preload(std::string fileName,ColorReplacer &r,TextureLoadMethod hasAliasing){
+
     if (hasAliasing.mode == TEXTURE_DEFAULT){
         hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
     }
@@ -352,6 +353,7 @@ BearTexture * Sprite::Preload(std::string fileName,ColorReplacer &r,TextureLoadM
         /*
             Pixel replacing
         */
+
         int pixelCount = (sizeX*sizeY);
         for( int i = 0; i < pixelCount; ++i ){
             ((Uint32*)imageData)[i] = r.Get(((Uint32*)imageData)[i]);
@@ -461,9 +463,7 @@ void Sprite::Render(PointInt pos,double angle){
         GLfloat quadWidth = clipRect.w ;
         GLfloat quadHeight = clipRect.h ;
 
-
         glScalef(scaleX , scaleY , 1.0f);
-
 
         glTranslatef(
             (pos.x * (1.0f/scaleX)  + quadWidth  / 2.f  ) + (- center.x* (scaleX)  + center.x),
@@ -471,7 +471,6 @@ void Sprite::Render(PointInt pos,double angle){
         0.f);
 
         glRotatef( angle, 0.f, 0.f, 1.f );
-
 
         glBindTexture( GL_TEXTURE_2D, textureShred.get()->id );
         if ((sprFlip&SDL_FLIP_HORIZONTAL) != 0){
@@ -485,15 +484,12 @@ void Sprite::Render(PointInt pos,double angle){
             texBottom = holder;
         }
 
-        glBegin( GL_QUADS );
+        glBegin( GL_TRIANGLE_FAN );
             glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
             glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
             glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
             glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
         glEnd();
-
-        glDisable(GL_TEXTURE_2D);
-        glPopMatrix();
         #endif // RENDER_OPENGL
     }
 

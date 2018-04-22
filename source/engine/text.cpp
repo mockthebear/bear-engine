@@ -5,6 +5,7 @@
 #include "../framework/resourcemanager.hpp"
 #include "../framework/utils.hpp"
 #include "../performance/console.hpp"
+#include "../framework/debughelper.hpp"
 #include "renderhelp.hpp"
 #include "gamebase.hpp"
 std::unordered_map<std::string, TTF_Font*> Text::assetTable;
@@ -205,7 +206,8 @@ void Text::InternalSetFont(std::string ftnm){
             SDL_RWops* rw = ResourceManager::GetInstance().GetFile(oName);
             font = TTF_OpenFontRW(rw,true,fontsize);
         }else{
-            font = TTF_OpenFont(oName.c_str(), fontsize);
+
+            font = TTF_OpenFont(DirManager::AdjustUserPath(oName).c_str(), fontsize);
         }
         isWorking = true;
         fontfile = ftnm;
@@ -337,7 +339,7 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
 
          glBindTexture( GL_TEXTURE_2D, texture->id );
 
-        glBegin( GL_QUADS );
+        glBegin( GL_TRIANGLE_FAN );
             glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
             glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
             glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
@@ -345,7 +347,7 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
         glEnd();
 
         glDisable(GL_TEXTURE_2D);
-        glPopMatrix();
+        DebugHelper::DisplayGlError("Text::Render");
         #endif
     }else if (texturespr){
         Point p = texturespr->Render(text,box.x+cameraX,box.y+cameraY,alpha);
