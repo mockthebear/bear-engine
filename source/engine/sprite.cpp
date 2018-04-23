@@ -457,23 +457,37 @@ void Sprite::Render(PointInt pos,double angle){
 
 
         static unsigned int VBOEE;
+        static GLuint VBO;
         static bool made = false;
         static Shader baseShader;
+
+        float w = dimensions.w;
+        float h = dimensions.h;
+
+        texLeft = clipRect.x / (float)w; //0
+        texRight =  ( clipRect.x + clipRect.w ) / (float)w; //1
+        texTop = clipRect.y / (float)h; //0
+        texBottom = ( clipRect.y + clipRect.h ) / (float)h; //1
+
+
+        GLfloat vertices[] = {
+                // Pos      // Tex
+            0.0f, 1.0f, texLeft, texBottom,
+            1.0f, 0.0f, texRight, texTop,
+            0.0f, 0.0f, texLeft, texTop,
+
+            0.0f, 1.0f, texLeft, texBottom,
+            1.0f, 1.0f, texRight, texBottom,
+            1.0f, 0.0f, texRight, texTop
+        };
+
+
         if (!made){
 
 
             // Configure VAO/VBO
-            GLuint VBO;
-            GLfloat vertices[] = {
-                // Pos      // Tex
-                0.0f, 1.0f, 0.0f, 1.0f,
-                1.0f, 0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 0.0f, 0.0f,
 
-                0.0f, 1.0f, 0.0f, 1.0f,
-                1.0f, 1.0f, 1.0f, 1.0f,
-                1.0f, 0.0f, 1.0f, 0.0f
-            };
+
 
             glGenVertexArrays(1, &VBOEE);
             glGenBuffers(1, &VBO);
@@ -493,6 +507,11 @@ void Sprite::Render(PointInt pos,double angle){
             baseShader.Link();
         }
 
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
 
 
 
@@ -500,7 +519,7 @@ void Sprite::Render(PointInt pos,double angle){
 
         baseShader.Bind();
 
-        glm::vec2 size(dimensions.w,dimensions.h);
+        glm::vec2 size(clipRect.w,clipRect.h);
         glm::mat4 model(1.0f);
 
         model = glm::translate(model, glm::vec3((float)pos.x,(float)pos.y, 0.0f));
@@ -509,7 +528,7 @@ void Sprite::Render(PointInt pos,double angle){
         model = glm::rotate(model, float(angle), glm::vec3(0.0f, 0.0f, 1.0f));
         model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
 
-        model = glm::scale(model, glm::vec3(size, 1.0f));
+        model = glm::scale(model, glm::vec3(size.x * scaleX,size.y * scaleY, 1.0f));
 
         glm::mat4 projection = glm::ortho(0.0f, (float)SCREEN_SIZE_W,  (float)SCREEN_SIZE_H, 0.0f, -1.0f, 1.0f);
 

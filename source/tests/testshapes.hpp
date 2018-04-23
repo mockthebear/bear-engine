@@ -15,7 +15,8 @@ class Test_Shapes: public State{
         };
         void Begin(){
             ScreenManager::GetInstance().SetScreenName("Test Shapes");
-            sp = Sprite("data/bear.png");
+            sp = Sprite("data/tiles.png");
+
         };
 
         void Update(float dt){
@@ -28,7 +29,10 @@ class Test_Shapes: public State{
         void Render(){
 
             //RenderHelp::DrawSquareColorA(Rect(32,32,64,64),255,255,100,255);
-            sp.Render(Point(32,32),duration/5.0f);
+            sp.SetClip(0,0,32,32);
+            sp.Render(Point(32,32),0);
+            sp.SetClip(64,64,32,32);
+            sp.Render(Point(64,64),0);
             /*RenderHelp::DrawLineColor(96,96,128,128,255,0,255);
             RenderHelp::DrawLineColor(128,128,98,220,255,0,0,255,4);
             RenderHelp::DrawSquareColorA(Rect(98,220,64,64),255,100,100,255,true);

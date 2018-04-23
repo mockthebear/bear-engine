@@ -122,6 +122,9 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
 
 void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline,float angle){
     #ifdef RENDER_OPENGL
+    if (1){
+        return;
+    }
     static bool made = false;
     static const GLfloat g_vertex_buffer_data[] = {
        0.5f,  0.5f, 0.0f, 1.0f,      1.0f, 0.0f, 0.0f, 1.0f,
@@ -131,8 +134,6 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
 
     };
 
-
-
     static GLuint vertexbuffer;
     if (!made){
         // Generate 1 buffer, put the resulting identifier in vertexbuffer
@@ -141,31 +142,46 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
         // Give our vertices to OpenGL.
         glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        // texture coord attribute
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(4 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+
         made = true;
-        baseShader.Compile(GL_VERTEX_SHADER,"quadvertex.glvs");
-        baseShader.Compile(GL_FRAGMENT_SHADER,"quadfrag.glfs");
-        baseShader.Link();
     }
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // texture coord attribute
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(4 * sizeof(float)));
-    glEnableVertexAttribArray(1);
 
+    glm::vec2 size(box.w,box.h);
+    glm::mat4 model(1.0f);
+
+    model = glm::translate(model, glm::vec3((float)box.x,(float)box.y, 0.0f));
+
+    model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
+    model = glm::rotate(model, float(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
+
+    model = glm::scale(model, glm::vec3(size, 1.0f));
+
+    glm::mat4 projection = glm::ortho(0.0f, (float)SCREEN_SIZE_W,  (float)SCREEN_SIZE_H, 0.0f, -1.0f, 1.0f);
+
+
+
+    unsigned int transformLoc = glGetUniformLocation(baseShader.GetCurrentShaderId(), "model");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+    transformLoc = glGetUniformLocation(baseShader.GetCurrentShaderId(), "projection");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+    baseShader.SetUniform<Rect>("spriteColor",Rect(r, g, b,a));
 
     baseShader.Bind();
 
-    glm::mat4 trans(1.0f);
-    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
 
-    unsigned int transformLoc = glGetUniformLocation(baseShader.GetCurrentShaderId(), "transform");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-    //glDrawElements(GL_TRIANGLES, 4, GL_UNSIGNED_INT, 0);
 
     baseShader.Unbind();
     glBindBuffer(GL_ARRAY_BUFFER, 0);
