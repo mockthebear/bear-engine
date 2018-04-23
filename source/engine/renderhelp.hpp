@@ -4,6 +4,7 @@
 #include "collision.hpp"
 #include "../framework/geometry.hpp"
 #include "../framework/typechecker.hpp"
+#include "shadermanager.hpp"
 #include <functional>
 
 
@@ -137,6 +138,8 @@ class RenderHelp{
             @param b_color Blue
             @param alpha Alpha, default = 100.
         */
+
+        static Shader baseShader;
         /*static void DrawCollisionBox(Rect &box,Point offset,int r_color,int g_color,int b_color,int alpha=100){
             RenderHelp::DrawSquareColorA(box.x-Camera::pos.x+offset.x,box.y-Camera::pos.y+offset.y,box.w,box.h,r_color,g_color,b_color,alpha);
         }

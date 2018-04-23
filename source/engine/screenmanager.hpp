@@ -75,7 +75,12 @@ class ScreenManager{
             return storedShader;
         }
 
+        GLuint GetVAO(){return VertexArrayID;};
+
     private:
+        GLuint VertexArrayID;
+
+
         Shader storedShader;
         bool postProcess;
         GLuint frameBuffer,fbo_texture,rbo_depth,fbo,vbo_fbo_vertices;

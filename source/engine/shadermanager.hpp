@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "../framework/geometry.hpp"
 #include "bear.hpp"
@@ -23,6 +24,17 @@ template<> struct ShaderSetter<Point>{
             return false;
         }
         glUniform2f(loc,var.x,var.y);
+        return true;
+    };
+};
+
+template<> struct ShaderSetter<glm::mat4*>{
+    static bool SetUniform(GLuint shdr,const char *str,glm::mat4* var){
+        GLint loc = glGetUniformLocation(shdr, str );
+        if (loc == -1){
+            return false;
+        }
+        glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(*var));
         return true;
     };
 };
@@ -166,11 +178,10 @@ class Shader{
         void Close();
 
         bool Create();
-        bool LoadVertexShader(const char * shdr);
-        bool LoadFragmentShader(const char * shdr);
+        bool LoadShader(int type,const char * shdr);
         bool Link();
 
-        bool Compile(std::string vertexFilePath,std::string fragmentFilePath);
+        bool Compile(int type,std::string fragmentFilePath);
         bool Bind();
 
 
@@ -188,7 +199,6 @@ class Shader{
 
 
     private:
-
         void ProgramError( GLuint program );
         void ShaderError( GLuint shader );
 

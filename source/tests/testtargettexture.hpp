@@ -18,7 +18,10 @@ class Test_TargetTexture: public State{
             }
         };
         void Begin(){
-            m_shader.Compile("engine/vertex.glvs","engine/lens.glfs");
+            m_shader.Compile(GL_VERTEX_SHADER,"engine/vertex.glvs");
+            m_shader.Compile(GL_VERTEX_SHADER,"engine/lens.glfs");
+            m_shader.Link();
+
             tileN = 174;
             tileAnim = 1.0f;
             bear::out << "Test target\n";

@@ -438,6 +438,10 @@ void Sprite::SetClip(int x, int y,int w,int h){
 
 }
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 void Sprite::Render(PointInt pos,double angle){
     if (IsLoaded()){
         #ifndef RENDER_OPENGL
@@ -449,6 +453,90 @@ void Sprite::Render(PointInt pos,double angle){
         dimensions2.w = clipRect.w*scaleRatioW*scaleX;
         SDL_RenderCopyEx(BearEngine->GetRenderer(),textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip);
         #else
+
+
+
+        static unsigned int VBOEE;
+        static bool made = false;
+        static Shader baseShader;
+        if (!made){
+
+
+            // Configure VAO/VBO
+            GLuint VBO;
+            GLfloat vertices[] = {
+                // Pos      // Tex
+                0.0f, 1.0f, 0.0f, 1.0f,
+                1.0f, 0.0f, 1.0f, 0.0f,
+                0.0f, 0.0f, 0.0f, 0.0f,
+
+                0.0f, 1.0f, 0.0f, 1.0f,
+                1.0f, 1.0f, 1.0f, 1.0f,
+                1.0f, 0.0f, 1.0f, 0.0f
+            };
+
+            glGenVertexArrays(1, &VBOEE);
+            glGenBuffers(1, &VBO);
+
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+            glBindVertexArray(VBOEE);
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindVertexArray(0);
+
+            made = true;
+            baseShader.Compile(GL_VERTEX_SHADER,"sprvertex.glvs");
+            baseShader.Compile(GL_FRAGMENT_SHADER,"sprfrag.glfs");
+            baseShader.Link();
+        }
+
+
+
+
+
+
+        baseShader.Bind();
+
+        glm::vec2 size(dimensions.w,dimensions.h);
+        glm::mat4 model(1.0f);
+
+        model = glm::translate(model, glm::vec3((float)pos.x,(float)pos.y, 0.0f));
+
+        model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
+        model = glm::rotate(model, float(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
+
+        model = glm::scale(model, glm::vec3(size, 1.0f));
+
+        glm::mat4 projection = glm::ortho(0.0f, (float)SCREEN_SIZE_W,  (float)SCREEN_SIZE_H, 0.0f, -1.0f, 1.0f);
+
+
+
+        unsigned int transformLoc = glGetUniformLocation(baseShader.GetCurrentShaderId(), "model");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        transformLoc = glGetUniformLocation(baseShader.GetCurrentShaderId(), "projection");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+        baseShader.SetUniform<Point3>("spriteColor",Point3(OUTR, OUTG, OUTB));
+        baseShader.SetUniform<int>("image",0);
+
+
+
+
+        glActiveTexture(GL_TEXTURE0);
+
+        glBindTexture( GL_TEXTURE_2D, textureShred.get()->id );
+        glBindVertexArray(VBOEE);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+
+        baseShader.Unbind();
+
+        /*
         glLoadIdentity();
         glEnable(GL_TEXTURE_2D);
         glColor4f(OUTR, OUTG, OUTB, m_alpha);
@@ -490,6 +578,9 @@ void Sprite::Render(PointInt pos,double angle){
             glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
             glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
         glEnd();
+        */
+
+
         #endif // RENDER_OPENGL
     }
 

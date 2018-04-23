@@ -18,7 +18,7 @@ ScreenManager::~ScreenManager(){
 ScreenManager::ScreenManager(){
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
-    postProcess = true;
+    postProcess = false;
     m_ScreenRationMultiplier = 2.0f;
     ShakingDuration = 0;
     shaking = 0;
@@ -66,16 +66,19 @@ void ScreenManager::NotyifyScreenClosed(){
 
 bool ScreenManager::SetupOpenGL(){
 
+    #ifdef RENDER_OPENGL
+
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	SDL_GL_SetSwapInterval(0);
 
-    #ifdef RENDER_OPENGL
+
+
 
     glewExperimental = GL_TRUE;
     GLenum glewError = glewInit();
@@ -89,14 +92,20 @@ bool ScreenManager::SetupOpenGL(){
     //glDebugMessageCallback(openglErrF, nullptr);
 
 
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	SDL_GL_SwapWindow(m_window);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glViewport( 0.f, 0.f, m_originalScreen.x, m_originalScreen.y );
+
+    glGenVertexArrays(1, &VertexArrayID);
+    glBindVertexArray(VertexArrayID);
+
+    glViewport( 0.f, 0.f, m_originalScreen.x, m_originalScreen.y );
+
+	/*
 	DebugHelper::DisplayGlError("2");
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
@@ -108,13 +117,15 @@ bool ScreenManager::SetupOpenGL(){
     glPushMatrix();
     glClearColor( 1.f, 1.f, 1.f, 1.f );
     DebugHelper::DisplayGlError("3");
+    */
     if (postProcess){
         StartPostProcessing();
     }
+
     SDL_GL_SetSwapInterval(0);
 
     GLint maxSize;
-	glGetIntegerv (GL_MAX_TEXTURE_SIZE, &maxSize);
+	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxSize);
     m_maxTextureSize.x = maxSize;
     m_maxTextureSize.y = maxSize;
 

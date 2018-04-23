@@ -34,8 +34,8 @@ bool Light::Shutdown(){
 void Light::InternalStartup(Point screenSize,Point scale){
     Shutdown();
     if (!m_bufferTexture){
-        m_lightShader.Compile("engine/vertex.glvs","data/light.glfs");
-        m_blurShader.Compile("engine/vertex.glvs","data/blur.glfs");
+        //m_lightShader.Compile("engine/vertex.glvs","data/light.glfs");
+        //m_blurShader.Compile("engine/vertex.glvs","data/blur.glfs");
         m_bufferTexture = new TargetTexture();
         canvasSize = screenSize;
         scaler = scale;

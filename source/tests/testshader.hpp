@@ -18,11 +18,13 @@ class Test_Shader: public State{
         void Begin(){
             bear::out << "Test shader\n";
             bear::out << "Compile an shader\n";
-            shdr.Compile("engine/vertex.glvs","engine/moq.glfs");
+            shdr.Compile(GL_VERTEX_SHADER,"engine/vertex.glvs");
+            shdr.Compile(GL_VERTEX_SHADER,"engine/moq.glfs");
+            shdr.Link();
             background = Sprite("data/wall.jpg");
 
-            m_shader.Compile("engine/vertex.glvs","engine/lens.glfs");
-            ScreenManager::GetInstance().SetTopShader(m_shader);
+
+            //ScreenManager::GetInstance().SetTopShader(m_shader);
         };
 
         void Update(float dt){
