@@ -105,23 +105,23 @@ bool ScreenManager::SetupOpenGL(){
 
     glViewport( 0.f, 0.f, m_originalScreen.x, m_originalScreen.y );
 
-    //RenderHelp::baseShader.Compile(GL_VERTEX_SHADER,"quadvertex.glvs");
-    //RenderHelp::baseShader.Compile(GL_FRAGMENT_SHADER,"quadfrag.glfs");
-    //RenderHelp::baseShader.Link();
-
-	/*
-	DebugHelper::DisplayGlError("2");
-    glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-    glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
+    RenderHelp::SetupShaders();
 
 
-    glPushMatrix();
-    glClearColor( 1.f, 1.f, 1.f, 1.f );
-    DebugHelper::DisplayGlError("3");
-    */
+	#ifdef GL2
+        DebugHelper::DisplayGlError("2");
+        glMatrixMode( GL_PROJECTION );
+        glLoadIdentity();
+        glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
+        glMatrixMode( GL_MODELVIEW );
+        glLoadIdentity();
+
+
+        glPushMatrix();
+        glClearColor( 1.f, 1.f, 1.f, 1.f );
+        DebugHelper::DisplayGlError("3");
+    #endif // GL2
+
     if (postProcess){
         StartPostProcessing();
     }
@@ -133,15 +133,9 @@ bool ScreenManager::SetupOpenGL(){
     m_maxTextureSize.x = maxSize;
     m_maxTextureSize.y = maxSize;
 
-
-    #elif RENDER_OPENGLES
-
-    SDL_GL_SwapWindow(m_window);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_AL
-    SDL_GL_SetSwapInterval(0);
-
     #endif // RENDER_OPENGL
+
+
 
 
 
@@ -294,12 +288,13 @@ void ScreenManager::RenderPresent(){
 
 void ScreenManager::ResetViewPort(){
     #ifdef RENDER_OPENGL
-    glViewport(0,0,m_screen.x, m_screen.y);
+    /*glViewport(0,0,m_screen.x, m_screen.y);
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
     glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
+    glLoadIdentity();*/
+    glViewport(0,0,m_screen.x, m_screen.y);
     #endif // RENDER_OPENGL
 }
 void ScreenManager::PreRender(){

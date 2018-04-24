@@ -28,14 +28,15 @@ class Test_Shapes: public State{
         };
         void Render(){
 
-            //RenderHelp::DrawSquareColorA(Rect(32,32,64,64),255,255,100,255);
+            RenderHelp::DrawSquareColorA(Rect(32,32,64,64),255,255,100,255);
+            RenderHelp::DrawSquareColorA(Rect(98,220,64,64),255,100,100,255,true);
             sp.SetClip(0,0,32,32);
             sp.Render(Point(32,32),0);
             sp.SetClip(64,64,32,32);
             sp.Render(Point(64,64),0);
             /*RenderHelp::DrawLineColor(96,96,128,128,255,0,255);
             RenderHelp::DrawLineColor(128,128,98,220,255,0,0,255,4);
-            RenderHelp::DrawSquareColorA(Rect(98,220,64,64),255,100,100,255,true);
+
             RenderHelp::DrawCircleColor(Point(98,220),32,100,100,255,100);*/
         };
         void Input();

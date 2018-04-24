@@ -16,6 +16,7 @@ namespace bear {
             void printme(uint64_t n);
             void printme(float n);
             void printme(double n);
+            void printme(char *c);
             void printme(const char *c);
             void printme(void *c);
     };
@@ -61,6 +62,11 @@ namespace bear {
         const char specializer
     */
     static inline bear::outstream &operator << ( bear::outstream &o ,const char *e){
+        o.printme(e);
+        return o;
+    }
+
+    static inline bear::outstream &operator << ( bear::outstream &o ,char *e){
         o.printme(e);
         return o;
     }

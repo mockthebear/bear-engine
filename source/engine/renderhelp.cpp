@@ -118,9 +118,7 @@ bool RenderHelp::RenderTexture(BearTexture *t, Point pos,Rect clipRect, float ro
                 glBindVertexArray(0);
 
                 made = true;
-                textureShader.Compile(GL_VERTEX_SHADER,"sprvertex.glvs");
-                textureShader.Compile(GL_FRAGMENT_SHADER,"sprfrag.glfs");
-                textureShader.Link();
+
             }
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
             glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -280,131 +278,109 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
     #endif // RENDER_OPENGL
 }
 
+void RenderHelp::SetupShaders(){
+    static bool made = false;
+    if (!made){
+        made = true;
+        polygonShader.Compile(GL_VERTEX_SHADER,"quadvertex.glvs");
+        polygonShader.Compile(GL_FRAGMENT_SHADER,"quadfrag.glfs");
+        polygonShader.Link();
+        textureShader.Compile(GL_VERTEX_SHADER,"sprvertex.glvs");
+        textureShader.Compile(GL_FRAGMENT_SHADER,"sprfrag.glfs");
+        textureShader.Link();
+    }
+}
+
+void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thicc){
+
+}
+
 
 void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline,float angle){
     #ifdef RENDER_OPENGL
-    if (1){
-        return;
-    }
-    /*
+    static GLuint VAO;
+    static GLuint VBO;
     static bool made = false;
-    static const GLfloat g_vertex_buffer_data[] = {
-       0.5f,  0.5f, 0.0f, 1.0f,      1.0f, 0.0f, 0.0f, 1.0f,
-       0.5f, -0.5f, 0.0f, 1.0f,      0.0f, 1.0f, 0.0f, 1.0f,
-       -0.5f, -0.5f, 0.0f, 1.0f,     0.0f, 0.0f, 1.0f, 1.0f,
-       -0.5f,  0.5f, 0.0f, 1.0f,     1.0f, 1.0f, 1.0f, 1.0f,
-
-    };
-
-    static GLuint vertexbuffer;
-    if (!made){
-        // Generate 1 buffer, put the resulting identifier in vertexbuffer
-        glGenBuffers(1, &vertexbuffer);
-        // The following commands will talk about our 'vertexbuffer' buffer
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        // Give our vertices to OpenGL.
-        glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-        // texture coord attribute
-        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(4 * sizeof(float)));
-        glEnableVertexAttribArray(1);
-
-        made = true;
-    }
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 
 
     glm::vec2 size(box.w,box.h);
     glm::mat4 model(1.0f);
+    glm::mat4 projection;
 
-    model = glm::translate(model, glm::vec3((float)box.x,(float)box.y, 0.0f));
+    GLfloat vertices[] = {
+        // Pos      // Tex
+        0.0f, 1.0f,
+        1.0f, 0.0f,
+        0.0f, 0.0f,
+
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+    };
+
+    if (!made){
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        glBindVertexArray(VAO);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    if (Shader::GetCurrentShaderId() == 0){
+        polygonShader.Bind();
+    }
+
+
+    Point scale(1,1);
+
+    model = glm::translate(model, glm::vec3(box.x, box.y, 0.0f));
 
     model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
-    model = glm::rotate(model, float(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
 
-    model = glm::scale(model, glm::vec3(size, 1.0f));
+    model = glm::scale(model, glm::vec3(size.x * scale.x,size.y * scale.y, 1.0f));
 
-    glm::mat4 projection = glm::ortho(0.0f, (float)SCREEN_SIZE_W,  (float)SCREEN_SIZE_H, 0.0f, -1.0f, 1.0f);
+    Point scr = ScreenManager::GetInstance().GetGameSize();
+    projection = glm::ortho(0.0f, (float)scr.x,  (float)scr.y, 0.0f, -1.0f, 1.0f);
 
 
 
-    unsigned int transformLoc = glGetUniformLocation(baseShader.GetCurrentShaderId(), "model");
+    unsigned int transformLoc = glGetUniformLocation(Shader::GetCurrentShaderId(), "model");
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-    transformLoc = glGetUniformLocation(baseShader.GetCurrentShaderId(), "projection");
+    transformLoc = glGetUniformLocation(Shader::GetCurrentShaderId(), "projection");
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-    baseShader.SetUniform<Rect>("spriteColor",Rect(r, g, b,a));
+    ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"spriteColor",BearColor(r/255.0f,g/255.0f,b/255.0f,a/255.0f));
 
-    baseShader.Bind();
-
-
-
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-
-    baseShader.Unbind();
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    */
-
-
-    /*glDisable(GL_TEXTURE_2D);
-    glLoadIdentity();
-    glTranslatef(box.x, box.y, 0.0f);
-    if (!outline){
-        glBegin( GL_TRIANGLE_FAN );
+    glBindVertexArray(VAO);
+    if (outline){
+        glDrawArrays(GL_LINES, 0, 6);
     }else{
-        glBegin( GL_LINE_LOOP );
+        glDrawArrays(GL_TRIANGLES, 0, 6);
     }
-        glColor4ub( r,g,b,a );
-        glVertex2f( 0.0f,0.0f );
-        glVertex2f(  box.w, 0.0f );
-        glVertex2f( box.w,  box.h );
-        glVertex2f( 0.0f,  box.h );
-    glEnd();
-    DebugHelper::DisplayGlError("DrawSquareColor");*/
-    #else
+    glBindVertexArray(0);
+    if (Shader::GetCurrentShaderId() == 0){
+        polygonShader.Unbind();
+    }
 
-    #endif
+    #endif // RENDER_OPENGL
+
 
 }
 
-void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thicc){
-    #ifndef RENDER_OPENGL
-    GLfloat line[] = {
-                     0,0,0,
-                     100,100,0
-                  };
 
-    GLfloat colors[] = {
-                            1.0f, 0.0f, 0.0f, 1.0f,
-                            0.0f, 1.0f, 0.0f, 1.0f,
-                            0.0f, 0.0f, 1.0f, 1.0f
-                        };
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    //glShadeModel(GL_SMOOTH);
-    //glVertexPointer(3, GL_FLOAT, 0, line);
-    glColorPointer(4, GL_FLOAT, 0, colors);
-
-    glClear(GL_COLOR_BUFFER_BIT);
-    glDrawArrays(GL_LINES, 0, 2);
-    glFlush();
-    #else
-        glLoadIdentity();
-        glLineWidth(thicc);
-        glColor4ub( r,g,b,a );
-        glBegin(GL_LINES);
-            glVertex3f(p1.x, p1.y, 0.0f);
-            glVertex3f(p2.x, p2.y, 0.0f);
-        glEnd();
-        glLineWidth(1);
-        DebugHelper::DisplayGlError("DrawLineColor");
-    #endif
-
-}
 
 uint8_t RenderHelp::GetR(uint32_t r){
     return r&0xff;
@@ -442,7 +418,9 @@ Uint32 RenderHelp::FormatARGB(int a,int r,int b,int g){
 GLint TargetTexture::lastbuffer = 0;
 
 void TargetTexture::Render(Point pos){
-
+    id = renderedTexture;
+    RenderHelp::RenderTexture(this,pos,Rect(0,0,-1,-1),0,scale);
+    /*
     #ifdef RENDER_OPENGL
     glLoadIdentity();
 
@@ -473,6 +451,7 @@ void TargetTexture::Render(Point pos){
     glBindTexture( GL_TEXTURE_2D, 0 );
 
     #endif // RENDER_OPENGL
+    */
 }
 
 bool TargetTexture::Bind(){
@@ -481,12 +460,13 @@ bool TargetTexture::Bind(){
     Point gameCanvas = ScreenManager::GetInstance().GetGameSize();
 
     #ifdef RENDER_OPENGL
-    glViewport(0, 0, size_w, size_h);
+    /*glViewport(0, 0, size_w, size_h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0, size_w, size_h, 0, -1, 1);
     glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    glLoadIdentity();*/
+    glViewport(0,0,size_w, size_h);
     #endif // RENDER_OPENGL
 
 
@@ -563,7 +543,7 @@ bool TargetTexture::Generate(int wa,int ha){
 
     Bind();
     glDisable(GL_BLEND);
-    RenderHelp::DrawSquareColor(Rect(0,0,wa,ha),0,0,0,0);
+    //RenderHelp::DrawSquareColor(Rect(0,0,wa,ha),0,0,0,0);
     glEnable(GL_BLEND);
     UnBind();
 

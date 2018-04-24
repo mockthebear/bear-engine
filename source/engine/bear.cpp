@@ -29,6 +29,11 @@ void bear::outstream::printme(void *n){
     Console::GetInstance().Store("%d",n);
 }
 
+void bear::outstream::printme(char *c){
+    Console::GetInstance().Store("%s",c);
+}
+
+
 void bear::outstream::printme(const char *c){
     bool found = false;
     char *alt = new char[strlen(c)+1];
