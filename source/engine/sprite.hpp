@@ -6,7 +6,8 @@
 #define SPRITEHA
 
 #include "../framework/geometry.hpp"
-#include "../framework/chainptr.hpp"
+
+#include "texturedefinitions.hpp"
 
 #include <unordered_map>
 #include <map>
@@ -14,88 +15,6 @@
 
 #include <memory>
 
-#include SDL_LIB_HEADER
-#ifdef RENDER_OPENGLES
-    #define GL_GLEXT_PROTOTYPES 1
-    #include GLES_LIB
-#endif // RENDER_OPENGLES
-
-#ifdef RENDER_OPENGL
-    #include GL_LIB
-#endif // RENDER_OPENGLES
-
-enum TextureLoadMethodEnum{
-    TEXTURE_DEFAULT,
-    TEXTURE_NEAREST,
-    TEXTURE_LINEAR,
-    TEXTURE_TRILINEAR,
-};
-
-class TextureLoadMethod{
-    public:
-    static TextureLoadMethod DefaultLoadingMethod;
-    TextureLoadMethod(){
-        mode = TEXTURE_NEAREST;
-    };
-    TextureLoadMethod(TextureLoadMethodEnum md){
-        mode = md;
-    };
-    void ApplyFilter(){
-        switch (mode){
-            case TEXTURE_NEAREST:
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-                break;
-            case TEXTURE_LINEAR:
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-                break;
-            case TEXTURE_TRILINEAR:
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-                break;
-            case TEXTURE_DEFAULT:
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-                break;
-        }
-    }
-    TextureLoadMethodEnum mode;
-};
-
-
-
-class BearTexture{
-    public:
-        BearTexture(){
-            id = 0;
-            w = h = c = 0;
-            size_w = size_h = 0;
-            textureMode = TEXTURE_NEAREST;
-        };
-        GLuint DropTexture(){
-           GLuint ret = id;
-           id = 0;
-           return ret;
-        }
-        void ClearTexture(){
-            GLuint tex = DropTexture();
-            if (tex > 0)
-                glDeleteTextures(1, &tex);
-        }
-
-        BearTexture(GLuint textureId,uint32_t width,uint32_t height,GLenum imgMode):id(textureId),w(width),h(height),mode(imgMode){};
-        GLuint id;
-        uint32_t w;
-        uint32_t h;
-        uint32_t c;
-        uint32_t size_w;
-        uint32_t size_h;
-        TextureLoadMethod textureMode;
-        GLenum mode;
-
-};
-typedef chain_ptr<BearTexture> TexturePtr;
 //#else
 //typedef chain_ptr<SDL_Texture> TexturePtr;
 //#endif // RENDER_OPENGL
@@ -477,9 +396,9 @@ class Sprite{
             @param Green [0-255] The default is 255 of all sprites;
         */
         void ReBlend(uint8_t Red,uint8_t Blue,uint8_t Green){
-            OUTR = Red/255.0f;
-            OUTB = Blue/255.0f;
-            OUTG = Green/255.0f;
+            outColor.r = Red/255.0f;
+            outColor.g = Blue/255.0f;
+            outColor.b = Green/255.0f;
             #ifndef RENDER_OPENGL
             SDL_SetTextureColorMod((textureShred.get()),OUTR*255,OUTB*255,OUTG*255);
             #endif // RENDER_OPENGL
@@ -491,14 +410,14 @@ class Sprite{
             @param alpha [0-255] The default is 255 of all sprites;
         */
         void SetAlpha(uint8_t alpha){
-            m_alpha = alpha/255.0f;
+            outColor.a = alpha/255.0f;
             #ifndef RENDER_OPENGL
             SDL_SetTextureAlphaMod((textureShred.get()),alpha);
             #endif // RENDER_OPENGL
         };
 
         uint8_t GetAlpha(){
-            return m_alpha*255;
+            return outColor.a*255;
         };
         /**
             *Set a grid for animation frames
@@ -543,8 +462,7 @@ class Sprite{
         friend class AssetMannager;
         SDL_RendererFlip sprFlip;
         std::string fname;
-        float OUTR,OUTB,OUTG;
-        float m_alpha;
+        BearColor outColor;
         float scaleX,scaleY,timeElapsed,frameTime;
         int over;
         int repeat;

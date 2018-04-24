@@ -311,42 +311,8 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
                 return;
             }
         }
-        glLoadIdentity();
-        glEnable(GL_TEXTURE_2D);
-        glColor4f(1.0f, 1.0f, 1.0f, alpha/255.0f);
 
-
-        GLfloat texLeft = 0.0f;
-        GLfloat texRight = 1.0f;
-        GLfloat texTop = 0.0f;
-        GLfloat texBottom = 1.0f;
-
-        GLfloat quadWidth =  box.w ;
-        GLfloat quadHeight = box.h ;
-
-
-        texRight = (  texture->size_w ) / (float)texture->w;
-        texBottom = ( texture->size_h ) / (float)texture->h;
-
-
-        glTranslatef(
-                     (cameraX   + quadWidth / 2.f  ),
-                     (cameraY  + quadHeight/ 2.f  ),
-                       0.f );
-
-
-        glRotatef( angle, 0.f, 0.f, 1.f );
-
-         glBindTexture( GL_TEXTURE_2D, texture->id );
-
-        glBegin( GL_TRIANGLE_FAN );
-            glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
-            glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
-            glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
-            glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
-        glEnd();
-
-        glDisable(GL_TEXTURE_2D);
+        RenderHelp::RenderTexture(texture.get(),Point(box.x+cameraX,box.y+cameraY),Rect(0,0,-1,-1),angle,Point(1,1),SDL_FLIP_NONE,BearColor(1.0,1.0,1.0,alpha/255.0f));
         DebugHelper::DisplayGlError("Text::Render");
         #endif
     }else if (texturespr){

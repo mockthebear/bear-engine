@@ -177,6 +177,7 @@
 		<Unit filename="engine/sprite.hpp" />
 		<Unit filename="engine/text.cpp" />
 		<Unit filename="engine/text.hpp" />
+		<Unit filename="engine/texturedefinitions.hpp" />
 		<Unit filename="engine/tilemap.cpp" />
 		<Unit filename="engine/tilemap.hpp" />
 		<Unit filename="engine/tileset.cpp" />

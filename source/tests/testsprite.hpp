@@ -94,6 +94,7 @@ class Test_Sprite: public State{
 
             background.Render(0,0,0);
             //
+            bearHead.SetAlpha(127);
             bearHead.Render(Point(64,64),duration * 3.6f * 2.0f);
             raccoonHead.Render(Point(120,64),0);
             sheet.Render(200,200);
@@ -106,6 +107,15 @@ class Test_Sprite: public State{
             }
             smol.SetScale(Point(8,8));
             smol.Render(300,300,0);
+            Point p = g_input.GetMouse();
+            SDL_RendererFlip f = SDL_FLIP_NONE;
+            if (p.x > SCREEN_SIZE_W/2){
+                f = SDL_RendererFlip((int)f | (int)SDL_FLIP_HORIZONTAL);
+            }
+            if (p.y > SCREEN_SIZE_H/2){
+                f = SDL_RendererFlip((int)f | (int)SDL_FLIP_VERTICAL);
+            }
+            cursor.SetFlip(f);
             cursor.Render(g_input.GetMouse());
             RenderHelp::DrawSquareColor(10,10,SCREEN_SIZE_W-20,SCREEN_SIZE_H-20,255,0,255,255,true);
             RenderHelp::DrawCircleColor(Point(400,400),86,255,0,100,100);

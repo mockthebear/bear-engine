@@ -38,13 +38,14 @@ Sprite::Sprite(){
     repeat = 1;
     hasCenter = false;
     aliasing = TEXTURE_LINEAR;
-    m_alpha = 1.0f;
+    outColor = {1.0f,1.0f,1.0f,1.0f};
     fname = "";
     over = 0;
-    OUTR = OUTB = OUTG = 1.0f;
+
     timeElapsed = 0;
     frameTime = 0;
     sprFlip = SDL_FLIP_NONE;
+
 
 }
 
@@ -444,163 +445,7 @@ void Sprite::SetClip(int x, int y,int w,int h){
 
 void Sprite::Render(PointInt pos,double angle){
     if (IsLoaded()){
-        #ifndef RENDER_OPENGL
-        double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
-        double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
-        dimensions2.x = pos.x*scaleRatioW + ScreenManager::GetInstance().GetOffsetW();
-        dimensions2.y = pos.y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH();
-        dimensions2.h = clipRect.h*scaleRatioH*scaleY;
-        dimensions2.w = clipRect.w*scaleRatioW*scaleX;
-        SDL_RenderCopyEx(BearEngine->GetRenderer(),textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip);
-        #else
-
-
-
-        static unsigned int VBOEE;
-        static GLuint VBO;
-        static bool made = false;
-        static Shader baseShader;
-
-        float w = dimensions.w;
-        float h = dimensions.h;
-
-        texLeft = clipRect.x / (float)w; //0
-        texRight =  ( clipRect.x + clipRect.w ) / (float)w; //1
-        texTop = clipRect.y / (float)h; //0
-        texBottom = ( clipRect.y + clipRect.h ) / (float)h; //1
-
-
-        GLfloat vertices[] = {
-                // Pos      // Tex
-            0.0f, 1.0f, texLeft, texBottom,
-            1.0f, 0.0f, texRight, texTop,
-            0.0f, 0.0f, texLeft, texTop,
-
-            0.0f, 1.0f, texLeft, texBottom,
-            1.0f, 1.0f, texRight, texBottom,
-            1.0f, 0.0f, texRight, texTop
-        };
-
-
-        if (!made){
-
-
-            // Configure VAO/VBO
-
-
-
-            glGenVertexArrays(1, &VBOEE);
-            glGenBuffers(1, &VBO);
-
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-            glBindVertexArray(VBOEE);
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
-
-            made = true;
-            baseShader.Compile(GL_VERTEX_SHADER,"sprvertex.glvs");
-            baseShader.Compile(GL_FRAGMENT_SHADER,"sprfrag.glfs");
-            baseShader.Link();
-        }
-
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
-
-
-
-
-
-        baseShader.Bind();
-
-        glm::vec2 size(clipRect.w,clipRect.h);
-        glm::mat4 model(1.0f);
-
-        model = glm::translate(model, glm::vec3((float)pos.x,(float)pos.y, 0.0f));
-
-        model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
-        model = glm::rotate(model, float(angle), glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
-
-        model = glm::scale(model, glm::vec3(size.x * scaleX,size.y * scaleY, 1.0f));
-
-        glm::mat4 projection = glm::ortho(0.0f, (float)SCREEN_SIZE_W,  (float)SCREEN_SIZE_H, 0.0f, -1.0f, 1.0f);
-
-
-
-        unsigned int transformLoc = glGetUniformLocation(baseShader.GetCurrentShaderId(), "model");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-        transformLoc = glGetUniformLocation(baseShader.GetCurrentShaderId(), "projection");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-        baseShader.SetUniform<Point3>("spriteColor",Point3(OUTR, OUTG, OUTB));
-        baseShader.SetUniform<int>("image",0);
-
-
-
-
-        glActiveTexture(GL_TEXTURE0);
-
-        glBindTexture( GL_TEXTURE_2D, textureShred.get()->id );
-        glBindVertexArray(VBOEE);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
-
-        baseShader.Unbind();
-
-        /*
-        glLoadIdentity();
-        glEnable(GL_TEXTURE_2D);
-        glColor4f(OUTR, OUTG, OUTB, m_alpha);
-        float w = dimensions.w;
-        float h = dimensions.h;
-
-        texLeft = clipRect.x / (float)w;
-        texRight =  ( clipRect.x + clipRect.w ) / (float)w;
-        texTop = clipRect.y / (float)h;
-        texBottom = ( clipRect.y + clipRect.h ) / (float)h;
-
-        GLfloat quadWidth = clipRect.w ;
-        GLfloat quadHeight = clipRect.h ;
-
-        glScalef(scaleX , scaleY , 1.0f);
-
-        glTranslatef(
-            (pos.x * (1.0f/scaleX)  + quadWidth  / 2.f  ) + (- center.x* (scaleX)  + center.x),
-            (pos.y * (1.0f/scaleY)  + quadHeight / 2.f  ) + (- center.y* (scaleY)  + center.y),
-        0.f);
-
-        glRotatef( angle, 0.f, 0.f, 1.f );
-
-        glBindTexture( GL_TEXTURE_2D, textureShred.get()->id );
-        if ((sprFlip&SDL_FLIP_HORIZONTAL) != 0){
-            float holder =  texLeft;
-            texLeft = texRight;
-            texRight = holder;
-        }
-        if ((sprFlip&SDL_FLIP_VERTICAL) != 0){
-            float holder =  texTop;
-            texTop = texBottom;
-            texBottom = holder;
-        }
-
-        glBegin( GL_TRIANGLE_FAN );
-            glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
-            glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
-            glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
-            glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
-        glEnd();
-        */
-
-
-        #endif // RENDER_OPENGL
+        RenderHelp::RenderTexture(textureShred.get(),pos,clipRect,angle, Point(scaleX,scaleY), sprFlip, outColor);
     }
 
 }

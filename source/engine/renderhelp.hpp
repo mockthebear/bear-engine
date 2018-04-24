@@ -2,6 +2,7 @@
 #define RENDERH
 #include "smarttexture.hpp"
 #include "collision.hpp"
+#include "texturedefinitions.hpp"
 #include "../framework/geometry.hpp"
 #include "../framework/typechecker.hpp"
 #include "shadermanager.hpp"
@@ -39,7 +40,7 @@ class TargetTexture : public BearTexture{
 class RenderHelp{
     public:
 
-        static bool RendedTexture();
+
         /**
             *Draw a single pixel line. Does not be affected by scaling in is thickness
             @param x position x
@@ -129,6 +130,9 @@ class RenderHelp{
         */
         static uint8_t GetA(uint32_t c);
 
+
+        static bool RenderTexture(BearTexture *t,Point pos,Rect clip = Rect(0,0,-1,-1),float rotation=0, Point scale = Point(1,1),SDL_RendererFlip flip = SDL_FLIP_NONE,BearColor recolor = {255,255,255,255});
+
         /**
             Given an rect, its drawn relative to the camera and an offset, the colission box
             @param box The rect/colission box
@@ -139,7 +143,8 @@ class RenderHelp{
             @param alpha Alpha, default = 100.
         */
 
-        static Shader baseShader;
+        static Shader textureShader;
+        static Shader polygonShader;
         /*static void DrawCollisionBox(Rect &box,Point offset,int r_color,int g_color,int b_color,int alpha=100){
             RenderHelp::DrawSquareColorA(box.x-Camera::pos.x+offset.x,box.y-Camera::pos.y+offset.y,box.w,box.h,r_color,g_color,b_color,alpha);
         }

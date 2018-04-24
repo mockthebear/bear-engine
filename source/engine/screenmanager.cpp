@@ -105,9 +105,9 @@ bool ScreenManager::SetupOpenGL(){
 
     glViewport( 0.f, 0.f, m_originalScreen.x, m_originalScreen.y );
 
-    RenderHelp::baseShader.Compile(GL_VERTEX_SHADER,"quadvertex.glvs");
-    RenderHelp::baseShader.Compile(GL_FRAGMENT_SHADER,"quadfrag.glfs");
-    RenderHelp::baseShader.Link();
+    //RenderHelp::baseShader.Compile(GL_VERTEX_SHADER,"quadvertex.glvs");
+    //RenderHelp::baseShader.Compile(GL_FRAGMENT_SHADER,"quadfrag.glfs");
+    //RenderHelp::baseShader.Link();
 
 	/*
 	DebugHelper::DisplayGlError("2");

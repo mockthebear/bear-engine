@@ -6,6 +6,7 @@
 
 #include "../framework/geometry.hpp"
 #include "bear.hpp"
+#include "texturedefinitions.hpp"
 #include <string>
 #include <typeinfo>
 #include <vector>
@@ -164,6 +165,17 @@ template<> struct ShaderSetter<SDL_Color>{
             return false;
         }
         glUniform4f(loc,var.r/255.0f,var.g/255.0f,var.b/255.0f,var.a/255.0f);
+        return true;
+    };
+};
+
+template<> struct ShaderSetter<BearColor>{
+    static bool SetUniform(GLuint shdr,const char *str,BearColor var){
+        GLint loc = glGetUniformLocation(shdr, str );
+        if (loc == -1){
+            return false;
+        }
+        glUniform4f(loc,var.r,var.g,var.b,var.a);
         return true;
     };
 };
