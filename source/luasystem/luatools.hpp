@@ -1328,8 +1328,8 @@ template<typename T1> struct ClassRegister{
     template<typename RetType,typename ClassObj,typename ... Types> static void RegisterClassMethod(lua_State *L,std::string name,std::string methodName,RetType (ClassObj::*func)(Types ... args)){
         #ifdef GENERATEDOCUMENTATION
         DocGenerator<Types ...>(name,methodName);
-        lua_getglobal(L, name.c_str());
         #endif // GENERATEDOCUMENTATION
+        lua_getglobal(L, name.c_str());
         int top = lua_gettop (L);
         internal_register<RetType,ClassObj,Types...>::LambdaRegisterStackOpt(L,methodName,top,func);
         lua_pop(L, 1);
