@@ -13,6 +13,14 @@ bool LuaManager::IsDebug = false;
 
 char GenericLuaGetter<char*>::transfer[512];
 
+#ifdef GENERATEDOCUMENTATION
+
+NameAtlas& NameAtlas::GetInstance(){
+    static NameAtlas ref;
+    return ref;
+}
+
+#endif // GENERATEDOCUMENTATION
 
 //GenericLuaGetter<const char*>::Empty[0] = '\0';
 #endif
