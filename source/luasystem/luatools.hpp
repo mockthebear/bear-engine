@@ -15,8 +15,6 @@
 
 #define LUA_LAYER_UI 0
 
-//#define GENERATEDOCUMENTATION
-
 enum ReturnType{
     RETURN_NIL = -3,
     RETURN_ERROR = -2,
@@ -81,146 +79,6 @@ template<class T> class LuaReferenceCounter{
         }
         std::map<uint64_t,std::pair<uint64_t,bool>> internal_counter;
 };
-
-
-#ifdef GENERATEDOCUMENTATION
-
-class EmptyIdentifer{
-    int i;
-};
-
-class NameAtlas{
-    public:
-        static NameAtlas& GetInstance();
-
-        NameAtlas(){
-            #define SettleName(arg) Names[std::string(typeid( arg ).name())] = #arg; Names[std::string(typeid( arg* ).name())] = #arg;
-            #define SettleNameOther(arg, arg2) Names[std::string(typeid( arg ).name())] = arg2;
-
-            SettleName(int);
-            SettleName(bool);
-            SettleName(float);
-            SettleName(double);
-            SettleName(GameObject);
-            SettleName(Sprite);
-            SettleName(Rect);
-            SettleName(Point);
-            SettleName(PointInt);
-            SettleName(Point3);
-            SettleName(LuaUi);
-            SettleName(TextCenterStyle);
-            SettleName(TextureLoadMethod,"Int");
-            SettleNameOther(std::string, "String");
-            SettleNameOther(SDL_RendererFlip, "Int");
-            SettleName(Text);
-
-            #undef SettleName
-            #undef SettleName2
-        };
-
-        std::string GetName(std::string str){
-            auto it = Names.find(str);
-            if (it != Names.end()){
-                return Names[str];
-            }
-            return str;
-        };
-    private:
-        std::map<std::string,std::string> Names;
-};
-
-
-template<int N,int M>
-    struct docExpander {
-    template<typename Tuple> static void Read(std::stack<std::string> &S,Tuple& tuple) {
-        typedef typename std::tuple_element<N-1, Tuple>::type ValueType;
-
-        S.emplace( NameAtlas::GetInstance().GetName(typeid(ValueType).name()));
-
-        docExpander<N-1,0>::Read(S,tuple);
-    };
-
-
-    template<typename Tuple,typename Tuple2> static void Read(std::stack<std::string> &S,Tuple& tuple,Tuple2& tuple2) {
-        typedef typename std::tuple_element<N-1, Tuple>::type ValueType;
-        std::string nm = NameAtlas::GetInstance().GetName(typeid(ValueType).name());
-        std::stringstream SS;
-        if (M > 0){
-
-            SS << nm << " = "<<std::get<(M-1) < 0 ? 0 : (M-1)>(tuple2);
-            S.emplace( SS.str());
-            docExpander<N-1,M-1>::Read(S,tuple,tuple2);
-        }else{
-            SS << nm;
-            S.emplace( SS.str());
-            docExpander<N-1,M>::Read(S,tuple,tuple2);
-        }
-
-
-
-    };
-
-     //template <typename ... Opts> static void Read(std::stringstream &S,int size,int opt, std::tuple<Opts...> &tp) {
-
-};
-
-
-template<int M>
-    struct docExpander<0,M> {
-        template<typename Tuple> static void Read(std::stack<std::string> &s,Tuple& tuple) { };
-        template<typename Tuple,typename Tuple2> static void Read(std::stack<std::string> &S,Tuple& tuple,Tuple2& tupleOpt) {
-
-        };
-
-};
-
-
-template<typename ... Types> void DocGenerator(std::string str,std::string fnc,int opt=0){
-    std::stringstream S;
-    std::tuple<Types...> tp;
-    std::stack<std::string> args;
-    S << str << "::"<<fnc<<"(";
-    docExpander<sizeof...(Types),0>::Read(args,tp);
-    while (args.size() > 0){
-        S << args.top();
-        if (args.size() > 1){
-            S << ", ";
-        }
-        args.pop();
-    }
-
-    S <<")";
-    std::cout << S.str() << "\n";
-};
-template<typename ... Types,typename ... Opts> void DocGenerator2(std::string str,std::string fnc,int opt, std::tuple<Opts...> &tp2){
-    std::stringstream S;
-    std::tuple<Types...> tp;
-    std::stack<std::string> args;
-    S << str << "::"<<fnc<<"(";
-    int step = sizeof...(Types);
-    docExpander<sizeof...(Types),sizeof...(Opts)>::Read(args,tp,tp2);
-    while (args.size() > 0){
-        if (step <= opt){
-            S << "[";
-        }
-        S << args.top();
-        if (args.size() > 1){
-            S << ", ";
-        }
-        step--;
-        args.pop();
-    }
-    for (int i=0;i<opt;i++){
-        S << "]";
-    }
-    S <<")";
-    std::cout << S.str() << "\n";
-};
-
-
-
-
-#endif // GENERATEDOCUMENTATION
 
 
 /**
@@ -815,7 +673,6 @@ template<typename ClassObj,typename ... Types> struct internal_register<void,Cla
 
 
 template<typename T1,typename ... Types> void LambdaClassRegister(lua_State *L,std::string str,int stackPos,std::function<T1(Types ... args)> func){
-
     LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
         LuaManager::lastCalled = str;
         int argCount = sizeof...(Types);
@@ -867,7 +724,6 @@ template<typename T1,typename ... Types,typename ... Opt> void LambdaClassRegist
 }
 
 template<typename ... Types> void LambdaClassRegister(lua_State *L,std::string str,int stackPos,std::function<void(Types ... args)> func){
-
     LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
         LuaManager::lastCalled = str;
         int argCount = sizeof...(Types);
@@ -894,7 +750,6 @@ template<typename ... Types> void LambdaClassRegister(lua_State *L,std::string s
 
 
 template<typename T1,typename ... Types> void LambdaRegister(lua_State *L,std::string str,std::function<T1(Types ... args)> func){
-
     LuaCFunctionLambda f = [func,str](lua_State *L2) -> int {
         LuaManager::lastCalled = str;
         int argCount = sizeof...(Types);
@@ -1305,9 +1160,6 @@ template<typename T1> struct ClassRegister{
 
 
     template<typename RetType,typename ... Types> static void RegisterClassLambdaMethod(lua_State *L,std::string name,std::string methodName,std::function<RetType(Types ... args)> func){
-        #ifdef GENERATEDOCUMENTATION
-        DocGenerator<Types ...>(name,methodName);
-        #endif // GENERATEDOCUMENTATION
         lua_getglobal(L, name.c_str());
         LambdaClassRegister(L,methodName,-2,func);
         lua_pop(L, 1);
@@ -1315,10 +1167,6 @@ template<typename T1> struct ClassRegister{
 
 
     template<typename RetType,typename ... Types,typename ... Otps> static void RegisterClassLambdaMethod(lua_State *L,std::string name,std::string methodName,std::function<RetType(Types ... args)> func,Otps ...optArgs){
-        #ifdef GENERATEDOCUMENTATION
-        std::tuple<Otps...> tp(optArgs...);
-        DocGenerator2<Types ...>(name,methodName,sizeof...(Otps),tp);
-        #endif // GENERATEDOCUMENTATION
         lua_getglobal(L, name.c_str());
         LambdaClassRegister(L,methodName,-2,func,optArgs...);
         lua_pop(L, 1);
@@ -1326,20 +1174,13 @@ template<typename T1> struct ClassRegister{
 
 
     template<typename RetType,typename ClassObj,typename ... Types> static void RegisterClassMethod(lua_State *L,std::string name,std::string methodName,RetType (ClassObj::*func)(Types ... args)){
-        #ifdef GENERATEDOCUMENTATION
-        DocGenerator<Types ...>(name,methodName);
         lua_getglobal(L, name.c_str());
-        #endif // GENERATEDOCUMENTATION
         int top = lua_gettop (L);
         internal_register<RetType,ClassObj,Types...>::LambdaRegisterStackOpt(L,methodName,top,func);
         lua_pop(L, 1);
     };
 
     template<typename RetType,typename ClassObj,typename ... Types,typename ... Otps> static void RegisterClassMethod(lua_State *L,std::string name,std::string methodName,RetType (ClassObj::*func)(Types ... args),Otps ...optArgs){
-        #ifdef GENERATEDOCUMENTATION
-        std::tuple<Otps...> tp(optArgs...);
-        DocGenerator2<Types ...>(name,methodName,sizeof...(Otps),tp);
-        #endif // GENERATEDOCUMENTATION
         lua_getglobal(L, name.c_str());
         int top = lua_gettop (L);
         internal_register<RetType,ClassObj,Types...>::LambdaRegisterStackOpt(L,methodName,top,func,optArgs...);

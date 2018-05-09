@@ -20,7 +20,7 @@ enum TypeComponent{
 };
 
 #define UI_REGISTER(tc) hashIt(Types::Get<tc>()); GenerateId()
-#define REGISTER_GETSETTER(Nm,type,var) type Get ## Nm (){return var;}; void Set ## Nm(type arg,bool relative= false){ var = relative ? (var+arg) : arg;}
+#define REGISTER_GETSETTEROBJ(Nm,type,var) type Get ## Nm (){return var;}; void Set ## Nm(type arg){ var = arg;}
 
 class UIStyle{
     public:
