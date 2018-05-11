@@ -9,7 +9,7 @@
 
 Shader RenderHelp::textureShader;
 Shader RenderHelp::polygonShader;
-
+bool RenderHelp::AngleInDegree = true;
 
 bool RenderHelp::RenderTexture(BearTexture *t, Point pos,Rect clipRect, float rotation,Point scale, SDL_RendererFlip flip,BearColor recolor){
     #ifdef RENDER_OPENGL
@@ -56,6 +56,10 @@ bool RenderHelp::RenderTexture(BearTexture *t, Point pos,Rect clipRect, float ro
                 glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
             glEnd();
         #else
+            if (AngleInDegree){
+                rotation = Geometry::toRad(rotation);
+            }
+
             static GLuint VAO;
             static GLuint VBO;
             static bool made = false;
@@ -94,14 +98,19 @@ bool RenderHelp::RenderTexture(BearTexture *t, Point pos,Rect clipRect, float ro
             }
 
             GLfloat vertices[] = {
-                // Pos      // Tex
-                0.0f, 1.0f, texLeft, texBottom,
-                1.0f, 0.0f, texRight, texTop,
-                0.0f, 0.0f, texLeft, texTop,
 
+
+                // Pos      // Tex
+                0.0f, 0.0f, texLeft, texTop,
                 0.0f, 1.0f, texLeft, texBottom,
                 1.0f, 1.0f, texRight, texBottom,
-                1.0f, 0.0f, texRight, texTop
+                1.0f, 0.0f, texRight, texTop,
+
+
+                0.0f, 0.0f, texLeft, texTop,
+                0.0f, 1.0f, texLeft, texBottom,
+                1.0f, 1.0f, texRight, texBottom,
+                1.0f, 0.0f, texRight, texTop,
             };
 
             if (!made){
@@ -124,8 +133,11 @@ bool RenderHelp::RenderTexture(BearTexture *t, Point pos,Rect clipRect, float ro
             glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+            bool noShader = Shader::GetCurrentShaderId() == 0;
 
-            textureShader.Bind();
+            if (noShader){
+                textureShader.Bind();
+            }
 
             model = glm::translate(model, glm::vec3(pos.x, pos.y, 0.0f));
 
@@ -145,8 +157,15 @@ bool RenderHelp::RenderTexture(BearTexture *t, Point pos,Rect clipRect, float ro
             transformLoc = glGetUniformLocation(textureShader.GetCurrentShaderId(), "projection");
             glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-            textureShader.SetUniform<BearColor>("spriteColor",recolor);
-            textureShader.SetUniform<int>("image",0);
+            ShaderSetter<BearColor>::SetUniform(textureShader.GetCurrentShaderId(),"spriteColor",recolor);
+            ShaderSetter<int>::SetUniform(textureShader.GetCurrentShaderId(),"image",0);
+
+
+
+
+            /*unsigned int ow = glGetUniformLocation(Shader::GetCurrentShaderId(), "OwO");
+            std::cout << ow << " : "<<Shader::GetCurrentShaderId()<<"\n";
+            glUniform1f(ow,0.3f);*/
 
 
 
@@ -155,10 +174,12 @@ bool RenderHelp::RenderTexture(BearTexture *t, Point pos,Rect clipRect, float ro
 
             glBindVertexArray(VAO);
 
-            glDrawArrays(GL_TRIANGLES, 0, 6);
+            glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
             glBindVertexArray(0);
 
-            textureShader.Unbind();
+            if (noShader){
+                textureShader.Unbind();
+            }
             return true;
         #endif // GL2
     #else
@@ -292,7 +313,86 @@ void RenderHelp::SetupShaders(){
 }
 
 void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thicc){
+    #ifdef RENDER_OPENGL
+    static GLuint VAO;
+    static GLuint VBO;
+    static bool made = false;
 
+    float dist = p1.GetDistance(p2);
+    glm::vec2 size(dist,dist);
+    glm::mat4 model(1.0f);
+    glm::mat4 projection;
+
+    GLfloat vertices[] = {
+        // Pos      // Tex
+        0.0f, 0.0f,
+        1.0f, 1.0f,
+
+        0.0f, 0.0f,
+        1.0f, 1.0f,
+    };
+
+    if (!made){
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        glBindVertexArray(VAO);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    bool noShader = Shader::GetCurrentShaderId() == 0;
+
+    if (noShader){
+        polygonShader.Bind();
+    }
+
+
+    Point scale(1,1);
+
+    model = glm::translate(model, glm::vec3(p1.x, p1.y, 0.0f));
+
+    model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
+    float angle = p2.getDirection(p1);
+    model = glm::rotate(model, (float)Geometry::toDeg(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
+
+    model = glm::scale(model, glm::vec3(size.x * scale.x,size.y * scale.y, 1.0f));
+
+    Point scr = ScreenManager::GetInstance().GetGameSize();
+    projection = glm::ortho(0.0f, (float)scr.x,  (float)scr.y, 0.0f, -1.0f, 1.0f);
+
+
+
+    unsigned int transformLoc = glGetUniformLocation(Shader::GetCurrentShaderId(), "model");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+
+
+    transformLoc = glGetUniformLocation(Shader::GetCurrentShaderId(), "projection");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+    ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"spriteColor",BearColor(r/255.0f,g/255.0f,b/255.0f,a/255.0f));
+
+    glBindVertexArray(VAO);
+
+    glDrawArrays(GL_LINES, 0, 2);
+
+    glBindVertexArray(0);
+    if (noShader){
+        polygonShader.Unbind();
+    }
+
+    #endif // RENDER_OPENGL
 }
 
 
@@ -307,12 +407,15 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
     glm::mat4 model(1.0f);
     glm::mat4 projection;
 
+
     GLfloat vertices[] = {
         // Pos      // Tex
-        0.0f, 1.0f,
-        1.0f, 0.0f,
         0.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        1.0f, 0.0f,
 
+        0.0f, 0.0f,
         0.0f, 1.0f,
         1.0f, 1.0f,
         1.0f, 0.0f,
@@ -336,7 +439,9 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    if (Shader::GetCurrentShaderId() == 0){
+    bool noShader = Shader::GetCurrentShaderId() == 0;
+
+    if (noShader){
         polygonShader.Bind();
     }
 
@@ -366,12 +471,13 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
 
     glBindVertexArray(VAO);
     if (outline){
-        glDrawArrays(GL_LINES, 0, 6);
+        glDrawArrays(GL_LINE_LOOP, 0, 8);
     }else{
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
     }
     glBindVertexArray(0);
-    if (Shader::GetCurrentShaderId() == 0){
+
+    if (noShader){
         polygonShader.Unbind();
     }
 

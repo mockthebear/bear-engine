@@ -19,7 +19,8 @@ class Test_Shader: public State{
             bear::out << "Test shader\n";
             bear::out << "Compile an shader\n";
             shdr.Compile(GL_VERTEX_SHADER,"engine/vertex.glvs");
-            shdr.Compile(GL_VERTEX_SHADER,"engine/moq.glfs");
+            bear::out << "Now frag\n";
+            shdr.Compile(GL_FRAGMENT_SHADER,"engine/moq.glfs");
             shdr.Link();
             background = Sprite("data/wall.jpg");
 
@@ -28,31 +29,19 @@ class Test_Shader: public State{
         };
 
         void Update(float dt){
+            shdr.Bind();
             duration -= dt;
             sinner += 3.14f * dt;
             if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
                 requestDelete = true;
             }
 
-            m_shader.Bind();
-            Point p = g_input.GetMouse();
-            p.y = 1.0f - p.y/(float)SCREEN_SIZE_H;
-            p.x = p.x/(float)SCREEN_SIZE_W;
-            m_shader.SetUniform<Point>("Cent2d",p);
-
-
-            shdr.Bind();
-
             shdr.SetUniform<float>("dt", 0.3f + fabs(sin(sinner))*0.2f );
-
-            shdr.Unbind();
 
         };
         void Render(){
 
-
-            shdr.Bind();
-            background.Render(0,0,0);
+            background.Render(Point(0,0),0);
             shdr.Unbind();
         };
         void Input();
