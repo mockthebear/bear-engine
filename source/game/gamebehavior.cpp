@@ -94,8 +94,9 @@ bool GameBehavior::OnLoad(){
     Game::GetInstance()->AddState(new Test_PathFind());
 
     Game::GetInstance()->AddState(new Test_Scrolling());
-    Game::GetInstance()->AddState(new Test_TargetTexture());
+    ;
     */
+    Game::GetInstance()->AddState(new Test_TargetTexture());
     Game::GetInstance()->AddState(new Test_Shader());
     //Game::GetInstance()->AddState(new Test_RenderSpeed());
     //Game::GetInstance()->AddState(new Test_Text());

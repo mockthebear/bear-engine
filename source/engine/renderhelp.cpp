@@ -525,7 +525,140 @@ GLint TargetTexture::lastbuffer = 0;
 
 void TargetTexture::Render(Point pos){
     id = renderedTexture;
-    RenderHelp::RenderTexture(this,pos,Rect(0,0,-1,-1),0,scale);
+
+
+    Rect clipRect(0,0,-1,-1);
+    float rotation=0;
+    Point scale = Point(1,1);
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    BearColor recolor = {255,255,255,255};
+
+
+            if (RenderHelp::AngleInDegree){
+                rotation = Geometry::toRad(rotation);
+            }
+
+            static GLuint VAO;
+            static GLuint VBO;
+            static bool made = false;
+
+
+
+
+            if (clipRect.w < 0){
+                clipRect.w = size_w;
+            }
+            if (clipRect.h < 0){
+                clipRect.h = size_h;
+            }
+            glm::vec2 size(clipRect.w,clipRect.h);
+            glm::mat4 model(1.0f);
+            glm::mat4 projection;
+
+            float texLeft = clipRect.x / (float)w; //0
+            float texRight =  ( clipRect.x + clipRect.w ) / (float)w; //1
+            float texTop = clipRect.y / (float)h; //0
+            float texBottom = ( clipRect.y + clipRect.h ) / (float)h; //1
+
+
+            if ((flip&SDL_FLIP_HORIZONTAL) != 0){
+                float holder =  texLeft;
+                texLeft = texRight;
+                texRight = holder;
+            }
+            if ((flip&SDL_FLIP_VERTICAL) != 0){
+                float holder =  texTop;
+                texTop = texBottom;
+                texBottom = holder;
+            }
+
+            GLfloat vertices[] = {
+
+
+                // Pos      // Tex
+                0.0f, 0.0f, texLeft, texTop,
+                0.0f, 1.0f, texLeft, texBottom,
+                1.0f, 1.0f, texRight, texBottom,
+                1.0f, 0.0f, texRight, texTop,
+
+
+                0.0f, 0.0f, texLeft, texTop,
+                0.0f, 1.0f, texLeft, texBottom,
+                1.0f, 1.0f, texRight, texBottom,
+                1.0f, 0.0f, texRight, texTop,
+            };
+
+            if (!made){
+                glGenVertexArrays(1, &VAO);
+                glGenBuffers(1, &VBO);
+
+                glBindBuffer(GL_ARRAY_BUFFER, VBO);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+                glBindVertexArray(VAO);
+                glEnableVertexAttribArray(0);
+                glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+                glBindVertexArray(0);
+
+                made = true;
+
+            }
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+            bool noShader = Shader::GetCurrentShaderId() == 0;
+
+            if (noShader){
+                RenderHelp::textureShader.Bind();
+            }
+
+            model = glm::translate(model, glm::vec3(pos.x, pos.y, 0.0f));
+
+            model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
+            model = glm::rotate(model, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+            model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
+
+            model = glm::scale(model, glm::vec3(size.x * scale.x,size.y * scale.y, 1.0f));
+            Point scr = ScreenManager::GetInstance().GetGameSize();
+            projection = glm::ortho(0.0f, (float)scr.x,  (float)scr.y, 0.0f, -1.0f, 1.0f);
+
+
+
+            unsigned int transformLoc = glGetUniformLocation(Shader::GetCurrentShaderId(), "model");
+            glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+            transformLoc = glGetUniformLocation(Shader::GetCurrentShaderId(), "projection");
+            glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+            ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"spriteColor",recolor);
+            ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image",0);
+
+
+
+
+            /*unsigned int ow = glGetUniformLocation(Shader::GetCurrentShaderId(), "OwO");
+            std::cout << ow << " : "<<Shader::GetCurrentShaderId()<<"\n";
+            glUniform1f(ow,0.3f);*/
+
+
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture( GL_TEXTURE_2D, renderedTexture );
+
+            glBindVertexArray(VAO);
+
+            glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
+            glBindVertexArray(0);
+
+            if (noShader){
+                RenderHelp::textureShader.Unbind();
+            }
+
+
+
+    //RenderHelp::RenderTexture(this,pos,Rect(0,0,-1,-1),0,scale);
     /*
     #ifdef RENDER_OPENGL
     glLoadIdentity();
@@ -561,9 +694,10 @@ void TargetTexture::Render(Point pos){
 }
 
 bool TargetTexture::Bind(){
-    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &lastbuffer);
+    //glGetIntegerv(GL_FRAMEBUFFER_BINDING, &lastbuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
-    Point gameCanvas = ScreenManager::GetInstance().GetGameSize();
+    glViewport(0,0,size_w, size_h);
+    //Point gameCanvas = ScreenManager::GetInstance().GetGameSize();
 
     #ifdef RENDER_OPENGL
     /*glViewport(0, 0, size_w, size_h);
@@ -572,7 +706,7 @@ bool TargetTexture::Bind(){
     glOrtho(0, size_w, size_h, 0, -1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();*/
-    glViewport(0,0,size_w, size_h);
+    //
     #endif // RENDER_OPENGL
 
 
@@ -584,9 +718,9 @@ bool TargetTexture::UnBind(){
     if (lastbuffer == 0){
         lastbuffer = ScreenManager::GetInstance().GetDefaultFrameBuffer();
     }
-    glBindFramebuffer(GL_FRAMEBUFFER, lastbuffer);
-    lastbuffer = 0;
-    ScreenManager::GetInstance().ResetViewPort();
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //lastbuffer = 0;
+    //ScreenManager::GetInstance().ResetViewPort();
     return true;
 }
 
@@ -603,9 +737,8 @@ bool TargetTexture::FreeTexture(){
 bool TargetTexture::Generate(int wa,int ha){
     size_w = w = wa;
     size_h = h = ha;
-    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &lastbuffer);
 
-    glActiveTexture(GL_TEXTURE0);
+    /**DebugHelper::DisplayGlError("begin");
     glGenTextures(1, &renderedTexture);
     glBindTexture(GL_TEXTURE_2D, renderedTexture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -615,20 +748,34 @@ bool TargetTexture::Generate(int wa,int ha){
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, wa, ha, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    /* Depth buffer */
+    DebugHelper::DisplayGlError("making depth");
+
+    DebugHelper::DisplayGlError("fb");
+
+    glGenFramebuffers(1, &Framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
+
+
+
+
     glGenRenderbuffers(1, &depthrenderbuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, wa,ha);
+
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTexture, 0);
+
+    GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+    glDrawBuffers(1, DrawBuffers);
+
+
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-    /* Framebuffer to link everything together */
-    glGenFramebuffers(1, &Framebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, renderedTexture, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
+    //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, renderedTexture, 0);
+    //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
 
 
-
+  DebugHelper::DisplayGlError("bind");
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     GLfloat fbo_vertices[] = {
@@ -645,13 +792,45 @@ bool TargetTexture::Generate(int wa,int ha){
     glBindTexture( GL_TEXTURE_2D, 0 );
     glBindFramebuffer(GL_FRAMEBUFFER, lastbuffer);
     lastbuffer = 0;
-    DebugHelper::DisplayGlError();
+    DebugHelper::DisplayGlError("end");*/
 
-    Bind();
-    glDisable(GL_BLEND);
-    //RenderHelp::DrawSquareColor(Rect(0,0,wa,ha),0,0,0,0);
-    glEnable(GL_BLEND);
-    UnBind();
+
+    GLuint Framebuffer = 0;
+    glGenFramebuffers(1, &Framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
+
+
+    GLuint renderedTexture;
+    glGenTextures(1, &renderedTexture);
+
+    // "Bind" the newly created texture : all future texture functions will modify this texture
+    glBindTexture(GL_TEXTURE_2D, renderedTexture);
+
+    // Give an empty image to OpenGL ( the last "0" )
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, w, h, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+
+    // Poor filtering. Needed !
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+
+
+    GLuint depthrenderbuffer;
+    glGenRenderbuffers(1, &depthrenderbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, w, h);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
+
+
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTexture, 0);
+
+    // Set the list of draw buffers.
+    GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+    glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+        bear::out << "OH NOOOOOOOOOOOOOOOOOOOOOO\n";
+    }
 
     return true;
 
