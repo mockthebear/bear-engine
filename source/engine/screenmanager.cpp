@@ -103,7 +103,7 @@ bool ScreenManager::SetupOpenGL(){
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
 
-    glViewport( 0.f, 0.f, m_originalScreen.x, m_originalScreen.y );
+    ResetViewPort();
 
     RenderHelp::SetupShaders();
 
@@ -294,7 +294,7 @@ void ScreenManager::ResetViewPort(){
     glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();*/
-    glViewport(0,0,m_screen.x, m_screen.y);
+    glViewport( 0.f, 0.f, m_originalScreen.x, m_originalScreen.y );
     #endif // RENDER_OPENGL
 }
 void ScreenManager::PreRender(){
