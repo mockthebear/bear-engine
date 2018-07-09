@@ -7,6 +7,9 @@ PoolManager::PoolManager(bool insertUnregisteredArg,bool silentMode){
 
     LuaPool = -1;
     contentList = new GameObject*[10];
+    for (int i=0;i<10;i++){
+        contentList[i] = 0;
+    }
     localMaximum = 0;
     GroupsCount = 0;
     silent = true;
@@ -108,6 +111,9 @@ void PoolManager::GenerateInternalPool(){
     if (localMaximum_aux > localMaximum){
         delete []contentList;
         contentList = new GameObject*[localMaximum_aux+1];
+        for (int i=0;i<localMaximum_aux+1;i++){
+            contentList[i] = 0;
+        }
     }
     localMaximum = localMaximum_aux;
     int count = 0;
