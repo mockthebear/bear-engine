@@ -182,12 +182,12 @@ function widgets.Window(data)
 
 
 	ui.OnRender = function(this)
-		g_render.DrawFillSquare({x=this:GetScreenX(),y=this:GetScreenY(),w=this:GetWidth(),h=this:GetHeight()},
-		this.bgcolor.r,this.bgcolor.g,this.bgcolor.b,this.bgcolor.a)
-		g_render.DrawOutlineSquare({x=this:GetScreenX(),y=this:GetScreenY(),w=this:GetWidth(),h=this:GetHeight()},
-		this.bordercolor.r,this.bordercolor.g,this.bordercolor.b,this.bordercolor.a)
-		g_render.DrawOutlineSquare({x=this:GetScreenX(),y=this:GetScreenY(),w=this:GetWidth(),h=this.texSize+1},
-		this.bordercolor.r,this.bordercolor.g,this.bordercolor.b,this.bordercolor.a)
+		g_render.DrawSquareColor({x=this:GetScreenX(),y=this:GetScreenY(),w=this:GetWidth(),h=this:GetHeight()},
+		this.bgcolor.r,this.bgcolor.g,this.bgcolor.b,this.bgcolor.a,false)
+		g_render.DrawSquareColor({x=this:GetScreenX(),y=this:GetScreenY(),w=this:GetWidth(),h=this:GetHeight()},
+		this.bordercolor.r,this.bordercolor.g,this.bordercolor.b,this.bordercolor.a,true)
+		g_render.DrawSquareColor({x=this:GetScreenX(),y=this:GetScreenY(),w=this:GetWidth(),h=this.texSize+1},
+		this.bordercolor.r,this.bordercolor.g,this.bordercolor.b,this.bordercolor.a,true)
 	end
 	ui:SetAsMain(true)
 	return ui
@@ -460,12 +460,12 @@ function widgets.TextInput(data)
 	function ui:OnRender()
 		local MyRect = {x=self:GetScreenX()-1,y=self:GetScreenY()-1,w=self:GetWidth()+2,h=self:GetHeight()+2}
 		if self.focus then
-			g_render.DrawFillSquare(MyRect, self.bgcolor.r,self.bgcolor.g,self.bgcolor.b,self.bgcolor.a)
+			g_render.DrawSquareColor(MyRect, self.bgcolor.r,self.bgcolor.g,self.bgcolor.b,self.bgcolor.a)
 		else
-			g_render.DrawFillSquare(MyRect, self.bgcolor2.r,self.bgcolor2.g,self.bgcolor2.b,self.bgcolor2.a)
+			g_render.DrawSquareColor(MyRect, self.bgcolor2.r,self.bgcolor2.g,self.bgcolor2.b,self.bgcolor2.a)
 		end
 
-		g_render.DrawOutlineSquare(MyRect, self.bordercolor.r,self.bordercolor.g,self.bordercolor.b,self.bordercolor.a)
+		g_render.DrawSquareColor(MyRect, self.bordercolor.r,self.bordercolor.g,self.bordercolor.b,self.bordercolor.a,true)
 
 		self.tex:Render({x=self:GetScreenX()+2,y=self:GetScreenY()})
 		if self.focus and self.caret.show then
@@ -583,11 +583,11 @@ function widgets.Button(data)
 		local mousePos = g_input.GetMouse()
 		local MyRect = {x=this:GetScreenX()-1,y=this:GetScreenY()-1,w=this:GetWidth()+2,h=this:GetHeight()+2}
 		if isColliding(MyRect,mousePos) or not this.enabled then
-			g_render.DrawFillSquare(MyRect, this.bgcolor2.r,this.bgcolor2.g,this.bgcolor2.b,this.bgcolor2.a)
+			g_render.DrawSquareColor(MyRect, this.bgcolor2.r,this.bgcolor2.g,this.bgcolor2.b,this.bgcolor2.a)
 		else
-			g_render.DrawFillSquare(MyRect, this.bgcolor.r,this.bgcolor.g,this.bgcolor.b,this.bgcolor.a)
+			g_render.DrawSquareColor(MyRect, this.bgcolor.r,this.bgcolor.g,this.bgcolor.b,this.bgcolor.a)
 		end
-		g_render.DrawOutlineSquare(MyRect, this.bordercolor.r,this.bordercolor.g,this.bordercolor.b,this.bordercolor.a)
+		g_render.DrawSquareColor(MyRect, this.bordercolor.r,this.bordercolor.g,this.bordercolor.b,this.bordercolor.a,true)
 
 		if not this.enabled then
 			g_render.DrawLineColor({x=this:GetScreenX(),y=this:GetScreenY()},{x=this:GetScreenX()+this:GetWidth(),y=this:GetScreenY()+this:GetHeight()},255,0,0,255)

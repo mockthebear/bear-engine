@@ -65,7 +65,7 @@ function MakeLuaState()
 	end
 
 	state.OnRender = function(this)
-		g_render.DrawFillSquare({x=0,y=0,w=640,h=480},state.timer,0,0,255)
+		g_render.DrawSquareColor({x=0,y=0,w=640,h=480},state.timer,0,0,255)
 
 	end
 
@@ -103,7 +103,7 @@ function MakeLuaStateWithObjects()
 		end
 
 		Obj.OnRender = function(self)
-			g_render.DrawFillSquare(self:GetBox(),math.random(0,255),math.random(0,255),0,255)
+			g_render.DrawSquareColor(self:GetBox(),math.random(0,255),math.random(0,255),0,255)
 		end
 
 	end
@@ -129,7 +129,7 @@ function MakeLuaStateWithObjects()
 	end
 
 	state.OnRender = function(this)
-		g_render.DrawFillSquare({x=0,y=0,w=640,h=480},0,state.timer,0,255)
+		g_render.DrawSquareColor({x=0,y=0,w=640,h=480},0,state.timer,0,255)
 
 	end
 
@@ -164,7 +164,7 @@ function MakeObject()
 	end
 
 	Obj.OnRender = function(self)
-		g_render.DrawFillSquare(self:GetBox(),math.random(0,255),math.random(0,255),0,255)
+		g_render.DrawSquareColor(self:GetBox(),math.random(0,255),math.random(0,255),0,255)
 		self.spr:Render(self:GetBox(),0) --Also works: {x = posX, y = posY}
 	end
 	return Obj
@@ -246,7 +246,7 @@ function MakeLuaStateWithComplexObjects()
 	end
 
 	state.OnRender = function(this)
-		g_render.DrawFillSquare({x=0,y=0,w=640,h=480},0,0,state.timer,255)
+		g_render.DrawSquareColor({x=0,y=0,w=640,h=480},0,0,state.timer,255)
 
 		this.text:Render({x=32,y=200})
 
