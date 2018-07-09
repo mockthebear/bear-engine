@@ -37,7 +37,7 @@ void GraphBar::Render(Point pos,Point size,float max,int width){
         return;
     }
     float barSize = (value / max)*size.y;
-    RenderHelp::DrawSquareColor(pos.x + id * (width +4) ,pos.y+size.y-barSize,width,barSize, color.r,color.g,color.b,color.a);
+    RenderHelp::DrawSquareColor(Rect(pos.x + id * (width +4) ,pos.y+size.y-barSize,width,barSize), color.r,color.g,color.b,color.a);
     textContent.Render(pos.x + id * (width +4),pos.y+size.y,TEXT_RENDER_TOPLEFT);
     if (barSize > valueContent.GetWidth()){
         valueContent.Render(pos.x + id * (width +4),pos.y+size.y-barSize + valueContent.GetWidth()/2,TEXT_RENDER_TOPLEFT);

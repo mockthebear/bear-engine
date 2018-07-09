@@ -46,12 +46,12 @@ class Test_PathFind: public State{
             for (auto &it : Blocks){
                 int x = ((int)it.x)%16;
                 int y = ((int)it.y)%16;
-                RenderHelp::DrawSquareColor(it.x-x,it.y-y,16,16,255,255,255,255);
+                RenderHelp::DrawSquareColor(Rect(it.x-x,it.y-y,16,16),255,255,255,255);
             }
             Point first = finish;
             int iter = 0;
             for (auto &it : Path){
-                RenderHelp::DrawLineColor(first.x+8,first.y+8,it.x+8,it.y+8,255,(iter/(float)Path.size())*255,0,255);
+                RenderHelp::DrawLineColor(Point(first.x+8,first.y+8),Point(it.x+8,it.y+8),255,(iter/(float)Path.size())*255,0,255);
                 first = it;
                 iter++;
             }

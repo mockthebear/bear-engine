@@ -43,7 +43,7 @@ class Test_Text: public State{
         };
         void Render(){
 
-            RenderHelp::DrawSquareColor(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H,100,100,100,255);
+            RenderHelp::DrawSquareColor(Rect(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H),100,100,100,255);
 
             Text localText;
             title.Render(Point(0,0),TEXT_RENDER_TOPLEFT);

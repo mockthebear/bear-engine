@@ -25,8 +25,8 @@ class Test_Shapes: public State{
         };
         void Render(){
             RenderHelp::DrawSquareColorA(Rect(32,32,64,64),255,255,100,255);
-            RenderHelp::DrawLineColor(96,96,128,128,255,0,255);
-            RenderHelp::DrawLineColor(128,128,98,220,255,0,0,255,4);
+            RenderHelp::DrawLineColor(Point(96,96),Point(128,128),255,0,255);
+            RenderHelp::DrawLineColor(Point(128,128),Point(98,220),255,0,0,255,4);
             RenderHelp::DrawSquareColorA(Rect(98,220,64,64),255,100,100,255,true);
 
 

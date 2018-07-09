@@ -107,7 +107,7 @@ class Test_Sprite: public State{
             smol.SetScale(Point(8,8));
             smol.Render(300,300,0);
             cursor.Render(g_input.GetMouse());
-            RenderHelp::DrawSquareColor(10,10,SCREEN_SIZE_W-20,SCREEN_SIZE_H-20,255,0,255,255,true);
+            RenderHelp::DrawSquareColor(Rect(10,10,SCREEN_SIZE_W-20,SCREEN_SIZE_H-20),255,0,255,255,true);
             RenderHelp::DrawCircleColor(Point(400,400),86,255,0,100,100);
 
         };

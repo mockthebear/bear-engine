@@ -23,7 +23,7 @@ LineGraph::~LineGraph(){
 
 void LineGraph::Render(Point pos){
 
-    RenderHelp::DrawSquareColor(pos.x,pos.y,size.x,size.y,255,255,255,255,true);
+    RenderHelp::DrawSquareColor(Rect(pos.x,pos.y,size.x,size.y),255,255,255,255,true);
 
     if (data.size() > 0){
         float spread = size.x/(float)dataCount;
@@ -39,7 +39,7 @@ void LineGraph::Render(Point pos){
             lastY = it;
 
             x += count * spread;
-            RenderHelp::DrawLineColor(x, bY,x + spread,y,255,255,255,255);
+            RenderHelp::DrawLineColor(Point(x, bY),Point(x + spread,y),255,255,255,255);
             count++;
 
         }
