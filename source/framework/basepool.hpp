@@ -90,6 +90,22 @@ template <typename T> class SPP{
                 }
             }
         }
+         /**
+            *Kill any living instance
+
+        */
+        int Genocide(){
+            int dead = 0;
+            for (int i=0;i<max;i++){ //Maximo adcionado
+                if (!pool[i].IsDead()){
+                    pool[i].Kill();
+                    dead++;
+                }
+            }
+            return dead;
+        }
+
+
         /**
             *Add an instance in the pool
             *
