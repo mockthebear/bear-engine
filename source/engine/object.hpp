@@ -178,6 +178,12 @@ class GameObject{
     */
     bool solid;
 
+    Point speed;
+
+    Point step;
+
+    float Data[4];
+
     /**
         *<b>DONT REPLACE THIS</b>
     */
@@ -193,12 +199,22 @@ class GameObject{
 
     uint64_t GetMyRef(){return (uint64_t)this;};
 
+    REGISTER_GETSETTER(Speed,Point,speed);
+    REGISTER_GETSETTER(Step,Point,step);
+
     REGISTER_GETSETTER(X,float,box.x);
     REGISTER_GETSETTER(Y,float,box.y);
     REGISTER_GETSETTER(Width,float,box.w);
     REGISTER_GETSETTER(Height,float,box.h);
     REGISTER_GETSETTER(Box,Rect,box);
     REGISTER_GETSETTER(Solid,bool,solid);
+
+    void SetData(int id, float value){
+        Data[id%4] = value;
+    }
+    float GetData(int id){
+        return Data[id%4];
+    }
 
     protected:
         void hashIt(int var){hash = var;};
