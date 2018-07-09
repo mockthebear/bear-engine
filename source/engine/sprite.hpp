@@ -500,7 +500,7 @@ class Sprite{
 class Animation{
     public:
 
-        Animation():Loops(0),sprX(0),sprY(0),sprW(0),sprH(0),MaxFrames(01),SprDelay(1.0f),SprMaxDelay(1.0f),CanRepeat(true),LastFrame(0),
+        Animation():Loops(0),RepeatTimes(0),sprX(0),sprY(0),sprW(0),sprH(0),MaxFrames(01),SprDelay(1.0f),SprMaxDelay(1.0f),CanRepeat(true),LastFrame(0),LastRepeatCount(0),
         pause(false),finishedFrame(false),finishedSingleFrame(false),isFormated(false),LockedFinished(true){};
         Animation(float w,float h):Animation(){
            SetGridSize(w,h);
@@ -528,12 +528,14 @@ class Animation{
                     if (CanRepeat){
                         Loops++;
                         sprX = 0;
+                        RepeatTimes--;
                     }else{
                         sprX--;
                         LockedFinished = false;
                         finishedSingleFrame = false;
                     }
-                    finishedFrame = true;
+                    if (RepeatTimes <= 0)
+                        finishedFrame = true;
                 }
             }
         }
@@ -563,9 +565,14 @@ class Animation{
             finishedSingleFrame = false;
             isFormated = false;
             Loops = 0;
+            RepeatTimes = LastRepeatCount;
         }
         void SetAnimationTime(float time){
             SprDelay = SprMaxDelay = time;
+        }
+
+        void SetRepeatTimes(int n){
+            LastRepeatCount = RepeatTimes = n;
         }
 
         void FormatSprite(Sprite& sp,int dir){
@@ -598,6 +605,7 @@ class Animation{
             isFormated = false;
         }
         uint32_t Loops;
+        int32_t RepeatTimes;
         uint32_t sprX;
         uint32_t sprY;
         uint32_t sprW;
@@ -607,6 +615,7 @@ class Animation{
         float SprMaxDelay;
         bool CanRepeat;
         uint32_t LastFrame;
+        uint32_t LastRepeatCount;
     private:
         friend class Sprite;
         bool pause;
@@ -615,5 +624,6 @@ class Animation{
         bool isFormated;
         bool LockedFinished;
 };
+
 
 #endif
