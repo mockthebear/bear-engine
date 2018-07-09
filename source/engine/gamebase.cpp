@@ -360,6 +360,7 @@ void Game::Render(){
         return;
     GameBehavior::GetInstance().OnPreRender();
     stateStack.top()->Render();
+    g_scheduler.Render();
     ScreenManager::GetInstance().Render();
     InputManager::GetInstance().Render();
     ScreenManager::GetInstance().RenderPresent();
@@ -399,15 +400,7 @@ void Game::Run(){
         if (!CanStop()){
             if (startFlags&BEAR_FLAG_START_INPUT){
                 if (InputManager::GetInstance().KeyPress(SDLK_F3)){
-                    static bool full = false;
-                    if (!full){
-                        //ScreenManager::GetInstance().MakeDefaultScreenAsTexture();
-                        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
-                    }else{
-                        //ScreenManager::GetInstance().ClearScreenTexture();
-                        SDL_SetWindowFullscreen(window, SDL_FALSE);
-                    }
-                    full = !full;
+                    ScreenManager::GetInstance().ToggleFullScreen();
                 }
             }
 

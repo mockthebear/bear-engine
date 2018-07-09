@@ -29,6 +29,7 @@ class ScreenManager{
         PointInt GetScreenSize(){return m_screen;};
         PointInt GetGameSize(){return m_originalScreen;};
         PointInt GetMaxTextureSize(){return m_maxTextureSize;};
+        void ToggleFullScreen();
         void NotifyResized();
         void NotyifyScreenClosed();
         void TerminateScreen();

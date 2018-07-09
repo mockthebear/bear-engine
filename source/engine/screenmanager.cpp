@@ -19,7 +19,7 @@ ScreenManager::ScreenManager(){
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
     postProcess = true;
-    m_ScreenRationMultiplier = 2.0f;
+    m_ScreenRationMultiplier = 1.0f;
     ShakingDuration = 0;
     shaking = 0;
     shaking = false;
@@ -69,7 +69,7 @@ bool ScreenManager::SetupOpenGL(){
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -272,7 +272,7 @@ void ScreenManager::RenderPresent(){
         }
         DebugHelper::DisplayGlError("RenderPresent");
     }
-    glFinish();
+    glFlush();
     SDL_GL_SwapWindow(m_window);
     #endif // RENDER_OPENGL
 }
@@ -359,7 +359,10 @@ void ScreenManager::NotifyResized(){
 void ScreenManager::SetWindowSize(int w,int h){
 
     Resize(w,h);
+    ConfigManager::GetInstance().SetScreenSize(w,h);
 
+    m_originalScreen.x=w;
+    m_originalScreen.y=h;
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
 
@@ -371,8 +374,17 @@ void ScreenManager::SetWindowSize(int w,int h){
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
 
+}
 
-
+void ScreenManager::ToggleFullScreen(){
+    static bool full = false;
+    if (!full){
+        SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    }else{
+        SDL_SetWindowFullscreen(m_window, SDL_FALSE);
+        ScreenManager::GetInstance().Resize(640,576);
+    }
+    full = !full;
 }
 
 void ScreenManager::Resize(int w,int h){
@@ -391,6 +403,8 @@ void ScreenManager::Resize(int w,int h){
         glDeleteBuffers(1, &vbo_fbo_vertices);
         StartPostProcessing();
     }
+
+    //SDL_SetWindowSize(m_window,w,h);
 }
 void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
     if (behave != RESIZE_FREE_SCALE){
