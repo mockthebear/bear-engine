@@ -7,6 +7,7 @@
 
 #include "../framework/geometry.hpp"
 #include "../framework/chainptr.hpp"
+#include "painters/painters.hpp"
 
 #include <unordered_map>
 #include <map>
@@ -24,81 +25,6 @@
     #include GL_LIB
 #endif // RENDER_OPENGLES
 
-enum TextureLoadMethodEnum{
-    TEXTURE_DEFAULT,
-    TEXTURE_NEAREST,
-    TEXTURE_LINEAR,
-    TEXTURE_TRILINEAR,
-};
-
-class TextureLoadMethod{
-    public:
-    static TextureLoadMethod DefaultLoadingMethod;
-    TextureLoadMethod(){
-        mode = TEXTURE_NEAREST;
-    };
-    TextureLoadMethod(TextureLoadMethodEnum md){
-        mode = md;
-    };
-    void ApplyFilter(){
-        switch (mode){
-            case TEXTURE_NEAREST:
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-                break;
-            case TEXTURE_LINEAR:
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-                break;
-            case TEXTURE_TRILINEAR:
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-                break;
-            case TEXTURE_DEFAULT:
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-                break;
-        }
-    }
-    TextureLoadMethodEnum mode;
-};
-
-
-
-class BearTexture{
-    public:
-        BearTexture(){
-            id = 0;
-            w = h = c = 0;
-            size_w = size_h = 0;
-            textureMode = TEXTURE_NEAREST;
-        };
-        GLuint DropTexture(){
-           GLuint ret = id;
-           id = 0;
-           return ret;
-        }
-        void ClearTexture(){
-            GLuint tex = DropTexture();
-            if (tex > 0)
-                glDeleteTextures(1, &tex);
-        }
-
-        BearTexture(GLuint textureId,uint32_t width,uint32_t height,GLenum imgMode):id(textureId),w(width),h(height),mode(imgMode){};
-        GLuint id;
-        uint32_t w;
-        uint32_t h;
-        uint32_t c;
-        uint32_t size_w;
-        uint32_t size_h;
-        TextureLoadMethod textureMode;
-        GLenum mode;
-
-};
-typedef chain_ptr<BearTexture> TexturePtr;
-//#else
-//typedef chain_ptr<SDL_Texture> TexturePtr;
-//#endif // RENDER_OPENGL
 
 /**
  * @brief Color replacing filter class to use on load
@@ -412,13 +338,12 @@ class Sprite{
             @param p Sprite position (inside the image)
         */
         void SetCenter(Point p){
-            hasCenter=true;
-            center.x = p.x;
-            center.y = p.y;
+            m_renderData.center.x = p.x;
+            m_renderData.center.y = p.y;
         };
 
         Point GetCenter(){
-            return Point(center);
+            return Point(m_renderData.center);
         }
 
         void SetStayLastFrame(int lf){
@@ -449,24 +374,23 @@ class Sprite{
             *Change the sprite scale. Its an local scale, not shared.
             @param scale the original value is 1.
         */
-        void SetScaleX(float scale=1){
-            scaleX=scale;
+        void SetScaleX(float scale=1.0f){
+            m_renderData.scale.x=scale;
         };
 
-        void SetScaleY(float scale=1){
-            scaleY=scale;
+        void SetScaleY(float scale=1.0f){
+            m_renderData.scale.y=scale;
         };
         /**
             *Scale the texture.
             @param scale The scale in x and y codinates. Default argument is 1,1
         */
-        void SetScale(Point scale = Point(1,1)){
-            scaleX=scale.x;
-            scaleY=scale.y;
+        void SetScale(Point t_scale = Point(1.0f,1.0f)){
+            m_renderData.scale = t_scale;
         };
 
         Point GetScale(){
-            return Point(scaleX,scaleY);
+            return m_renderData.scale;
         };
         /**
             *You can cut some color channels and reblend the sprite
@@ -477,9 +401,9 @@ class Sprite{
             @param Green [0-255] The default is 255 of all sprites;
         */
         void ReBlend(uint8_t Red,uint8_t Blue,uint8_t Green){
-            OUTR = Red/255.0f;
-            OUTB = Blue/255.0f;
-            OUTG = Green/255.0f;
+            m_renderData.color[0] = Red/255.0f;
+            m_renderData.color[1] = Blue/255.0f;
+            m_renderData.color[2] = Green/255.0f;
             #ifndef RENDER_OPENGL
             SDL_SetTextureColorMod((textureShred.get()),OUTR*255,OUTB*255,OUTG*255);
             #endif // RENDER_OPENGL
@@ -491,14 +415,14 @@ class Sprite{
             @param alpha [0-255] The default is 255 of all sprites;
         */
         void SetAlpha(uint8_t alpha){
-            m_alpha = alpha/255.0f;
+            m_renderData.color[3] = alpha/255.0f;
             #ifndef RENDER_OPENGL
             SDL_SetTextureAlphaMod((textureShred.get()),alpha);
             #endif // RENDER_OPENGL
         };
 
         uint8_t GetAlpha(){
-            return m_alpha*255;
+            return m_renderData.color[3]*255;
         };
         /**
             *Set a grid for animation frames
@@ -515,11 +439,11 @@ class Sprite{
             @param flipState
         */
         void SetFlip(SDL_RendererFlip flipState){
-            sprFlip = flipState;
+            m_renderData.flip = (uint8_t)flipState;
         }
 
         SDL_RendererFlip GetFlip(){
-            return sprFlip;
+            return (SDL_RendererFlip)m_renderData.flip;
         }
 
         /**
@@ -541,26 +465,34 @@ class Sprite{
         TextureLoadMethod aliasing;
         TexturePtr textureShred;
         friend class AssetMannager;
-        SDL_RendererFlip sprFlip;
+
         std::string fname;
-        float OUTR,OUTB,OUTG;
-        float m_alpha;
-        float scaleX,scaleY,timeElapsed,frameTime;
+
+        RenderData m_renderData;
+
+        //float OUTR,OUTB,OUTG;
+        //float m_alpha;
+        //scaleX,scaleY,
+        //Rect dimensions;
+        //Rect clipRect;
+        //Point center;
+        //bool hasCenter;
+        //SDL_RendererFlip sprFlip;
+
+
+        float timeElapsed,frameTime;
         int over;
         int repeat;
         int frameCount,m_lf;
         PointInt currentFrame;
         PointInt grid;
-        Rect dimensions;
-        Rect clipRect;
-        Point center;
-        bool hasCenter;
 
 
-        GLfloat texLeft;
-        GLfloat texRight;
-        GLfloat texTop;
-        GLfloat texBottom;
+
+        //GLfloat texLeft;
+        //GLfloat texRight;
+        //GLfloat texTop;
+        //GLfloat texBottom;
 };
 
 

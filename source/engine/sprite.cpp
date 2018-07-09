@@ -31,20 +31,14 @@ uint32_t ColorReplacer::Get(uint32_t color){
 
 Sprite::Sprite(){
     m_lf = 0;
-    dimensions.w = dimensions.h = dimensions.x = dimensions.y = 0;
-    scaleX = scaleY = 1;
     currentFrame = PointInt(0,0);
     frameCount = 1;
     repeat = 1;
-    hasCenter = false;
     aliasing = TEXTURE_LINEAR;
-    m_alpha = 1.0f;
     fname = "";
     over = 0;
-    OUTR = OUTB = OUTG = 1.0f;
     timeElapsed = 0;
     frameTime = 0;
-    sprFlip = SDL_FLIP_NONE;
 
 }
 
@@ -136,7 +130,6 @@ Sprite::Sprite(std::string file,ColorReplacer &r,bool replacer,int fcount,float 
     frameTime = ftime;
     fname = file;
     aliasing = hasAliasing;
-    scaleX = scaleY = 1;
     textureShred = GlobalAssetManager::GetInstance().makeTexture(false,file,r,hasAliasing);
     if (textureShred.get()){
         Query(textureShred);
@@ -377,9 +370,9 @@ BearTexture * Sprite::Preload(std::string fileName,ColorReplacer &r,TextureLoadM
 void Sprite::Query(TexturePtr ptr){
     BearTexture *texturee = ptr.get();
     if (texturee != NULL){
-        dimensions.w = texturee->w;
-        dimensions.h = texturee->h;
-        SetClip(0,0,dimensions.w,dimensions.h);
+        m_renderData.size.x = texturee->w;
+        m_renderData.size.y = texturee->h;
+        SetClip(0,0,m_renderData.size.x,m_renderData.size.y);
     }
 }
 
@@ -387,7 +380,6 @@ bool Sprite::Open(std::string filepath,TextureLoadMethod hasAliasing){
     if (hasAliasing.mode == TEXTURE_DEFAULT){
         hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
     }
-    scaleX = scaleY = 1;
     std::string stdnamee(filepath);
     std::string aux = stdnamee;
     if (ResourceManager::IsValidResource(aux)){
@@ -405,7 +397,6 @@ bool Sprite::Open(std::string filepath,TextureLoadMethod hasAliasing){
 }
 
 bool Sprite::Open(SDL_RWops* file,std::string name,TextureLoadMethod HasAliasing){
-    scaleX = scaleY = 1;
     textureShred = GlobalAssetManager::GetInstance().makeTexture(false,file,name,HasAliasing);
     if (textureShred.get()){
         Query(textureShred);
@@ -431,11 +422,10 @@ bool Sprite::Open(SDL_RWops* file,std::string name,TextureLoadMethod HasAliasing
 }
 
 void Sprite::SetClip(int x, int y,int w,int h){
-    clipRect.x = x;
-    clipRect.y = y;
-    clipRect.h = h;
-    clipRect.w = w;
-
+    m_renderData.clip.x = x;
+    m_renderData.clip.y = y;
+    m_renderData.clip.w = w;
+    m_renderData.clip.h = h;
 }
 
 void Sprite::Render(PointInt pos,double angle){
@@ -449,47 +439,9 @@ void Sprite::Render(PointInt pos,double angle){
         dimensions2.w = clipRect.w*scaleRatioW*scaleX;
         SDL_RenderCopyEx(BearEngine->GetRenderer(),textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip);
         #else
-        glLoadIdentity();
-        glEnable(GL_TEXTURE_2D);
-        glColor4f(OUTR, OUTG, OUTB, m_alpha);
-        float w = dimensions.w;
-        float h = dimensions.h;
-
-        texLeft = clipRect.x / (float)w;
-        texRight =  ( clipRect.x + clipRect.w ) / (float)w;
-        texTop = clipRect.y / (float)h;
-        texBottom = ( clipRect.y + clipRect.h ) / (float)h;
-
-        GLfloat quadWidth = clipRect.w ;
-        GLfloat quadHeight = clipRect.h ;
-
-        glScalef(scaleX , scaleY , 1.0f);
-
-        glTranslatef(
-            (pos.x * (1.0f/scaleX)  + quadWidth  / 2.f  ) + (- center.x* (scaleX)  + center.x),
-            (pos.y * (1.0f/scaleY)  + quadHeight / 2.f  ) + (- center.y* (scaleY)  + center.y),
-        0.f);
-
-        glRotatef( angle, 0.f, 0.f, 1.f );
-
-        glBindTexture( GL_TEXTURE_2D, textureShred.get()->id );
-        if ((sprFlip&SDL_FLIP_HORIZONTAL) != 0){
-            float holder =  texLeft;
-            texLeft = texRight;
-            texRight = holder;
-        }
-        if ((sprFlip&SDL_FLIP_VERTICAL) != 0){
-            float holder =  texTop;
-            texTop = texBottom;
-            texBottom = holder;
-        }
-
-        glBegin( GL_TRIANGLE_FAN );
-            glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
-            glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
-            glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
-            glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
-        glEnd();
+        m_renderData.position = Point(pos);
+        m_renderData.angle = angle;
+        Painter::RenderTexture(textureShred,m_renderData);
         #endif // RENDER_OPENGL
     }
 
@@ -518,17 +470,17 @@ void  Sprite::Format(Animation anim,int dir){
 }
 
 int Sprite::GetWidth(){
-    return dimensions.w*scaleX;
+    return m_renderData.size.x*m_renderData.scale.x;
 }
 
 int Sprite::GetHeight(){
-    return dimensions.h*scaleY;
+    return m_renderData.size.y*m_renderData.scale.y;
 }
 int Sprite::GetFrameHeight(){
-    return clipRect.h*scaleY;
+    return m_renderData.clip.h*m_renderData.scale.y;
 }
 
 int Sprite::GetFrameWidth(){
-    return clipRect.w*scaleX;
+    return m_renderData.clip.w*m_renderData.scale.x;
 }
 
