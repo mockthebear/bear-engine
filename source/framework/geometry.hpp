@@ -166,6 +166,13 @@ template <typename T=float> class GenericPoint{
 
         uint32_t GetSize(){return 1;};
 
+        bool operator==(GenericPoint &g){
+            return g.x == x && g.y == y;
+        }
+        bool operator==(const GenericPoint g){
+            return g.x == x && g.y == y;
+        }
+
 };
 /**
     @brief [WIP] Basic class to 3d points
