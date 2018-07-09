@@ -18,6 +18,7 @@ int Collision::AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,Pool
                             SoftWarpAway(dis,obj);
                         }*/
                         dis->NotifyCollision((GameObject*)obj);
+                        obj->NotifyCollision(dis);
                         return 4;
                     }
                     if (sy == 0.0f && sx == 0.0f)
@@ -54,7 +55,8 @@ int Collision::AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,std:
                         if (Collision::IsColliding(obj->box,tempXY,0,0) ){
                             SoftWarpAway(dis,obj);
                         }*/
-                        dis->NotifyCollision((GameObject*)obj);
+                        dis->NotifyCollision(obj);
+                        obj->NotifyCollision(dis);
                         return 4;
                     }
                     if (sy == 0.0f && sx == 0.0f)
@@ -115,9 +117,8 @@ bool Collision::CheckCollision(Rect tempXY,GameObject* dis,std::vector<GameObjec
 
 std::vector<GameObject*> Collision::GetCollidingObjects(GameObject* thisObject,PoolManager &pool,PoolGroupId gid,bool onlySolid){
     std::vector<GameObject*> data;
-    for (auto &obj : pool.ForGroup(gid))
-        {
-        if (obj != thisObject && !obj->IsDead()){
+    for (auto &obj : pool.ForGroup(gid)){
+        if (obj && obj != thisObject && !obj->IsDead()){
             if (!onlySolid || obj->solid ){
                 if (Collision::IsColliding(obj->box,thisObject->box) ){
                     data.emplace_back(obj);
@@ -204,24 +205,30 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
                                 sy = 0;
                             }
                             dis->NotifyCollision(obj);
+                            obj->NotifyCollision(dis);
 
                             ret = 0;
 
                         }else{
-                            for (ax=colSize;ax>sy;ax-=colSize){
+                            //for (ax=-colSize*2.0f;ax<sy;ax += colSize){
+
+                            for (ax=colSize*2.0f;ax>sy;ax-=colSize){
                                 Rect tempY2(dis->box.x,dis->box.y-ax*dt,dis->box.w,dis->box.h);
                                 if (Collision::IsColliding(obj->box,tempY2)){
-
-                                        ax+=colSize2;
+                                    if (ax <= 0){
+                                        ax +=colSize2;
+                                    }
+                                        //ax+=colSize2;
                                     break;
                                 }
                             }
-                            sy = -ax;
+                            sy = ax;
                             Rect tempY2(dis->box.x,dis->box.y-sy*dt,dis->box.w,dis->box.h);
                             if (Collision::IsColliding(obj->box,tempY2)){
                                 sy = 0;
                             }
                             dis->NotifyCollision(obj);
+                            obj->NotifyCollision(dis);
 
                             ret = 1;
                         }
@@ -245,6 +252,7 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
                                 sx = 0;
                             }
                             dis->NotifyCollision(obj);
+                            obj->NotifyCollision(dis);
                             ret = 2;
                         }else{
                             for (ax=colSize;ax>sx;ax-=colSize){
@@ -255,12 +263,13 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
                                     break;
                                 }
                             }
-                            sx = -ax;
+                            sx = ax;
                             Rect tempY2(dis->box.x+ax*dt,dis->box.y,dis->box.w,dis->box.h);
                             if (Collision::IsColliding(obj->box,tempY2)){
                                 sx = 0;
                             }
                             dis->NotifyCollision(obj);
+                            obj->NotifyCollision(dis);
                             ret = 3;
                         }
                     }
@@ -286,57 +295,7 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
                     if (Collision::IsColliding(obj->box,tempY)){
                         float ax=0;
                         if (sy > 0){
-                            //int rn =0;
-                            /*
-                            for (ax=-colSize*2.0f;ax<sy;ax += colSize){
-                                rn++;
-                                Rect tempY2(dis->box.x,dis->box.y+ax*dt,dis->box.w,dis->box.h);
-                                if (Collision::IsColliding(obj->box,tempY2)){
-                                    if (ax == -colSize*2.0f){
-                                        // first loop colliding means the player was already inside
-                                        //sy = 0;
-                                        if (1){
-                                            SoftWarpAway(dis,obj,Point(0,-1));
-                                            //sy = 0;
-                                            //ax = 0;
-                                            //dis->box.y = obj->box.y-dis->box.h-colSize*dt;
-                                            break;
 
-                                        }
-                                        bear::out << "B:"<<ax<<":"<<obj->box.y<<":"<<dis->box.x<<"\n";
-                                        int s = 0;
-                                        for (ax = -sy*2;ax < 0;ax += colSize){
-
-                                            Rect tempY3(dis->box.x,dis->box.y+ax*dt,dis->box.w,dis->box.h);
-                                            bear::out << ax << " -> "<<s<<" = "<<Collision::IsColliding(obj->box,tempY3)<<":"<<(tempY3.y-dis->box.y) <<"\n";
-                                            if (Collision::IsColliding(obj->box,tempY3)){
-                                                bear::out << "p:"<<ax<<"\n";
-                                                ax -= colSize;
-                                                break;
-                                            }
-                                            s++;
-                                        }
-                                        bear::out << ax << ":"<<s<<"\n";
-                                        break;
-                                    }
-                                    //if (ax > 0){
-                                    ax -= colSize2;
-                                    //}
-                                    break;
-                                }
-                            }*/
-
-                            /*
-
-                            double dist = obj->box.y-(dis->box.y+dis->box.h);
-                            double newS = dist/dt;
-                            sy = newS;
-                            float y = floor(dis->box.y+sy*dt);
-                            */
-
-                            //std::cout << dist << ":" << (dt*1000) << " ("<<dti<<"):="<<newS<<" -> " << y << " - "<<(float(dis->box.y)+sy*dt)<<"\n";
-
-                            //sy = ax;
                             float dti = Game::GetInstance()->GetDeltaTimeI();
                             float checkSize = (sy/dti);
                             for (ax=0;ax<sy;ax += checkSize){
@@ -363,16 +322,11 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
                                 }
                             }
                             sy = ax;
-                            //std::cout << checkSize << " -> " << ax << " -> ";
                             tempY = Rect(dis->box.x,dis->box.y+sy*dt,dis->box.w,dis->box.h);
                             dis->NotifyCollision(obj);
+                            obj->NotifyCollision(dis);
                             if (Collision::IsColliding(obj->box,tempY)){
                                 sy = 0;
-                                //std::cout << "col\n";
-                                //dis->box.y = floor(dis->box.y);
-                            }else{
-                                //std::cout << "k\n";
-                                //std::cout << dis->box.y << "\n";
                             }
 
 
@@ -386,13 +340,14 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
                                     break;
                                 }
                             }
-                            sy = -ax;
+                            sy = ax;
                             tempY = Rect(dis->box.x,dis->box.y+sy*dt,dis->box.w,dis->box.h);
                             if (Collision::IsColliding(obj->box,tempY)){
                                 sy = 0;
 
                             }
                             dis->NotifyCollision(obj);
+                            obj->NotifyCollision(dis);
 
 
                             ret = 1;
@@ -417,6 +372,7 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
                             }
                             tempX = Rect(dis->box.x+sx*dt,dis->box.y,dis->box.w,dis->box.h);
                             dis->NotifyCollision(obj);
+                            obj->NotifyCollision(dis);
                             ret = 2;
                         }else{
                             for (ax=colSize;ax>sx;ax-=colSize){
@@ -427,13 +383,14 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
                                     break;
                                 }
                             }
-                            sx = -ax;
+                            sx = ax;
                             Rect tempY2(dis->box.x+ax*dt,dis->box.y,dis->box.w,dis->box.h);
                             if (Collision::IsColliding(obj->box,tempY2)){
                                 sx = 0;
                             }
                             tempX = Rect(dis->box.x+sx*dt,dis->box.y,dis->box.w,dis->box.h);
                             dis->NotifyCollision(obj);
+                            obj->NotifyCollision(dis);
                             ret = 3;
                         }
                     }
