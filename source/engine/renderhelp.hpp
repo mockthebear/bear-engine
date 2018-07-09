@@ -52,9 +52,6 @@ class RenderHelp{
         */
         static void DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f);
 
-        static void DrawLineColor(int x,int y,int x2,int y2,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f){
-            DrawLineColor(Point(x,y),Point(x2,y2),r,g,b,a,thickness);
-        }
 
         static void DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false,float angle=0);
 
@@ -64,9 +61,6 @@ class RenderHelp{
 
         static void DrawSquareColorA(int x,int y,int w,int h,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false,float angle=0){
             DrawSquareColorA(Rect(x,y,w,h),r,g,b,a,outline,angle);
-        }
-        static void DrawSquareColor(int x,int y,int w,int h,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false,float angle=0){
-            DrawSquareColor(Rect(x,y,w,h),r,g,b,a,outline,angle);
         }
 
         static void DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,int sides = 16);
