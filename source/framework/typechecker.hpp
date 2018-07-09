@@ -45,6 +45,15 @@ class Types{
             return cnter;
         };
 
+       static  std::string FormatName(std::string name){
+            if (name == ""){
+                return name;
+            }
+            while(name.at(0) >= '0' && name.at(0) <= '9'){
+                name.erase(0,1);
+            }
+            return name;
+        }
 
         /**
             Singleton
@@ -58,6 +67,7 @@ class Types{
             *Its called from an macro OBJ_REGISTER(type);
         */
         int Register(int hash,std::string name){
+            name = FormatName(name);
             if (TypeMap[hash] != ""){
                 return 1;
             }
@@ -132,6 +142,7 @@ class Types{
 
 
         template<typename T> bool checkType(T &object1,std::string name){
+            name = FormatName(name);
             return object1.GetHash() == TypeMapi[name];
         }
 
@@ -141,6 +152,11 @@ class Types{
         template<typename T> int getObjectType(T &object1){
             return object1.GetHash();
         }
+        int getTypeId(std::string str){
+            str = FormatName(str);
+            return TypeMapi[str];
+        }
+
         std::string getTypeName(int id){
             return TypeMap[id];
         }
