@@ -19,7 +19,7 @@ void DebugHelper::AssertAlloc(void *ptr,std::string file,std::string func,int li
         getchar();
     }
 }
-void DebugHelper::DisplayGlError(std::string ate){
+void DebugHelper::DisplayGlError(){
     GLenum err;
 	while ((err = glGetError()) != GL_NO_ERROR)
 	{
@@ -46,6 +46,6 @@ void DebugHelper::DisplayGlError(std::string ate){
 		if (err == GL_STACK_OVERFLOW)
 			name = "GL_STACK_OVERFLOW";
 
-		bear::out << "GL error: " << name << " at "<<ate<<"\n";
+		bear::out << "GL error: " << name << "\n";
 	}
 }
