@@ -3,6 +3,7 @@
 #include "gamebase.hpp"
 #include "sprite.hpp"
 #include "renderhelp.hpp"
+#include "targettexture.hpp"
 
 /**
     @brief Fast rendering optmized tileset.

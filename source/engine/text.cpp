@@ -156,28 +156,24 @@ Text::Text(std::string textArg,int sizeArg,SDL_Color colorArg):Text("engine:defa
 
 }
 Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string textp, SDL_Color colot,int x,int y):Text(){
-    angle = 0;
     emptyText = false;
     font = nullptr;
     texturespr = nullptr;
-    box.x = x;
-    box.y = y;
     text = textp.c_str();
     bg = {0,0,0,0};
     size = fontsize;
     style = stylep;
     color = colot;
     texture = nullptr;
-    alpha=255;
+
     std::string ftnm = fontfilep;
 
     InternalSetFont(ftnm);
     //Not resource tweaks
 
+    m_renderData.color[3] = 1.0f;
+    m_renderData.scale = Point(1.0f,1.0f);
 
-
-
-    scaleY=scaleX=1;
     RemakeTexture();
 
 
@@ -222,13 +218,9 @@ void Text::InternalSetFont(std::string ftnm){
 
 
 Text::Text(std::string fontfilep, std::string textp,int x,int y):Text(){
-    angle = 0;
     isWorking = false;
     font = nullptr;
     texturespr = nullptr;
-    box.x = x;
-    alpha=255;
-    box.y = y;
     text = textp;
     bg = {0,0,0,0};
     texture = nullptr;
@@ -240,16 +232,13 @@ Text::Text(std::string fontfilep, std::string textp,int x,int y):Text(){
         isWorking = true;
     }
     Point p = texturespr->GetSizes(text);
-    box.w = p.x;
-    box.h = p.y;
-    scaleY=scaleX=1;
-
-
-
-
+    m_renderData.position = Point(x,y);
+    m_renderData.clip = Rect(0.0f,0.0f,p.x,p.y);
+    m_renderData.color[3] = 1.0f;
+    m_renderData.scale = Point(1.0f,1.0f);
 }
-Text::~Text(){
-}
+
+Text::~Text(){}
 
 void Text::Close(){
     if (texture){
@@ -311,48 +300,18 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
                 return;
             }
         }
-        glLoadIdentity();
-        glEnable(GL_TEXTURE_2D);
-        glColor4f(1.0f, 1.0f, 1.0f, alpha/255.0f);
+
+        m_renderData.position = Point(cameraX,cameraY);
 
 
-        GLfloat texLeft = 0.0f;
-        GLfloat texRight = 1.0f;
-        GLfloat texTop = 0.0f;
-        GLfloat texBottom = 1.0f;
 
-        GLfloat quadWidth =  box.w ;
-        GLfloat quadHeight = box.h ;
+        Painter::RenderTexture(texture.get(),m_renderData);
 
-
-        texRight = (  texture->size_w ) / (float)texture->w;
-        texBottom = ( texture->size_h ) / (float)texture->h;
-
-
-        glTranslatef(
-                     (cameraX   + quadWidth / 2.f  ),
-                     (cameraY  + quadHeight/ 2.f  ),
-                       0.f );
-
-
-        glRotatef( angle, 0.f, 0.f, 1.f );
-
-         glBindTexture( GL_TEXTURE_2D, texture->id );
-
-        glBegin( GL_TRIANGLE_FAN );
-            glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
-            glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
-            glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
-            glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
-        glEnd();
-
-        glDisable(GL_TEXTURE_2D);
         DebugHelper::DisplayGlError("Text::Render");
         #endif
     }else if (texturespr){
-        Point p = texturespr->Render(text,box.x+cameraX,box.y+cameraY,alpha);
-        box.w = p.x;
-        box.h = p.y;
+        Point p = texturespr->Render(text,m_renderData.position.x,m_renderData.position.y,m_renderData.color[3]*255);
+        m_renderData.clip = Rect(0.0f,0.0f,p.x,p.y);
     }
 }
 
@@ -361,17 +320,14 @@ void Text::SetText(std::string str){
     if (!font && texturespr){
         text = str;
         Point p =  texturespr->GetSizes(str);
-        box.w = p.x;
-        box.h = p.y;
+        m_renderData.clip = Rect(0.0f,0.0f,p.x,p.y);
         return;
     }
     text = str;
     RemakeTexture();
 }
 void Text::SetAlpha(int alpha_p){
-
-    alpha = alpha_p;
-
+    m_renderData.color[3] = alpha_p/255.0f;
 }
 void Text::SetColor(SDL_Color col ){
     if (!isWorking)
@@ -413,19 +369,11 @@ void Text::cpy(Text *t){
     text        = t->GetText();
     font        = t->font;
     texturespr  = t->texturespr;
-    box         = t->box;
     isWorking   = t->isWorking;
-    alpha       = t->alpha;
-    angle       = t->angle;
     bg          = t->bg;
     size        = t->size;
     style       = t->style;
     color       = t->color;
-    scaleY      = t->scaleY;
-    scaleX      = t->scaleX;
-
-
-
 }
 
 void Text::Clear(){
@@ -441,7 +389,7 @@ void Text::RemakeTexture(bool Destory){
     if (!isWorking)
         return;
     if (text == ""){
-        box.w = 0;
+        m_renderData.clip.w = 0.0f;
         emptyText = true;
         return;
     }else{
@@ -451,8 +399,7 @@ void Text::RemakeTexture(bool Destory){
         return;
     if (!font && texturespr){
         Point p =  texturespr->GetSizes(text);
-        box.w = p.x;
-        box.h = p.y;
+        m_renderData.clip = Rect(0.0f,0.0f,p.x,p.y);
         return;
     }
 
@@ -492,8 +439,8 @@ void Text::RemakeTexture(bool Destory){
                 bher->ClearTexture();
                 delete bher;
             });
-            box.w = texture->size_w;
-            box.h = texture->size_h;
+            m_renderData.size = Point(texture->w,texture->h);
+            m_renderData.clip = Rect(0,0,texture->size_w,texture->size_h);
         }
         #endif // RENDER_OPENGL
     }else{

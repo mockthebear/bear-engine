@@ -102,8 +102,6 @@ class RenderData{
     Point scale;
     float color[4];
     uint8_t flip;
-
-
 };
 
 
@@ -111,5 +109,22 @@ typedef chain_ptr<BearTexture> TexturePtr;
 
 class Painter{
   public:
-    static bool RenderTexture(TexturePtr &ptr,RenderData &data);
+    static bool RenderTexture(BearTexture *ptr,RenderData &data);
+    static BearTexture * MakeTexture(PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter);
+
+    static uint32_t powerOfTwo( uint32_t num ){
+        if( num != 0 ){
+            if ((num & (num - 1)) == 0){
+                return num;
+            }
+            num--;
+            num |= (num >> 1);
+            num |= (num >> 2);
+            num |= (num >> 4);
+            num |= (num >> 8);
+            num |= (num >> 16);
+            num++;
+        }
+        return num;
+    }
 };

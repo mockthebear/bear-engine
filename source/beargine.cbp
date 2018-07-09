@@ -153,6 +153,8 @@
 		<Unit filename="engine/light.cpp" />
 		<Unit filename="engine/light.hpp" />
 		<Unit filename="engine/object.hpp" />
+		<Unit filename="engine/painters/painteropengl1.cpp" />
+		<Unit filename="engine/painters/painters.hpp" />
 		<Unit filename="engine/particlecreator.cpp" />
 		<Unit filename="engine/particlecreator.hpp" />
 		<Unit filename="engine/particles.cpp" />

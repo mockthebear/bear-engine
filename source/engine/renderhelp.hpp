@@ -7,34 +7,11 @@
 #include <functional>
 
 
-#define COLOR(r,g,b) { (Uint8)(r),(Uint8)(g),(Uint8)(b)}
-
 /**
     @brief Methods to help you rendering stuff
 */
 
-class TargetTexture : public BearTexture{
-    public:
-    TargetTexture():BearTexture(){
-        Framebuffer = 0;
-        renderedTexture = 0;
-        depthrenderbuffer = 0;
-        scale = Point(1.0f,1.0f);
-    };
-    bool Generate(int w,int h);
-    bool Bind();
-    static bool UnBind();
-    void Render(Point pos);
-    bool FreeTexture();
-    void SetScale(Point p){scale = p;};
 
-    GLuint vbo_fbo_vertices;
-    GLuint renderedTexture;
-    GLuint Framebuffer;
-    GLuint depthrenderbuffer;
-    static GLint lastbuffer;
-    Point scale;
-};
 class RenderHelp{
     public:
 
@@ -67,8 +44,6 @@ class RenderHelp{
 
 
         static BearTexture* SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod aliasing=TEXTURE_LINEAR);
-
-        static BearTexture* CreateTexture(int width,int height,TextureLoadMethod aliasing=TEXTURE_LINEAR);
 
 
         static SmartTexture *GeneratePatternTexture(int x,int y,int width,int height,std::function<Uint32 (Uint32 , int, int)> F);

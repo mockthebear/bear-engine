@@ -185,11 +185,11 @@ class Text{
             *Empty constructor is almost empty
         */
         #ifndef RENDER_OPENGL
-        Text():box(),bg({100,100,120,255}),angle(0),fontfile(""),text(""),style(TEXT_SOLID),size(),scaleY(1.0f),scaleX(1.0f),
-        color({255,255,255,255}),alpha(255),font(nullptr),texture(nullptr),texturespr(nullptr),isWorking(false),aliasing(false),keepAlive(false){};
+        Text():bg({100,100,120,255}),fontfile(""),text(""),style(TEXT_SOLID),size()
+        color({255,255,255,255}),font(nullptr),texture(nullptr),texturespr(nullptr),isWorking(false),aliasing(false),keepAlive(false){};
         #else
-        Text():box(),bg({100,100,120,255}),angle(0),fontfile(""),text(""),style(TEXT_SOLID),size(),scaleY(1.0f),scaleX(1.0f),
-        color({255,255,255,255}),alpha(255),font(nullptr),isWorking(false),texture(nullptr),aliasing(TEXTURE_DEFAULT),texturespr(nullptr),keepAlive(false),emptyText(true){};
+        Text():bg({100,100,120,255}),fontfile(""),text(""),style(TEXT_SOLID),size(),
+        color({255,255,255,255}),font(nullptr),isWorking(false),texture(nullptr),aliasing(TEXTURE_DEFAULT),texturespr(nullptr),keepAlive(false),emptyText(true){};
         #endif // RENDER_OPENGL
 
 
@@ -249,12 +249,12 @@ class Text{
             *Get the height of the text
             @return int
         */
-        float GetHeight(){return box.h*scaleY;};
+        float GetHeight(){return m_renderData.clip.h*m_renderData.scale.y;};
         /**
             *Get the width of the text
             @return int
         */
-        float GetWidth(){return box.w*scaleX;};
+        float GetWidth(){return m_renderData.clip.w*m_renderData.scale.x;};
         /**
             *When you edit the current text, a new texture is created
             *Dont work with custom fonts
@@ -288,13 +288,14 @@ class Text{
             *then you set the scale to 0,2. The scaling from SDL2 is better than scaling on freetype
             @param scale the current scale is 1.0f
         */
-        void SetScaleX(float scale){scaleX=scale;};
+
+        void SetScaleX(float scale){m_renderData.scale.x=scale;};
         /**
             *You can scale your text. This is useful because you can start with a text size 30
             *then you set the scale to 0,2. The scaling from SDL2 is better than scaling on freetype
             @param scale the current scale is 1.0f
         */
-        void SetScaleY(float scale){scaleY=scale;};
+        void SetScaleY(float scale){m_renderData.scale.y=scale;};
         /**
             *When for any reason need to remake the texture. Usualy is called by the class every time you change
             *the text, color, alpha...
@@ -314,7 +315,7 @@ class Text{
             *
             @param anglee is in degrees
         */
-        void SetRotation(float anglee){angle = anglee;};
+        void SetRotation(float t_angle){m_renderData.angle = t_angle;};
 
 
         /**
@@ -346,9 +347,10 @@ class Text{
 
 
     private:
-        Rect box;
+
+        RenderData m_renderData;
+
         SDL_Color bg;
-        float angle;
 
         void cpy(Text *t);
         static std::unordered_map<std::string, TTF_Font*> assetTable;
@@ -357,10 +359,8 @@ class Text{
         std::string fontfile,text;
         TextStyle style;
         int size;
-        float scaleY,scaleX;
-        SDL_Color color;
 
-        int alpha;
+        SDL_Color color;
 
         TTF_Font* font;
         bool isWorking;

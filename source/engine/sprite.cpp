@@ -258,16 +258,8 @@ BearTexture *Sprite::Preload(const char *file,bool adjustDir,TextureLoadMethod H
     ResourceManager::ClearFileBuffer(res);
     SDL_RWclose(rw);
     if (imageData){
-        GLuint texId;
-        glGenTextures(1, &texId);
-        glBindTexture(GL_TEXTURE_2D, texId);
-        HasAliasing.ApplyFilter();
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sizeX, sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-        glBindTexture(GL_TEXTURE_2D, 0);
-
+        BearTexture *ret = Painter::MakeTexture(PointInt(sizeX,sizeY),GL_RGBA,imageData,HasAliasing);
         stbi_image_free(imageData);
-        BearTexture *ret = new BearTexture(texId,sizeX,sizeY,GL_RGBA);
-        ret->textureMode = HasAliasing;
         return ret;
     }
     return nullptr;
@@ -288,18 +280,8 @@ BearTexture * Sprite::Preload(SDL_RWops* rw,std::string name,TextureLoadMethod h
     imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
     ResourceManager::ClearFileBuffer(res);
     if (imageData){
-        GLuint texId;
-        glGenTextures(1, &texId);
-        glBindTexture(GL_TEXTURE_2D, texId);
-
-        hasAliasing.ApplyFilter();
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sizeX, sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-        glBindTexture(GL_TEXTURE_2D, 0);
-
+        BearTexture *ret = Painter::MakeTexture(PointInt(sizeX,sizeY),GL_RGBA,imageData,hasAliasing);
         stbi_image_free(imageData);
-        BearTexture *ret = new BearTexture(texId,sizeX,sizeY,GL_RGBA);
-        ret->textureMode = hasAliasing;
         return ret;
     }
 
@@ -352,16 +334,8 @@ BearTexture * Sprite::Preload(std::string fileName,ColorReplacer &r,TextureLoadM
             ((Uint32*)imageData)[i] = r.Get(((Uint32*)imageData)[i]);
         }
 
-        GLuint texId;
-        glGenTextures(1, &texId);
-        glBindTexture(GL_TEXTURE_2D, texId);
-        hasAliasing.ApplyFilter();
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sizeX, sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-        glBindTexture(GL_TEXTURE_2D, 0);
-
+        BearTexture *ret = Painter::MakeTexture(PointInt(sizeX,sizeY),GL_RGBA,imageData,hasAliasing);
         stbi_image_free(imageData);
-        BearTexture *ret = new BearTexture(texId,sizeX,sizeY,GL_RGBA);
-        ret->textureMode = hasAliasing;
         return ret;
     }
     return nullptr;
@@ -441,7 +415,7 @@ void Sprite::Render(PointInt pos,double angle){
         #else
         m_renderData.position = Point(pos);
         m_renderData.angle = angle;
-        Painter::RenderTexture(textureShred,m_renderData);
+        Painter::RenderTexture(textureShred.get(),m_renderData);
         #endif // RENDER_OPENGL
     }
 

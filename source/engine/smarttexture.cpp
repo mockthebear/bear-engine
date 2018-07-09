@@ -9,7 +9,7 @@ SmartTexture::SmartTexture(int xx,int yy,int ww,int hh,bool del,bool hasAliasing
    pixels = nullptr;
 
 
-
+    TextureLoadMethod alias(TEXTURE_TRILINEAR);
     #ifndef RENDER_OPENGL
     if (hasAliasing)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
@@ -18,7 +18,7 @@ SmartTexture::SmartTexture(int xx,int yy,int ww,int hh,bool del,bool hasAliasing
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
     SDL_SetTextureBlendMode( t, SDL_BLENDMODE_BLEND );
     #else
-    t = std::shared_ptr<BearTexture>(RenderHelp::CreateTexture(ww,hh,TEXTURE_TRILINEAR),[](BearTexture* bher)
+    t = std::shared_ptr<BearTexture>(Painter::MakeTexture(PointInt(ww,hh),GL_RGBA,nullptr,alias),[](BearTexture* bher)
             {
                 bher->ClearTexture();
                 delete bher;
