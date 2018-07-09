@@ -5,19 +5,26 @@
 class Scheduler;
 typedef std::function<void()> ScheduleFunction;
 
+enum ExecTimeDef{
+    EXEC_UPDATE=0,
+    EXEC_RENDER,
+};
+
 class EventRef{
     public:
-        EventRef():duration(0.0f),counter(0.0f),repeat(0){
+        EventRef():duration(0.0f),counter(0.0f),repeat(0),execTime(EXEC_UPDATE){
 
         };
-        EventRef(float dur,ScheduleFunction& F,uint32_t rep = 0):duration(dur),counter(dur),repeat(rep){
+        EventRef(float dur,ScheduleFunction& F,uint32_t rep = 0,ExecTimeDef exTime = EXEC_UPDATE):duration(dur),counter(dur),repeat(rep),execTime(exTime){
             func = F;
         };
+        void SetExecTime(ExecTimeDef execPar){ execTime = execPar; };
     private:
         friend class Scheduler;
         float duration;
         float counter;
         long int repeat;
+        ExecTimeDef execTime;
 
         ScheduleFunction func;
 
@@ -51,7 +58,7 @@ class Scheduler{
          *
          */
 
-        bool Stop(uint64_t eventId);
+        void Stop(int64_t eventId);
         /** \brief Add an event
          *
          * \param Duration until the execution starts
@@ -62,9 +69,18 @@ class Scheduler{
          */
 
         uint64_t AddEvent(float duration,ScheduleFunction F,uint32_t repeats=0);
+
+        EventRef &GetEvent(uint64_t eventId){return m_events[eventId];};
+        /** \brief Return a reference for a event
+         *
+         * \param Event id
+         * \return event
+         *
+         */
     private:
         friend class Game;
         void Update(float dt);
+        void Render();
         uint64_t m_eventId;
         std::map<uint64_t,EventRef> m_events;
 };
