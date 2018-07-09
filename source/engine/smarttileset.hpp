@@ -20,9 +20,10 @@
 */
 class TileInfo{
     public:
-        TileInfo():id(0),rotation(0){};
+        TileInfo():id(0),rotation(0),flip(SDL_FLIP_NONE){};
         int id;
         int rotation;
+        SDL_RendererFlip flip;
 };
 
 class SmartTileset{
@@ -59,7 +60,7 @@ class SmartTileset{
             @param y y position
             @param tile tile
         */
-        void SetTile(int layer,int x,int y,int tile,double angle=0);
+        void SetTile(int layer,int x,int y,int tile,double angle=0,SDL_RendererFlip fliping = SDL_FLIP_NONE);
         /**
             *Erase the current data in the position and replace the data with what you requested. Use as an single use.
             *If you need to call this multiple times, instead call SmartTileset::SetTile then SmartTileset::MakeMap once you finish
@@ -70,7 +71,7 @@ class SmartTileset{
             @param tile tile
 
         */
-        void SetTileDirect(int layer,int x,int y,int tile, double angle=0);
+        void SetTileDirect(int layer,int x,int y,int tile, double angle=0,SDL_RendererFlip fliping = SDL_FLIP_NONE);
         /**
             Render an single layer.
             The render will start at the position 0,0 and only subtextures inside camera rect will be rendered.

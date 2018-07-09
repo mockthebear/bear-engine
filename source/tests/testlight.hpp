@@ -121,7 +121,7 @@ class Test_Light: public State{
             frameRate.Render(32,32);
 
             for (auto &it : staticBlock){
-                RenderHelp::DrawSquareColor(it.x,it.y,it.w,it.h,0,0,0,255);
+                RenderHelp::DrawSquareColor(it,0,0,0,255);
             }
 
 

@@ -126,6 +126,7 @@ void SmartTileset::RenderTile(int x,int y,TileInfo &t){
     int cy = t.id/sheetSizes.x;
     Shader::Unbind();
     sp.SetClip(tileSize.x*cx,tileSize.y*cy,tileSize.x,tileSize.y);
+    sp.SetFlip(t.flip);
     sp.Render(x,y,t.rotation);
 
     Shader::ReBind();
@@ -199,7 +200,7 @@ bool SmartTileset::MakeMap(){
     return true;
 }
 
-void SmartTileset::SetTile(int l,int x,int y,int tile,double angle){
+void SmartTileset::SetTile(int l,int x,int y,int tile,double angle,SDL_RendererFlip fliping){
     if (!isValid)
         return;
     if (l >= Layers){
@@ -226,6 +227,7 @@ void SmartTileset::SetTile(int l,int x,int y,int tile,double angle){
 
     tileMap[l][y][x].id = tile;
     tileMap[l][y][x].rotation = angle;
+    tileMap[l][y][x].flip = fliping;
 
 
     if (tilePosition.x < framesOnMap.x && tilePosition.y < framesOnMap.y) {
@@ -240,7 +242,7 @@ void SmartTileset::ResetFocus(){
     #endif // RENDER_OPENGL
     lastTarget = nullptr;
 }
-void SmartTileset::SetTileDirect(int l,int x,int y,int tile, double angle){
+void SmartTileset::SetTileDirect(int l,int x,int y,int tile, double angle,SDL_RendererFlip fliping){
     if (!isValid)
         return;
     if (l >= Layers){
@@ -254,6 +256,8 @@ void SmartTileset::SetTileDirect(int l,int x,int y,int tile, double angle){
     }
     tileMap[l][y][x].id = tile;
     tileMap[l][y][x].rotation = angle;
+    tileMap[l][y][x].flip = fliping;
+
     PointInt tilesPerBlock = maxTextureSize/tileSize;
     PointInt tilePosition = PointInt(x/tilesPerBlock.x,y/tilesPerBlock.y);
     if (tilePosition.x < framesOnMap.x && tilePosition.y < framesOnMap.y) {
@@ -343,7 +347,7 @@ void SmartTileset::RenderLayer(int layer,bool showBoundary){
                     textureMap[layer][y][x]->Render(Point(canvasArea.x - Camera::pos.x,canvasArea.y - Camera::pos.y));
                 #endif // RENDER_OPENGL
                 if (showBoundary)
-                    RenderHelp::DrawSquareColor(canvasArea.x - Camera::pos.x,canvasArea.y - Camera::pos.y,canvasArea.w,canvasArea.h,0,0,255,255,true);
+                    RenderHelp::DrawSquareColor(Rect(canvasArea.x - Camera::pos.x,canvasArea.y - Camera::pos.y,canvasArea.w,canvasArea.h),0,0,255,255,true);
             }
         }
     }
