@@ -36,6 +36,10 @@ void LuaObject::Destroy(){
     Kill();
 }
 
+void LuaObject::Kill(){
+    Active=false;
+}
+
 void LuaObject::Update(float dt){
     LuaCaller::CallSelfField(LuaManager::L,this,"OnUpdate",dt);
 }

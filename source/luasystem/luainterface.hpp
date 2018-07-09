@@ -97,6 +97,7 @@ class LuaInterface{
 
 
         static int AddEvent(lua_State *L);
+        static int LoopEvent(lua_State *L);
 
     private:
         void RegisterTimerEvents();
@@ -113,7 +114,9 @@ class LuaInterface{
         void RegisterSprite();
         void RegisterInput();
         void RegisterUI();
+        void RegisterGL();
         void RegisterScreenRender();
+
 
 };
 

@@ -16,7 +16,7 @@ class LuaObject: public GameObject{
         bool canForceRender(){ return forceRender;};
         int hasPerspective(){return perspective;};
         void Destroy();
-        void Kill(){Active=false;};
+        void Kill();
         void Update(float dt);
         void Render();
         bool IsDead();
@@ -30,9 +30,6 @@ class LuaObject: public GameObject{
         REGISTER_GETSETTER(Width,float,box.w);
         REGISTER_GETSETTER(Height,float,box.h);
         REGISTER_GETSETTER(Box,Rect,box);
-
-        float MoveX(float var){ return (box.x += var); };
-        float MoveY(float var){ return (box.x += var); };
 
         int GetPoolIndex(){return poolIndex;};
         uint64_t GetMyRef(){return (uint64_t)this;};

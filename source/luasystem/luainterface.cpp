@@ -331,9 +331,29 @@ void LuaInterface::RegisterClasses()
     RegisterInput();
     RegisterUI();
     RegisterScreenRender();
+    RegisterParticleClass();
 
 }
 
+void LuaInterface::RegisterParticleClass(){
+    GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_particles");
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_particles","CreateAnimatedSprite",std::function< int (Point,Point,std::string,int,int,int)>([](Point pos,Point speed,std::string spritePath,int amount,int delay,int repeat){
+        Particle *p = ParticleCreator::CreateAnimatedSprite(pos.x,pos.y,speed.x,speed.y,spritePath,amount,delay,repeat);
+        if (!p){
+            return -1;
+        }
+        return p->poolIndex;
+    }),0,1.0,1);
+
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_particles","SetDepth",std::function<bool(int,int)>([](int part,int deph){
+        Particle* p = (Particle*)Game::GetCurrentState().ParticlePool->GetInstance(part);
+        if (!p){
+            return false;
+        }
+        p->Depth = deph;
+        return true;
+    }));
+}
 void LuaInterface::RegisterTimerEvents(){
     ClassRegister<Stopwatch>::RegisterClassOutside(LuaManager::L, "Stopwatch", [](lua_State* L)
     {
@@ -368,7 +388,25 @@ void LuaInterface::RegisterTimerEvents(){
     /*
         Register addEvent
     */
-    lua_register(L, "AddEvent", &LuaInterface::AddEvent);
+
+    GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_schedule");
+
+    lua_getglobal(L, "g_schedule");
+    lua_pushcfunction(L, &LuaInterface::AddEvent);
+    lua_setfield(L, -2,  "AddEvent");
+    lua_pushcfunction(L, &LuaInterface::LoopEvent);
+    lua_setfield(L, -2,  "LoopEvent");
+    lua_pop(L, 1);
+
+
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_schedule","Stop",std::function<void(long int)>([](long int evId){
+        g_scheduler.Stop(evId);
+    }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_schedule","SetExecutionTime",std::function<void(long int,ExecTimeDef wher)>([](long int evId,ExecTimeDef wher){
+        EventRef & ev = g_scheduler.GetEvent(evId);
+        ev.SetExecTime(wher);
+    }));
+
 }
 
 void LuaInterface::RegisterSound(){
@@ -509,8 +547,16 @@ void LuaInterface::RegisterObjects(){
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetPoolIndex",&LuaObject::GetPoolIndex);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetMyRef",&LuaObject::GetMyRef);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetMyObj",&LuaObject::GetMyObj);
-    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","MoveX",&LuaObject::MoveX);
-    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","MoveY",&LuaObject::MoveY);
+
+
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetSpeed",&LuaObject::SetSpeed, false);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetSpeed",&LuaObject::GetSpeed);
+
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetStep",&LuaObject::SetStep, false);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetStep",&LuaObject::GetStep);
+
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetData",&LuaObject::SetData);
+    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetData",&LuaObject::GetData);
 
 
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","NotifyDamage"        ,&LuaObject::NotifyDamage);
@@ -522,6 +568,9 @@ void LuaInterface::RegisterObjects(){
 
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","hasPerspective",&LuaObject::hasPerspective);
 
+    TypeObserver<LuaObject,bool>::RegisterMethod(LuaManager::L,"solid",&LuaObject::solid);
+    TypeObserver<LuaObject,Point>::RegisterMethod(LuaManager::L,"speed",&LuaObject::speed);
+    TypeObserver<LuaObject,Point>::RegisterMethod(LuaManager::L,"step",&LuaObject::step);
     TypeObserver<LuaObject,bool>::RegisterMethod(LuaManager::L,"forceUpdate",&LuaObject::forceUpdate);
     TypeObserver<LuaObject,bool>::RegisterMethod(LuaManager::L,"active",&LuaObject::Active);
     TypeObserver<LuaObject,bool>::RegisterMethod(LuaManager::L,"forceRender",&LuaObject::forceRender);
@@ -553,6 +602,7 @@ void LuaInterface::RegisterObjects(){
 
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","Is",&GameObject::Is);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetMyRef",&GameObject::GetMyRef);
+    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetHash",&GameObject::GetHash);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetX",&GameObject::SetX, false);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetY",&GameObject::SetY, false);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetY",&GameObject::GetY);
@@ -567,6 +617,15 @@ void LuaInterface::RegisterObjects(){
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetSolid",&GameObject::SetSolid, false);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","Kill",&GameObject::Kill);
 
+    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetSpeed",&GameObject::SetSpeed, false);
+    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetSpeed",&GameObject::GetSpeed);
+
+    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetStep",&GameObject::SetStep, false);
+    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetStep",&GameObject::GetStep);
+
+    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetData",&GameObject::SetData);
+    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetData",&GameObject::GetData);
+
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","hasPerspective"        ,&GameObject::hasPerspective);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","canForceRender"        ,&GameObject::canForceRender);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","canForceUpdate"        ,&GameObject::canForceUpdate);
@@ -579,6 +638,19 @@ void LuaInterface::RegisterObjects(){
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","IsDead"        ,&GameObject::IsDead);
 
     TypeObserver<GameObject,bool>::RegisterMethod(LuaManager::L,"solid",&GameObject::solid);
+
+    TypeObserver<GameObject,Point>::RegisterMethod(LuaManager::L,"step",&GameObject::step);
+
+
+    LambdaRegister(L,"Typeof",std::function<int(std::string)>([](std::string objName){
+        return Types::GetInstance().getTypeId(objName);
+    }) );
+
+    LambdaRegister(L,"Typename",std::function<std::string(int)>([](int objId){
+        return Types::GetInstance().getTypeName(objId);
+    }) );
+
+
 
 }
 void LuaInterface::RegisterCollision(){
@@ -594,13 +666,13 @@ void LuaInterface::RegisterCollision(){
 
 
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_collision","AdjustCollisionIndependent",
-    std::function<Point3(Point ,float ,GameObject* ,std::vector<GameObject*>,float )>(
-                     [](Point speed,float dt,GameObject* dis,std::vector<GameObject*> vec,float msize)
+    std::function<Point3(Point ,float ,GameObject* ,std::vector<GameObject*>,float,bool )>(
+                     [](Point speed,float dt,GameObject* dis,std::vector<GameObject*> vec,float msize,bool onlySolid)
     {
         Point3 ret(speed.x,speed.y,0);
-        ret.z = Collision::AdjustCollisionIndependent(ret.x,ret.y,dt,dis,vec,msize);
+        ret.z = Collision::AdjustCollisionIndependent(ret.x,ret.y,dt,dis,vec,msize,onlySolid);
         return ret;
-    }),0.2f);
+    }),true,0.2f);
 
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_collision","AdjustCollision",
     std::function<Point3(Point ,float ,GameObject* ,std::vector<GameObject*> )>(
@@ -649,6 +721,11 @@ void LuaInterface::RegisterCamera(){
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_camera","Resize",std::function<void(Point)>([](Point newD)
     {
         Camera::Resize( newD);
+    }));
+
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_camera","SetOffsetFollow",std::function<void(Point)>([](Point newD)
+    {
+        Camera::SetOffsetFollow(newD.x,newD.y);
     }));
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_camera","UpdateByPos",std::function<void(Rect,int)>([](Rect r,float dt)
     {
@@ -737,51 +814,19 @@ void LuaInterface::RegisterScreenRender(){
 
 
     GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_render");
-    //g_render.DrawFillSquare(rect, red, green, blue, alpha)
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","DrawFillSquare",std::function<void(Rect,uint8_t,uint8_t,uint8_t,uint8_t)>([](Rect rct,uint8_t r,uint8_t g,uint8_t b,uint8_t a)
-    {
-        RenderHelp::DrawSquareColor(rct.x,rct.y,rct.w,rct.h,r,g,b,a,false);
-    }));
-    //g_render.DrawOutlineSquare(rect, red, green, blue, alpha)
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","DrawOutlineSquare",std::function<void(Rect,uint8_t,uint8_t,uint8_t,uint8_t)>([](Rect rct,uint8_t r,uint8_t g,uint8_t b,uint8_t a)
-    {
-        RenderHelp::DrawSquareColor(rct.x,rct.y,rct.w,rct.h,r,g,b,a,true);
-    }));
-    //g_render.DrawOutlineSquare(point1, point2, red, green, blue, alpha)
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","DrawLineColor",std::function<void(Point,Point,uint8_t,uint8_t,uint8_t,uint8_t)>([](Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a)
-    {
-        RenderHelp::DrawLineColor(p1.x,p1.y,p2.x,p2.y,r,g,b,a);
-    }));
+
+    //g_render.DrawSquareColor(rect, red, green, blue, alpha,mode=false,angle)
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","DrawSquareColor",&RenderHelp::DrawSquareColor,0.0f,false,static_cast<uint8_t>(255));
     //g_render.FormatARGB(red, green, blue, alpha)
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","FormatARGB",std::function<uint32_t(uint8_t,uint8_t,uint8_t,uint8_t)>([](uint8_t r,uint8_t g,uint8_t b,uint8_t a)
-    {
-        return RenderHelp::FormatARGB(a,r,g,b);
-    }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","DrawLineColor",&RenderHelp::DrawLineColor);
+    //g_render.FormatARGB(red, green, blue, alpha)
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","FormatARGB",&RenderHelp::FormatARGB);
     //g_render.FormatRGBA(red, green, blue, alpha)
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","FormatRGBA",std::function<uint32_t(uint8_t,uint8_t,uint8_t,uint8_t)>([](uint8_t r,uint8_t g,uint8_t b,uint8_t a)
-    {
-        return RenderHelp::FormatRGBA(r,g,b,a);
-    }));
-    //g_render.GetR(color)
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","GetR",std::function<uint8_t(uint32_t)>([](uint32_t c)
-    {
-        return RenderHelp::GetR(c);
-    }));
-    //g_render.GetG(color)
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","GetG",std::function<uint8_t(uint32_t)>([](uint32_t c)
-    {
-        return RenderHelp::GetG(c);
-    }));
-    //g_render.GetB(color)
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","GetB",std::function<uint8_t(uint32_t)>([](uint32_t c)
-    {
-        return RenderHelp::GetB(c);
-    }));
-    //g_render.GetA(color)
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","GetA",std::function<uint8_t(uint32_t)>([](uint32_t c)
-    {
-        return RenderHelp::GetA(c);
-    }));
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","FormatRGBA",&RenderHelp::FormatRGBA);
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","GetR",&RenderHelp::GetR);
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","GetG",&RenderHelp::GetG);
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","GetB",&RenderHelp::GetB);
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","GetA",&RenderHelp::GetA);
 
 
     GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_screen");
@@ -797,6 +842,11 @@ void LuaInterface::RegisterScreenRender(){
     {
         return Point(ScreenManager::GetInstance().GetScreenSize());
     }));
+}
+void LuaInterface::RegisterGL(){
+    GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"gl");
+    //glBegin();
+    //GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"gl","glBegin",&glBegin);
 }
 void LuaInterface::RegisterUI(){
     GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_ui");
@@ -854,6 +904,30 @@ void LuaInterface::RegisterUI(){
 
 void LuaInterface::RegisterInput(){
     GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_input");
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_LEFT",(int)SDLK_LEFT);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_RIGHT",(int)SDLK_RIGHT);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_UP",(int)SDLK_UP);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_DOWN",(int)SDLK_DOWN);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_BACKSLASH",(int)SDLK_BACKSLASH);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_BACKSPACE",(int)SDLK_BACKSPACE);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_F1",(int)SDLK_F1);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_F2",(int)SDLK_F2);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_F3",(int)SDLK_F3);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_F4",(int)SDLK_F4);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_F5",(int)SDLK_F5);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_F6",(int)SDLK_F6);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_F7",(int)SDLK_F7);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_F8",(int)SDLK_F8);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_F9",(int)SDLK_F9);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_F10",(int)SDLK_F10);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_F11",(int)SDLK_F11);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_F12",(int)SDLK_F12);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_VOLUMEDOWN",(int)SDLK_VOLUMEDOWN);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_VOLUMEUP",(int)SDLK_VOLUMEUP);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_TAB",(int)SDLK_TAB);
+    GlobalMethodRegister::RegisterGlobalTableField(LuaManager::L,"g_input","SDLK_PRINTSCREEN",(int)SDLK_PRINTSCREEN);
+
+
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_input","GetKeyByName",std::function<int(std::string)>([](std::string kname)
     {
         return (int)SDL_GetKeyFromName(kname.c_str());
@@ -932,6 +1006,7 @@ void LuaInterface::RegisterSprite(){
     ClassRegister<Animation>::RegisterClassMethod(L,"Animation","SetAnimation",&Animation::SetAnimation,-1.0f,0,0);
     ClassRegister<Animation>::RegisterClassMethod(L,"Animation","ResetAnimation",&Animation::ResetAnimation);
     ClassRegister<Animation>::RegisterClassMethod(L,"Animation","SetAnimationTime",&Animation::SetAnimationTime);
+    ClassRegister<Animation>::RegisterClassMethod(L,"Animation","SetRepeatTimes",&Animation::SetRepeatTimes);
     ClassRegister<Animation>::RegisterClassMethod(L,"Animation","Render",&Animation::RenderL);
 
     TypeObserver<Animation,bool>::RegisterMethod(LuaManager::L,"CanRepeat",&Animation::CanRepeat);
@@ -1003,6 +1078,55 @@ void LuaInterface::RegisterSprite(){
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetMe",&Sprite::GetMe);
 }
 
+int LuaInterface::LoopEvent(lua_State *L){
+    int32_t parameters = lua_gettop(L);
+
+    if(lua_isfunction(L, -parameters) == 0)
+    {
+        bear::out << "First argument should be an function!\n";
+        lua_pushboolean(L, false);
+        return 1;
+    }
+
+    std::list<int> params;
+    for(int32_t i = 0; i < parameters-2; ++i)
+    {
+        params.push_back(luaL_ref(L, LUA_REGISTRYINDEX));
+    }
+
+
+    int repeats = lua_tonumber(L, -1);
+    lua_pop(L,1);
+
+    float delay = std::max((float)0.00f,(float)lua_tonumber(L, -1));
+    lua_pop(L,1);
+    int luaF = luaL_ref(L, LUA_REGISTRYINDEX);
+
+    auto F = [luaF,params,L]()
+    {
+        lua_rawgeti(L, LUA_REGISTRYINDEX, luaF);
+        for (auto it = params.rbegin(); it != params.rend(); ++it)
+        {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, *it);
+        }
+        LuaManager::Pcall(params.size());
+        for(auto &it : params)
+        {
+            luaL_unref(L, LUA_REGISTRYINDEX, it);
+        }
+        //params.clear();
+        luaL_unref(L, LUA_REGISTRYINDEX, luaF);
+    };
+
+
+
+
+    uint64_t evId = g_scheduler.AddEvent(delay,F,repeats);
+    lua_pushnumber(L, evId);
+    return 1;
+}
+
+
 int LuaInterface::AddEvent(lua_State *L)
 {
     int32_t parameters = lua_gettop(L);
@@ -1020,7 +1144,7 @@ int LuaInterface::AddEvent(lua_State *L)
     }
 
 
-    float delay = std::max((float)0.01f,(float)lua_tonumber(L, -1));
+    float delay = std::max((float)0.00f,(float)lua_tonumber(L, -1));
     lua_pop(L,1);
 
     int luaF = luaL_ref(L, LUA_REGISTRYINDEX);

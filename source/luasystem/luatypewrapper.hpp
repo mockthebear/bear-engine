@@ -4,6 +4,7 @@
 #include "../engine/object.hpp"
 #include "luacaller.hpp"
 #include "luaui.hpp"
+#include "../framework/schedule.hpp"
 
 #define isthis(type,arg,FNC) if (type == arg) {vaav = std::string(#arg); if (FNC(L,i)){ std::stringstream S; S << FNC(L,i) << ";"; vaav = vaav +" "+ S.str(); }}
 
@@ -335,6 +336,7 @@ template<>
 
 REGISTER_ENUM(SDL_RendererFlip);
 REGISTER_ENUM(TextCenterStyle);
+REGISTER_ENUM(ExecTimeDef);
 
 
 /*
