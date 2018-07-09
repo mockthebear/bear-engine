@@ -39,7 +39,7 @@ class TileSet{
          * @param index Tile index
          * @param pos an Point vector containing x,y position
          */
-        void Render(int index,Point pos,float angle=0);
+        void Render(int index,Point pos,float angle=0,SDL_RendererFlip fliping = SDL_FLIP_NONE);
         /** Render an tile scaling it
          * @param index Tile index
          * @param pos an Point vector containing x,y position
