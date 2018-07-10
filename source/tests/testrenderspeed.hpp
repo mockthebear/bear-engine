@@ -46,18 +46,26 @@ class Test_RenderSpeed: public State{
             if (state >= 2000){
 
                 if( InputManager::GetInstance().IsAnyKeyPressed() != -1 ) {
-                    requestDelete = true;
+                    //requestDelete = true;
                 }
                 return;
             }
+            static int owo = 0;
             if (duration <= 0){
                 duration = 0.1f;
                 state++;
+
+
                 if (state % 10 == 0 && state > 0){
+                     owo++;
+
                     lg.AddData(ScreenManager::GetInstance().GetFps());
                     m_renderTimer.AddData(renderDuration / (double)state);
                     std::string txt = utils::format("FPS: %f  : Time to render one call: %f",ScreenManager::GetInstance().GetFps(), renderDuration / (double)state );
                     tilesCount.SetText(txt);
+                     if (owo >= 4){
+                        bear::out << txt << "\n";
+                     }
 
                 }
 

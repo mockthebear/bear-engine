@@ -5,6 +5,7 @@
 #include "../bear.hpp"
 #include "../screenmanager.hpp"
 #include "../renderhelp.hpp"
+#include "../../input/inputmanager.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -114,11 +115,13 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
     if (!t_texture || t_texture->id == 0){
         return false;
     }
+    static glm::vec2 size;
+    static glm::mat4 projection;
+    static glm::mat4 model;
 
+    size = glm::vec2 (t_data.clip.w,t_data.clip.h);
+    model = glm::mat4(1.0f);
 
-    glm::vec2 size(t_data.clip.w,t_data.clip.h);
-    glm::mat4 model(1.0f);
-    glm::mat4 projection;
 
     float texLeft = t_data.forwardClip.x;
     float texRight =  t_data.forwardClip.y;
@@ -146,11 +149,6 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
         1.0f, 1.0f, texRight, texBottom,
         1.0f, 0.0f, texRight, texTop,
 
-
-        0.0f, 0.0f, texLeft, texTop,
-        0.0f, 1.0f, texLeft, texBottom,
-        1.0f, 1.0f, texRight, texBottom,
-        1.0f, 0.0f, texRight, texTop,
     };
 
     if (!made){
@@ -168,7 +166,11 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
 
         made = true;
 
+
+
     }
+
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -179,6 +181,8 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
         textureShader.Bind();
     }
 
+    if( InputManager::GetInstance().IsKeyDown(SDLK_a)  ) {
+
     model = glm::translate(model, glm::vec3(t_data.position.x, t_data.position.y, 0.0f));
 
     model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
@@ -188,6 +192,7 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
     model = glm::scale(model, glm::vec3(size.x * t_data.scale.x,size.y * t_data.scale.y, 1.0f));
     Point scr = ScreenManager::GetInstance().GetGameSize();
     projection = glm::ortho(0.0f, (float)scr.x,  (float)scr.y, 0.0f, -1.0f, 1.0f);
+
 
 
 
@@ -204,6 +209,8 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
 
 
 
+
+
     /*unsigned int ow = glGetUniformLocation(Shader::GetCurrentShaderId(), "OwO");
     std::cout << ow << " : "<<Shader::GetCurrentShaderId()<<"\n";
     glUniform1f(ow,0.3f);*/
@@ -215,8 +222,10 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
 
     glBindVertexArray(VAO);
 
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     glBindVertexArray(0);
+
+    }
 
     if (noShader){
         textureShader.Unbind();
