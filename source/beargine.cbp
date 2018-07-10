@@ -177,6 +177,8 @@
 		<Unit filename="engine/smarttileset.hpp" />
 		<Unit filename="engine/sprite.cpp" />
 		<Unit filename="engine/sprite.hpp" />
+		<Unit filename="engine/targettexture.cpp" />
+		<Unit filename="engine/targettexture.hpp" />
 		<Unit filename="engine/text.cpp" />
 		<Unit filename="engine/text.hpp" />
 		<Unit filename="engine/tilemap.cpp" />

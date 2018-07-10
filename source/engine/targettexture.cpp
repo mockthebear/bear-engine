@@ -9,37 +9,8 @@
 GLint TargetTexture::lastbuffer = 0;
 
 void TargetTexture::Render(Point pos){
-
-    #ifdef RENDER_OPENGL
-    glLoadIdentity();
-
-    glBindTexture(GL_TEXTURE_2D, renderedTexture);
-
-    glEnable(GL_TEXTURE_2D);
-
-
-        float quadWidth = size_w;
-        float quadHeight = size_h;
-
-
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    glScalef(scale.x , scale.y, 1.0f);
-        glTranslatef(
-                (pos.x  + quadWidth / 2.f  ),
-                (pos.y + quadHeight/ 2.f  ),
-        0.f );
-    //scale
-    glBegin( GL_TRIANGLE_FAN );
-        glTexCoord2f(  0.0f , 1.0f ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
-        glTexCoord2f(  1.0f , 1.0f ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
-        glTexCoord2f(  1.0f , 0.0f ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
-        glTexCoord2f(  0.0f , 0.0f ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
-    glEnd();
-
-    glDisable(GL_TEXTURE_2D);
-    glBindTexture( GL_TEXTURE_2D, 0 );
-
-    #endif // RENDER_OPENGL
+    m_renderData.position = pos;
+    Painter::RenderTexture(this,m_renderData);
 }
 
 bool TargetTexture::Bind(){
@@ -51,7 +22,7 @@ bool TargetTexture::Bind(){
     glViewport(0, 0, size_w, size_h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, size_w, size_h, 0, -1, 1);
+    glOrtho(0, size_w, 0, size_h, -1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     #endif // RENDER_OPENGL
@@ -75,20 +46,22 @@ bool TargetTexture::FreeTexture(){
     glDeleteBuffers(1,&vbo_fbo_vertices);
     glDeleteFramebuffers(1,&Framebuffer);
     glDeleteRenderbuffers(1, &depthrenderbuffer);
-	glDeleteTextures(1, &renderedTexture);
+	glDeleteTextures(1, &id);
 
     //glDeleteRenderbuffers(1, &renderedTexture);
     return true;
 }
 
 bool TargetTexture::Generate(int wa,int ha){
-    size_w = w = wa;
-    size_h = h = ha;
+    size_w = texture_w = wa;
+    size_h = texture_h = ha;
+    m_renderData.clip = Rect(0,0,wa,ha);
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &lastbuffer);
 
     glActiveTexture(GL_TEXTURE0);
-    glGenTextures(1, &renderedTexture);
-    glBindTexture(GL_TEXTURE_2D, renderedTexture);
+    ClearTexture();
+    glGenTextures(1, &id);
+    glBindTexture(GL_TEXTURE_2D, id);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -105,7 +78,7 @@ bool TargetTexture::Generate(int wa,int ha){
     /* Framebuffer to link everything together */
     glGenFramebuffers(1, &Framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, renderedTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, id, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
 
 
