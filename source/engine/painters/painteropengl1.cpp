@@ -14,16 +14,18 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
 
     glLoadIdentity();
     glEnable(GL_TEXTURE_2D);
+    glBindTexture( GL_TEXTURE_2D, t_texture->id );
+
 
     glColor4fv(t_data.color);
 
-    float w = t_data.size.x;
-    float h = t_data.size.y;
 
-    texLeft = t_data.clip.x / (float)w;
-    texRight =  ( t_data.clip.x + t_data.clip.w ) / (float)w;
-    texTop = t_data.clip.y / (float)h;
-    texBottom = ( t_data.clip.y + t_data.clip.h ) / (float)h;
+    texLeft = t_data.clip.x / t_texture->texture_w;
+    texRight =  ( t_data.clip.x + t_data.clip.w ) / t_texture->texture_w;
+    texTop = t_data.clip.y / t_texture->texture_h;
+    texBottom = ( t_data.clip.y + t_data.clip.h ) / t_texture->texture_h;
+
+
 
     GLfloat quadWidth = t_data.clip.w ;
     GLfloat quadHeight = t_data.clip.h ;
@@ -37,7 +39,7 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
 
     glRotatef( t_data.angle, 0.f, 0.f, 1.f );
 
-    glBindTexture( GL_TEXTURE_2D, t_texture->id );
+
 
     if ((t_data.flip&SDL_FLIP_HORIZONTAL) != 0){
         float holder =  texLeft;
@@ -57,6 +59,9 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
         glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
     glEnd();
 
+    glDisable(GL_TEXTURE_2D);
+    glBindTexture( GL_TEXTURE_2D, 0 );
+
     return true;
 }
 
@@ -70,8 +75,8 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
         return nullptr;
     }
 
-    unsigned int pow_w =  powerOfTwo(size.x);
-    unsigned int pow_h =  powerOfTwo(size.y);
+    unsigned int pow_w =  size.x;//powerOfTwo(size.x);
+    unsigned int pow_h =  size.y;//powerOfTwo(size.y); //No need to this on opengl. only on opengles
 
     glBindTexture(GL_TEXTURE_2D, texId);
     filter.ApplyFilter();
@@ -80,10 +85,8 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x, size.y, mode, GL_UNSIGNED_BYTE, pixels);
     }
     glBindTexture(GL_TEXTURE_2D, 0);
-    BearTexture *ret = new BearTexture(texId,pow_w,pow_h,mode);
+    BearTexture *ret = new BearTexture(texId,size.x,size.y,pow_w,pow_h,mode);
     ret->textureMode = filter;
-    ret->size_w = size.x;
-    ret->size_h = size.y;
     return ret;
 }
 
