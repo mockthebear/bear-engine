@@ -61,7 +61,7 @@ class BearTexture{
     public:
         BearTexture(){
             id = 0;
-            w = h = c = 0;
+            texture_w = texture_h = 0;
             size_w = size_h = 0;
             textureMode = TEXTURE_NEAREST;
         };
@@ -76,11 +76,11 @@ class BearTexture{
                 glDeleteTextures(1, &tex);
         }
 
-        BearTexture(uint32_t textureId,uint32_t width,uint32_t height,GLenum imgMode):id(textureId),w(width),h(height),mode(imgMode){};
+        BearTexture(uint32_t textureId,uint32_t imagewidth,uint32_t imageheight,uint32_t texturewidth,uint32_t textureheight,GLenum imgMode)
+        :id(textureId),texture_w(texturewidth),texture_h(textureheight),size_w(imagewidth),size_h(imageheight),textureMode(TEXTURE_NEAREST),mode(imgMode){};
         uint32_t id;
-        uint32_t w;
-        uint32_t h;
-        uint32_t c;
+        uint32_t texture_w;
+        uint32_t texture_h;
         uint32_t size_w;
         uint32_t size_h;
         TextureLoadMethod textureMode;
@@ -90,12 +90,11 @@ class BearTexture{
 
 class RenderData{
     public:
-        RenderData():position(0.0f,0.0f),size(1.0f,1.0f),clip(0.0f,0.0f,0.0f,0.0f),
+        RenderData():position(0.0f,0.0f),clip(0.0f,0.0f,0.0f,0.0f),
                     angle(0.0f),center(0.0f,0.0f),scale(1.0f,1.0f),color{1.0f,1.0f,1.0f,1.0f},
                     flip(0){};
 
     Point position;
-    Point size;
     Rect clip;
     float angle;
     Point center;

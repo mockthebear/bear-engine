@@ -439,7 +439,6 @@ void Text::RemakeTexture(bool Destory){
                 bher->ClearTexture();
                 delete bher;
             });
-            m_renderData.size = Point(texture->w,texture->h);
             m_renderData.clip = Rect(0,0,texture->size_w,texture->size_h);
         }
         #endif // RENDER_OPENGL

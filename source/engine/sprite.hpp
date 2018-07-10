@@ -469,6 +469,7 @@ class Sprite{
         std::string fname;
 
         RenderData m_renderData;
+        Point size;
 
         //float OUTR,OUTB,OUTG;
         //float m_alpha;

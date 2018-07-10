@@ -344,9 +344,9 @@ BearTexture * Sprite::Preload(std::string fileName,ColorReplacer &r,TextureLoadM
 void Sprite::Query(TexturePtr ptr){
     BearTexture *texturee = ptr.get();
     if (texturee != NULL){
-        m_renderData.size.x = texturee->w;
-        m_renderData.size.y = texturee->h;
-        SetClip(0,0,m_renderData.size.x,m_renderData.size.y);
+        size.x = texturee->texture_w;
+        size.y = texturee->texture_h;
+        SetClip(0,0,texturee->texture_w,texturee->texture_h);
     }
 }
 
@@ -444,11 +444,11 @@ void  Sprite::Format(Animation anim,int dir){
 }
 
 int Sprite::GetWidth(){
-    return m_renderData.size.x*m_renderData.scale.x;
+    return size.x*m_renderData.scale.x;
 }
 
 int Sprite::GetHeight(){
-    return m_renderData.size.y*m_renderData.scale.y;
+    return size.y*m_renderData.scale.y;
 }
 int Sprite::GetFrameHeight(){
     return m_renderData.clip.h*m_renderData.scale.y;
