@@ -5,6 +5,11 @@
 #include "../bear.hpp"
 #include "../screenmanager.hpp"
 #include "../renderhelp.hpp"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "../../framework/debughelper.hpp"
 
 bool Painter::m_shaderBuilt = false;
@@ -14,6 +19,119 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
         return false;
     }
 
+    static GLuint VAO;
+    static GLuint VBO;
+    static bool made = false;
+
+    if (!t_texture || t_texture->id == 0){
+        return false;
+    }
+
+
+    glm::vec2 size(t_data.clip.w,t_data.clip.h);
+    glm::mat4 model(1.0f);
+    glm::mat4 projection;
+
+    float texLeft = t_data.forwardClip.x;
+    float texRight =  t_data.forwardClip.y;
+    float texTop = t_data.forwardClip.w;
+    float texBottom = t_data.forwardClip.h;
+
+
+    if ((t_data.flip&SDL_FLIP_HORIZONTAL) != 0){
+        float holder =  texLeft;
+        texLeft = texRight;
+        texRight = holder;
+    }
+    if ((t_data.flip&SDL_FLIP_VERTICAL) != 0){
+        float holder =  texTop;
+        texTop = texBottom;
+        texBottom = holder;
+    }
+
+    GLfloat vertices[] = {
+
+
+        // Pos      // Tex
+        0.0f, 0.0f, texLeft, texTop,
+        0.0f, 1.0f, texLeft, texBottom,
+        1.0f, 1.0f, texRight, texBottom,
+        1.0f, 0.0f, texRight, texTop,
+
+
+        0.0f, 0.0f, texLeft, texTop,
+        0.0f, 1.0f, texLeft, texBottom,
+        1.0f, 1.0f, texRight, texBottom,
+        1.0f, 0.0f, texRight, texTop,
+    };
+
+    if (!made){
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        glBindVertexArray(VAO);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+
+        made = true;
+
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    bool noShader = Shader::GetCurrentShaderId() == 0;
+
+    if (noShader){
+        textureShader.Bind();
+    }
+
+    model = glm::translate(model, glm::vec3(t_data.position.x, t_data.position.y, 0.0f));
+
+    model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
+    model = glm::rotate(model, t_data.angle, glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
+
+    model = glm::scale(model, glm::vec3(size.x * t_data.scale.x,size.y * t_data.scale.y, 1.0f));
+    Point scr = ScreenManager::GetInstance().GetGameSize();
+    projection = glm::ortho(0.0f, (float)scr.x,  (float)scr.y, 0.0f, -1.0f, 1.0f);
+
+
+
+    unsigned int transformLoc = glGetUniformLocation(textureShader.GetCurrentShaderId(), "model");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+    transformLoc = glGetUniformLocation(textureShader.GetCurrentShaderId(), "projection");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+    ShaderSetter<BearColor>::SetUniform(textureShader.GetCurrentShaderId(),"spriteColor",recolor);
+    ShaderSetter<int>::SetUniform(textureShader.GetCurrentShaderId(),"image",0);
+
+
+
+
+    /*unsigned int ow = glGetUniformLocation(Shader::GetCurrentShaderId(), "OwO");
+    std::cout << ow << " : "<<Shader::GetCurrentShaderId()<<"\n";
+    glUniform1f(ow,0.3f);*/
+
+
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture( GL_TEXTURE_2D, t->id );
+
+    glBindVertexArray(VAO);
+
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
+    glBindVertexArray(0);
+
+    if (noShader){
+        textureShader.Unbind();
+    }
 
 
     return true;

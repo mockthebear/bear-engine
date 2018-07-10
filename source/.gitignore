@@ -3,3 +3,4 @@ beargine.layout
 *.db
 .vs
 !.gitignore
+gml/*
