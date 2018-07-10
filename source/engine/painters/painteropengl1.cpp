@@ -9,28 +9,26 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
         return false;
     }
 
-    GLfloat texLeft;
-    GLfloat texRight;
-    GLfloat texTop;
-    GLfloat texBottom;
-
-    glLoadIdentity();
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture( GL_TEXTURE_2D, t_texture->id );
-
-
-    glColor4fv(t_data.color);
-
-
-    texLeft = t_data.clip.x / t_texture->texture_w;
-    texRight =  ( t_data.clip.x + t_data.clip.w ) / t_texture->texture_w;
-    texTop = t_data.clip.y / t_texture->texture_h;
-    texBottom = ( t_data.clip.y + t_data.clip.h ) / t_texture->texture_h;
+    GLfloat texLeft = t_data.forwardClip.x;
+    GLfloat texRight =  t_data.forwardClip.y;
+    GLfloat texTop = t_data.forwardClip.w;
+    GLfloat texBottom = t_data.forwardClip.h;
 
 
 
     GLfloat quadWidth = t_data.clip.w ;
     GLfloat quadHeight = t_data.clip.h ;
+
+    glLoadIdentity();
+
+    glEnable(GL_TEXTURE_2D);
+
+    glBindTexture( GL_TEXTURE_2D, t_texture->id );
+
+    glColor4fv(t_data.color);
+
+
+
 
     glScalef(t_data.scale.x , t_data.scale.y , 1.0f);
 

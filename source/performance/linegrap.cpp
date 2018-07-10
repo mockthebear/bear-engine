@@ -26,13 +26,13 @@ void LineGraph::Render(Point pos){
     RenderHelp::DrawSquareColor(Rect(pos.x,pos.y,size.x,size.y),255,255,255,255,true);
 
     if (data.size() > 0){
-        float spread = size.x/(float)dataCount;
+        double spread = size.x/(double)dataCount;
         int count = 0;
         lastY = data[0];
         for (auto &it : data){
-            float y = pos.y+size.y-1;
-            float x = pos.x;
-            float bY = pos.y+size.y-1;
+            double y = pos.y+size.y-1;
+            double x = pos.x;
+            double bY = pos.y+size.y-1;
 
             y -= ((it-min)/max) * size.y;
             bY -= ((lastY-min)/max) * size.y;
@@ -51,7 +51,7 @@ void LineGraph::Render(Point pos){
 }
 
 
-void LineGraph::AddData(float dataValue){
+void LineGraph::AddData(double dataValue){
     data.emplace(data.end(),dataValue);
     min = std::min(dataValue,min);
     max = std::max(dataValue,max);

@@ -55,7 +55,8 @@ bool TargetTexture::FreeTexture(){
 bool TargetTexture::Generate(int wa,int ha){
     size_w = texture_w = wa;
     size_h = texture_h = ha;
-    m_renderData.clip = Rect(0,0,wa,ha);
+    m_renderData.SetClip(Rect(0.0f,0.0f,wa,ha), Point(wa,ha));
+
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &lastbuffer);
 
     glActiveTexture(GL_TEXTURE0);

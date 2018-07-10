@@ -94,7 +94,7 @@ class RenderData{
     public:
         RenderData():position(0.0f,0.0f),clip(0.0f,0.0f,0.0f,0.0f),
                     angle(0.0f),center(0.0f,0.0f),scale(1.0f,1.0f),color{1.0f,1.0f,1.0f,1.0f},
-                    flip(0){};
+                    flip(0),forwardClip(0.0f,1.0f,0.0f,1.0f){};
 
     Point position;
     Rect clip;
@@ -103,6 +103,19 @@ class RenderData{
     Point scale;
     float color[4];
     uint8_t flip;
+    Rect forwardClip;
+
+    void SetClip(Rect r, Point textureSize){
+        clip = r;
+        if (textureSize.x == 0 || textureSize.y == 0){
+            forwardClip = Rect(0.0f,1.0f,0.0f,1.0f);
+            return;
+        }
+        forwardClip.x = clip.x / textureSize.x;
+        forwardClip.y =  ( clip.x + clip.w ) / textureSize.x;
+        forwardClip.w = clip.y / textureSize.y;
+        forwardClip.h = ( clip.y + clip.h ) / textureSize.y;
+    }
 };
 
 

@@ -408,7 +408,7 @@ void Text::RemakeTexture(bool Destory){
                 bher->ClearTexture();
                 delete bher;
             });
-            m_renderData.clip = Rect(0,0,texture->size_w,texture->size_h);
+            m_renderData.SetClip(Rect(0.0f,0.0f,texture->size_w,texture->size_h), Point(texture->size_w,texture->size_h));
         }
 
     }else{

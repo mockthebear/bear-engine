@@ -396,10 +396,7 @@ bool Sprite::Open(SDL_RWops* file,std::string name,TextureLoadMethod HasAliasing
 }
 
 void Sprite::SetClip(int x, int y,int w,int h){
-    m_renderData.clip.x = x;
-    m_renderData.clip.y = y;
-    m_renderData.clip.w = w;
-    m_renderData.clip.h = h;
+    m_renderData.SetClip(Rect(x,y,w,h),size);
 }
 
 void Sprite::Render(PointInt pos,double angle){

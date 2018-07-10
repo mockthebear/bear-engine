@@ -30,7 +30,7 @@ class LineGraph{
          *
          */
 
-        void AddData(float data);
+        void AddData(double data);
         /** \brief Display in screen the graph
          *
          * \param The position on screen
@@ -40,10 +40,10 @@ class LineGraph{
         void Render(Point pos);
     private:
         Text tmax,tmin,tlast;
-        float min,max;
+        double min,max;
         Point size;
         uint16_t dataCount;
-        float lastY;
-        std::vector<float> data;
+        double lastY;
+        std::vector<double> data;
 
 };

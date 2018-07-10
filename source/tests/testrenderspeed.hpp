@@ -43,38 +43,42 @@ class Test_RenderSpeed: public State{
 
         void Update(float dt){
             duration -= dt;
-            if( InputManager::GetInstance().IsAnyKeyPressed()  ) {
-                requestDelete = true;
+            if (state >= 2000){
+
+                if( InputManager::GetInstance().IsAnyKeyPressed() != -1 ) {
+                    requestDelete = true;
+                }
+                return;
             }
             if (duration <= 0){
                 duration = 0.1f;
                 state++;
                 if (state % 10 == 0 && state > 0){
                     lg.AddData(ScreenManager::GetInstance().GetFps());
-                    m_renderTimer.AddData(renderDuration / (float)state);
-                    std::string txt = utils::format("FPS: %f  : Time to render one call: %f",ScreenManager::GetInstance().GetFps(), renderDuration / (float)state );
+                    m_renderTimer.AddData(renderDuration / (double)state);
+                    std::string txt = utils::format("FPS: %f  : Time to render one call: %f",ScreenManager::GetInstance().GetFps(), renderDuration / (double)state );
                     tilesCount.SetText(txt);
 
                 }
-                if (state >= 800){
-                    //requestDelete = true;
-                }
+
             }
+
+
 
         };
         void Render(){
             sw.Reset();
             RenderHelp::DrawSquareColor(Rect(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H),100,100,100,255);
             for (int i=0;i<state;i++){
+                tiles.SetClip((rand()%10) * 16,(rand()%10) * 16,16,16);
                 for (int a=1;a<10;a++){
-                    tiles.SetClip((rand()%10) * 16,(rand()%10) * 16,16,16);
                     tiles.Render(Point( (i % 60) * 16, (i/60)*16 )) ;
                 }
             }
-            renderDuration = sw.Get()/1000.0f;
+            renderDuration = (double)sw.Get();
 
             lg.Render(Point(32,32));
-            m_renderTimer.Render(Point(32,235));
+            m_renderTimer.Render(Point(32,264));
 
             tilesCount.Render(Point(64,64));
 
@@ -86,7 +90,7 @@ class Test_RenderSpeed: public State{
             ResourceManager::GetInstance().Erase("test");
         };
     private:
-        float renderDuration;
+        double renderDuration;
         Stopwatch sw;
         LineGraph lg;
         LineGraph m_renderTimer;
