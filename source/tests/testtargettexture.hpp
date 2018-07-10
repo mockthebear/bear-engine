@@ -11,6 +11,7 @@ class Test_TargetTexture: public State{
             requestQuit = requestDelete = false;
             tset = nullptr;
             duration = 100.0f;
+            movement = 0;
         };
         ~Test_TargetTexture(){
             if (tset){
@@ -47,7 +48,7 @@ class Test_TargetTexture: public State{
 
         void Update(float dt){
             tset->Update(dt);
-
+            movement += dt * 1.0f;
             duration -= dt;
             tileAnim -= dt;
             if (tileAnim <= 0){
@@ -69,6 +70,8 @@ class Test_TargetTexture: public State{
         };
         void Render(){
             //background.Render(0,0,0);
+
+
             targ.Bind();
             background.Render(0,0,45);
 
@@ -95,9 +98,11 @@ class Test_TargetTexture: public State{
             p.x = p.x/(float)SCREEN_SIZE_W;
             p.y = 1.0f - p.y;
             m_shader.SetUniform<Point>("Cent2d",p);
-            targ.Render(Point(32,32));
+            targ.Render(Point(32 + movement,32));
 
             m_shader.Unbind();
+            RenderHelp::DrawCircleColor(Point(32,32),32,255,255,255,255);
+
             tset->RenderLayer(0);
             tset->RenderLayer(1);
 
@@ -108,6 +113,7 @@ class Test_TargetTexture: public State{
             m_shader.Close();
         };
     private:
+        float movement;
         Shader m_shader;
         SmartTileset *tset;
         Sprite background;
