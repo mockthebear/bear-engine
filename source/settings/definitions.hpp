@@ -30,10 +30,6 @@
 
 #define MAXFPS 900.0
 
-/*#ifndef RENDER_OPENGLES
-#define RENDER_OPENGLES
-#endif // RENDER_OPENGL
-*/
 
 #define POOL_DEFAULT_THREADS 2
 //#define DISABLE_THREADPOOL
@@ -44,7 +40,8 @@
 
 #define LUA_INCLUDE "../luasystem/lua.hpp"
 
-
+//#define RENDER_OPENGL
+//#define RENDER_OPENGL3
 
 //#define DISABLE_SOCKET
 /*

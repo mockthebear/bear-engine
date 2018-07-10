@@ -39,7 +39,7 @@ BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod
 
 void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8_t b,uint8_t a,int sides){
 
-    glLoadIdentity();
+    /*glLoadIdentity();
     glTranslatef(p1.x, p1.y, 0.0f);
 
     glColor4ub( r,g,b,a );
@@ -52,14 +52,14 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
          angle = i * 2.0f * Geometry::PI() / sides;
          glVertex2f( cos(angle) *  radius, sin(angle) *  radius);
       }
-    glEnd();
+    glEnd();*/
 
 }
 
 
 void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline,float angle){
 
-    glDisable(GL_TEXTURE_2D);
+    /*glDisable(GL_TEXTURE_2D);
     glLoadIdentity();
     glTranslatef(box.x, box.y, 0.0f);
     if (!outline){
@@ -73,13 +73,13 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
         glVertex2f( box.w,  box.h );
         glVertex2f( 0.0f,  box.h );
     glEnd();
-    DebugHelper::DisplayGlError("DrawSquareColor");
+    DebugHelper::DisplayGlError("DrawSquareColor");*/
 
 
 }
 
 void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thicc){
-    glLoadIdentity();
+    /*glLoadIdentity();
     glLineWidth(thicc);
     glColor4ub( r,g,b,a );
     glBegin(GL_LINES);
@@ -87,7 +87,7 @@ void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,u
         glVertex3f(p2.x, p2.y, 0.0f);
     glEnd();
     glLineWidth(1);
-    DebugHelper::DisplayGlError("DrawLineColor");
+    DebugHelper::DisplayGlError("DrawLineColor");*/
 }
 
 uint8_t RenderHelp::GetR(uint32_t r){

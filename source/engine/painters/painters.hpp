@@ -6,14 +6,9 @@
 //Used to manage all the sort of rendering stuff
 
 #include SDL_LIB_HEADER
-#ifdef RENDER_OPENGLES
-    #define GL_GLEXT_PROTOTYPES 1
-    #include GLES_LIB
-#endif // RENDER_OPENGLES
 
-#ifdef RENDER_OPENGL
-    #include GL_LIB
-#endif // RENDER_OPENGLES
+#include "../libheader.hpp"
+#include "../shadermanager.hpp"
 
 enum TextureLoadMethodEnum{
     TEXTURE_DEFAULT,
@@ -147,5 +142,13 @@ class Painter{
         static bool SetupEnvoriment(ScreenManager *sm);
         static int GetMaxTextureSize();
         static void ResetViewPort(PointInt originalSize, PointInt newSize);
+
+        static void SetupShaders();
+
+        static Shader textureShader;
+        static Shader polygonShader;
+
+
+        static bool m_shaderBuilt;
 
 };

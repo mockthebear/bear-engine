@@ -73,7 +73,7 @@
 					<Add option="-pg" />
 					<Add option="-g" />
 					<Add option="-DIGNORESTEAM" />
-					<Add option="-DRENDER_OPENGL" />
+					<Add option="-DRENDER_OPENGL3" />
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
@@ -143,10 +143,12 @@
 		<Unit filename="engine/gamebase.hpp" />
 		<Unit filename="engine/genericstate.cpp" />
 		<Unit filename="engine/genericstate.hpp" />
+		<Unit filename="engine/libheader.hpp" />
 		<Unit filename="engine/light.cpp" />
 		<Unit filename="engine/light.hpp" />
 		<Unit filename="engine/object.hpp" />
 		<Unit filename="engine/painters/painteropengl1.cpp" />
+		<Unit filename="engine/painters/painteropengl3.cpp" />
 		<Unit filename="engine/painters/painters.hpp" />
 		<Unit filename="engine/particlecreator.cpp" />
 		<Unit filename="engine/particlecreator.hpp" />

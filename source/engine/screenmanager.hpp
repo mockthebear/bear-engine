@@ -76,6 +76,10 @@ class ScreenManager{
             return storedShader;
         }
 
+        GLuint GetVAO(){return m_vertexArrayID;};
+
+
+
     private:
         friend class Painter;
 
@@ -107,6 +111,7 @@ class ScreenManager{
         Point m_scaleRatio;
         Point m_trueScaleRatio;
         SDL_DisplayMode m_displayMode;
+        uint32_t m_vertexArrayID;
 
 };
 #endif // SCREENMANAGEH
