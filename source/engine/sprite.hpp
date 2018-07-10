@@ -15,15 +15,7 @@
 
 #include <memory>
 
-#include SDL_LIB_HEADER
-#ifdef RENDER_OPENGLES
-    #define GL_GLEXT_PROTOTYPES 1
-    #include GLES_LIB
-#endif // RENDER_OPENGLES
-
-#ifdef RENDER_OPENGL
-    #include GL_LIB
-#endif // RENDER_OPENGLES
+#include "libheader.hpp"
 
 
 /**
@@ -404,9 +396,6 @@ class Sprite{
             m_renderData.color[0] = Red/255.0f;
             m_renderData.color[1] = Blue/255.0f;
             m_renderData.color[2] = Green/255.0f;
-            #ifndef RENDER_OPENGL
-            SDL_SetTextureColorMod((textureShred.get()),OUTR*255,OUTB*255,OUTG*255);
-            #endif // RENDER_OPENGL
         };
         /**
             *Changed the sprite alpha
@@ -416,9 +405,6 @@ class Sprite{
         */
         void SetAlpha(uint8_t alpha){
             m_renderData.color[3] = alpha/255.0f;
-            #ifndef RENDER_OPENGL
-            SDL_SetTextureAlphaMod((textureShred.get()),alpha);
-            #endif // RENDER_OPENGL
         };
 
         uint8_t GetAlpha(){

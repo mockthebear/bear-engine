@@ -3,14 +3,7 @@
 #include <iostream>
 #include <stdio.h>
 
-#ifdef RENDER_OPENGLES
-    #define GL_GLEXT_PROTOTYPES 1
-    #include GLES_LIB
-#endif // RENDER_OPENGLES
-
-#ifdef RENDER_OPENGL
-    #include GL_LIB
-#endif // RENDER_OPENGLES
+#include "../engine/libheader.hpp"
 
 
 void DebugHelper::AssertAlloc(void *ptr,std::string file,std::string func,int line,std::string msg){

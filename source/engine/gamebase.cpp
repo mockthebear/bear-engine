@@ -133,21 +133,8 @@ void Game::init(const char *name){
             }else{
                 Console::GetInstance().AddTextInfo("Screen is on!");
             }
-            #ifndef RENDER_OPENGL
-
-            renderer = ScreenManager::GetInstance().StartRenderer();
-
-            if (!renderer){
-                Console::GetInstance().AddTextInfo("Failed creating render");
-                exit(1);
-            }else{
-                Console::GetInstance().AddTextInfo("Renderer is on!");
-            }
-            #else
             Console::GetInstance().AddTextInfo("Starting openGL");
             ScreenManager::GetInstance().SetupOpenGL();
-            #endif // RENDER_OPENGL
-
         }
         if (startFlags&BEAR_FLAG_LOAD_BASEFILES){
             bear::out << "Loading basefiles\n";

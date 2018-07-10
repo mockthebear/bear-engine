@@ -142,13 +142,6 @@ bool SmartTileset::MakeMap(){
         for (int y=0;y<framesOnMap.y;y++){
             for (int x=0;x<framesOnMap.x;x++){
                 //if (m_isUsed[l][y][x]){
-                    #ifndef RENDER_OPENGL
-                    //textureMap[l][y][x];
-                    SDL_SetRenderDrawBlendMode(BearEngine->GetRenderer(), SDL_BLENDMODE_NONE);
-                    SDL_SetRenderDrawColor(BearEngine->GetRenderer(), 0, 0, 0, 0);
-                    SDL_RenderClear(BearEngine->GetRenderer());
-                    SDL_SetRenderDrawBlendMode(BearEngine->GetRenderer(), SDL_BLENDMODE_BLEND);
-                    #else
 
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
                     RenderHelp::DrawSquareColor(Rect(0,0,maxTextureSize.x,maxTextureSize.y),0,0,0,0);
@@ -157,15 +150,6 @@ bool SmartTileset::MakeMap(){
 
 
 
-                    #endif // RENDER_OPENGL
-                /*}else{
-                    TargetTexture*& T = GetTextureFromPosition(l, x, y);
-                    if (T){
-                        bear::out << "Erased texture on " << l << ":"<< x << ":" << y << "\n";
-                        T->FreeTexture();
-                        T = nullptr;
-                    }
-                }*/
                 needRemake[l][y][x] = false;
 
             }
@@ -237,9 +221,7 @@ void SmartTileset::SetTile(int l,int x,int y,int tile,double angle,SDL_RendererF
 void SmartTileset::ResetFocus(){
     if (!isValid)
         return;
-    #ifndef RENDER_OPENGL
-    ScreenManager::GetInstance().SetRenderTarget(nullptr,true);
-    #endif // RENDER_OPENGL
+
     lastTarget = nullptr;
 }
 void SmartTileset::SetTileDirect(int l,int x,int y,int tile, double angle,SDL_RendererFlip fliping){
@@ -261,32 +243,14 @@ void SmartTileset::SetTileDirect(int l,int x,int y,int tile, double angle,SDL_Re
     PointInt tilesPerBlock = maxTextureSize/tileSize;
     PointInt tilePosition = PointInt(x/tilesPerBlock.x,y/tilesPerBlock.y);
     if (tilePosition.x < framesOnMap.x && tilePosition.y < framesOnMap.y) {
-        #ifndef RENDER_OPENGL
-        if (lastTarget != textureMap[l][tilePosition.y][tilePosition.x]){
-            lastTarget = textureMap[l][tilePosition.y][tilePosition.x];
-            ScreenManager::GetInstance().SetRenderTarget(textureMap[l][tilePosition.y][tilePosition.x]);
-        }
-        #endif // RENDER_OPENGL
         PointInt tileOffset = PointInt((x * tileSize.x)%maxTextureSize.x,(y * tileSize.y)%maxTextureSize.y);
-        #ifndef RENDER_OPENGL
-        SDL_SetRenderDrawBlendMode(BearEngine->GetRenderer(), SDL_BLENDMODE_NONE);
-        SDL_SetRenderDrawColor(BearEngine->GetRenderer(), 255, 255, 255, 0);
-        SDL_Rect d;
-        d.x = tileOffset.x;
-        d.y = tileOffset.y;
-        d.w = d.h = tileSize;
-        SDL_RenderFillRect(BearEngine->GetRenderer(), &d);
-        SDL_SetRenderDrawBlendMode(BearEngine->GetRenderer(), SDL_BLENDMODE_BLEND);
-        #else
+
         textureMap[l][tilePosition.y][tilePosition.x]->Bind();
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
         RenderHelp::DrawSquareColor(Rect(tileOffset.x,tileOffset.y,tileSize.x,tileSize.y),0,0,0,0);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         RenderTile(  tileOffset.x, tileOffset.y, tileMap[l][y][x]);
         TargetTexture::UnBind();
-        #endif // RENDER_OPENGL
-
-
     }
 }
 
@@ -313,13 +277,6 @@ void SmartTileset::Update(float dt){
             }
         }
     }
-    #ifndef RENDER_OPENGL
-    if (g_input.OnScreenResize()){
-        MakeMap();
-    }
-    #endif // RENDER_OPENGL
-
-
 }
 
 
@@ -332,20 +289,10 @@ void SmartTileset::RenderLayer(int layer,bool showBoundary){
             canvasArea.x = (x * canvasArea.w) ;
             canvasArea.y = (y * canvasArea.h) ;
             if (Collision::IsColliding(Camera::pos,canvasArea)){
-                #ifndef RENDER_OPENGL
-                SDL_Rect dimensions2;
-                double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
-                double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
 
-                dimensions2.h = canvasArea.w*scaleRatioH;
-                dimensions2.w = canvasArea.h*scaleRatioW;
-                dimensions2.x = (canvasArea.x - Camera::pos.x)*scaleRatioW+ ScreenManager::GetInstance().GetOffsetW();
-                dimensions2.y = (canvasArea.y - Camera::pos.y)*scaleRatioH+ ScreenManager::GetInstance().GetOffsetH();
-                SDL_RenderCopyEx(BearEngine->GetRenderer(), textureMap[layer][y][x], nullptr, &dimensions2, 0, NULL, SDL_FLIP_NONE );
-                #else
                 if (textureMap[layer][y][x])
                     textureMap[layer][y][x]->Render(Point(canvasArea.x - Camera::pos.x,canvasArea.y - Camera::pos.y));
-                #endif // RENDER_OPENGL
+
                 if (showBoundary)
                     RenderHelp::DrawSquareColor(Rect(canvasArea.x - Camera::pos.x,canvasArea.y - Camera::pos.y,canvasArea.w,canvasArea.h),0,0,255,255,true);
             }

@@ -559,4 +559,4 @@ void Light::Render(Point pos){
 
 }
 
-#endif // RENDER_OPENGL
+#endif

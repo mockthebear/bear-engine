@@ -75,20 +75,6 @@ class Test_TargetTexture: public State{
             targ.Bind();
             background.Render(0,0,45);
 
-            #ifdef RENDER_OPENGL
-            glLoadIdentity();
-            glTranslatef(4,4, 0.0f);
-
-            glBegin( GL_QUADS );
-                glColor4ub( 255,255,120,240 );
-                glVertex2f( 0,0 );
-                glVertex2f(  32, 0 );
-                glVertex2f( 32,32 );
-                glVertex2f( 0,  32 );
-            glEnd();
-
-            #endif // RENDER_OPENGL
-
             RenderHelp::DrawCircleColor(Point(400-64,400 - 64),32,255,0,255,255);
             targ.UnBind();
 

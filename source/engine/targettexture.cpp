@@ -18,14 +18,14 @@ bool TargetTexture::Bind(){
     glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
     Point gameCanvas = ScreenManager::GetInstance().GetGameSize();
 
-    #ifdef RENDER_OPENGL
+
     glViewport(0, 0, size_w, size_h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0, size_w, 0, size_h, -1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    #endif // RENDER_OPENGL
+
 
 
     return true;

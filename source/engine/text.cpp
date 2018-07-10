@@ -242,10 +242,7 @@ Text::~Text(){}
 
 void Text::Close(){
     if (texture){
-        #ifndef RENDER_OPENGL
-        SDL_DestroyTexture( texture );
-        texture = nullptr;
-        #endif // RENDER_OPENGL
+
         //
         isWorking = false;
         font = nullptr;
@@ -277,23 +274,7 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
         if (!texture){
             RemakeTexture();
         }
-        #ifndef RENDER_OPENGL
-        SDL_Rect dimensions2;
-        double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
-        double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
-        dimensions2.x = box.x*scaleRatioW+cameraX*scaleRatioW+ ScreenManager::GetInstance().GetOffsetW();
-        dimensions2.y = box.y*scaleRatioH+cameraY*scaleRatioH;
-        dimensions2.h = box.h*scaleRatioH*scaleY;
-        dimensions2.w = box.w*scaleRatioW*scaleY;
 
-
-        if (texture){
-            SDL_SetTextureAlphaMod(texture,alpha);
-            if (SDL_RenderCopyEx(BearEngine->GetRenderer(),texture,nullptr,&dimensions2,static_cast<double>(angle),nullptr,SDL_FLIP_NONE)){
-                RemakeTexture();
-            }
-        }
-        #else
         if (!texture){
             RemakeTexture();
             if (!texture){
@@ -308,7 +289,7 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
         Painter::RenderTexture(texture.get(),m_renderData);
 
         DebugHelper::DisplayGlError("Text::Render");
-        #endif
+
     }else if (texturespr){
         Point p = texturespr->Render(text,m_renderData.position.x,m_renderData.position.y,m_renderData.color[3]*255);
         m_renderData.clip = Rect(0.0f,0.0f,p.x,p.y);
@@ -418,19 +399,7 @@ void Text::RemakeTexture(bool Destory){
     }
 
     if (surf){
-        #ifndef RENDER_OPENGL
-        if (aliasing)
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-        texture = SDL_CreateTextureFromSurface(BearEngine->GetRenderer(),surf);
-        Uint32 format;
-        int acess,w,h;
-        SDL_QueryTexture(texture, &format,&acess,&w,&h);
-        box.h=h;
-        box.w=w;
-        if (aliasing)
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
-        SDL_FreeSurface(surf);
-        #else
+
         BearTexture *b2 = RenderHelp::SurfaceToTexture(surf,aliasing);
         SDL_FreeSurface(surf);
         if (b2){
@@ -441,7 +410,7 @@ void Text::RemakeTexture(bool Destory){
             });
             m_renderData.clip = Rect(0,0,texture->size_w,texture->size_h);
         }
-        #endif // RENDER_OPENGL
+
     }else{
         bear::out << "[Text:RemakeTexture] Surface not loaded "<<SDL_GetError()<<" ("<<text<<")\n";
     }

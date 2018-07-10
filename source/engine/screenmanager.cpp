@@ -176,18 +176,7 @@ SDL_Renderer* ScreenManager::StartRenderer(){
 }
 
 void ScreenManager::RenderPresent(){
-    #ifndef RENDER_OPENGL
 
-    if (m_defaultScreen){
-        SetRenderTarget(m_defaultScreen);
-    }
-    int w = ConfigManager::GetInstance().GetScreenW();
-    int h = ConfigManager::GetInstance().GetScreenH();
-    RenderHelp::DrawSquareColorA(w,0,w/2.0,h + w/2.0,0,0,0,255);
-    RenderHelp::DrawSquareColorA(-w/2.0,0,w/2.0,h + w/2.0,0,0,0,255);
-    RenderHelp::DrawSquareColorA(-w/2.0,h,w*2,h/2.0,0,0,0,255);
-    SDL_RenderPresent(m_renderer);
-    #else
     if (postProcess){
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glLoadIdentity();
@@ -223,15 +212,13 @@ void ScreenManager::RenderPresent(){
     }
     glFlush();
     SDL_GL_SwapWindow(m_window);
-    #endif // RENDER_OPENGL
+
 }
 
 void ScreenManager::ResetViewPort(){
     Painter::ResetViewPort(m_originalScreen, m_screen);
 }
 void ScreenManager::PreRender(){
-    #ifdef RENDER_OPENGL
-
     if (postProcess){
         glViewport(shake.x,shake.y,m_screen.x, m_screen.y);
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -242,29 +229,10 @@ void ScreenManager::PreRender(){
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         glClearColor(ClearColor[0],ClearColor[1],ClearColor[2],ClearColor[3]);
     }
-    #else
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-        glClearColor(ClearColor[0],ClearColor[1],ClearColor[2],ClearColor[3]);
-    #endif // RENDER_OPENGL
 }
 
 void ScreenManager::Render(){
-    #ifndef RENDER_OPENGL
-    if (m_defaultScreen)
-        SetRenderTarget(nullptr);
-    if (m_defaultScreen){
-        //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"1");
-        SDL_SetRenderDrawColor(m_renderer, 0,0,0, 0);
-        SDL_RenderClear( m_renderer );
-        SDL_Rect dimensions2;
-        dimensions2.x = m_offsetScreen.x;
-        dimensions2.y = m_offsetScreen.y;
-        dimensions2.h = m_originalScreen.y*m_scaleRatio.y;
-        dimensions2.w = m_originalScreen.x*m_scaleRatio.x;
-        SDL_RenderCopy(m_renderer,m_defaultScreen,nullptr,&dimensions2);
-        //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
-    }
-    #endif // RENDER_OPENGL
+
 }
 
 void ScreenManager::NotifyResized(){

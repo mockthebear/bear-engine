@@ -404,19 +404,9 @@ void Sprite::SetClip(int x, int y,int w,int h){
 
 void Sprite::Render(PointInt pos,double angle){
     if (IsLoaded()){
-        #ifndef RENDER_OPENGL
-        double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
-        double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
-        dimensions2.x = pos.x*scaleRatioW + ScreenManager::GetInstance().GetOffsetW();
-        dimensions2.y = pos.y*scaleRatioH + ScreenManager::GetInstance().GetOffsetH();
-        dimensions2.h = clipRect.h*scaleRatioH*scaleY;
-        dimensions2.w = clipRect.w*scaleRatioW*scaleX;
-        SDL_RenderCopyEx(BearEngine->GetRenderer(),textureShred.get(),&clipRect,&dimensions2,(angle),hasCenter ? &center : NULL,sprFlip);
-        #else
         m_renderData.position = Point(pos);
         m_renderData.angle = angle;
         Painter::RenderTexture(textureShred.get(),m_renderData);
-        #endif // RENDER_OPENGL
     }
 
 }

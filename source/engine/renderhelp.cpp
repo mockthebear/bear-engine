@@ -38,7 +38,7 @@ BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod
 }
 
 void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8_t b,uint8_t a,int sides){
-    #ifdef RENDER_OPENGL
+
     glLoadIdentity();
     glTranslatef(p1.x, p1.y, 0.0f);
 
@@ -53,12 +53,12 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
          glVertex2f( cos(angle) *  radius, sin(angle) *  radius);
       }
     glEnd();
-    #endif // RENDER_OPENGL
+
 }
 
 
 void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline,float angle){
-    #ifdef RENDER_OPENGL
+
     glDisable(GL_TEXTURE_2D);
     glLoadIdentity();
     glTranslatef(box.x, box.y, 0.0f);
@@ -74,45 +74,20 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
         glVertex2f( 0.0f,  box.h );
     glEnd();
     DebugHelper::DisplayGlError("DrawSquareColor");
-    #else
 
-    #endif
 
 }
 
 void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thicc){
-    #ifndef RENDER_OPENGL
-    GLfloat line[] = {
-                     0,0,0,
-                     100,100,0
-                  };
-
-    GLfloat colors[] = {
-                            1.0f, 0.0f, 0.0f, 1.0f,
-                            0.0f, 1.0f, 0.0f, 1.0f,
-                            0.0f, 0.0f, 1.0f, 1.0f
-                        };
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    //glShadeModel(GL_SMOOTH);
-    //glVertexPointer(3, GL_FLOAT, 0, line);
-    glColorPointer(4, GL_FLOAT, 0, colors);
-
-    glClear(GL_COLOR_BUFFER_BIT);
-    glDrawArrays(GL_LINES, 0, 2);
-    glFlush();
-    #else
-        glLoadIdentity();
-        glLineWidth(thicc);
-        glColor4ub( r,g,b,a );
-        glBegin(GL_LINES);
-            glVertex3f(p1.x, p1.y, 0.0f);
-            glVertex3f(p2.x, p2.y, 0.0f);
-        glEnd();
-        glLineWidth(1);
-        DebugHelper::DisplayGlError("DrawLineColor");
-    #endif
-
+    glLoadIdentity();
+    glLineWidth(thicc);
+    glColor4ub( r,g,b,a );
+    glBegin(GL_LINES);
+        glVertex3f(p1.x, p1.y, 0.0f);
+        glVertex3f(p2.x, p2.y, 0.0f);
+    glEnd();
+    glLineWidth(1);
+    DebugHelper::DisplayGlError("DrawLineColor");
 }
 
 uint8_t RenderHelp::GetR(uint32_t r){

@@ -184,13 +184,9 @@ class Text{
         /**
             *Empty constructor is almost empty
         */
-        #ifndef RENDER_OPENGL
-        Text():bg({100,100,120,255}),fontfile(""),text(""),style(TEXT_SOLID),size()
-        color({255,255,255,255}),font(nullptr),texture(nullptr),texturespr(nullptr),isWorking(false),aliasing(false),keepAlive(false){};
-        #else
+
         Text():bg({100,100,120,255}),fontfile(""),text(""),style(TEXT_SOLID),size(),
         color({255,255,255,255}),font(nullptr),isWorking(false),texture(nullptr),aliasing(TEXTURE_DEFAULT),texturespr(nullptr),keepAlive(false),emptyText(true){};
-        #endif // RENDER_OPENGL
 
 
         void SetKeepAlive(bool set){
@@ -267,11 +263,8 @@ class Text{
         }
 
         void InternalSetFont(std::string fnt);
-        #ifndef RENDER_OPENGL
-        void SetAliasign(bool al){
-        #else
+
         void SetAliasign(TextureLoadMethod al){
-        #endif // RENDER_OPENGL
             aliasing = al;
             RemakeTexture();
 
@@ -364,13 +357,10 @@ class Text{
 
         TTF_Font* font;
         bool isWorking;
-        #ifndef RENDER_OPENGL
-        SDL_Texture* texture;
-        bool aliasing;
-        #else
+
         std::shared_ptr<BearTexture> texture;
         TextureLoadMethod aliasing;
-        #endif // RENDER_OPENGL
+
         CustomFont *texturespr;
         bool keepAlive,emptyText;
 
