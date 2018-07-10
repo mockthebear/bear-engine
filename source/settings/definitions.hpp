@@ -42,6 +42,8 @@
 */
 //#define DISABLE_LUAINTERFACE
 
+#define LUA_INCLUDE "../luasystem/lua.hpp"
+
 
 
 //#define DISABLE_SOCKET
@@ -81,7 +83,7 @@
 #define BEAR_SDL_IMAGE_CONST_INIT IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF
 #define SDL_LIB_HEADER <SDL.h>
 #define SDL_TTF_LIB_HEADER <SDL_ttf.h>
-#define LUA_INCLUDE <lua.hpp>
+
 
 
 #elif __EMSCRIPTEN__
@@ -91,7 +93,6 @@
 
 #define SDL_LIB_HEADER <SDL2/SDL.h>
 #define SDL_TTF_LIB_HEADER <SDL_ttf.h>
-#define LUA_INCLUDE <stdio.h>
 #define DISABLE_LUAINTERFACE
 #define DISABLE_THREADPOOL
 
@@ -101,14 +102,14 @@
 
 #define SDL_LIB_HEADER <SDL2/SDL.h>
 #define SDL_TTF_LIB_HEADER "SDL2/SDL_ttf.h"
-#define LUA_INCLUDE <lua.hpp>
+
+
 #else
 #define BEAR_SDL_CONST_INIT SDL_INIT_EVERYTHING
 #define BEAR_SDL_IMAGE_CONST_INIT IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF
 
 #define SDL_LIB_HEADER "SDL2/SDL.h"
 #define SDL_TTF_LIB_HEADER "SDL2/SDL_ttf.h"
-#define LUA_INCLUDE <lua5.1/lua.hpp>
 
 #endif
 

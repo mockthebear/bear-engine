@@ -22,7 +22,6 @@
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
-					<Add option="-llua51" />
 					<Add option="-lMinGW32" />
 					<Add option="-lSDL2main" />
 					<Add option="-lSDL2" />
@@ -52,10 +51,7 @@
 					<Add option="-DRENDER_OPENGL" />
 				</Compiler>
 				<Linker>
-					<Add option="-pg" />
-					<Add option="-Wl,-Bstatic" />
-					<Add option="-llua5.1" />
-					<Add option="-Wl,-Bdynamic" />
+					<Add option="-pg -lgmon" />
 					<Add option="-ldl" />
 					<Add option="-lSDL2main" />
 					<Add option="-lSDL2" />
@@ -85,7 +81,6 @@
 					<Add option="-lenet" />
 					<Add option="-pthread" />
 					<Add option="-Wl,-Bdynamic" />
-					<Add option="-llua51" />
 					<Add option="-lMinGW32" />
 					<Add option="-lSDL2main" />
 					<Add option="-lSDL2" />
@@ -113,10 +108,8 @@
 					<Add option="-DRENDER_OPENGL" />
 				</Compiler>
 				<Linker>
+					<Add option="-pg -lgmon" />
 					<Add option="-pg" />
-					<Add option="-Wl,-Bstatic" />
-					<Add option="-llua5.1" />
-					<Add option="-Wl,-Bdynamic" />
 					<Add option="-ldl" />
 					<Add option="-lSDL2main" />
 					<Add option="-lSDL2" />
@@ -239,6 +232,128 @@
 		<Unit filename="input/touch.hpp" />
 		<Unit filename="input/touchkeys.cpp" />
 		<Unit filename="input/touchkeys.hpp" />
+		<Unit filename="luasystem/lua.hpp" />
+		<Unit filename="luasystem/lua/lapi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lapi.h" />
+		<Unit filename="luasystem/lua/lauxlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lauxlib.h" />
+		<Unit filename="luasystem/lua/lbaselib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lbitlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lcode.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lcode.h" />
+		<Unit filename="luasystem/lua/lcorolib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lctype.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lctype.h" />
+		<Unit filename="luasystem/lua/ldblib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/ldebug.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/ldebug.h" />
+		<Unit filename="luasystem/lua/ldo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/ldo.h" />
+		<Unit filename="luasystem/lua/ldump.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lfunc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lfunc.h" />
+		<Unit filename="luasystem/lua/lgc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lgc.h" />
+		<Unit filename="luasystem/lua/linit.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/liolib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/llex.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/llex.h" />
+		<Unit filename="luasystem/lua/llimits.h" />
+		<Unit filename="luasystem/lua/lmathlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lmem.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lmem.h" />
+		<Unit filename="luasystem/lua/loadlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lobject.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lobject.h" />
+		<Unit filename="luasystem/lua/lopcodes.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lopcodes.h" />
+		<Unit filename="luasystem/lua/loslib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lparser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lparser.h" />
+		<Unit filename="luasystem/lua/lstate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lstate.h" />
+		<Unit filename="luasystem/lua/lstring.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lstring.h" />
+		<Unit filename="luasystem/lua/lstrlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/ltable.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/ltable.h" />
+		<Unit filename="luasystem/lua/ltablib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/ltm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/ltm.h" />
+		<Unit filename="luasystem/lua/lua.h" />
+		<Unit filename="luasystem/lua/lua.hpp" />
+		<Unit filename="luasystem/lua/luaconf.h" />
+		<Unit filename="luasystem/lua/lualib.h" />
+		<Unit filename="luasystem/lua/lundump.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lundump.h" />
+		<Unit filename="luasystem/lua/lvm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lvm.h" />
+		<Unit filename="luasystem/lua/lzio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="luasystem/lua/lzio.h" />
 		<Unit filename="luasystem/luacaller.cpp" />
 		<Unit filename="luasystem/luacaller.hpp" />
 		<Unit filename="luasystem/luagamestate.cpp" />
