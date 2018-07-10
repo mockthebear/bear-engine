@@ -64,8 +64,8 @@ void LineGraph::AddData(float dataValue){
             max = std::max(it,max);
         }
     }
-    tmax = Text(utils::format("%.2f",max),14,{255,255,255,255});
-    tmin = Text(utils::format("%.2f",min),14,{255,255,255,255});
-    tlast = Text(utils::format("%.2f",dataValue),14,{255,255,255,255});
+    tmax = Text(utils::format("%f",max),14,{255,255,255,255});
+    tmin = Text(utils::format("%f",min),14,{255,255,255,255});
+    tlast = Text(utils::format("%f",dataValue),14,{255,255,255,255});
 
 }

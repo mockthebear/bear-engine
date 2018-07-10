@@ -16,9 +16,10 @@ class Test_RenderSpeed: public State{
         Test_RenderSpeed():State(){
 
             requestQuit = requestDelete = false;
-            duration = 10.0f;
+            duration = 20.0f;
             state = 0;
             lg = LineGraph(Point(500,200),200);
+            m_renderTimer = LineGraph(Point(500,200),200);
             tilesCount = Text("ui/UnB-Office_Regular.ttf",22,TEXT_SOLID,"a",{255,33,180});
             tilesCount.RemakeTexture();
 
@@ -50,12 +51,13 @@ class Test_RenderSpeed: public State{
                 state++;
                 if (state % 10 == 0 && state > 0){
                     lg.AddData(ScreenManager::GetInstance().GetFps());
-                    std::string txt = utils::format("%d  : %f",state, renderDuration / (float)state );
+                    m_renderTimer.AddData(renderDuration / (float)state);
+                    std::string txt = utils::format("FPS: %f  : Time to render one call: %f",ScreenManager::GetInstance().GetFps(), renderDuration / (float)state );
                     tilesCount.SetText(txt);
 
                 }
                 if (state >= 800){
-                    requestDelete = true;
+                    //requestDelete = true;
                 }
             }
 
@@ -70,7 +72,9 @@ class Test_RenderSpeed: public State{
                 }
             }
             renderDuration = sw.Get()/1000.0f;
+
             lg.Render(Point(32,32));
+            m_renderTimer.Render(Point(32,235));
 
             tilesCount.Render(Point(64,64));
 
@@ -85,6 +89,7 @@ class Test_RenderSpeed: public State{
         float renderDuration;
         Stopwatch sw;
         LineGraph lg;
+        LineGraph m_renderTimer;
         Sprite tiles;
         Text tilesCount;
         int state;
