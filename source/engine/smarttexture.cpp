@@ -76,8 +76,8 @@ void SmartTexture::Render(PointInt pos,float angle,Point scale){
     GLfloat quadHeight = t->size_h ;
 
 
-    texRight = (  t->size_w ) / (float)t->w;
-    texBottom = ( t->size_h ) / (float)t->h;
+    texRight = (  t->size_w ) / (float)t->texture_w;
+    texBottom = ( t->size_h ) / (float)t->texture_h;
 
     glScalef(scale.x,scale.y, 1.0f);
     glTranslatef(

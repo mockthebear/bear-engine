@@ -45,10 +45,6 @@ class RenderHelp{
 
         static BearTexture* SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod aliasing=TEXTURE_LINEAR);
 
-
-        static SmartTexture *GeneratePatternTexture(int x,int y,int width,int height,std::function<Uint32 (Uint32 , int, int)> F);
-        static SmartTexture *GeneratePatternTexture(int x,int y,int width,int height);
-
         /**
             * Given the components r,g,b,a return the color in RGBA format
             @param r red
@@ -90,74 +86,8 @@ class RenderHelp{
         */
         static uint8_t GetB(uint32_t c);
 
-        /**
-            Given an color in ARGB format, get its Alpha componet
-            @param c Color
-            @return component
-        */
         static uint8_t GetA(uint32_t c);
 
-        /**
-            Given an rect, its drawn relative to the camera and an offset, the colission box
-            @param box The rect/colission box
-            @param offset any offset in Point format
-            @param r_color Red
-            @param g_color Green
-            @param b_color Blue
-            @param alpha Alpha, default = 100.
-        */
-        /*static void DrawCollisionBox(Rect &box,Point offset,int r_color,int g_color,int b_color,int alpha=100){
-            RenderHelp::DrawSquareColorA(box.x-Camera::pos.x+offset.x,box.y-Camera::pos.y+offset.y,box.w,box.h,r_color,g_color,b_color,alpha);
-        }
-        static void DrawCollisionBox(Rect &box,int r_color,int g_color,int b_color,int alpha=100){
-            RenderHelp::DrawSquareColorA(box.x-Camera::pos.x,box.y-Camera::pos.y,box.w,box.h,r_color,g_color,b_color,alpha);
-        }
-        template<class Te> static void DrawCollisionBox2(Te &cb,Point offset,int r_color,int g,int b,int alpha=100){
-            int maxSize = cb.GetSize();
-
-            SmartTexture T(0,0,maxSize,maxSize,true);
-            Uint32 * pixels = T.GetPixels();
-            for (int x=0;x<T.getW();x++){
-                for (int y=0;y<T.getH();y++){
-                    Rect r;
-                    r.x = x+cb.x-T.getW()/2;
-                    r.y = y+cb.y-T.getH()/2;
-                    r.h = 1;
-                    r.w = 1;
-                    if (Collision::IsColliding(r,cb)){
-                        pixels[x + (y*T.getW())] = RenderHelp::FormatRGBA(r_color,g,b,alpha);
-                    }else{
-                        pixels[x + (y*T.getW())] = RenderHelp::FormatRGBA(0,0,0,0);
-                    }
-                }
-            }
-            T.UpdateTexture();
-            T.Render(PointInt(cb.x-Camera::pos.x-T.getW()/2 + offset.x,cb.y-Camera::pos.y-T.getW()/2 + offset.y));
-        };
-        template<class Te> static void DrawCollisionBox3(Te &cb,float angle,Point offset,int r_color,int g,int b,int alpha=100){
-            int maxSize = cb.GetSize()*4.0;
-
-            SmartTexture T(0,0,maxSize,maxSize,true);
-            Uint32 * pixels = T.GetPixels();
-            for (int x=0;x<T.getW();x++){
-                for (int y=0;y<T.getH();y++){
-                    Rect r;
-                    r.x = x+cb.x-T.getW()/2;
-                    r.y = y+cb.y-T.getH()/2;
-                    r.h = 1;
-                    r.w = 1;
-                    if (Collision::IsColliding(r,cb,0,angle)){
-                        pixels[x + (y*T.getW())] = RenderHelp::FormatRGBA(r_color,g,b,alpha);
-                    }else{
-                        pixels[x + (y*T.getW())] = RenderHelp::FormatRGBA(0,0,0,0);
-                    }
-                }
-            }
-            T.UpdateTexture();
-            T.Render(PointInt(cb.x-Camera::pos.x-T.getW()/2 + offset.x,cb.y-Camera::pos.y-T.getW()/2 + offset.y));
-        };
-
-        */
 
 };
 
