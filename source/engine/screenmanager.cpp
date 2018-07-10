@@ -19,7 +19,7 @@ ScreenManager::ScreenManager(){
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
     postProcess = true;
-    m_ScreenRationMultiplier = 1.0f;
+    m_ScreenRationMultiplier = 4.0f;
     ShakingDuration = 0;
     shaking = 0;
     shaking = false;
@@ -66,70 +66,19 @@ void ScreenManager::NotyifyScreenClosed(){
 
 bool ScreenManager::SetupOpenGL(){
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	SDL_GL_SetSwapInterval(0);
-
-    #ifdef RENDER_OPENGL
-
-    glewExperimental = GL_TRUE;
-    GLenum glewError = glewInit();
-    if( glewError != GLEW_OK )
-    {
-        bear::out << "Error initializing GLEW!\n";
+    if (!Painter::SetupEnvoriment(this)){
+        return false;
     }
 
-
-    DebugHelper::DisplayGlError("1");
-    //glDebugMessageCallback(openglErrF, nullptr);
-
-
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
-	SDL_GL_SwapWindow(m_window);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glViewport( 0.f, 0.f, m_originalScreen.x, m_originalScreen.y );
-	DebugHelper::DisplayGlError("2");
-    glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-    glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-
-
-    glPushMatrix();
-    glClearColor( 1.f, 1.f, 1.f, 1.f );
-    DebugHelper::DisplayGlError("3");
     if (postProcess){
         StartPostProcessing();
     }
+
     SDL_GL_SetSwapInterval(0);
 
-    GLint maxSize;
-	glGetIntegerv (GL_MAX_TEXTURE_SIZE, &maxSize);
+    int maxSize = Painter::GetMaxTextureSize();
     m_maxTextureSize.x = maxSize;
     m_maxTextureSize.y = maxSize;
-
-
-    #elif RENDER_OPENGLES
-
-    SDL_GL_SwapWindow(m_window);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_AL
-    SDL_GL_SetSwapInterval(0);
-
-    #endif // RENDER_OPENGL
-
-
-
     return true;
 }
 
@@ -278,14 +227,7 @@ void ScreenManager::RenderPresent(){
 }
 
 void ScreenManager::ResetViewPort(){
-    #ifdef RENDER_OPENGL
-    glViewport(0,0,m_screen.x, m_screen.y);
-    glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-    glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-    #endif // RENDER_OPENGL
+    Painter::ResetViewPort(m_originalScreen, m_screen);
 }
 void ScreenManager::PreRender(){
     #ifdef RENDER_OPENGL
@@ -366,14 +308,7 @@ void ScreenManager::SetWindowSize(int w,int h){
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
 
-
-
-    glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-    glOrtho( 0.0, w,h, 0.0, 1.0, -1.0 );
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-
+    ResetViewPort();
 }
 
 void ScreenManager::ToggleFullScreen(){
@@ -475,6 +410,7 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
 void ScreenManager::SetScreenName(std::string name){
     SDL_SetWindowTitle(m_window, name.c_str());
 }
+
 void ScreenManager::Update(float dt){
     if (shaking){
         ShakingDuration -= dt;

@@ -22,6 +22,8 @@ enum TextureLoadMethodEnum{
     TEXTURE_TRILINEAR,
 };
 
+class ScreenManager;
+
 class TextureLoadMethod{
     public:
     static TextureLoadMethod DefaultLoadingMethod;
@@ -126,4 +128,11 @@ class Painter{
         }
         return num;
     }
+
+    private:
+        friend class ScreenManager;
+        static bool SetupEnvoriment(ScreenManager *sm);
+        static int GetMaxTextureSize();
+        static void ResetViewPort(PointInt originalSize, PointInt newSize);
+
 };

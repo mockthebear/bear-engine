@@ -1,6 +1,8 @@
 #ifdef RENDER_OPENGL
 #include "painters.hpp"
 #include "../bear.hpp"
+#include "../screenmanager.hpp"
+#include "../../framework/debughelper.hpp"
 
 bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
     if (!t_texture){
@@ -91,6 +93,64 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
 }
 
 
+bool Painter::SetupEnvoriment(ScreenManager *sm){
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+	SDL_GL_SetSwapInterval(0);
+
+    glewExperimental = GL_TRUE;
+    GLenum glewError = glewInit();
+    if( glewError != GLEW_OK )
+    {
+        bear::out << "Error initializing GLEW!\n";
+        return false;
+    }
+
+
+    DebugHelper::DisplayGlError("1");
+
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+	SDL_GL_SwapWindow(sm->m_window);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    PointInt originalScreen = sm->GetGameSize();
+	glViewport( 0.f, 0.f, originalScreen.x, originalScreen.y );
+	DebugHelper::DisplayGlError("2");
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    glOrtho( 0.0, originalScreen.x, originalScreen.y, 0.0, 1.0, -1.0 );
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
+
+    glPushMatrix();
+    glClearColor( 1.f, 1.f, 1.f, 1.f );
+    DebugHelper::DisplayGlError("3");
+
+    return true;
+
+}
+
+int Painter::GetMaxTextureSize(){
+    int maxSize;
+	glGetIntegerv (GL_MAX_TEXTURE_SIZE, &maxSize);
+    return maxSize;
+}
+
+void Painter::ResetViewPort(PointInt originalSize, PointInt newSize){
+    glViewport(0,0,newSize.x, newSize.y);
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    glOrtho( 0.0, originalSize.x, originalSize.y, 0.0, 1.0, -1.0 );
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
+}
 
 #endif // RENDER_OPENGL
