@@ -19,7 +19,7 @@ class Test_TargetTexture: public State{
             }
         };
         void Begin(){
-            m_shader.Compile("engine/vertex.glvs","engine/lens.glfs");
+            //m_shader.Compile("engine/vertex.glvs","engine/lens.glfs");
             tileN = 174;
             tileAnim = 1.0f;
             bear::out << "Test target\n";
@@ -78,7 +78,7 @@ class Test_TargetTexture: public State{
             RenderHelp::DrawCircleColor(Point(400-64,400 - 64),32,255,0,255,255);
             targ.UnBind();
 
-            m_shader.Bind();
+            /*m_shader.Bind();
             Point p = g_input.GetMouse();
             p.y = p.y/(float)SCREEN_SIZE_H;
             p.x = p.x/(float)SCREEN_SIZE_W;
@@ -86,7 +86,7 @@ class Test_TargetTexture: public State{
             m_shader.SetUniform<Point>("Cent2d",p);
             targ.Render(Point(32 + movement,32));
 
-            m_shader.Unbind();
+            m_shader.Unbind();*/
             RenderHelp::DrawCircleColor(Point(32,32),32,255,255,255,255);
 
             tset->RenderLayer(0);

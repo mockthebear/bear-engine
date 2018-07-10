@@ -18,7 +18,7 @@ ScreenManager::~ScreenManager(){
 ScreenManager::ScreenManager(){
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
-    postProcess = true;
+    postProcess = false;
     m_ScreenRationMultiplier = 4.0f;
     ShakingDuration = 0;
     shaking = 0;
@@ -160,7 +160,7 @@ SDL_Window* ScreenManager::StartScreen(std::string name){
 }
 
 SDL_Renderer* ScreenManager::StartRenderer(){
-    m_renderer = SDL_CreateRenderer( m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+    /*m_renderer = SDL_CreateRenderer( m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
     SDL_RendererInfo info;
     SDL_GetRendererInfo(m_renderer,&info);
     Console::GetInstance().AddText(utils::format("Driver: %s",info.name));
@@ -173,11 +173,13 @@ SDL_Renderer* ScreenManager::StartRenderer(){
         SDL_SetRenderDrawBlendMode(m_renderer,SDL_BLENDMODE_BLEND);
     }
     return m_renderer;
+    */
+    return nullptr;
 }
 
 void ScreenManager::RenderPresent(){
 
-    if (postProcess){
+    /*if (postProcess){
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glLoadIdentity();
         glClearColor(ClearColor[0],ClearColor[1],ClearColor[2],ClearColor[3]);
@@ -209,7 +211,7 @@ void ScreenManager::RenderPresent(){
             storedShader.Unbind();
         }
         DebugHelper::DisplayGlError("RenderPresent");
-    }
+    }*/
     glFlush();
     SDL_GL_SwapWindow(m_window);
 

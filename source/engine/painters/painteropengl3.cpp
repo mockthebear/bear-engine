@@ -13,6 +13,94 @@
 #include "../../framework/debughelper.hpp"
 
 bool Painter::m_shaderBuilt = false;
+Shader Painter::textureShader;
+Shader Painter::polygonShader;
+
+void Painter::DrawSquare(Rect box,int r,int g,int b,int a){
+    static GLuint VAO;
+    static GLuint VBO;
+    static bool made = false;
+
+
+    glm::vec2 size(box.w,box.h);
+    glm::mat4 model(1.0f);
+    glm::mat4 projection;
+
+
+    GLfloat vertices[] = {
+        // Pos      // Tex
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+    };
+
+    if (!made){
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        glBindVertexArray(VAO);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+        made = true;
+
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    bool noShader = Shader::GetCurrentShaderId() == 0;
+
+    if (noShader){
+        polygonShader.Bind();
+    }
+
+
+    Point scale(1,1);
+
+    model = glm::translate(model, glm::vec3(box.x, box.y, 0.0f));
+
+    model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
+    model = glm::rotate(model, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
+
+    model = glm::scale(model, glm::vec3(size.x * scale.x,size.y * scale.y, 1.0f));
+
+    Point scr = ScreenManager::GetInstance().GetGameSize();
+    projection = glm::ortho(0.0f, (float)scr.x,  (float)scr.y, 0.0f, -1.0f, 1.0f);
+
+
+
+    unsigned int transformLoc = glGetUniformLocation(Shader::GetCurrentShaderId(), "model");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+    transformLoc = glGetUniformLocation(Shader::GetCurrentShaderId(), "projection");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+    ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"spriteColor",BearColor(r/255.0f,g/255.0f,b/255.0f,a/255.0f));
+
+    glBindVertexArray(VAO);
+    //if (outline){
+    //    glDrawArrays(GL_LINE_LOOP, 0, 8);
+    //}else{
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
+    //}
+    glBindVertexArray(0);
+
+    if (noShader){
+        polygonShader.Unbind();
+    }
+}
 
 bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
     if (!t_texture){
@@ -109,6 +197,7 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
     transformLoc = glGetUniformLocation(textureShader.GetCurrentShaderId(), "projection");
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
+    BearColor recolor(t_data.color[0],t_data.color[1],t_data.color[2],t_data.color[3]);
     ShaderSetter<BearColor>::SetUniform(textureShader.GetCurrentShaderId(),"spriteColor",recolor);
     ShaderSetter<int>::SetUniform(textureShader.GetCurrentShaderId(),"image",0);
 
@@ -122,7 +211,7 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
 
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture( GL_TEXTURE_2D, t->id );
+    glBindTexture( GL_TEXTURE_2D, t_texture->id );
 
     glBindVertexArray(VAO);
 

@@ -36,39 +36,24 @@ bool Shader::Create(){
     return true;
 }
 
-bool Shader::LoadVertexShader(const char * shdr){
-    GLint status;
-    m_vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(m_vertexShader, 1, (const GLchar**)&shdr, NULL );
-	glCompileShader(m_vertexShader );
-	glGetShaderiv(m_vertexShader, GL_COMPILE_STATUS, &status );
-	if(!status){
-		ShaderError(m_vertexShader);
-		glDeleteShader( m_vertexShader );
-        return false;
-	}
-	glAttachShader(m_shaderId, m_vertexShader);
-	glDeleteShader( m_vertexShader );
-	m_vertexShader = 0;
-	return true;
-}
 
-bool Shader::LoadFragmentShader(const char * shdr){
+
+bool Shader::LoadShader(int mode,const char * shdr){
     GLint status;
-    m_fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(m_fragmentShader, 1, (const GLchar**)&shdr, NULL );
-	glCompileShader(m_fragmentShader );
-	glGetShaderiv( m_fragmentShader, GL_COMPILE_STATUS, &status );
+
+    GLuint thisShader = glCreateShader(mode);
+	glShaderSource(thisShader, 1, (const GLchar**)&shdr, NULL );
+	glCompileShader(thisShader );
+	glGetShaderiv( thisShader, GL_COMPILE_STATUS, &status );
 
 	if(!status){
-		ShaderError( m_fragmentShader );
-		glDeleteShader( m_fragmentShader );
+		ShaderError( thisShader );
+		glDeleteShader( thisShader );
         return false;
 	}
 
-	glAttachShader( m_shaderId, m_fragmentShader );
-	glDeleteShader( m_fragmentShader );
-	m_fragmentShader = 0;
+	glAttachShader( m_shaderId, thisShader );
+	glDeleteShader( thisShader );
 	return true;
 }
 
@@ -83,59 +68,40 @@ bool Shader::Link(){
     return true;
 }
 
-bool Shader::Compile(std::string vert,std::string frag){
+bool Shader::Compile(int type,std::string name){
 
     if( !GLEW_VERSION_2_1 ){
         bear::out << "OpenGL 2.1 not supported!\n";
         return false;
     }
 
-    GameFile file_vert;
-    GameFile file_frag;
+    GameFile file;
 
-    if (!file_vert.Open(vert,true)){
+    if (!file.Open(name,true)){
+        bear::out << "No such file\n";
         return false;
     }
 
-    if (!file_frag.Open(frag,true)){
-        file_vert.Close();
+    file.Cache();
+
+    if (m_shaderId == 0){
+        if (!Create()){
+
+            bear::out << "Failed to create\n";
+            file.Close();
+            return false;
+        }
+    }
+
+    const char* shaderSource = file.GetCache_Unsafe();
+
+    if (!LoadShader(type,shaderSource)){
+        file.Close();
+        bear::out << "Load error\n";
         return false;
     }
 
-    file_vert.Cache();
-    file_frag.Cache();
-
-    if (!Create()){
-        file_frag.Close();
-        file_vert.Close();
-        return false;
-    }
-
-    const char* shaderSource = file_vert.GetCache_Unsafe();
-
-    if (!LoadVertexShader(shaderSource)){
-        file_frag.Close();
-        file_vert.Close();
-        return false;
-    }
-
-    const char* shaderSource2 = file_frag.GetCache_Unsafe();
-
-    if (!LoadFragmentShader(shaderSource2)){
-        file_frag.Close();
-        file_vert.Close();
-        return false;
-    }
-
-    if (!Link()){
-        file_frag.Close();
-        file_vert.Close();
-        return false;
-    }
-
-    file_vert.Close();
-    file_frag.Close();
-
+    file.Close();
     return true;
 }
 
@@ -201,7 +167,7 @@ void Shader::ProgramError( GLuint program ){
 void Shader::ShaderError( GLuint shader ){
 	if(glIsShader( shader )){
 
-		int infoLogLength = 0;
+        int infoLogLength = 0;
 		int maxLength = infoLogLength;
 		glGetShaderiv( shader, GL_INFO_LOG_LENGTH, &maxLength );
 		char* infoLog = new char[ maxLength ];
@@ -214,7 +180,3 @@ void Shader::ShaderError( GLuint shader ){
 		delete[] infoLog;
 	}
 }
-
-
-
-

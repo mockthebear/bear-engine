@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
+#include "basetypes.hpp"
 #include "../framework/geometry.hpp"
 #include "bear.hpp"
 #include <string>
@@ -145,6 +146,17 @@ template<> struct ShaderSetter<float>{
     };
 };
 
+template<> struct ShaderSetter<BearColor>{
+    static bool SetUniform(GLuint shdr,const char *str,BearColor var){
+        GLint loc = glGetUniformLocation(shdr, str );
+        if (loc == -1){
+            return false;
+        }
+        glUniform4f(loc,var.r,var.g,var.b,var.a);
+        return true;
+    };
+};
+
 template<> struct ShaderSetter<SDL_Color>{
     static bool SetUniform(GLuint shdr,const char *str,SDL_Color var){
         GLint loc = glGetUniformLocation(shdr, str );
@@ -166,11 +178,10 @@ class Shader{
         void Close();
 
         bool Create();
-        bool LoadVertexShader(const char * shdr);
-        bool LoadFragmentShader(const char * shdr);
+        bool LoadShader(int type,const char * shdr);
         bool Link();
 
-        bool Compile(std::string vertexFilePath,std::string fragmentFilePath);
+        bool Compile(int type,std::string fragmentFilePath);
         bool Bind();
 
 
@@ -188,11 +199,9 @@ class Shader{
 
 
     private:
-
         void ProgramError( GLuint program );
         void ShaderError( GLuint shader );
 
         GLuint m_shaderId,m_fragmentShader,m_vertexShader;
 
 };
-

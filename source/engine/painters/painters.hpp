@@ -7,83 +7,13 @@
 
 #include SDL_LIB_HEADER
 
-#include "../libheader.hpp"
+
+#include "../basetypes.hpp"
 #include "../shadermanager.hpp"
 
-enum TextureLoadMethodEnum{
-    TEXTURE_DEFAULT,
-    TEXTURE_NEAREST,
-    TEXTURE_LINEAR,
-    TEXTURE_TRILINEAR,
-};
 
 class ScreenManager;
 
-class TextureLoadMethod{
-    public:
-    static TextureLoadMethod DefaultLoadingMethod;
-    TextureLoadMethod(){
-        mode = TEXTURE_NEAREST;
-    };
-    TextureLoadMethod(TextureLoadMethodEnum md){
-        mode = md;
-    };
-    void ApplyFilter(){
-        switch (mode){
-            case TEXTURE_NEAREST:
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-                break;
-            case TEXTURE_LINEAR:
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-                break;
-            case TEXTURE_TRILINEAR:
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-                break;
-            case TEXTURE_DEFAULT:
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-                break;
-        }
-    }
-    TextureLoadMethodEnum mode;
-};
-
-
-
-
-class BearTexture{
-    public:
-        BearTexture(){
-            id = 0;
-            texture_w = texture_h = 0;
-            size_w = size_h = 0;
-            textureMode = TEXTURE_NEAREST;
-        };
-        uint32_t DropTexture(){
-           uint32_t ret = id;
-           id = 0;
-           return ret;
-        }
-        void ClearTexture(){
-            uint32_t tex = DropTexture();
-            if (tex > 0)
-                glDeleteTextures(1, &tex);
-        }
-
-        BearTexture(uint32_t textureId,uint32_t imagewidth,uint32_t imageheight,uint32_t texturewidth,uint32_t textureheight,GLenum imgMode)
-        :id(textureId),texture_w(texturewidth),texture_h(textureheight),size_w(imagewidth),size_h(imageheight),textureMode(TEXTURE_NEAREST),mode(imgMode){};
-        uint32_t id;
-        uint32_t texture_w;
-        uint32_t texture_h;
-        uint32_t size_w;
-        uint32_t size_h;
-        TextureLoadMethod textureMode;
-        GLenum mode;
-
-};
 
 class RenderData{
     public:
@@ -137,6 +67,7 @@ class Painter{
         return num;
     }
 
+        static void DrawSquare(Rect box,int r,int g,int b,int a);
     private:
         friend class ScreenManager;
         static bool SetupEnvoriment(ScreenManager *sm);

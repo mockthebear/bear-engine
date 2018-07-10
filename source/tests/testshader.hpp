@@ -18,10 +18,10 @@ class Test_Shader: public State{
         void Begin(){
             bear::out << "Test shader\n";
             bear::out << "Compile an shader\n";
-            shdr.Compile("engine/vertex.glvs","engine/moq.glfs");
+            //shdr.Compile("engine/vertex.glvs","engine/moq.glfs");
             background = Sprite("data/wall.jpg");
 
-            m_shader.Compile("engine/vertex.glvs","engine/lens.glfs");
+            //m_shader.Compile("engine/vertex.glvs","engine/lens.glfs");
             ScreenManager::GetInstance().SetTopShader(m_shader);
         };
 
@@ -32,11 +32,11 @@ class Test_Shader: public State{
                 requestDelete = true;
             }
 
-            m_shader.Bind();
+            //m_shader.Bind();
             Point p = g_input.GetMouse();
             p.y = 1.0f - p.y/(float)SCREEN_SIZE_H;
             p.x = p.x/(float)SCREEN_SIZE_W;
-            m_shader.SetUniform<Point>("Cent2d",p);
+            //m_shader.SetUniform<Point>("Cent2d",p);
 
 
             shdr.Bind();
@@ -49,9 +49,9 @@ class Test_Shader: public State{
         void Render(){
 
 
-            shdr.Bind();
+            //shdr.Bind();
             background.Render(0,0,0);
-            shdr.Unbind();
+            //shdr.Unbind();
         };
         void Input();
         void Resume(){};

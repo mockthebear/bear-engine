@@ -58,7 +58,7 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
 
 
 void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline,float angle){
-
+    //Painter::DrawSquare(box,r,g,b,a);
     /*glDisable(GL_TEXTURE_2D);
     glLoadIdentity();
     glTranslatef(box.x, box.y, 0.0f);
