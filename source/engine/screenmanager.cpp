@@ -10,6 +10,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include "../input/inputmanager.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+
 float ScreenManager::ClearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 
 ScreenManager::~ScreenManager(){
@@ -140,6 +142,7 @@ SDL_Window* ScreenManager::StartScreen(std::string name){
         bear::out << "[ScreenManager::StartScreen] Impossible to create"<<m_screen.x<<"x"<<m_screen.y<<" dummy display.\n";
     }
     m_originalScreen = m_screen;
+    m_projection = glm::ortho(0.0f, (float)m_originalScreen.x,  (float)m_originalScreen.y, 0.0f, -1.0f, 1.0f);
     Uint32 flags = 0;
     if (ConfigManager::GetInstance().GetResizeAction() != RESIZE_BEHAVIOR_NORESIZE){
         flags |= SDL_WINDOW_RESIZABLE;
@@ -278,6 +281,8 @@ void ScreenManager::SetWindowSize(int w,int h){
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
 
+    m_projection = glm::ortho(0.0f, (float)m_originalScreen.x,  (float)m_originalScreen.y, 0.0f, -1.0f, 1.0f);
+
     ResetViewPort();
 }
 
@@ -300,6 +305,7 @@ void ScreenManager::Resize(int w,int h){
     m_screen.y = h;
 
     SDL_SetWindowSize(m_window,w,h);
+    m_projection = glm::ortho(0.0f, (float)m_originalScreen.x,  (float)m_originalScreen.y, 0.0f, -1.0f, 1.0f);
 
     if (postProcess){
         glDeleteTextures(1, &fbo_texture);

@@ -10,6 +10,8 @@
 
 #include "../basetypes.hpp"
 #include "../shadermanager.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 
 class ScreenManager;
@@ -19,7 +21,7 @@ class RenderData{
     public:
         RenderData():position(0.0f,0.0f),clip(0.0f,0.0f,0.0f,0.0f),
                     angle(0.0f),center(0.0f,0.0f),scale(1.0f,1.0f),color{1.0f,1.0f,1.0f,1.0f},
-                    flip(0),forwardClip(0.0f,1.0f,0.0f,1.0f){};
+                    flip(0),forwardClip(0.0f,1.0f,0.0f,1.0f),VBO(0),VAO(0),model(){};
 
     Point position;
     Rect clip;
@@ -29,6 +31,10 @@ class RenderData{
     float color[4];
     uint8_t flip;
     Rect forwardClip;
+    GLuint VBO,VAO;
+
+    glm::mat4 model;
+
 
     void SetClip(Rect r, Point textureSize){
         clip = r;
@@ -40,7 +46,10 @@ class RenderData{
         forwardClip.y =  ( clip.x + clip.w ) / textureSize.x;
         forwardClip.w = clip.y / textureSize.y;
         forwardClip.h = ( clip.y + clip.h ) / textureSize.y;
+        UpdateVertex();
     }
+
+    void UpdateVertex();
 };
 
 

@@ -8,6 +8,9 @@
 #include "../framework/geometry.hpp"
 #include "shadermanager.hpp"
 #include <GL/glew.h>
+#include <glm/glm.hpp>
+
+
 enum ResizeAction{
     RESIZE_SCALE,
     RESIZE_FREE_SCALE,
@@ -78,6 +81,8 @@ class ScreenManager{
 
         GLuint GetVAO(){return m_vertexArrayID;};
 
+        glm::mat4& GetProjection(){ return m_projection;};
+
 
 
     private:
@@ -112,6 +117,7 @@ class ScreenManager{
         Point m_trueScaleRatio;
         SDL_DisplayMode m_displayMode;
         uint32_t m_vertexArrayID;
+        glm::mat4 m_projection;
 
 };
 #endif // SCREENMANAGEH
