@@ -101,7 +101,7 @@ uint32_t Graph::AddBar(std::string name,SDL_Color color,float value){
 
 void Graph::Render(Point pos){
     // inner box
-    RenderHelp::DrawSquareColorA(pos.x,pos.y,size.x,size.y,100,100,100,100,false);
+    RenderHelp::DrawSquareColor(pos.x,pos.y,size.x,size.y,100,100,100,100,false);
 
 
 
@@ -112,7 +112,7 @@ void Graph::Render(Point pos){
 
 
     // outside box
-    RenderHelp::DrawSquareColorA(pos.x,pos.y,size.x,size.y,100,100,100,255,true);
+    RenderHelp::DrawSquareColor(pos.x,pos.y,size.x,size.y,100,100,100,255,true);
     maxWidgetContent.Render(pos.x,pos.y,TEXT_RENDER_TOPRIGHT);
 
 }

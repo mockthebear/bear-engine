@@ -109,7 +109,7 @@ bool Console::AddText(std::string str,bool onlyGraphic){
 }
 
 void Console::Render(Point pos){
-    RenderHelp::DrawSquareColorA(pos.x+box.x,pos.y+box.y,box.w,box.h,0,0,0,100);
+    RenderHelp::DrawSquareColor(pos.x+box.x,pos.y+box.y,box.w,box.h,0,0,0,100);
     box.w = 100;
     if (hasStarted){
         for (int i=0;i<m_lines;i++){

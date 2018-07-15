@@ -20,7 +20,7 @@ class Test_Socket: public State{
             bear::out << tc.Connect("127.0.0.1",1337) << "\n";
 
             SocketMessage sk;
-            sk.SetStream("owo noticed\n");
+            //sk.SetStream("owo noticed\n");
 
             tc.Send(&sk);
             bear::out << "Sending\n";

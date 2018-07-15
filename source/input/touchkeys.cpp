@@ -50,6 +50,6 @@ void TouchKeys::Update(float dt,Keyboard &handler,Touch &thandler,Mouse &mhandle
 void TouchKeys::Render(){
     //if (Key == -1)
     //    return;
-    //RenderHelp::DrawSquareColorANS(box.x,box.y,box.w,box.h,0,0,255,Touched ? 100 : 255);
+    //RenderHelp::DrawSquareColorNS(box.x,box.y,box.w,box.h,0,0,255,Touched ? 100 : 255);
     //t->RenderRS(box.x +2,box.y +2);
 }

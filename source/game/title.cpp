@@ -82,7 +82,7 @@ void Title::Update(float dt){
 }
 
 void Title::Render(){
-    RenderHelp::DrawSquareColorA(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H,255,255,255,255);
+    RenderHelp::DrawSquareColor(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H,255,255,255,255);
 
 
     RenderInstances();

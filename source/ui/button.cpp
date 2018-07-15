@@ -33,8 +33,8 @@ void Button::Input(){
 };
 
 void Button::Render(Point where){
-    RenderHelp::DrawSquareColorA(box.x,box.y,box.w,box.h,0,0,0,255);
-    RenderHelp::DrawSquareColorA(box.x+1,box.y+1,box.w-2,box.h-2,
+    RenderHelp::DrawSquareColor(box.x,box.y,box.w,box.h,0,0,0,255);
+    RenderHelp::DrawSquareColor(box.x+1,box.y+1,box.w-2,box.h-2,
                                  Color[0] + (hover ? 20 : 0) + (press ? -30 : 0),
                                  Color[1] + (hover ? 20 : 0) + (press ? -30 : 0),
                                  Color[2] + (hover ? 20 : 0) + (press ? -30 : 0),

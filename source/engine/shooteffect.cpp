@@ -43,9 +43,9 @@ void ShootEffect::Render(){
     sp->SetClip(0,0,sp->GetHeight(),std::min(std::max(distance,(float)sp->GetWidth() ),distance ) );
     sp->Render(Camera::AdjustPosition(box,- distance/2,- sp->GetHeight()/2),rotation);
     //sp->Render(box.x-Camera::pos.x- distance/2,box.y-Camera::pos.y- sp->GetHeight()/2,rotation);
-    /*RenderHelp::DrawSquareColorA(p.x-Camera::pos.x,p.y-Camera::pos.y,8,8,255,0,0,255);
-    RenderHelp::DrawSquareColorA(p2.x-Camera::pos.x,p2.y-Camera::pos.y,8,8,255,0,0,255);
-    RenderHelp::DrawSquareColorA(box.x-Camera::pos.x,box.y-Camera::pos.y,8,8,255,0,0,255);*/
+    /*RenderHelp::DrawSquareColor(p.x-Camera::pos.x,p.y-Camera::pos.y,8,8,255,0,0,255);
+    RenderHelp::DrawSquareColor(p2.x-Camera::pos.x,p2.y-Camera::pos.y,8,8,255,0,0,255);
+    RenderHelp::DrawSquareColor(box.x-Camera::pos.x,box.y-Camera::pos.y,8,8,255,0,0,255);*/
 }
 
 bool ShootEffect::IsDead(){

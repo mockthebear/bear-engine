@@ -234,7 +234,15 @@ template <typename T=float>class GenericRect{
             y = reqt.y;
             h = reqt.h;
             w = reqt.w;
-        }
+        };
+
+        template<typename K, typename K2> GenericRect(GenericPoint<K> p1, GenericPoint<K2> p2){
+            x = p1.x;
+            y = p1.y;
+            w = p1.x;
+            h = p1.y;
+        };
+
 
         GenericRect(const int n[4]){
             x = n[0];

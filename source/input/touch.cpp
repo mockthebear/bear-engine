@@ -27,7 +27,7 @@ void Finger::Update(float dt){
 }
 void Finger::Render(){
     //RenderHelp::DrawSquareColorUnscaled(m_position.x-4,m_position.y-4,8,8,0,255,m_state == PRESSED ? 255 : 0,200);
-    RenderHelp::DrawSquareColorA(m_position.x-4,m_position.y-4,8,8,0,255,m_state == PRESSED ? 255 : 0,200);
+    RenderHelp::DrawSquareColor(m_position.x-4,m_position.y-4,8,8,0,255,m_state == PRESSED ? 255 : 0,200);
 }
 
 Touch::Touch(){

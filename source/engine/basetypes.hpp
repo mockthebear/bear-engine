@@ -6,6 +6,7 @@ typedef class BearColor{
         BearColor():r(1.0f),g(1.0f),b(1.0f),a(1.0f){};
         BearColor(float f1):r(f1),g(f1),b(f1),a(f1){};
         BearColor(float f1,float f2,float f3,float f4):r(f1),g(f2),b(f3),a(f4){};
+        BearColor(uint8_t f1,uint8_t f2,uint8_t f3,uint8_t f4):r(f1/255.0f),g(f2/255.0f),b(f3/255.0f),a(f4/255.0f){};
         float r;
         float g;
         float b;

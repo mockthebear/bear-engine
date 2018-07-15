@@ -10,10 +10,10 @@ void Accelerometer::Set(Joystick *j){
 }
 void Accelerometer::Render(PointInt pos){
     if (m_joy != NULL){
-        RenderHelp::DrawSquareColorA(pos.x-100,pos.y,200,16 + 17*2,255,255,255,100);
-        RenderHelp::DrawSquareColorA(pos.x,pos.y,GetXPercent() * 200.0f,16,255,0,0,100);
-        RenderHelp::DrawSquareColorA(pos.x,pos.y+17,GetYPercent() * 200.0f,16,0,255,0,100);
-        RenderHelp::DrawSquareColorA(pos.x,pos.y+17+17,GetZPercent() * 200.0f,16,0,0,255,100);
+        RenderHelp::DrawSquareColor(pos.x-100,pos.y,200,16 + 17*2,255,255,255,100);
+        RenderHelp::DrawSquareColor(pos.x,pos.y,GetXPercent() * 200.0f,16,255,0,0,100);
+        RenderHelp::DrawSquareColor(pos.x,pos.y+17,GetYPercent() * 200.0f,16,0,255,0,100);
+        RenderHelp::DrawSquareColor(pos.x,pos.y+17+17,GetZPercent() * 200.0f,16,0,0,255,100);
     }
 }
 void Accelerometer::Update(float dt){

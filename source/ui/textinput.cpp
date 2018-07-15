@@ -79,8 +79,8 @@ void TextInput::Update(float dt){
 }
 void TextInput::Render(Point where){
 
-    RenderHelp::DrawSquareColorA(box.x,box.y,box.w,box.h,0,0,0,255);
-    RenderHelp::DrawSquareColorA(box.x+1,box.y+1,box.w-2,box.h-2,
+    RenderHelp::DrawSquareColor(box.x,box.y,box.w,box.h,0,0,0,255);
+    RenderHelp::DrawSquareColor(box.x+1,box.y+1,box.w-2,box.h-2,
                                  100 + (focused ? 30 : 0),
                                  100 + (focused ? 30 : 0),
                                  100 + (focused ? 30 : 0),
@@ -88,5 +88,5 @@ void TextInput::Render(Point where){
 
     UIBase::Render(Point(2,0));
     if (showCaret && focused)
-        RenderHelp::DrawSquareColorA(box.x + txt.GetWidth() +3,box.y+2,1,box.h-4,style.fg[0],style.fg[1],style.fg[2],255);
+        RenderHelp::DrawSquareColor(box.x + txt.GetWidth() +3,box.y+2,1,box.h-4,style.fg[0],style.fg[1],style.fg[2],255);
 }

@@ -76,7 +76,8 @@ class Painter{
         return num;
     }
 
-        static void DrawSquare(Rect box,int r,int g,int b,int a);
+        static void DrawSquare(Rect box,BearColor c,bool outline=false,float angle=0);
+        static void DrawLine(Point p1,Point p2,BearColor c,float thicc);
     private:
         friend class ScreenManager;
         static bool SetupEnvoriment(ScreenManager *sm);
@@ -90,5 +91,14 @@ class Painter{
 
 
         static bool m_shaderBuilt;
+
+        //
+
+        static void SetupPolygonVAOs();
+
+        static GLuint VAO_4;
+        static GLuint VBO_4;
+        static GLuint VAO_2;
+        static GLuint VBO_2;
 
 };

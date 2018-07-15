@@ -52,10 +52,10 @@ class Test_Text: public State{
             randomText.Render(Point(SCREEN_SIZE_W/2,120));
 
             copied.Render(Point(SCREEN_SIZE_W/2,520));
-            RenderHelp::DrawSquareColorA(SCREEN_SIZE_W/2,520,copied.GetWidth(),copied.GetHeight(),255,255,255,255,true);
+            RenderHelp::DrawSquareColor(SCREEN_SIZE_W/2,520,copied.GetWidth(),copied.GetHeight(),255,255,255,255,true);
 
             localText = copied;
-            RenderHelp::DrawSquareColorA(SCREEN_SIZE_W/2 + 86,520,localText.GetWidth(),localText.GetHeight(),255,255,255,255,true);
+            RenderHelp::DrawSquareColor(SCREEN_SIZE_W/2 + 86,520,localText.GetWidth(),localText.GetHeight(),255,255,255,255,true);
             localText.Render(Point(SCREEN_SIZE_W/2 + 86,520));
 
             whoa.Render(Point(32,520));

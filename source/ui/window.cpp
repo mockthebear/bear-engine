@@ -44,13 +44,13 @@ void Window::Input(){
 
 
 void Window::Render(Point where){
-    RenderHelp::DrawSquareColorA(box.x,box.y,box.w,box.h,style.bg[0] ,style.bg[1] ,style.bg[2] ,style.bg[3] );
+    RenderHelp::DrawSquareColor(box.x,box.y,box.w,box.h,style.bg[0] ,style.bg[1] ,style.bg[2] ,style.bg[3] );
 
-    RenderHelp::DrawSquareColorA(box.x,box.y,box.w,box.h,style.fg[0] ,style.fg[1] ,style.fg[2] ,style.fg[3],true );
+    RenderHelp::DrawSquareColor(box.x,box.y,box.w,box.h,style.fg[0] ,style.fg[1] ,style.fg[2] ,style.fg[3],true );
 
     where.x = box.x;
     where.y = box.y;
     UIBase::Render(where);
     //Point pos = Point(InputManager::GetInstance().GetMouseX(),InputManager::GetInstance().GetMouseY());
-    //RenderHelp::DrawSquareColorA(pos.x,pos.y,3,3,255,0,0,100);
+    //RenderHelp::DrawSquareColor(pos.x,pos.y,3,3,255,0,0,100);
 }

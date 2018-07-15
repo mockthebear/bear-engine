@@ -62,7 +62,7 @@ class Test_Joystick: public State{
                     }else if( s == RELEASED){
                         color2 = 127;
                     }
-                    RenderHelp::DrawSquareColorA(32 * i,32,28,28,255,color,color2,100);
+                    RenderHelp::DrawSquareColor(32 * i,32,28,28,255,color,color2,100);
                 }
 
                 for (int i=0;i<j1->GetHatsCount();i++){
@@ -79,7 +79,7 @@ class Test_Joystick: public State{
                         }else if( s == RELEASED){
                             color2 = 127;
                         }
-                        RenderHelp::DrawSquareColorA(32 * b,64 + 32*i,28,28,255,color,color2,100);
+                        RenderHelp::DrawSquareColor(32 * b,64 + 32*i,28,28,255,color,color2,100);
                     }
                 }
 
@@ -95,16 +95,16 @@ class Test_Joystick: public State{
                     s = s * fSize;
 
                     if (s > 0){
-                        RenderHelp::DrawSquareColorA(400,96 + 32*i,s,28,0,255,0,preepr ? 255 : 100);
+                        RenderHelp::DrawSquareColor(400,96 + 32*i,s,28,0,255,0,preepr ? 255 : 100);
                     }else{
                         s = - s;
-                        RenderHelp::DrawSquareColorA(400 - s ,96 + 32*i,s,28,255,0,0,preepr ? 255 : 100);
+                        RenderHelp::DrawSquareColor(400 - s ,96 + 32*i,s,28,255,0,0,preepr ? 255 : 100);
                     }
-                    RenderHelp::DrawSquareColorA(400 - fSize,96 + 32*i,fSize * 2,28,0,255,255,255,true);
+                    RenderHelp::DrawSquareColor(400 - fSize,96 + 32*i,fSize * 2,28,0,255,255,255,true);
                     InputState sE = j1->GetAxisInputState(i*2 +1);
-                    RenderHelp::DrawSquareColorA(400 -fSize- 28 ,96 + 32*i,28,28,255,255,255,255,!(sE == PRESSED || sE == JUST_PRESSED));
+                    RenderHelp::DrawSquareColor(400 -fSize- 28 ,96 + 32*i,28,28,255,255,255,255,!(sE == PRESSED || sE == JUST_PRESSED));
                     sE = j1->GetAxisInputState(i*2 );
-                    RenderHelp::DrawSquareColorA(400 +fSize ,96 + 32*i,28,28,255,255,255,255,!(sE == PRESSED || sE == JUST_PRESSED));
+                    RenderHelp::DrawSquareColor(400 +fSize ,96 + 32*i,28,28,255,255,255,255,!(sE == PRESSED || sE == JUST_PRESSED));
 
 
 

@@ -88,7 +88,7 @@ void Light::Render(Point pos,float maxDarkness){
         m_bufferTexture->Bind();
         //Clear current texture
         glDisable(GL_BLEND);
-        RenderHelp::DrawSquareColorA(Rect(0,0,canvasSize.x*scaler.x,canvasSize.y*scaler.y),0,0,0,0);
+        RenderHelp::DrawSquareColor(Rect(0,0,canvasSize.x*scaler.x,canvasSize.y*scaler.y),0,0,0,0);
         glEnable(GL_BLEND);
         //Enable shading shader
         m_lightShader.Bind();
@@ -101,7 +101,7 @@ void Light::Render(Point pos,float maxDarkness){
         ShaderSetter<std::vector<Rect>>::SetUniform(m_lightShader.GetCurrentShaderId(),"blockade",m_vertices);
         ShaderSetter<int>::SetUniform(m_lightShader.GetCurrentShaderId(),"lightBlockades",m_vertices.size());
         //Draw the shadows to the m_bufferTexture
-        RenderHelp::DrawSquareColorA(Rect(0,0,SCREEN_SIZE_W*scaler.x,SCREEN_SIZE_H*scaler.y),255,0,0,255);
+        RenderHelp::DrawSquareColor(Rect(0,0,SCREEN_SIZE_W*scaler.x,SCREEN_SIZE_H*scaler.y),255,0,0,255);
         m_lightShader.Unbind();
         //Now unbind the texture and blur it
         m_bufferTexture->UnBind();
