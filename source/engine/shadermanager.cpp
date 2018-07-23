@@ -97,7 +97,7 @@ bool Shader::Compile(int type,std::string name){
 
     if (!LoadShader(type,shaderSource)){
         file.Close();
-        bear::out << "Load error\n";
+        bear::out << "Failed to load: "<<name<< "\n";
         return false;
     }
 
