@@ -330,12 +330,12 @@ class Sprite{
             @param p Sprite position (inside the image)
         */
         void SetCenter(Point p){
-            m_renderData.center.x = p.x;
-            m_renderData.center.y = p.y;
+            m_renderData->center.x = p.x;
+            m_renderData->center.y = p.y;
         };
 
         Point GetCenter(){
-            return Point(m_renderData.center);
+            return Point(m_renderData->center);
         }
 
         void SetStayLastFrame(int lf){
@@ -367,22 +367,22 @@ class Sprite{
             @param scale the original value is 1.
         */
         void SetScaleX(float scale=1.0f){
-            m_renderData.GetScale().x=scale;
+            m_renderData->GetScale().x=scale;
         };
 
         void SetScaleY(float scale=1.0f){
-            m_renderData.GetScale().y=scale;
+            m_renderData->GetScale().y=scale;
         };
         /**
             *Change the sprite scale. Its an local scale, not shared.
             @param scale the original value is 1.
         */
         void SetScale(Point t_scale = Point(1.0f,1.0f)){
-            m_renderData.SetScale(t_scale);
+            m_renderData->SetScale(t_scale);
         };
 
         Point GetScale(){
-            return m_renderData.GetScale();;
+            return m_renderData->GetScale();;
         };
         /**
             *You can cut some color channels and reblend the sprite
@@ -393,9 +393,9 @@ class Sprite{
             @param Green [0-255] The default is 255 of all sprites;
         */
         void ReBlend(uint8_t Red,uint8_t Blue,uint8_t Green){
-            m_renderData.color[0] = Red/255.0f;
-            m_renderData.color[1] = Blue/255.0f;
-            m_renderData.color[2] = Green/255.0f;
+            m_renderData->color[0] = Red/255.0f;
+            m_renderData->color[1] = Blue/255.0f;
+            m_renderData->color[2] = Green/255.0f;
         };
         /**
             *Changed the sprite alpha
@@ -404,11 +404,11 @@ class Sprite{
             @param alpha [0-255] The default is 255 of all sprites;
         */
         void SetAlpha(uint8_t alpha){
-            m_renderData.color[3] = alpha/255.0f;
+            m_renderData->color[3] = alpha/255.0f;
         };
 
         uint8_t GetAlpha(){
-            return m_renderData.color[3]*255;
+            return m_renderData->color[3]*255;
         };
         /**
             *Set a grid for animation frames
@@ -425,11 +425,11 @@ class Sprite{
             @param flipState
         */
         void SetFlip(SDL_RendererFlip flipState){
-            m_renderData.flip = (uint8_t)flipState;
+            m_renderData->flip = (uint8_t)flipState;
         }
 
         SDL_RendererFlip GetFlip(){
-            return (SDL_RendererFlip)m_renderData.flip;
+            return (SDL_RendererFlip)m_renderData->flip;
         }
 
         /**
@@ -454,7 +454,7 @@ class Sprite{
 
         std::string fname;
 
-        RenderData m_renderData;
+        RenderDataPtr m_renderData;
         Point size;
 
         //float OUTR,OUTB,OUTG;

@@ -9,7 +9,7 @@
 GLint TargetTexture::lastbuffer = 0;
 
 void TargetTexture::Render(Point pos){
-    m_renderData.position = pos;
+    m_renderData->position = pos;
     Painter::RenderTexture(this,m_renderData);
 }
 
@@ -55,7 +55,7 @@ bool TargetTexture::FreeTexture(){
 bool TargetTexture::Generate(int wa,int ha){
     size_w = texture_w = wa;
     size_h = texture_h = ha;
-    m_renderData.SetClip(Rect(0.0f,0.0f,wa,ha), Point(wa,ha));
+    m_renderData->SetClip(Rect(0.0f,0.0f,wa,ha), Point(wa,ha));
 
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &lastbuffer);
 

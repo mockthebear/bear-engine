@@ -9,15 +9,15 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
         return false;
     }
 
-    GLfloat texLeft = t_data.forwardClip.x;
-    GLfloat texRight =  t_data.forwardClip.y;
-    GLfloat texTop = t_data.forwardClip.w;
-    GLfloat texBottom = t_data.forwardClip.h;
+    GLfloat texLeft = t_data->forwardClip.x;
+    GLfloat texRight =  t_data->forwardClip.y;
+    GLfloat texTop = t_data->forwardClip.w;
+    GLfloat texBottom = t_data->forwardClip.h;
 
 
 
-    GLfloat quadWidth = t_data.clip.w ;
-    GLfloat quadHeight = t_data.clip.h ;
+    GLfloat quadWidth = t_data->clip.w ;
+    GLfloat quadHeight = t_data->clip.h ;
 
     glLoadIdentity();
 
@@ -25,28 +25,28 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
 
     glBindTexture( GL_TEXTURE_2D, t_texture->id );
 
-    glColor4fv(t_data.color);
+    glColor4fv(t_data->color);
 
 
 
 
-    glScalef(t_data.scale.x , t_data.scale.y , 1.0f);
+    glScalef(t_data->scale.x , t_data->scale.y , 1.0f);
 
     glTranslatef(
-        (t_data.position.x * (1.0f/t_data.scale.x)  + quadWidth  / 2.f  ) + (- t_data.center.x* (t_data.scale.x)  + t_data.center.x),
-        (t_data.position.y * (1.0f/t_data.scale.y)  + quadHeight / 2.f  ) + (- t_data.center.y* (t_data.scale.y)  + t_data.center.y),
+        (t_data->position.x * (1.0f/t_data->scale.x)  + quadWidth  / 2.f  ) + (- t_data->center.x* (t_data->scale.x)  + t_data->center.x),
+        (t_data->position.y * (1.0f/t_data->scale.y)  + quadHeight / 2.f  ) + (- t_data->center.y* (t_data->scale.y)  + t_data->center.y),
     0.f);
 
-    glRotatef( t_data.angle, 0.f, 0.f, 1.f );
+    glRotatef( t_data->angle, 0.f, 0.f, 1.f );
 
 
 
-    if ((t_data.flip&SDL_FLIP_HORIZONTAL) != 0){
+    if ((t_data->flip&SDL_FLIP_HORIZONTAL) != 0){
         float holder =  texLeft;
         texLeft = texRight;
         texRight = holder;
     }
-    if ((t_data.flip&SDL_FLIP_VERTICAL) != 0){
+    if ((t_data->flip&SDL_FLIP_VERTICAL) != 0){
         float holder =  texTop;
         texTop = texBottom;
         texBottom = holder;

@@ -16,8 +16,7 @@
 
 void RenderData::UpdateModel(){
     if (m_modelUpdateNeeded){
-        //model = glm::rotate(glm::mat4(1.0f), m_angle, glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(glm::mat4(1.0f), glm::vec3(m_clip.w * m_scale.x,m_clip.h * m_scale.y, 1.0f));
+
         m_modelUpdateNeeded = false;
     }
 }
@@ -40,18 +39,49 @@ void RenderData::UpdateVertex(){
         texTop = texBottom;
         texBottom = holder;
     }
+
     GLfloat vertices[] = {
         // Pos      // Tex
-        0.0f, 0.0f, texLeft, texTop,
-        0.0f, 1.0f, texLeft, texBottom,
-        1.0f, 1.0f, texRight, texBottom,
-        1.0f, 0.0f, texRight, texTop,
+        0.0f  , 0.0f    , texLeft   , texTop,
+        0.0f  , 1.0f    , texLeft   , texBottom,
+        1.0f  , 1.0f    , texRight  , texBottom,
+        1.0f  , 0.0f    , texRight  , texTop,
 
     };
 
-    glBindBuffer(GL_ARRAY_BUFFER, Painter::TextureVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    if (TextureVertexArray == 0){
+        static unsigned int indices[] = {
+            0, 1, 3, // first triangle
+            1, 2, 3  // second triangle
+        };
+        glGenVertexArrays(1, &TextureVertexArray);
+        glGenBuffers(1, &TextureVertexBuffer);
+        glGenBuffers(1, &TextureElementBuffer);
+
+        glBindVertexArray(TextureVertexArray);
+
+        glBindBuffer(GL_ARRAY_BUFFER, TextureVertexBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, TextureElementBuffer);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)) );
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }else{
+        glBindBuffer(GL_ARRAY_BUFFER, TextureVertexBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
 }
 
 
@@ -63,51 +93,10 @@ Shader Painter::polygonShader;
 GLuint Painter::SharedVertexArray;
 GLuint Painter::SharedVertexBuffer;
 
-GLuint Painter::TextureVertexArray;
-GLuint Painter::TextureVertexBuffer;
-
 
 
 void Painter::SetupPolygonVAOs(){
-
-    //glGenVertexArrays(1, &SharedVertexArray);
-
     glGenBuffers(1, &SharedVertexBuffer);
-    //glBindBuffer(GL_ARRAY_BUFFER, SharedVertexBuffer);
-
-   // glBindVertexArray(SharedVertexArray);
-    //glEnableVertexAttribArray(0);
-    //glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
-    //glBindBuffer(GL_ARRAY_BUFFER, 0);
-    //glBindVertexArray(0);
-
-
-
-    GLfloat vertices[] = {
-        // Pos      // Tex
-        0.0f, 0.0f, 0.0f, 1.0f,
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 0.0f,
-        1.0f, 0.0f, 1.0f, 0.0f,
-
-    };
-    glGenVertexArrays(1, &TextureVertexArray);
-    glGenBuffers(1, &TextureVertexBuffer);
-
-    glBindBuffer(GL_ARRAY_BUFFER, TextureVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
-
-    glBindVertexArray(TextureVertexArray);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)) );
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-
-
-
 }
 
 void Painter::DrawLine(Point p1,Point p2,BearColor color,float thicc){
@@ -202,52 +191,60 @@ void Painter::DrawSquare(Rect box,BearColor color,bool outline,float angle){
 }
 
 
-bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
+bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     if (!t_texture || t_texture->id == 0){
         return false;
     }
 
-    bool noShader = Shader::GetCurrentShaderId() == 0;
-    if (noShader){
-        textureShader.Bind();
+    //Benchmark
+    //
+    // Bind: 0.00165~
+    // Texture bind: 0
+    // Bind texture: 0.0003
+    // Pssar tudo pro shader: 0.009~
+    // Só nao desenhando: 0.010~
+    // Chamando tudo com draw elements 0.020
+    // Com operaçoes de model: 0.30
+
+
+
+    glm::mat4 model(1.0f);
+
+
+    model = glm::translate(model, glm::vec3(t_data->position.x, t_data->position.y, 0.0f));
+
+    if (t_data->m_angle == 0){
+        model = glm::translate(model, glm::vec3(0.5f * t_data->m_clip.w, 0.5f * t_data->m_clip.h, 0.0f));
+        model = glm::rotate(model, glm::radians(t_data->m_angle), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::translate(model, glm::vec3(-0.5f * t_data->m_clip.w, -0.5f * t_data->m_clip.h, 0.0f));
     }
 
-    t_data.UpdateVertex();
-    t_data.UpdateModel();
-    //Translate and scale
-    glm::mat4 model = glm::translate(t_data.model, glm::vec3(t_data.position.x, t_data.position.y, 0.0f));
 
-
-    //Get current projection
-    glm::mat4& projection = ScreenManager::GetInstance().GetProjection();
+    model = glm::scale(model, glm::vec3( t_data->m_scale.x * t_data->m_clip.w, t_data->m_scale.y * t_data->m_clip.h, 1.0f));
 
     //Setup shader
-    unsigned int transformLoc = glGetUniformLocation(textureShader.GetCurrentShaderId(), "model");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model));
 
+    textureShader.Bind();
+
+    unsigned int transformLoc;
+    glm::mat4& projection = ScreenManager::GetInstance().GetProjection();
     transformLoc = glGetUniformLocation(textureShader.GetCurrentShaderId(), "projection");
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-    BearColor recolor(t_data.color[0],t_data.color[1],t_data.color[2],t_data.color[3]);
+    transformLoc = glGetUniformLocation(textureShader.GetCurrentShaderId(), "model");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+    BearColor recolor(t_data->color[0],t_data->color[1],t_data->color[2],t_data->color[3]);
     ShaderSetter<BearColor>::SetUniform(textureShader.GetCurrentShaderId(),"spriteColor",recolor);
-    //ShaderSetter<int>::SetUniform(textureShader.GetCurrentShaderId(),"image",0);
 
-    //Now render the sprite itself
 
-    glActiveTexture(GL_TEXTURE0);
+    ShaderSetter<int>::SetUniform(textureShader.GetCurrentShaderId(),"image",0);
+
+
     glBindTexture( GL_TEXTURE_2D, t_texture->id );
 
-    glBindVertexArray(Painter::TextureVertexArray);
-
-
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-    glBindVertexArray(0);
-
-
-    if (noShader){
-        textureShader.Unbind();
-    }
-
+    glBindVertexArray(t_data->TextureVertexArray);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     return true;
 }
@@ -304,17 +301,18 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
 
     DebugHelper::DisplayGlError("1");
 
-	glClearColor(0.0, 0.0, 0.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	//glClearColor(0.0, 0.0, 0.0, 1.0);
+	//glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	SDL_GL_SwapWindow(sm->m_window);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable( GL_DEPTH_TEST );
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 
     glGenVertexArrays(1, &sm->m_vertexArrayID);
     glBindVertexArray(sm->m_vertexArrayID);
+
 
     SetupShaders();
     SetupPolygonVAOs();

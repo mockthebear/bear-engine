@@ -7,13 +7,14 @@ class TargetTexture : public BearTexture{
     TargetTexture():BearTexture(){
         Framebuffer = 0;
         depthrenderbuffer = 0;
+        m_renderData = std::make_shared<RenderData>();
     };
     bool Generate(int w,int h);
     bool Bind();
     static bool UnBind();
     void Render(Point pos);
     bool FreeTexture();
-    void SetScale(Point p){m_renderData.scale = p;};
+    void SetScale(Point p){m_renderData->SetScale(p);};
 
     GLuint vbo_fbo_vertices;
     GLuint Framebuffer;
@@ -21,5 +22,5 @@ class TargetTexture : public BearTexture{
     private:
 
         static GLint lastbuffer;
-        RenderData m_renderData;
+        RenderDataPtr m_renderData;
 };

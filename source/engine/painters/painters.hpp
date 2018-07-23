@@ -10,6 +10,8 @@
 
 #include "../basetypes.hpp"
 #include "../shadermanager.hpp"
+#include <memory>
+#include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -23,7 +25,16 @@ class RenderData{
     public:
         RenderData():position(0.0f,0.0f),center(0.0f,0.0f),color{1.0f,1.0f,1.0f,1.0f},
         flip(0),model(),m_modelUpdateNeeded(true),m_scale(1.0f,1.0f),m_angle(0.0f),
-        m_clip(0.0f,0.0f,0.0f,0.0f),m_forwardClip(0.0f,1.0f,0.0f,1.0f){};
+        m_clip(0.0f,0.0f,0.0f,0.0f),m_forwardClip(0.0f,1.0f,0.0f,1.0f),TextureVertexArray(0),TextureVertexBuffer(0),TextureElementBuffer(0){};
+
+        ~RenderData(){
+            if (TextureVertexArray != 0){
+                glDeleteBuffers(1, &TextureVertexBuffer);
+                glDeleteBuffers(1, &TextureElementBuffer);
+                glDeleteVertexArrays(1, &TextureVertexArray);
+                TextureVertexArray = 0;
+            }
+        };
 
     Point position;
 
@@ -62,6 +73,7 @@ class RenderData{
         m_forwardClip.y =  ( m_clip.x + m_clip.w ) / textureSize.x;
         m_forwardClip.w = m_clip.y / textureSize.y;
         m_forwardClip.h = ( m_clip.y + m_clip.h ) / textureSize.y;
+        UpdateVertex();
     }
 
     Point& GetScale(){return m_scale;};
@@ -80,16 +92,22 @@ class RenderData{
         void UpdateVertex();
         void UpdateModel();
 
+        GLuint TextureVertexArray;
+        GLuint TextureVertexBuffer;
+        GLuint TextureElementBuffer;
+
 
 
 };
+
+typedef std::shared_ptr<RenderData> RenderDataPtr;
 
 
 typedef chain_ptr<BearTexture> TexturePtr;
 
 class Painter{
   public:
-    static bool RenderTexture(BearTexture *ptr,RenderData &data);
+    static bool RenderTexture(BearTexture *ptr,RenderDataPtr data);
     static BearTexture * MakeTexture(PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter);
 
     static uint32_t powerOfTwo( uint32_t num ){
@@ -113,8 +131,7 @@ class Painter{
         static void DrawSquare(Rect box,BearColor c,bool outline=false,float angle=0);
         static void DrawLine(Point p1,Point p2,BearColor c,float thicc);
 
-        static GLuint TextureVertexArray;
-        static GLuint TextureVertexBuffer;
+
 
 
     private:

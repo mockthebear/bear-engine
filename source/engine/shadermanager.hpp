@@ -197,6 +197,8 @@ class Shader{
         static GLuint GetCurrentShaderId();
         static GLuint lastShader;
 
+        uint32_t GetId(){return m_shaderId;};
+
 
     private:
         void ProgramError( GLuint program );
