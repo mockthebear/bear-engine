@@ -368,7 +368,7 @@ void Text::RemakeTexture(bool Destory){
     if (!isWorking)
         return;
     if (text == ""){
-        m_renderData.m_clip.w = 0.0f;
+        m_renderData.GetClip().w = 0.0f;
         emptyText = true;
         return;
     }else{

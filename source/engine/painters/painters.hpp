@@ -34,11 +34,25 @@ class RenderData{
 
     glm::mat4 model;
 
+    void SetAngle(float p_angle){
+        if (p_angle != m_angle){
+            m_modelUpdateNeeded = true;
+        }
+        m_angle = p_angle;
+    }
+
+
+    void SetScale(Point p_scale){
+        if (p_scale != m_scale){
+           m_modelUpdateNeeded = true;
+        }
+        m_scale = p_scale;
+    }
 
     void SetClip(Rect r, Point textureSize){
-        //if (r.w != m_clip.w || r.h != m_clip.h){
-        //    m_modelUpdateNeeded = true;
-        //}
+        if (r.w != m_clip.w || r.h != m_clip.h){
+            m_modelUpdateNeeded = true;
+        }
         m_clip = r;
         if (textureSize.x == 0 || textureSize.y == 0){
             m_forwardClip = Rect(0.0f,1.0f,0.0f,1.0f);
@@ -50,11 +64,11 @@ class RenderData{
         m_forwardClip.h = ( m_clip.y + m_clip.h ) / textureSize.y;
     }
 
-    //Point& GetScale(){return m_scale;};
-    //float& GetAngle(){return m_angle;};
-    //Rect& GetClip(){return m_clip;};
+    Point& GetScale(){return m_scale;};
+    float& GetAngle(){return m_angle;};
+    Rect& GetClip(){return m_clip;};
 
-   // private:
+    private:
         friend class Painter;
 
         bool m_modelUpdateNeeded;
