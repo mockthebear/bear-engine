@@ -15,9 +15,9 @@
 
 
 void RenderData::UpdateModel(){
+
     if (m_modelUpdateNeeded){
-        //model = glm::rotate(glm::mat4(1.0f), m_angle, glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(glm::mat4(1.0f), glm::vec3(m_clip.w * m_scale.x,m_clip.h * m_scale.y, 1.0f));
+
         m_modelUpdateNeeded = false;
     }
 }
@@ -215,7 +215,12 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
     t_data.UpdateVertex();
     t_data.UpdateModel();
     //Translate and scale
-    glm::mat4 model = glm::translate(t_data.model, glm::vec3(t_data.position.x, t_data.position.y, 0.0f));
+    glm::mat4 model(1.0f);
+
+    model = glm::scale(model, glm::vec3(t_data.m_clip.w * t_data.m_scale.x,t_data.m_clip.h * t_data.m_scale.y, 1.0f));
+    //model = glm::rotate(model, glm::radians(t_data.m_angle), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    model = glm::translate(model, glm::vec3(0.0f, 4.0f, 0.0f));
 
 
     //Get current projection
@@ -230,7 +235,7 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
 
     BearColor recolor(t_data.color[0],t_data.color[1],t_data.color[2],t_data.color[3]);
     ShaderSetter<BearColor>::SetUniform(textureShader.GetCurrentShaderId(),"spriteColor",recolor);
-    //ShaderSetter<int>::SetUniform(textureShader.GetCurrentShaderId(),"image",0);
+    ShaderSetter<int>::SetUniform(textureShader.GetCurrentShaderId(),"image",0);
 
     //Now render the sprite itself
 

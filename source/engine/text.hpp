@@ -245,12 +245,12 @@ class Text{
             *Get the height of the text
             @return int
         */
-        float GetHeight(){return m_renderData.GetClip().h*m_renderData.GetScale().y;};
+        float GetHeight(){return m_renderData.m_clip.h*m_renderData.m_scale.y;};
         /**
             *Get the width of the text
             @return int
         */
-        float GetWidth(){return m_renderData.GetClip().w*m_renderData.GetScale().x;};
+        float GetWidth(){return m_renderData.m_clip.w*m_renderData.m_scale.x;};
         /**
             *When you edit the current text, a new texture is created
             *Dont work with custom fonts
@@ -282,13 +282,13 @@ class Text{
             @param scale the current scale is 1.0f
         */
 
-        void SetScaleX(float scale){m_renderData.GetScale().x=scale;};
+        void SetScaleX(float scale){m_renderData.m_scale.x=scale;};
         /**
             *You can scale your text. This is useful because you can start with a text size 30
             *then you set the scale to 0,2. The scaling from SDL2 is better than scaling on freetype
             @param scale the current scale is 1.0f
         */
-        void SetScaleY(float scale){m_renderData.GetScale().y=scale;};
+        void SetScaleY(float scale){m_renderData.m_scale.y=scale;};
         /**
             *When for any reason need to remake the texture. Usualy is called by the class every time you change
             *the text, color, alpha...
@@ -308,7 +308,7 @@ class Text{
             *
             @param anglee is in degrees
         */
-        void SetRotation(float t_angle){m_renderData.SetAngle(t_angle);};
+        void SetRotation(float t_angle){m_renderData.m_scale = (t_angle);};
 
 
         /**
