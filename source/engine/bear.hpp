@@ -17,6 +17,7 @@ namespace bear {
             void printme(float n);
             void printme(double n);
             void printme(const char *c);
+            void printme(char *c);
             void printme(void *c);
     };
     static outstream out;
@@ -55,6 +56,13 @@ namespace bear {
     */
     static inline bear::outstream &operator << ( bear::outstream &o ,double n){
         o.printme(n);
+        return o;
+    }
+    /**
+        const char specializer
+    */
+    static inline bear::outstream &operator << ( bear::outstream &o ,char *e){
+        o.printme(e);
         return o;
     }
     /**
