@@ -172,7 +172,6 @@ Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string tex
     //Not resource tweaks
 
     m_renderData.color[3] = 1.0f;
-    m_renderData.scale = Point(1.0f,1.0f);
 
     RemakeTexture();
 
@@ -233,9 +232,8 @@ Text::Text(std::string fontfilep, std::string textp,int x,int y):Text(){
     }
     Point p = texturespr->GetSizes(text);
     m_renderData.position = Point(x,y);
-    m_renderData.clip = Rect(0.0f,0.0f,p.x,p.y);
+    m_renderData.SetClip(Rect(0.0f,0.0f,p.x,p.y), p);
     m_renderData.color[3] = 1.0f;
-    m_renderData.scale = Point(1.0f,1.0f);
 }
 
 Text::~Text(){}
@@ -292,7 +290,7 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
 
     }else if (texturespr){
         Point p = texturespr->Render(text,m_renderData.position.x,m_renderData.position.y,m_renderData.color[3]*255);
-        m_renderData.clip = Rect(0.0f,0.0f,p.x,p.y);
+        m_renderData.SetClip(Rect(0.0f,0.0f,p.x,p.y), p);
     }
 }
 
@@ -301,7 +299,7 @@ void Text::SetText(std::string str){
     if (!font && texturespr){
         text = str;
         Point p =  texturespr->GetSizes(str);
-        m_renderData.clip = Rect(0.0f,0.0f,p.x,p.y);
+        m_renderData.SetClip(Rect(0.0f,0.0f,p.x,p.y), p);
         return;
     }
     text = str;
@@ -370,7 +368,7 @@ void Text::RemakeTexture(bool Destory){
     if (!isWorking)
         return;
     if (text == ""){
-        m_renderData.clip.w = 0.0f;
+        m_renderData.GetClip().w = 0.0f;
         emptyText = true;
         return;
     }else{
@@ -380,7 +378,7 @@ void Text::RemakeTexture(bool Destory){
         return;
     if (!font && texturespr){
         Point p =  texturespr->GetSizes(text);
-        m_renderData.clip = Rect(0.0f,0.0f,p.x,p.y);
+        m_renderData.SetClip(Rect(0.0f,0.0f,p.x,p.y), p);
         return;
     }
 

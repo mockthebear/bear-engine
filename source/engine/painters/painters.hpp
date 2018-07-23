@@ -15,41 +15,73 @@
 
 
 class ScreenManager;
+class Vertex;
+class Painter;
 
 
 class RenderData{
     public:
-        RenderData():position(0.0f,0.0f),clip(0.0f,0.0f,0.0f,0.0f),
-                    angle(0.0f),center(0.0f,0.0f),scale(1.0f,1.0f),color{1.0f,1.0f,1.0f,1.0f},
-                    flip(0),forwardClip(0.0f,1.0f,0.0f,1.0f),VBO(0),VAO(0),model(){};
+        RenderData():position(0.0f,0.0f),center(0.0f,0.0f),color{1.0f,1.0f,1.0f,1.0f},
+        flip(0),model(),m_modelUpdateNeeded(true),m_scale(1.0f,1.0f),m_angle(0.0f),
+        m_clip(0.0f,0.0f,0.0f,0.0f),m_forwardClip(0.0f,1.0f,0.0f,1.0f){};
 
     Point position;
-    Rect clip;
-    float angle;
+
     Point center;
-    Point scale;
     float color[4];
     uint8_t flip;
-    Rect forwardClip;
-    GLuint VBO,VAO;
+
 
     glm::mat4 model;
 
-
-    void SetClip(Rect r, Point textureSize){
-        clip = r;
-        if (textureSize.x == 0 || textureSize.y == 0){
-            forwardClip = Rect(0.0f,1.0f,0.0f,1.0f);
-            return;
+    void SetAngle(float p_angle){
+        if (p_angle != m_angle){
+            m_modelUpdateNeeded = true;
         }
-        forwardClip.x = clip.x / textureSize.x;
-        forwardClip.y =  ( clip.x + clip.w ) / textureSize.x;
-        forwardClip.w = clip.y / textureSize.y;
-        forwardClip.h = ( clip.y + clip.h ) / textureSize.y;
-        UpdateVertex();
+        m_angle = p_angle;
     }
 
-    void UpdateVertex();
+
+    void SetScale(Point p_scale){
+        if (p_scale != m_scale){
+           m_modelUpdateNeeded = true;
+        }
+        m_scale = p_scale;
+    }
+
+    void SetClip(Rect r, Point textureSize){
+        if (r.w != m_clip.w || r.h != m_clip.h){
+            m_modelUpdateNeeded = true;
+        }
+        m_clip = r;
+        if (textureSize.x == 0 || textureSize.y == 0){
+            m_forwardClip = Rect(0.0f,1.0f,0.0f,1.0f);
+            return;
+        }
+        m_forwardClip.x = m_clip.x / textureSize.x;
+        m_forwardClip.y =  ( m_clip.x + m_clip.w ) / textureSize.x;
+        m_forwardClip.w = m_clip.y / textureSize.y;
+        m_forwardClip.h = ( m_clip.y + m_clip.h ) / textureSize.y;
+    }
+
+    Point& GetScale(){return m_scale;};
+    float& GetAngle(){return m_angle;};
+    Rect& GetClip(){return m_clip;};
+
+    private:
+        friend class Painter;
+
+        bool m_modelUpdateNeeded;
+        Point m_scale;
+        float m_angle;
+        Rect m_clip;
+        Rect m_forwardClip;
+
+        void UpdateVertex();
+        void UpdateModel();
+
+
+
 };
 
 
@@ -75,9 +107,16 @@ class Painter{
         }
         return num;
     }
+        static void DrawVertex(Vertex &v,BearColor c,int drawMode = GL_TRIANGLES);
+
 
         static void DrawSquare(Rect box,BearColor c,bool outline=false,float angle=0);
         static void DrawLine(Point p1,Point p2,BearColor c,float thicc);
+
+        static GLuint TextureVertexArray;
+        static GLuint TextureVertexBuffer;
+
+
     private:
         friend class ScreenManager;
         static bool SetupEnvoriment(ScreenManager *sm);
@@ -96,9 +135,10 @@ class Painter{
 
         static void SetupPolygonVAOs();
 
-        static GLuint VAO_4;
-        static GLuint VBO_4;
-        static GLuint VAO_2;
-        static GLuint VBO_2;
+        static GLuint SharedVertexArray;
+        static GLuint SharedVertexBuffer;
+
+
+
 
 };
