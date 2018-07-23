@@ -13,7 +13,7 @@ class TargetTexture : public BearTexture{
     static bool UnBind();
     void Render(Point pos);
     bool FreeTexture();
-    void SetScale(Point p){m_renderData.m_scale = (p);};
+    void SetScale(Point p){m_renderData.scale = p;};
 
     GLuint vbo_fbo_vertices;
     GLuint Framebuffer;
