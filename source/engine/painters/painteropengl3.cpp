@@ -14,12 +14,20 @@
 #include "../../framework/debughelper.hpp"
 
 
+void RenderData::UpdateModel(){
+    if (m_modelUpdateNeeded){
+        //model = glm::rotate(glm::mat4(1.0f), m_angle, glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(glm::mat4(1.0f), glm::vec3(m_clip.w * m_scale.x,m_clip.h * m_scale.y, 1.0f));
+        m_modelUpdateNeeded = false;
+    }
+}
+
 void RenderData::UpdateVertex(){
 
-    float texLeft = forwardClip.x;
-    float texRight =  forwardClip.y;
-    float texTop = forwardClip.w;
-    float texBottom = forwardClip.h;
+    float texLeft = m_forwardClip.x;
+    float texRight =  m_forwardClip.y;
+    float texTop = m_forwardClip.w;
+    float texBottom = m_forwardClip.h;
 
 
     if ((flip&SDL_FLIP_HORIZONTAL) != 0){
@@ -40,28 +48,10 @@ void RenderData::UpdateVertex(){
         1.0f, 0.0f, texRight, texTop,
 
     };
-    if (VBO == 0 || VAO == 0){
-        glGenBuffers(1, &VBO);
-        glGenVertexArrays(1, &VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-        glBindVertexArray(VAO);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-
-    }else{
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.5f * clip.w, 0.5f * clip.h, 0.0f));
-    model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
-    model = glm::translate(model, glm::vec3(-0.5f * clip.w, -0.5f * clip.h, 0.0f));
+    glBindBuffer(GL_ARRAY_BUFFER, Painter::TextureVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 
@@ -70,57 +60,58 @@ bool Painter::m_shaderBuilt = false;
 Shader Painter::textureShader;
 Shader Painter::polygonShader;
 
-GLuint Painter::VAO_4;
-GLuint Painter::VBO_4;
+GLuint Painter::SharedVertexArray;
+GLuint Painter::SharedVertexBuffer;
 
-GLuint Painter::VAO_2;
-GLuint Painter::VBO_2;
+GLuint Painter::TextureVertexArray;
+GLuint Painter::TextureVertexBuffer;
+
 
 
 void Painter::SetupPolygonVAOs(){
-    GLfloat vertices4[] = {
+
+    //glGenVertexArrays(1, &SharedVertexArray);
+
+    glGenBuffers(1, &SharedVertexBuffer);
+    //glBindBuffer(GL_ARRAY_BUFFER, SharedVertexBuffer);
+
+   // glBindVertexArray(SharedVertexArray);
+    //glEnableVertexAttribArray(0);
+    //glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //glBindVertexArray(0);
+
+
+
+    GLfloat vertices[] = {
         // Pos      // Tex
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 1.0f, 0.0f,
+        1.0f, 0.0f, 1.0f, 0.0f,
+
     };
+    glGenVertexArrays(1, &TextureVertexArray);
+    glGenBuffers(1, &TextureVertexBuffer);
 
-    GLfloat vertices2[] = {
-        // Pos      // Tex
-        0.0f, 0.0f,
-        1.0f, 1.0f,
-    };
+    glBindBuffer(GL_ARRAY_BUFFER, TextureVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
 
-
-    glGenVertexArrays(1, &VAO_4);
-
-    glGenBuffers(1, &VBO_4);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_4);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices4), vertices4, GL_STATIC_DRAW);
-
-    glBindVertexArray(VAO_4);
+    glBindVertexArray(TextureVertexArray);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)) );
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    glGenVertexArrays(1, &VAO_2);
 
-    glGenBuffers(1, &VBO_2);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_2);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
 
-    glBindVertexArray(VAO_2);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
 
 }
 
 void Painter::DrawLine(Point p1,Point p2,BearColor color,float thicc){
-    glm::mat4 model(1.0f);
+    /*glm::mat4 model(1.0f);
 
     bool noShader = Shader::GetCurrentShaderId() == 0;
 
@@ -166,12 +157,12 @@ void Painter::DrawLine(Point p1,Point p2,BearColor color,float thicc){
 
     if (noShader){
         polygonShader.Unbind();
-    }
+    }*/
 
 }
 
 void Painter::DrawSquare(Rect box,BearColor color,bool outline,float angle){
-
+    /*
     glm::mat4 model(1.0f);
 
     bool noShader = Shader::GetCurrentShaderId() == 0;
@@ -207,7 +198,7 @@ void Painter::DrawSquare(Rect box,BearColor color,bool outline,float angle){
 
     if (noShader){
         polygonShader.Unbind();
-    }
+    }*/
 }
 
 
@@ -215,14 +206,17 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
     if (!t_texture || t_texture->id == 0){
         return false;
     }
-    static glm::mat4 model;
+
     bool noShader = Shader::GetCurrentShaderId() == 0;
     if (noShader){
         textureShader.Bind();
     }
+
+    t_data.UpdateVertex();
+    t_data.UpdateModel();
     //Translate and scale
-    model = glm::translate(t_data.model, glm::vec3(t_data.position.x, t_data.position.y, 0.0f));
-    model = glm::scale(model, glm::vec3(t_data.clip.w * t_data.scale.x,t_data.clip.h * t_data.scale.y, 1.0f));
+    glm::mat4 model = glm::translate(t_data.model, glm::vec3(t_data.position.x, t_data.position.y, 0.0f));
+
 
     //Get current projection
     glm::mat4& projection = ScreenManager::GetInstance().GetProjection();
@@ -236,14 +230,14 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
 
     BearColor recolor(t_data.color[0],t_data.color[1],t_data.color[2],t_data.color[3]);
     ShaderSetter<BearColor>::SetUniform(textureShader.GetCurrentShaderId(),"spriteColor",recolor);
-    ShaderSetter<int>::SetUniform(textureShader.GetCurrentShaderId(),"image",0);
+    //ShaderSetter<int>::SetUniform(textureShader.GetCurrentShaderId(),"image",0);
 
     //Now render the sprite itself
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture( GL_TEXTURE_2D, t_texture->id );
 
-    glBindVertexArray(t_data.VAO);
+    glBindVertexArray(Painter::TextureVertexArray);
 
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -258,6 +252,9 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
     return true;
 }
 
+static void DrawVertex(Vertex &v,BearColor c,int drawMode){
+
+}
 
 
 BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter){

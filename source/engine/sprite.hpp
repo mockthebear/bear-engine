@@ -367,22 +367,22 @@ class Sprite{
             @param scale the original value is 1.
         */
         void SetScaleX(float scale=1.0f){
-            m_renderData.scale.x=scale;
+            m_renderData.GetScale().x=scale;
         };
 
         void SetScaleY(float scale=1.0f){
-            m_renderData.scale.y=scale;
+            m_renderData.GetScale().y=scale;
         };
         /**
-            *Scale the texture.
-            @param scale The scale in x and y codinates. Default argument is 1,1
+            *Change the sprite scale. Its an local scale, not shared.
+            @param scale the original value is 1.
         */
         void SetScale(Point t_scale = Point(1.0f,1.0f)){
-            m_renderData.scale = t_scale;
+            m_renderData.SetScale(t_scale);
         };
 
         Point GetScale(){
-            return m_renderData.scale;
+            return m_renderData.GetScale();;
         };
         /**
             *You can cut some color channels and reblend the sprite
