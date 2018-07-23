@@ -180,13 +180,9 @@ void Painter::DrawSquare(Rect box,BearColor color,bool outline,float angle){
         polygonShader.Bind();
     }
 
-    model = glm::translate(model, glm::vec3(box.x, box.y, 0.0f));
-    if (angle != 0){
-        model = glm::translate(model, glm::vec3(0.5f * box.w, 0.5f * box.h, 0.0f));
-        model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::translate(model, glm::vec3(-0.5f * box.w, -0.5f *box.h, 0.0f));
-    }
     model = glm::scale(model, glm::vec3(box.w,box.h, 1.0f));
+    model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::translate(model, glm::vec3(box.x, box.y, 0.0f));
 
 
     glm::mat4& projection = ScreenManager::GetInstance().GetProjection();
