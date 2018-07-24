@@ -3,102 +3,108 @@
 #include "../../settings/definitions.hpp"
 #include "../../framework/geometry.hpp"
 #include "../../framework/chainptr.hpp"
-//Used to manage all the sort of rendering stuff
+
 
 #include SDL_LIB_HEADER
 
 
 #include "../basetypes.hpp"
 #include "../shadermanager.hpp"
+#include "../../framework/vertex.hpp"
 #include <memory>
 #include <iostream>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 
 class ScreenManager;
 class Vertex;
 class Painter;
 
+class BasicRenderData{
+     public:
+        BasicRenderData():position(0.0f,0.0f),size(1.0f,1.0f),color(1.0f,1.0f,1.0f,1.0f),flip(0),m_scale(1.0f,1.0f),m_angle(0.0f){}
 
-class RenderData{
+        void SetAngle(float p_angle){
+            m_angle = p_angle;
+        }
+
+
+        void SetScale(Point p_scale){
+            m_scale = p_scale;
+        }
+
+        Point& GetScale(){return m_scale;};
+        float& GetAngle(){return m_angle;};
+
+        Point position;
+        Point size;
+
+        BearColor color;
+        uint8_t flip;
+
+    protected:
+        friend class Painter;
+
+        Point m_scale;
+        float m_angle;
+};
+
+
+class RenderData : public BasicRenderData{
     public:
-        RenderData():position(0.0f,0.0f),center(0.0f,0.0f),color{1.0f,1.0f,1.0f,1.0f},
-        flip(0),model(),m_modelUpdateNeeded(true),m_scale(1.0f,1.0f),m_angle(0.0f),
-        m_clip(0.0f,0.0f,0.0f,0.0f),m_forwardClip(0.0f,1.0f,0.0f,1.0f),TextureVertexArray(0),TextureVertexBuffer(0),TextureElementBuffer(0){};
+        RenderData():BasicRenderData(),center(0.0f,0.0f),m_clip(0.0f,0.0f,0.0f,0.0f),m_forwardClip(0.0f,1.0f,0.0f,1.0f),VertexArray(0),VertexBuffer(0),ElementBuffer(0){};
 
         ~RenderData(){
-            if (TextureVertexArray != 0){
-                glDeleteBuffers(1, &TextureVertexBuffer);
-                glDeleteBuffers(1, &TextureElementBuffer);
-                glDeleteVertexArrays(1, &TextureVertexArray);
-                TextureVertexArray = 0;
+            if (VertexArray != 0){
+                glDeleteBuffers(1, &VertexBuffer);
+                glDeleteBuffers(1, &ElementBuffer);
+                glDeleteVertexArrays(1, &VertexArray);
+                VertexArray = 0;
             }
         };
 
-    Point position;
-
-    Point center;
-    float color[4];
-    uint8_t flip;
 
 
-    glm::mat4 model;
-
-    void SetAngle(float p_angle){
-        if (p_angle != m_angle){
-            m_modelUpdateNeeded = true;
+        void SetClip(Rect r, Point textureSize){
+            m_clip = r;
+            if (textureSize.x == 0 || textureSize.y == 0){
+                m_forwardClip = Rect(0.0f,1.0f,0.0f,1.0f);
+                return;
+            }
+            m_forwardClip.x = m_clip.x / textureSize.x;
+            m_forwardClip.y =  ( m_clip.x + m_clip.w ) / textureSize.x;
+            m_forwardClip.w = m_clip.y / textureSize.y;
+            m_forwardClip.h = ( m_clip.y + m_clip.h ) / textureSize.y;
+            size.x = m_clip.w;
+            size.y = m_clip.h;
+            UpdateVertex();
         }
-        m_angle = p_angle;
-    }
 
 
-    void SetScale(Point p_scale){
-        if (p_scale != m_scale){
-           m_modelUpdateNeeded = true;
-        }
-        m_scale = p_scale;
-    }
+        Rect& GetClip(){return m_clip;};
 
-    void SetClip(Rect r, Point textureSize){
-        if (r.w != m_clip.w || r.h != m_clip.h){
-            m_modelUpdateNeeded = true;
-        }
-        m_clip = r;
-        if (textureSize.x == 0 || textureSize.y == 0){
-            m_forwardClip = Rect(0.0f,1.0f,0.0f,1.0f);
-            return;
-        }
-        m_forwardClip.x = m_clip.x / textureSize.x;
-        m_forwardClip.y =  ( m_clip.x + m_clip.w ) / textureSize.x;
-        m_forwardClip.w = m_clip.y / textureSize.y;
-        m_forwardClip.h = ( m_clip.y + m_clip.h ) / textureSize.y;
-        UpdateVertex();
-    }
+        Point center;
 
-    Point& GetScale(){return m_scale;};
-    float& GetAngle(){return m_angle;};
-    Rect& GetClip(){return m_clip;};
-
+        void Bind();
     private:
         friend class Painter;
 
-        bool m_modelUpdateNeeded;
-        Point m_scale;
-        float m_angle;
         Rect m_clip;
         Rect m_forwardClip;
 
         void UpdateVertex();
-        void UpdateModel();
 
-        GLuint TextureVertexArray;
-        GLuint TextureVertexBuffer;
-        GLuint TextureElementBuffer;
+        GLuint VertexArray;
+        GLuint VertexBuffer;
+        GLuint ElementBuffer;
 
 };
 
 typedef std::shared_ptr<RenderData> RenderDataPtr;
+typedef std::shared_ptr<BasicRenderData> BasicRenderDataPtr;
 
 
 typedef chain_ptr<BearTexture> TexturePtr;
@@ -123,37 +129,35 @@ class Painter{
         }
         return num;
     }
-        static void DrawVertex(Vertex &v,BearColor c,int drawMode = GL_TRIANGLES);
+    static void DrawVertex(VertexArrayObjectPtr v,BasicRenderDataPtr r,int drawMode = GL_TRIANGLES);
 
 
-        static void DrawSquare(Rect box,BearColor c,bool outline=false,float angle=0);
-        static void DrawLine(Point p1,Point p2,BearColor c,float thicc);
+    static void DrawSquare(Rect box,BearColor c,bool outline=false,float angle=0);
+    static void DrawLine(Point p1,Point p2,BearColor c,float thicc);
+    static glm::mat4 CalculateModel(BasicRenderDataPtr );
 
 
 
-
-    private:
-        friend class ScreenManager;
-        static bool SetupEnvoriment(ScreenManager *sm);
-        static int GetMaxTextureSize();
-        static void ResetViewPort(PointInt originalSize, PointInt newSize);
-
-        static void SetupShaders();
-
-        static Shader textureShader;
-        static Shader polygonShader;
+  private:
+    friend class ScreenManager;
 
 
-        static bool m_shaderBuilt;
+    static bool SetupEnvoriment(ScreenManager *sm);
+    static int GetMaxTextureSize();
+    static void ResetViewPort(PointInt originalSize, PointInt newSize);
+
+    static void SetupShaders();
+
+    static Shader textureShader;
+    static Shader polygonShader;
+
+
+    static bool m_shaderBuilt;
 
         //
 
-        static void SetupPolygonVAOs();
+    static void SetupPolygonVAOs();
 
-        static GLuint SharedVertexArray;
-        static GLuint SharedVertexBuffer;
-
-
-
-
+    static GLuint SharedVertexArray;
+    static GLuint SharedVertexBuffer;
 };
