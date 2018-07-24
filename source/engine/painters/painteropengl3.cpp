@@ -7,18 +7,13 @@
 #include "../renderhelp.hpp"
 #include "../../input/inputmanager.hpp"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 #include "../../framework/debughelper.hpp"
 
 
-void RenderData::UpdateModel(){
-    if (m_modelUpdateNeeded){
-
-        m_modelUpdateNeeded = false;
-    }
+void RenderData::Bind(){
+    glBindVertexArray(VertexArray);
+    glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementBuffer);
 }
 
 void RenderData::UpdateVertex(){
@@ -50,21 +45,21 @@ void RenderData::UpdateVertex(){
     };
 
 
-    if (TextureVertexArray == 0){
+    if (VertexArray == 0){
         static unsigned int indices[] = {
             0, 1, 3, // first triangle
             1, 2, 3  // second triangle
         };
-        glGenVertexArrays(1, &TextureVertexArray);
-        glGenBuffers(1, &TextureVertexBuffer);
-        glGenBuffers(1, &TextureElementBuffer);
+        glGenVertexArrays(1, &VertexArray);
+        glGenBuffers(1, &VertexBuffer);
+        glGenBuffers(1, &ElementBuffer);
 
-        glBindVertexArray(TextureVertexArray);
+        glBindVertexArray(VertexArray);
 
-        glBindBuffer(GL_ARRAY_BUFFER, TextureVertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, TextureElementBuffer);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementBuffer);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 
@@ -73,12 +68,11 @@ void RenderData::UpdateVertex(){
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)) );
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
     }else{
-        glBindBuffer(GL_ARRAY_BUFFER, TextureVertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-
-
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
@@ -191,10 +185,72 @@ void Painter::DrawSquare(Rect box,BearColor color,bool outline,float angle){
 }
 
 
+glm::mat4 Painter::CalculateModel(BasicRenderDataPtr t_data){
+    glm::mat4 model(1.0f);
+
+
+    model[3][0] += t_data->position.x;
+    model[3][1] += t_data->position.y;
+    model[3][2] += 0.0f;
+
+
+
+    if (t_data->m_angle != 0){
+
+
+        model[3][0] += 0.5f * t_data->size.x;
+        model[3][1] += 0.5f * t_data->size.y;
+
+        float theta = glm::radians(t_data->m_angle);
+
+        model[0][0] = cos(theta);
+        model[1][0] = -sin(theta);
+        model[0][1] = sin(theta);
+        model[1][1] = cos(theta);
+
+        float a = -0.5f * t_data->size.x;
+        float b = -0.5f * t_data->size.y;
+
+
+        model[3][1] += (b * model[0][0] + (a * model[0][1]));
+        model[3][0] += (b * model[1][0] + (a * model[1][1]));
+
+    }
+
+    model[0][0] = model[0][0] * (t_data->m_scale.x * t_data->size.x);
+    model[1][0] = model[1][0] * (t_data->m_scale.y * t_data->size.y);
+    model[0][1] = model[0][1] * (t_data->m_scale.x * t_data->size.x);
+    model[1][1] = model[1][1] * (t_data->m_scale.y * t_data->size.y);
+    return model;
+}
+
+void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_data,int drawMode){
+
+    glm::mat4 model = CalculateModel(t_data);
+    glm::mat4& projection = ScreenManager::GetInstance().GetProjection();
+
+
+    polygonShader.Bind();
+
+
+
+    ShaderSetter<glm::mat4>::SetUniform(textureShader.GetCurrentShaderId(),"projection",projection);
+    ShaderSetter<glm::mat4>::SetUniform(textureShader.GetCurrentShaderId(),"model",model);
+    BearColor recolor(t_data->color[0],t_data->color[1],t_data->color[2],t_data->color[3]);
+    ShaderSetter<BearColor>::SetUniform(textureShader.GetCurrentShaderId(),"iColor",recolor);
+
+    vertexData->Bind();
+    glDrawElements(drawMode, vertexData->GetIndexCount(), GL_UNSIGNED_INT, 0);
+
+
+
+}
+
 bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     if (!t_texture || t_texture->id == 0){
         return false;
     }
+    glEnable(GL_TEXTURE_2D);
 
     //Benchmark
     //
@@ -207,75 +263,28 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     // Com operaçoes de model: 0.30
 
 
-
-    glm::mat4 model(1.0f);
-
-
-
-
-    model[3][0] += t_data->position.x;
-    model[3][1] += t_data->position.y;
-    model[3][2] += 0.0f;
-
-
-
-    if (t_data->m_angle != 0){
-
-
-        model[3][0] += 0.5f * t_data->m_clip.w;
-        model[3][1] += 0.5f * t_data->m_clip.h;
-
-        float theta = glm::radians(t_data->m_angle);
-
-        model[0][0] = cos(theta);
-        model[1][0] = -sin(theta);
-        model[0][1] = sin(theta);
-        model[1][1] = cos(theta);
-
-        float a = -0.5f * t_data->m_clip.w;
-        float b = -0.5f * t_data->m_clip.h;
-
-
-        model[3][1] += (b * model[0][0] + (a * model[0][1]));
-        model[3][0] += (b * model[1][0] + (a * model[1][1]));
-
-    }
-
-    model[0][0] = model[0][0] * (t_data->m_scale.x * t_data->m_clip.w);
-    model[1][0] = model[1][0] * (t_data->m_scale.y * t_data->m_clip.h);
-    model[0][1] = model[0][1] * (t_data->m_scale.x * t_data->m_clip.w);
-    model[1][1] = model[1][1] * (t_data->m_scale.y * t_data->m_clip.h);
-
-
-    //Setup shader
+    glm::mat4& projection = ScreenManager::GetInstance().GetProjection();
+    glm::mat4 model = CalculateModel(t_data);
 
     textureShader.Bind();
 
-    unsigned int transformLoc;
-    glm::mat4& projection = ScreenManager::GetInstance().GetProjection();
-    transformLoc = glGetUniformLocation(textureShader.GetCurrentShaderId(), "projection");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-    transformLoc = glGetUniformLocation(textureShader.GetCurrentShaderId(), "model");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model));
-
+    ShaderSetter<glm::mat4>::SetUniform(textureShader.GetCurrentShaderId(),"projection",projection);
+    ShaderSetter<glm::mat4>::SetUniform(textureShader.GetCurrentShaderId(),"model",model);
     BearColor recolor(t_data->color[0],t_data->color[1],t_data->color[2],t_data->color[3]);
-    ShaderSetter<BearColor>::SetUniform(textureShader.GetCurrentShaderId(),"spriteColor",recolor);
+    ShaderSetter<BearColor>::SetUniform(textureShader.GetCurrentShaderId(),"iColor",recolor);
 
 
     ShaderSetter<int>::SetUniform(textureShader.GetCurrentShaderId(),"image",0);
 
 
+
     glBindTexture( GL_TEXTURE_2D, t_texture->id );
 
-    glBindVertexArray(t_data->TextureVertexArray);
+    t_data->Bind();
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     return true;
-}
-
-static void DrawVertex(Vertex &v,BearColor c,int drawMode){
-
 }
 
 
@@ -332,7 +341,7 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
 	SDL_GL_SwapWindow(sm->m_window);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDisable( GL_DEPTH_TEST );
+    //glDisable( GL_DEPTH_TEST );
     //glEnable(GL_CULL_FACE);
 
     glGenVertexArrays(1, &sm->m_vertexArrayID);

@@ -39,6 +39,26 @@ BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod
 
 void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8_t b,uint8_t a,int sides){
 
+
+    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+    static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
+
+
+    Circle c(p1.x,p1.x,radius);
+    renderData->position = p1;
+    renderData->size.x = radius;
+    renderData->size.y = radius;
+    renderData->color = BearColor(r,g,b,a);
+
+    vertexBuffer->clear();
+
+    vertexBuffer->vertexes.Generate(c,sides);
+    vertexBuffer->SetupVertexes();
+
+
+    Painter::DrawVertex(vertexBuffer,renderData,GL_TRIANGLE_FAN);
+
+
     /*glLoadIdentity();
     glTranslatef(p1.x, p1.y, 0.0f);
 
@@ -58,8 +78,31 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
 
 
 void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline,float angle){
-    Painter::DrawSquare(box,BearColor(r,g,b,a),outline,angle);
-    /*glDisable(GL_TEXTURE_2D);
+
+    //
+
+    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+    static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
+
+    renderData->position = box.GetPos();
+    renderData->size.x = box.w;
+    renderData->size.y = box.h;
+    renderData->color = BearColor(r,g,b,a);
+
+    vertexBuffer->clear();
+
+    vertexBuffer->vertexes.Generate(box);
+    vertexBuffer->SetupVertexes();
+
+    if (!outline){
+        Painter::DrawVertex(vertexBuffer,renderData,GL_TRIANGLE_FAN);
+    }else{
+        Painter::DrawVertex(vertexBuffer,renderData,GL_LINE_LOOP);
+    }
+
+
+
+    /*
     glLoadIdentity();
     glTranslatef(box.x, box.y, 0.0f);
     if (!outline){
@@ -79,7 +122,30 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
 }
 
 void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thicc){
-    Painter::DrawLine(p1,p2,BearColor(r,g,b,a),thicc);
+
+    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+    static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
+
+    float dist = p1.getDistance(p2);
+
+    renderData->position = p1;
+    renderData->size.x = (p2.x - p1.x);
+    renderData->size.y = (p2.y - p1.y);
+    renderData->color = BearColor(r,g,b,a);
+
+    renderData->SetAngle( atan( (p2.y - p1.y) / (p2.x - p1.x) ) );
+
+    vertexBuffer->clear();
+
+    vertexBuffer->vertexes.Generate(p1,p2);
+    vertexBuffer->SetupVertexes();
+
+
+    Painter::DrawVertex(vertexBuffer,renderData,GL_LINES);
+
+
+
+    //Painter::DrawLine(p1,p2,BearColor(r,g,b,a),thicc);
     /*glLoadIdentity();
     glLineWidth(thicc);
     glColor4ub( r,g,b,a );

@@ -10,6 +10,11 @@
 #include <typeinfo>
 #include <vector>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+
 template <typename T> struct ShaderSetter{
      static bool SetUniform(GLuint shdr,const char *str,T var){
         bear::out << "Undefined "<<typeid(T).name()<<"\n";
@@ -51,6 +56,18 @@ template<> struct ShaderSetter<std::vector<Point>>{
         return true;
     };
 };
+
+template<> struct ShaderSetter<glm::mat4>{
+    static bool SetUniform(GLuint shdr, const char *str, glm::mat4 &data){
+        GLint loc = glGetUniformLocation(shdr, str );
+        if (loc == -1){
+            return false;
+        }
+        glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(data));
+        return true;
+    };
+};
+
 
 template<> struct ShaderSetter<std::vector<Point3>>{
     static uint32_t maxSize;
