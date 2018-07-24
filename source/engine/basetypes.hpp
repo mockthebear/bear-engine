@@ -7,10 +7,21 @@ typedef class BearColor{
         BearColor(float f1):r(f1),g(f1),b(f1),a(f1){};
         BearColor(float f1,float f2,float f3,float f4):r(f1),g(f2),b(f3),a(f4){};
         BearColor(uint8_t f1,uint8_t f2,uint8_t f3,uint8_t f4):r(f1/255.0f),g(f2/255.0f),b(f3/255.0f),a(f4/255.0f){};
-        float r;
-        float g;
-        float b;
-        float a;
+        float r,g,b,a;
+        float& operator[](int x){
+            switch (x){
+                case 0:
+                    return r;
+                case 1:
+                    return g;
+                case 2:
+                    return b;
+                case 3:
+                    return a;
+                default:
+                    return a;
+            }
+        }
 } BearColor;
 
 enum TextureLoadMethodEnum{
