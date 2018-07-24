@@ -7,7 +7,7 @@ class Test_Shapes: public State{
     public:
         Test_Shapes(){
             requestQuit = requestDelete = false;
-            duration = 30.0f;
+            duration = 130.0f;
         };
         ~Test_Shapes(){
 
@@ -28,6 +28,10 @@ class Test_Shapes: public State{
             RenderHelp::DrawLineColor(Point(96,96),Point(128,128),255,0,255);
             RenderHelp::DrawLineColor(Point(128,128),Point(98,220),255,0,0,255,4);
             RenderHelp::DrawSquareColor(Rect(98,220,64,64),255,100,100,255,true);
+            RenderHelp::DrawSquareColor(Rect(220,220,120,64),255,255,255,255,false);
+
+
+            RenderHelp::DrawLineColor(Point(400,400),g_input.GetMouse(),255,255,255,255,2);
 
 
             RenderHelp::DrawCircleColor(Point(98,220),32,100,100,255,100);

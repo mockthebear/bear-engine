@@ -78,8 +78,9 @@ class Test_RenderSpeed: public State{
             sw.Reset();
             RenderHelp::DrawSquareColor(Rect(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H),100,100,100,255);
             for (int i=0;i<state;i++){
-                tiles.SetClip((rand()%10) * 16,(rand()%10) * 16,16,16);
+
                 for (int a=1;a<10;a++){
+                    tiles.SetClip((rand()%10) * 16,(rand()%10) * 16,16,16);
                     tiles.Render(Point( (i % 60) * 16, (i/60)*16 )) ;
                 }
             }
