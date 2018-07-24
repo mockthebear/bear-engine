@@ -96,8 +96,6 @@ class RenderData{
         GLuint TextureVertexBuffer;
         GLuint TextureElementBuffer;
 
-
-
 };
 
 typedef std::shared_ptr<RenderData> RenderDataPtr;

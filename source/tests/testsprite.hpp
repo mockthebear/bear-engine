@@ -94,7 +94,9 @@ class Test_Sprite: public State{
 
             background.Render(0,0,0);
             //
+            bearHead.SetAlpha(120);
             bearHead.Render(Point(64,64),duration * 3.6f * 2.0f);
+            raccoonHead.SetScale(Point(2.0f,1.0f));
             raccoonHead.Render(Point(120,64),0);
             sheet.Render(200,200);
             sheet2.Render(232,200);
