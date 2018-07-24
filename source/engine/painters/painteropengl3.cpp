@@ -211,16 +211,41 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     glm::mat4 model(1.0f);
 
 
-    model = glm::translate(model, glm::vec3(t_data->position.x, t_data->position.y, 0.0f));
 
-    if (t_data->m_angle == 0){
-        model = glm::translate(model, glm::vec3(0.5f * t_data->m_clip.w, 0.5f * t_data->m_clip.h, 0.0f));
-        model = glm::rotate(model, glm::radians(t_data->m_angle), glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::translate(model, glm::vec3(-0.5f * t_data->m_clip.w, -0.5f * t_data->m_clip.h, 0.0f));
+
+    model[3][0] += t_data->position.x;
+    model[3][1] += t_data->position.y;
+    model[3][2] += 0.0f;
+
+
+
+    if (t_data->m_angle != 0){
+
+
+        model[3][0] += 0.5f * t_data->m_clip.w;
+        model[3][1] += 0.5f * t_data->m_clip.h;
+
+        float theta = glm::radians(t_data->m_angle);
+
+        model[0][0] = cos(theta);
+        model[1][0] = -sin(theta);
+        model[0][1] = sin(theta);
+        model[1][1] = cos(theta);
+
+        float a = -0.5f * t_data->m_clip.w;
+        float b = -0.5f * t_data->m_clip.h;
+
+
+        model[3][1] += (b * model[0][0] + (a * model[0][1]));
+        model[3][0] += (b * model[1][0] + (a * model[1][1]));
+
     }
 
+    model[0][0] = model[0][0] * (t_data->m_scale.x * t_data->m_clip.w);
+    model[1][0] = model[1][0] * (t_data->m_scale.y * t_data->m_clip.h);
+    model[0][1] = model[0][1] * (t_data->m_scale.x * t_data->m_clip.w);
+    model[1][1] = model[1][1] * (t_data->m_scale.y * t_data->m_clip.h);
 
-    model = glm::scale(model, glm::vec3( t_data->m_scale.x * t_data->m_clip.w, t_data->m_scale.y * t_data->m_clip.h, 1.0f));
 
     //Setup shader
 
