@@ -1,4 +1,6 @@
 #include "vertex.hpp"
+#include "../engine/basetypes.hpp"
+#include "../engine/painters/painters.hpp"
 
 
 int Vertex::Generate(Rect r){
@@ -62,7 +64,7 @@ int Vertex::Generate(Circle r, int triangleAmount){
 #if defined(RENDER_OPENGL3) || defined(RENDER_OPENGL)
 
 VertexArrayObject::~VertexArrayObject(){
-    if (m_vertexArray != 0){
+    if (m_vertexArray != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
         glDeleteBuffers(1, &m_vertexBuffer);
         glDeleteBuffers(1, &m_elementBuffer);
         glDeleteVertexArrays(1, &m_vertexArray);
@@ -71,7 +73,7 @@ VertexArrayObject::~VertexArrayObject(){
 }
 
 void VertexArrayObject::Bind(){
-    if (m_vertexArray != 0){
+    if (m_vertexArray != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
         glBindVertexArray(m_vertexArray);
         glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
@@ -79,6 +81,9 @@ void VertexArrayObject::Bind(){
 }
 
 bool VertexArrayObject::SetupVertexes(){
+    if (!Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
+        return false;
+    }
     bool generatedBuffers = false;
     if (m_vertexArray == 0){
         glGenVertexArrays(1, &m_vertexArray);

@@ -113,6 +113,9 @@ class Painter{
   public:
     static bool RenderTexture(BearTexture *ptr,RenderDataPtr data);
     static BearTexture * MakeTexture(PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter);
+    static void DrawVertex(VertexArrayObjectPtr v,BasicRenderDataPtr r,int drawMode = GL_TRIANGLES);
+    static glm::mat4 CalculateModel(BasicRenderDataPtr );
+
 
     static uint32_t powerOfTwo( uint32_t num ){
         if( num != 0 ){
@@ -129,13 +132,10 @@ class Painter{
         }
         return num;
     }
-    static void DrawVertex(VertexArrayObjectPtr v,BasicRenderDataPtr r,int drawMode = GL_TRIANGLES);
 
 
-    static void DrawSquare(Rect box,BearColor c,bool outline=false,float angle=0);
-    static void DrawLine(Point p1,Point p2,BearColor c,float thicc);
-    static glm::mat4 CalculateModel(BasicRenderDataPtr );
 
+    static bool CanSupport(PainterSupport sup);
 
 
   private:
@@ -148,16 +148,11 @@ class Painter{
 
     static void SetupShaders();
 
-    static Shader textureShader;
-    static Shader polygonShader;
+
 
 
     static bool m_shaderBuilt;
 
-        //
-
-    static void SetupPolygonVAOs();
-
-    static GLuint SharedVertexArray;
-    static GLuint SharedVertexBuffer;
+    static Shader textureShader;
+    static Shader polygonShader;
 };

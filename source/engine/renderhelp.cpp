@@ -57,23 +57,6 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
 
 
     Painter::DrawVertex(vertexBuffer,renderData,GL_TRIANGLE_FAN);
-
-
-    /*glLoadIdentity();
-    glTranslatef(p1.x, p1.y, 0.0f);
-
-    glColor4ub( r,g,b,a );
-
-    glBegin(GL_TRIANGLE_FAN);
-
-      glVertex2f(0,0);
-      GLfloat angle;
-      for (int i = 0; i <= sides; i++) {
-         angle = i * 2.0f * Geometry::PI() / sides;
-         glVertex2f( cos(angle) *  radius, sin(angle) *  radius);
-      }
-    glEnd();*/
-
 }
 
 
@@ -87,6 +70,7 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
     renderData->position = box.GetPos();
     renderData->size.x = box.w;
     renderData->size.y = box.h;
+    renderData->SetAngle(glm::radians(angle));
     renderData->color = BearColor(r,g,b,a);
 
     vertexBuffer->clear();
@@ -99,26 +83,6 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
     }else{
         Painter::DrawVertex(vertexBuffer,renderData,GL_LINE_LOOP);
     }
-
-
-
-    /*
-    glLoadIdentity();
-    glTranslatef(box.x, box.y, 0.0f);
-    if (!outline){
-        glBegin( GL_TRIANGLE_FAN );
-    }else{
-        glBegin( GL_LINE_LOOP );
-    }
-        glColor4ub( r,g,b,a );
-        glVertex2f( 0.0f,0.0f );
-        glVertex2f(  box.w, 0.0f );
-        glVertex2f( box.w,  box.h );
-        glVertex2f( 0.0f,  box.h );
-    glEnd();
-    DebugHelper::DisplayGlError("DrawSquareColor");*/
-
-
 }
 
 void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thicc){
@@ -126,14 +90,14 @@ void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,u
     static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
     static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
 
-    float dist = p1.getDistance(p2);
-
     renderData->position = p1;
     renderData->size.x = (p2.x - p1.x);
     renderData->size.y = (p2.y - p1.y);
     renderData->color = BearColor(r,g,b,a);
 
-    renderData->SetAngle( atan( (p2.y - p1.y) / (p2.x - p1.x) ) );
+    if (!Painter::CanSupport(SUPPORT_ORTOHOVERTEX)){
+        renderData->SetAngle( atan( (p2.y - p1.y) / (p2.x - p1.x) ) );
+    }
 
     vertexBuffer->clear();
 
@@ -142,19 +106,6 @@ void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,u
 
 
     Painter::DrawVertex(vertexBuffer,renderData,GL_LINES);
-
-
-
-    //Painter::DrawLine(p1,p2,BearColor(r,g,b,a),thicc);
-    /*glLoadIdentity();
-    glLineWidth(thicc);
-    glColor4ub( r,g,b,a );
-    glBegin(GL_LINES);
-        glVertex3f(p1.x, p1.y, 0.0f);
-        glVertex3f(p2.x, p2.y, 0.0f);
-    glEnd();
-    glLineWidth(1);
-    DebugHelper::DisplayGlError("DrawLineColor");*/
 }
 
 uint8_t RenderHelp::GetR(uint32_t r){

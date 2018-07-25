@@ -10,6 +10,20 @@
 #include "../../framework/debughelper.hpp"
 
 
+bool Painter::CanSupport(PainterSupport sup){
+    switch(sup){
+        case SUPPORT_SHADERS:
+            return true;
+        case SUPPORT_VERTEXBUFFER:
+            return true;
+        case SUPPORT_ORTOHOVERTEX:
+            return false;
+        default:
+            return false;
+    }
+}
+
+
 void RenderData::Bind(){
     glBindVertexArray(VertexArray);
     glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
@@ -83,107 +97,6 @@ void RenderData::UpdateVertex(){
 bool Painter::m_shaderBuilt = false;
 Shader Painter::textureShader;
 Shader Painter::polygonShader;
-
-GLuint Painter::SharedVertexArray;
-GLuint Painter::SharedVertexBuffer;
-
-
-
-void Painter::SetupPolygonVAOs(){
-    glGenBuffers(1, &SharedVertexBuffer);
-}
-
-void Painter::DrawLine(Point p1,Point p2,BearColor color,float thicc){
-    /*glm::mat4 model(1.0f);
-
-    bool noShader = Shader::GetCurrentShaderId() == 0;
-
-    if (noShader){
-        polygonShader.Bind();
-    }
-
-    Rect box(p1.x,p1.y,p2.x-p1.x, p2.y-p1.y);
-
-
-    glm::mat4& projection = ScreenManager::GetInstance().GetProjection();
-
-
-
-
-    float angle =  p1.GetDirection(p2);
-
-
-    model = glm::translate(model, glm::vec3(box.x, box.y, 0.0f));
-    if (angle != 0){
-
-        model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
-
-    }
-    model = glm::scale(model, glm::vec3(box.w,box.h, 1.0f));
-
-
-
-    unsigned int transformLoc = glGetUniformLocation(Shader::GetCurrentShaderId(), "model");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-    transformLoc = glGetUniformLocation(Shader::GetCurrentShaderId(), "projection");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-    ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"spriteColor",color);
-
-    glBindVertexArray(VAO_2);
-
-
-    glDrawArrays(GL_LINES, 0, 2);
-
-    glBindVertexArray(0);
-
-    if (noShader){
-        polygonShader.Unbind();
-    }*/
-
-}
-
-void Painter::DrawSquare(Rect box,BearColor color,bool outline,float angle){
-    /*
-    glm::mat4 model(1.0f);
-
-    bool noShader = Shader::GetCurrentShaderId() == 0;
-
-    if (noShader){
-        polygonShader.Bind();
-    }
-
-    model = glm::scale(model, glm::vec3(box.w,box.h, 1.0f));
-    model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
-    model = glm::translate(model, glm::vec3(box.x, box.y, 0.0f));
-
-
-    glm::mat4& projection = ScreenManager::GetInstance().GetProjection();
-
-
-
-    unsigned int transformLoc = glGetUniformLocation(Shader::GetCurrentShaderId(), "model");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-    transformLoc = glGetUniformLocation(Shader::GetCurrentShaderId(), "projection");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-    ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"spriteColor",color);
-
-    glBindVertexArray(VAO_4);
-    if (outline){
-        glDrawArrays(GL_LINE_LOOP, 0, 4);
-    }else{
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-    }
-    glBindVertexArray(0);
-
-    if (noShader){
-        polygonShader.Unbind();
-    }*/
-}
-
 
 glm::mat4 Painter::CalculateModel(BasicRenderDataPtr t_data){
     glm::mat4 model(1.0f);
@@ -349,14 +262,13 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
 
 
     SetupShaders();
-    SetupPolygonVAOs();
-
     return true;
 }
 
 int Painter::GetMaxTextureSize(){
-
-    return 1;
+    int maxSize;
+	glGetIntegerv (GL_MAX_TEXTURE_SIZE, &maxSize);
+    return maxSize;
 }
 
 void Painter::ResetViewPort(PointInt originalSize, PointInt newSize){

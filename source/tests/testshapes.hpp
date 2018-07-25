@@ -31,6 +31,9 @@ class Test_Shapes: public State{
             RenderHelp::DrawSquareColor(Rect(220,220,120,64),255,255,255,255,false);
 
 
+            RenderHelp::DrawSquareColor(Rect(320,320,120,64),255,255,255,255,false,45);
+
+
             RenderHelp::DrawLineColor(Point(400,400),g_input.GetMouse(),255,255,255,255,2);
 
 

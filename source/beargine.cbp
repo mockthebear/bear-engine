@@ -73,7 +73,7 @@
 					<Add option="-pg" />
 					<Add option="-g" />
 					<Add option="-DIGNORESTEAM" />
-					<Add option="-DRENDER_OPENGL3" />
+					<Add option="-DRENDER_OPENGL" />
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
@@ -210,6 +210,8 @@
 		<Unit filename="framework/userfile.hpp" />
 		<Unit filename="framework/utils.cpp" />
 		<Unit filename="framework/utils.hpp" />
+		<Unit filename="framework/vertex.cpp" />
+		<Unit filename="framework/vertex.hpp" />
 		<Unit filename="framework/xml.cpp" />
 		<Unit filename="framework/xml.hpp" />
 		<Unit filename="game/gamebehavior.cpp" />

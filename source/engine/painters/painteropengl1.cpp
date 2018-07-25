@@ -4,20 +4,55 @@
 #include "../screenmanager.hpp"
 #include "../../framework/debughelper.hpp"
 
-bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
+void RenderData::UpdateVertex(){}
+
+bool Painter::CanSupport(PainterSupport sup){
+    switch(sup){
+        case SUPPORT_SHADERS:
+            return true;
+        case SUPPORT_VERTEXBUFFER:
+            return false;
+        case SUPPORT_ORTOHOVERTEX:
+            return true;
+        default:
+            return false;
+    }
+}
+
+void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_data,int drawMode){
+    glLoadIdentity();
+    glTranslatef(t_data->position.x, t_data->position.y, 0.0f);
+    glRotatef( glm::degrees(t_data->m_angle), 0.f, 0.f, 1.f );
+    glBegin( drawMode );
+        glColor4fv(t_data->color.Get4fv());
+        int i = 0;
+        float v1 = 0;
+        for (auto &it : vertexData->vertexes.vertexData){
+            if (i == 0){
+                v1 = it;
+                i = 1;
+            }else{
+                glVertex2f( v1 * t_data->size.x, it * t_data->size.y );
+                i = 0;
+            }
+        }
+    glEnd();
+}
+
+bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     if (!t_texture){
         return false;
     }
 
-    GLfloat texLeft = t_data->forwardClip.x;
-    GLfloat texRight =  t_data->forwardClip.y;
-    GLfloat texTop = t_data->forwardClip.w;
-    GLfloat texBottom = t_data->forwardClip.h;
+    GLfloat texLeft = t_data->m_forwardClip.x;
+    GLfloat texRight =  t_data->m_forwardClip.y;
+    GLfloat texTop = t_data->m_forwardClip.w;
+    GLfloat texBottom = t_data->m_forwardClip.h;
 
 
 
-    GLfloat quadWidth = t_data->clip.w ;
-    GLfloat quadHeight = t_data->clip.h ;
+    GLfloat quadWidth = t_data->size.x;
+    GLfloat quadHeight = t_data->size.y;
 
     glLoadIdentity();
 
@@ -25,19 +60,19 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderData &t_data){
 
     glBindTexture( GL_TEXTURE_2D, t_texture->id );
 
-    glColor4fv(t_data->color);
+    glColor4fv(t_data->color.Get4fv());
 
 
 
 
-    glScalef(t_data->scale.x , t_data->scale.y , 1.0f);
+    glScalef(t_data->m_scale.x , t_data->m_scale.y , 1.0f);
 
     glTranslatef(
-        (t_data->position.x * (1.0f/t_data->scale.x)  + quadWidth  / 2.f  ) + (- t_data->center.x* (t_data->scale.x)  + t_data->center.x),
-        (t_data->position.y * (1.0f/t_data->scale.y)  + quadHeight / 2.f  ) + (- t_data->center.y* (t_data->scale.y)  + t_data->center.y),
+        (t_data->position.x * (1.0f/t_data->m_scale.x)  + quadWidth  / 2.f  ) + (- t_data->center.x* (t_data->m_scale.x)  + t_data->center.x),
+        (t_data->position.y * (1.0f/t_data->m_scale.y)  + quadHeight / 2.f  ) + (- t_data->center.y* (t_data->m_scale.y)  + t_data->center.y),
     0.f);
 
-    glRotatef( t_data->angle, 0.f, 0.f, 1.f );
+    glRotatef( t_data->m_angle, 0.f, 0.f, 1.f );
 
 
 

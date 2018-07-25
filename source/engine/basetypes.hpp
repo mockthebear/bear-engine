@@ -22,6 +22,9 @@ typedef class BearColor{
                     return a;
             }
         }
+        float *Get4fv(){
+            return &r;
+        }
 } BearColor;
 
 enum TextureLoadMethodEnum{
@@ -97,3 +100,10 @@ class BearTexture{
         GLenum mode;
 
 };
+
+enum PainterSupport{
+    SUPPORT_SHADERS = 0,
+    SUPPORT_VERTEXBUFFER,
+    SUPPORT_ORTOHOVERTEX,
+};
+
