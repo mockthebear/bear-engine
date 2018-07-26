@@ -27,6 +27,7 @@
 #include "../tests/testsocket.hpp"
 #include "../tests/testsound.hpp"
 #include "../tests/testrenderspeed.hpp"
+#include "../tests/testpointtileset.hpp"
 
 
 
@@ -97,8 +98,9 @@ bool GameBehavior::OnLoad(){
     Game::GetInstance()->AddState(new Test_Shader());
     Game::GetInstance()->AddState(new Test_RenderSpeed());
     Game::GetInstance()->AddState(new Test_Text());
+    Game::GetInstance()->AddState(new Test_PSTILESET());
     Game::GetInstance()->AddState(new Test_Sprite());
-    Game::GetInstance()->AddState(new Test_Pool());
+    //Game::GetInstance()->AddState(new Test_Pool());
     //Game::GetInstance()->AddState(new Test_Socket());
     //Game::GetInstance()->AddState(new Test_Sound());
     Game::GetInstance()->AddState(new Test_Shapes());
