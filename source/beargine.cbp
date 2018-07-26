@@ -140,6 +140,7 @@
 		<Unit filename="engine/collision.hpp" />
 		<Unit filename="engine/defaultbehavior.cpp" />
 		<Unit filename="engine/defaultbehavior.hpp" />
+		<Unit filename="engine/defaultshaders.cpp" />
 		<Unit filename="engine/gamebase.cpp" />
 		<Unit filename="engine/gamebase.hpp" />
 		<Unit filename="engine/genericstate.cpp" />
