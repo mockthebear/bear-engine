@@ -1,0 +1,19 @@
+#version 330 core
+
+layout (location = 0) in vec2 aPos;
+layout (location = 1) in float aTileId;
+
+
+out VS_OUT {
+	float tileId;
+} vs_out;
+
+
+
+
+void main()
+{
+    gl_Position = vec4(aPos, 0.0, 1.0);
+    vs_out.tileId = aTileId;
+
+}
