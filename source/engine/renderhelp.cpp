@@ -68,7 +68,7 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
     renderData->position = box.GetPos();
     renderData->size.x = box.w;
     renderData->size.y = box.h;
-    renderData->SetAngle(glm::radians(angle));
+    renderData->SetAngle(angle);
     renderData->color = BearColor(r,g,b,a);
 
     vertexBuffer->clear();

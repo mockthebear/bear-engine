@@ -65,8 +65,11 @@ bool Shader::LoadShader(int mode,const char * shdr){
         return false;
 	}
 
+
 	glAttachShader( m_shaderId, thisShader );
 	glDeleteShader( thisShader );
+
+
 	return true;
 }
 
@@ -78,6 +81,12 @@ bool Shader::Link(){
 		ProgramError( m_shaderId );
         return false;
     };
+    uint32_t currShader = Shader::GetCurrentShaderId();
+    glUseProgram(m_shaderId);
+    BearColor col(1.0f,1.0f,1.0f,1.0f);
+    ShaderSetter<BearColor>::SetUniform(m_shaderId,"iColor",col);
+    ShaderSetter<int>::SetUniform(m_shaderId,"image",0);
+    glUseProgram(currShader);
     return true;
 }
 

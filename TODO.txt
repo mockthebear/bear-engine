@@ -1,0 +1,6 @@
+Passar target texture para painter
+Modificar classe particula para animated effects
+Criar classe de particulas mesmo -> Particulas como point sprites
+sub pixel rendering/rasterization em textos
+
+refazer tileset para renderizar com point sprite e varias coisas
