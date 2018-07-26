@@ -10,6 +10,7 @@ float *ShaderSetter<std::vector<Point>>::arr = nullptr;
 uint32_t ShaderSetter<std::vector<Point3>>::maxSize = 0;
 float *ShaderSetter<std::vector<Point3>>::arr = nullptr;
 
+
 GLuint Shader::lastShader = 0;
 
 
@@ -36,7 +37,19 @@ bool Shader::Create(){
     return true;
 }
 
-
+bool Shader::CompileFromString(int type,const char * shdr){
+    if (m_shaderId == 0){
+        if (!Create()){
+            bear::out << "Failed to create shader type "<<type<<"\n";
+            return false;
+        }
+    }
+    if (!LoadShader(type,shdr)){
+        bear::out << "Failed to load string shader "<<type<<"\n";
+        return false;
+    }
+    return true;
+}
 
 bool Shader::LoadShader(int mode,const char * shdr){
     GLint status;

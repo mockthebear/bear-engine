@@ -165,17 +165,25 @@ void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_da
 
     glm::mat4 model = CalculateModel(t_data);
 
-    polygonShader.Bind();
+    bool noShader = Shader::GetCurrentShaderId() == 0;
+
+    if (noShader){
+        polygonShader.Bind();
+    }
+
+    ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Projection);
+    ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"model",model);
+    ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"iColor",t_data->color);
+    ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image",0);
 
 
-
-    ShaderSetter<glm::mat4>::SetUniform(textureShader.GetCurrentShaderId(),"projection",Projection);
-    ShaderSetter<glm::mat4>::SetUniform(textureShader.GetCurrentShaderId(),"model",model);
-    BearColor recolor(t_data->color[0],t_data->color[1],t_data->color[2],t_data->color[3]);
-    ShaderSetter<BearColor>::SetUniform(textureShader.GetCurrentShaderId(),"iColor",recolor);
 
     vertexData->Bind();
     glDrawElements(drawMode, vertexData->GetIndexCount(), GL_UNSIGNED_INT, 0);
+
+    if (noShader){
+        polygonShader.Unbind();
+    }
 
 
 
@@ -201,15 +209,16 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
 
     glm::mat4 model = CalculateModel(t_data);
 
-    textureShader.Bind();
+    bool noShader = Shader::GetCurrentShaderId() == 0;
 
-    ShaderSetter<glm::mat4>::SetUniform(textureShader.GetCurrentShaderId(),"projection",Projection);
-    ShaderSetter<glm::mat4>::SetUniform(textureShader.GetCurrentShaderId(),"model",model);
-    BearColor recolor(t_data->color[0],t_data->color[1],t_data->color[2],t_data->color[3]);
-    ShaderSetter<BearColor>::SetUniform(textureShader.GetCurrentShaderId(),"iColor",recolor);
+    if (noShader){
+        textureShader.Bind();
+    }
 
-
-    ShaderSetter<int>::SetUniform(textureShader.GetCurrentShaderId(),"image",0);
+    ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Projection);
+    ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"model",model);
+    ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"iColor",t_data->color);
+    ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image",0);
 
 
 
@@ -218,6 +227,10 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     t_data->Bind();
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    if (noShader){
+        textureShader.Unbind();
+    }
 
     return true;
 }
@@ -297,11 +310,13 @@ int Painter::GetMaxTextureSize(){
 void Painter::SetupShaders(){
     if (!m_shaderBuilt){
         m_shaderBuilt = true;
-        polygonShader.Compile(GL_VERTEX_SHADER,"quadvertex.glvs");
-        polygonShader.Compile(GL_FRAGMENT_SHADER,"quadfrag.glfs");
+
+        polygonShader.CompileFromString(GL_VERTEX_SHADER, Shader::DefaultQuadVertexShader);
+        polygonShader.CompileFromString(GL_FRAGMENT_SHADER, Shader::DefaultQuadFragmentShader);
         polygonShader.Link();
-        textureShader.Compile(GL_VERTEX_SHADER,"sprvertex.glvs");
-        textureShader.Compile(GL_FRAGMENT_SHADER,"sprfrag.glfs");
+
+        textureShader.CompileFromString(GL_VERTEX_SHADER, Shader::DefaultTextureVertexShader);
+        textureShader.CompileFromString(GL_FRAGMENT_SHADER, Shader::DefaultTextureFragmentShader);
         textureShader.Link();
     }
 }

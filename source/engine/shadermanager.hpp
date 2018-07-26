@@ -198,6 +198,7 @@ class Shader{
         bool LoadShader(int type,const char * shdr);
         bool Link();
 
+        bool CompileFromString(int type,const char * shdr);
         bool Compile(int type,std::string fragmentFilePath);
         bool Bind();
 
@@ -217,10 +218,18 @@ class Shader{
         uint32_t GetId(){return m_shaderId;};
 
 
+        static const char *DefaultTextureVertexShader;
+        static const char *DefaultTextureFragmentShader;
+
+        static const char *DefaultQuadVertexShader;
+        static const char *DefaultQuadFragmentShader;
+
+
     private:
+
         void ProgramError( GLuint program );
         void ShaderError( GLuint shader );
 
-        GLuint m_shaderId,m_fragmentShader,m_vertexShader;
+        GLuint m_shaderId;
 
 };
