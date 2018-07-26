@@ -2,6 +2,16 @@
 #include "../engine/basetypes.hpp"
 #include "../engine/painters/painters.hpp"
 
+void Vertex::AddVertexes(int size,float *f){
+    for (int i=0;i<size;i++){
+        vertexData.emplace_back(f[i]);
+    }
+}
+void Vertex::AddIndices(int size,uint32_t *f){
+    for (int i=0;i<size;i++){
+        indexes.emplace_back(f[i]);
+    }
+}
 
 int Vertex::Generate(Rect r){
     float vertices[] = {
@@ -80,7 +90,13 @@ void VertexArrayObject::Bind(){
     }
 }
 
-bool VertexArrayObject::SetupVertexes(){
+void VertexArrayObject::UnBind(){
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+bool VertexArrayObject::SetupVertexes(bool manageBuffers){
     if (!Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
         return false;
     }
@@ -88,7 +104,8 @@ bool VertexArrayObject::SetupVertexes(){
     if (m_vertexArray == 0){
         glGenVertexArrays(1, &m_vertexArray);
         glGenBuffers(1, &m_vertexBuffer);
-        glGenBuffers(1, &m_elementBuffer);
+        if (m_useElementBuffer)
+            glGenBuffers(1, &m_elementBuffer);
 
         glBindVertexArray(m_vertexArray);
         generatedBuffers = true;
@@ -97,20 +114,22 @@ bool VertexArrayObject::SetupVertexes(){
 
     glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER,  vertexes.vertexData.size() * sizeof(float), &vertexes.vertexData[0], GL_DYNAMIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,  vertexes.indexes.size() * sizeof(uint32_t), &vertexes.indexes[0], GL_STATIC_DRAW);
-
-
-
-    if (generatedBuffers){
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
-        glBindVertexArray(0);
+    if (m_useElementBuffer){
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER,  vertexes.indexes.size() * sizeof(uint32_t), &vertexes.indexes[0], GL_STATIC_DRAW);
     }
 
+
+
+    if (generatedBuffers && manageBuffers){
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+
+    }
+    glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    if (m_useElementBuffer)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     return true;
 }

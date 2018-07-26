@@ -16,6 +16,9 @@ class Vertex{
             indexes.clear();
         }
 
+        void AddVertexes(int size,float *f);
+        void AddIndices(int size,uint32_t *f);
+
 
         int Generate(Rect r);
         int Generate(Circle r,int triangleAmount);
@@ -28,6 +31,7 @@ class Vertex{
 class VertexArrayObject{
   public:
 
+    VertexArrayObject():m_indexCount(0),m_useElementBuffer(true),m_vertexArray(0),m_vertexBuffer(0),m_elementBuffer(0){}
     int GetIndexCount(){
         return vertexes.indexes.size();
     }
@@ -40,15 +44,28 @@ class VertexArrayObject{
 
     ~VertexArrayObject();
 
-    bool SetupVertexes();
+    bool SetupVertexes(bool manageBuffers = true);
 
     void Bind();
+    static void UnBind();
+
+    void DisableElements(){
+        m_useElementBuffer = false;
+    }
 
     uint32_t GetVertexArray(){
         return m_vertexArray;
     }
+    uint32_t GetVertexBuffer(){
+        return m_vertexBuffer;
+    }
+
+    uint32_t GetElementBuffer(){
+        return m_elementBuffer;
+    }
   private:
     int m_indexCount;
+    bool m_useElementBuffer;
 
     uint32_t m_vertexArray;
     uint32_t m_vertexBuffer;
