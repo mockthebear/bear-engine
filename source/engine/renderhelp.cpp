@@ -62,8 +62,6 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
 
 void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline,float angle){
 
-    //
-
     static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
     static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
 

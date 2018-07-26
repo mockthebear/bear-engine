@@ -70,6 +70,8 @@ class RenderData : public BasicRenderData{
 
         void SetClip(Rect r, Point textureSize){
             m_clip = r;
+            size.x = m_clip.w;
+            size.y = m_clip.h;
             if (textureSize.x == 0 || textureSize.y == 0){
                 m_forwardClip = Rect(0.0f,1.0f,0.0f,1.0f);
                 return;
@@ -78,8 +80,6 @@ class RenderData : public BasicRenderData{
             m_forwardClip.y =  ( m_clip.x + m_clip.w ) / textureSize.x;
             m_forwardClip.w = m_clip.y / textureSize.y;
             m_forwardClip.h = ( m_clip.y + m_clip.h ) / textureSize.y;
-            size.x = m_clip.w;
-            size.y = m_clip.h;
             UpdateVertex();
         }
 
@@ -138,13 +138,19 @@ class Painter{
     static bool CanSupport(PainterSupport sup);
 
 
+    static glm::mat4 Projection;
+
+    static void SetViewport(Point size,int flipScreen,Point screenNow,Point offset = Point(0.0f,0.0f));
+
+
+
   private:
     friend class ScreenManager;
 
 
     static bool SetupEnvoriment(ScreenManager *sm);
     static int GetMaxTextureSize();
-    static void ResetViewPort(PointInt originalSize, PointInt newSize);
+
 
     static void SetupShaders();
 

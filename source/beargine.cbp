@@ -73,7 +73,7 @@
 					<Add option="-pg" />
 					<Add option="-g" />
 					<Add option="-DIGNORESTEAM" />
-					<Add option="-DRENDER_OPENGL" />
+					<Add option="-DRENDER_OPENGL3" />
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
@@ -130,6 +130,7 @@
 		<Unit filename="crashhandler/crashhandlerwin32.cpp" />
 		<Unit filename="engine/assetmanager.cpp" />
 		<Unit filename="engine/assetmanager.hpp" />
+		<Unit filename="engine/basetypes.hpp" />
 		<Unit filename="engine/bear.cpp" />
 		<Unit filename="engine/bear.hpp" />
 		<Unit filename="engine/behavior.hpp" />
