@@ -177,6 +177,11 @@ template <typename T=float,typename T2=float> bool operator!=(const GenericPoint
     return a.x != b.x || a.y != b.y;
 }
 
+template <typename T=float,typename T2=float> GenericPoint<T2> operator/(T a,GenericPoint<T2> b){
+    return GenericPoint<T2>(a/b.x,a/b.y);
+}
+
+
 /**
     @brief [WIP] Basic class to 3d points
 */
