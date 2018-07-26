@@ -76,7 +76,8 @@ int Vertex::Generate(Circle r, int triangleAmount){
 VertexArrayObject::~VertexArrayObject(){
     if (m_vertexArray != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
         glDeleteBuffers(1, &m_vertexBuffer);
-        glDeleteBuffers(1, &m_elementBuffer);
+        if (m_elementBuffer != 0)
+            glDeleteBuffers(1, &m_elementBuffer);
         glDeleteVertexArrays(1, &m_vertexArray);
         m_vertexArray = 0;
     }
@@ -86,14 +87,14 @@ void VertexArrayObject::Bind(){
     if (m_vertexArray != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
         glBindVertexArray(m_vertexArray);
         glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
+        if (m_useElementBuffer)
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
     }
 }
 
 void VertexArrayObject::UnBind(){
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 bool VertexArrayObject::SetupVertexes(bool manageBuffers){
@@ -107,11 +108,10 @@ bool VertexArrayObject::SetupVertexes(bool manageBuffers){
         if (m_useElementBuffer)
             glGenBuffers(1, &m_elementBuffer);
 
-        glBindVertexArray(m_vertexArray);
+
         generatedBuffers = true;
     }
-
-
+    glBindVertexArray(m_vertexArray);
     glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER,  vertexes.vertexData.size() * sizeof(float), &vertexes.vertexData[0], GL_DYNAMIC_DRAW);
     if (m_useElementBuffer){

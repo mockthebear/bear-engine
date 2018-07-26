@@ -32,12 +32,16 @@ class VertexArrayObject{
   public:
 
     VertexArrayObject():m_indexCount(0),m_useElementBuffer(true),m_vertexArray(0),m_vertexBuffer(0),m_elementBuffer(0){}
-    int GetIndexCount(){
+    uint32_t GetIndexCount(){
         return vertexes.indexes.size();
     }
 
     void clear(){
         vertexes.clear();
+    }
+
+    uint32_t GetVertexesCount(){
+        return vertexes.vertexData.size();
     }
 
     Vertex vertexes;

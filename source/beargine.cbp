@@ -158,6 +158,8 @@
 		<Unit filename="engine/particles.hpp" />
 		<Unit filename="engine/pathfind.cpp" />
 		<Unit filename="engine/pathfind.hpp" />
+		<Unit filename="engine/pstileset.cpp" />
+		<Unit filename="engine/pstileset.hpp" />
 		<Unit filename="engine/renderhelp.cpp" />
 		<Unit filename="engine/renderhelp.hpp" />
 		<Unit filename="engine/screenmanager.cpp" />
@@ -409,6 +411,7 @@
 		<Unit filename="tests/testlight.hpp" />
 		<Unit filename="tests/testlua.hpp" />
 		<Unit filename="tests/testpathfind.hpp" />
+		<Unit filename="tests/testpointtileset.hpp" />
 		<Unit filename="tests/testpool.hpp" />
 		<Unit filename="tests/testrenderspeed.hpp" />
 		<Unit filename="tests/testscrolling.hpp" />
