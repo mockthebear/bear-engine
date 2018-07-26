@@ -10,6 +10,30 @@
 #include "../../framework/debughelper.hpp"
 
 
+glm::mat4 Painter::Projection;
+
+
+void Painter::SetViewport(Point size,int flipScreen,Point screenNow,Point offset){
+    glViewport(offset.x, offset.y, screenNow.x, screenNow.y);
+    Point xAxis;
+    Point yAxis;
+    if (flipScreen&SDL_FLIP_HORIZONTAL){
+        xAxis.x = size.x;
+        xAxis.y = 0.0f;
+    }else{
+        xAxis.y = size.x;
+        xAxis.x = 0.0f;
+    }
+    if (flipScreen&SDL_FLIP_VERTICAL){
+        yAxis.y = size.x;
+        yAxis.x = 0.0f;
+    }else{
+        yAxis.x = size.y;
+        yAxis.y = 0.0f;
+    }
+    Painter::Projection = glm::ortho(xAxis.x, xAxis.y, yAxis.x, yAxis.y, -1.0f, 1.0f);
+}
+
 bool Painter::CanSupport(PainterSupport sup){
     switch(sup){
         case SUPPORT_SHADERS:
@@ -140,14 +164,12 @@ glm::mat4 Painter::CalculateModel(BasicRenderDataPtr t_data){
 void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_data,int drawMode){
 
     glm::mat4 model = CalculateModel(t_data);
-    glm::mat4& projection = ScreenManager::GetInstance().GetProjection();
-
 
     polygonShader.Bind();
 
 
 
-    ShaderSetter<glm::mat4>::SetUniform(textureShader.GetCurrentShaderId(),"projection",projection);
+    ShaderSetter<glm::mat4>::SetUniform(textureShader.GetCurrentShaderId(),"projection",Projection);
     ShaderSetter<glm::mat4>::SetUniform(textureShader.GetCurrentShaderId(),"model",model);
     BearColor recolor(t_data->color[0],t_data->color[1],t_data->color[2],t_data->color[3]);
     ShaderSetter<BearColor>::SetUniform(textureShader.GetCurrentShaderId(),"iColor",recolor);
@@ -176,12 +198,12 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     // Com operaçoes de model: 0.30
 
 
-    glm::mat4& projection = ScreenManager::GetInstance().GetProjection();
+
     glm::mat4 model = CalculateModel(t_data);
 
     textureShader.Bind();
 
-    ShaderSetter<glm::mat4>::SetUniform(textureShader.GetCurrentShaderId(),"projection",projection);
+    ShaderSetter<glm::mat4>::SetUniform(textureShader.GetCurrentShaderId(),"projection",Projection);
     ShaderSetter<glm::mat4>::SetUniform(textureShader.GetCurrentShaderId(),"model",model);
     BearColor recolor(t_data->color[0],t_data->color[1],t_data->color[2],t_data->color[3]);
     ShaderSetter<BearColor>::SetUniform(textureShader.GetCurrentShaderId(),"iColor",recolor);
@@ -271,9 +293,6 @@ int Painter::GetMaxTextureSize(){
     return maxSize;
 }
 
-void Painter::ResetViewPort(PointInt originalSize, PointInt newSize){
-
-}
 
 void Painter::SetupShaders(){
     if (!m_shaderBuilt){

@@ -142,7 +142,7 @@ SDL_Window* ScreenManager::StartScreen(std::string name){
         bear::out << "[ScreenManager::StartScreen] Impossible to create"<<m_screen.x<<"x"<<m_screen.y<<" dummy display.\n";
     }
     m_originalScreen = m_screen;
-    m_projection = glm::ortho(0.0f, (float)m_originalScreen.x,  (float)m_originalScreen.y, 0.0f, -1.0f, 1.0f);
+    ResetProjection();
     Uint32 flags = 0;
     if (ConfigManager::GetInstance().GetResizeAction() != RESIZE_BEHAVIOR_NORESIZE){
         flags |= SDL_WINDOW_RESIZABLE;
@@ -220,9 +220,6 @@ void ScreenManager::RenderPresent(){
 
 }
 
-void ScreenManager::ResetViewPort(){
-    Painter::ResetViewPort(m_originalScreen, m_screen);
-}
 void ScreenManager::PreRender(){
     if (postProcess){
         glViewport(shake.x,shake.y,m_screen.x, m_screen.y);
@@ -238,6 +235,16 @@ void ScreenManager::PreRender(){
 
 void ScreenManager::Render(){
 
+}
+
+void ScreenManager::ForceProjection(Point screenSize,int flipScreen){
+    Painter::SetViewport(screenSize, flipScreen,screenSize);
+    screenProjection = false;
+}
+
+void ScreenManager::ResetProjection(){
+    Painter::SetViewport(m_originalScreen, SDL_FLIP_NONE,m_screen,m_offsetScreen);
+    screenProjection = true;
 }
 
 void ScreenManager::NotifyResized(){
@@ -259,13 +266,14 @@ void ScreenManager::NotifyResized(){
 
 
         }else{
-            glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
+            ResetProjection();
+            /*glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
             glMatrixMode( GL_PROJECTION );
             glLoadIdentity();
             glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
             glMatrixMode( GL_MODELVIEW );
             glLoadIdentity();
-            glPushMatrix();
+            glPushMatrix();*/
         }
     }
 
@@ -281,9 +289,9 @@ void ScreenManager::SetWindowSize(int w,int h){
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
 
-    m_projection = glm::ortho(0.0f, (float)m_originalScreen.x,  (float)m_originalScreen.y, 0.0f, -1.0f, 1.0f);
-
-    ResetViewPort();
+    //if (screenProjection){
+        ResetProjection();
+    //}
 }
 
 void ScreenManager::ToggleFullScreen(){
@@ -305,7 +313,9 @@ void ScreenManager::Resize(int w,int h){
     m_screen.y = h;
 
     SDL_SetWindowSize(m_window,w,h);
-    m_projection = glm::ortho(0.0f, (float)m_originalScreen.x,  (float)m_originalScreen.y, 0.0f, -1.0f, 1.0f);
+    //if (screenProjection){
+        ResetProjection();
+    //}
 
     if (postProcess){
         glDeleteTextures(1, &fbo_texture);

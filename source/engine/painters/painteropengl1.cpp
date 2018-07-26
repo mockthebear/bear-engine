@@ -6,6 +6,36 @@
 
 void RenderData::UpdateVertex(){}
 
+glm::mat4 Painter::Projection;
+
+
+void Painter::SetViewport(Point size,int flipScreen,Point screenNow,Point offset){
+    glViewport(offset.x, offset.y, screenNow.x, screenNow.y);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    Point xAxis;
+    Point yAxis;
+    if (flipScreen&SDL_FLIP_HORIZONTAL){
+        xAxis.x = size.x;
+        xAxis.y = 0.0f;
+    }else{
+        xAxis.y = size.x;
+        xAxis.x = 0.0f;
+    }
+    if (flipScreen&SDL_FLIP_VERTICAL){
+        yAxis.y = size.x;
+        yAxis.x = 0.0f;
+    }else{
+        yAxis.x = size.y;
+        yAxis.y = 0.0f;
+    }
+
+    glOrtho(xAxis.x, xAxis.y, yAxis.x, yAxis.y, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
+
 bool Painter::CanSupport(PainterSupport sup){
     switch(sup){
         case SUPPORT_SHADERS:
@@ -167,6 +197,8 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
     glClearColor( 1.f, 1.f, 1.f, 1.f );
     DebugHelper::DisplayGlError("3");
 
+
+
     return true;
 
 }
@@ -177,13 +209,6 @@ int Painter::GetMaxTextureSize(){
     return maxSize;
 }
 
-void Painter::ResetViewPort(PointInt originalSize, PointInt newSize){
-    glViewport(0,0,newSize.x, newSize.y);
-    glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-    glOrtho( 0.0, originalSize.x, originalSize.y, 0.0, 1.0, -1.0 );
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-}
+
 
 #endif // RENDER_OPENGL

@@ -51,7 +51,6 @@ class ScreenManager{
             ShakingDuration = duration;
             shaking = true;
         };
-        void ResetViewPort();
         void RenderPresent();
         SDL_Texture * GetDefaultRenderer(){return m_defaultScreen;};
         void Render();
@@ -81,7 +80,8 @@ class ScreenManager{
 
         GLuint GetVAO(){return m_vertexArrayID;};
 
-        glm::mat4& GetProjection(){ return m_projection;};
+        void ResetProjection();
+        void ForceProjection(Point screenSize,int flipScreen = SDL_FLIP_NONE);
 
 
 
@@ -117,7 +117,7 @@ class ScreenManager{
         Point m_trueScaleRatio;
         SDL_DisplayMode m_displayMode;
         uint32_t m_vertexArrayID;
-        glm::mat4 m_projection;
+        bool screenProjection;
 
 };
 #endif // SCREENMANAGEH
