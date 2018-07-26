@@ -19,6 +19,10 @@ class Test_Shader: public State{
             bear::out << "Test shader\n";
             bear::out << "Compile an shader\n";
             //shdr.Compile("engine/vertex.glvs","engine/moq.glfs");
+            shdr.CompileFromString(GL_VERTEX_SHADER, Shader::DefaultTextureVertexShader);
+            shdr.Compile(GL_FRAGMENT_SHADER, "engine/moq.glfs");
+            shdr.Link();
+
             background = Sprite("data/wall.jpg");
 
             //m_shader.Compile("engine/vertex.glvs","engine/lens.glfs");
@@ -49,9 +53,9 @@ class Test_Shader: public State{
         void Render(){
 
 
-            //shdr.Bind();
+            shdr.Bind();
             background.Render(0,0,0);
-            //shdr.Unbind();
+            shdr.Unbind();
         };
         void Input();
         void Resume(){};
