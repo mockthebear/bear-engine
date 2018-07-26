@@ -322,8 +322,8 @@ class Sprite{
             *Get the texture. Note that texture can be an shared one
             @return The SDL_Texture pointer;
         */
-        BearTexture* GetSDLTexture(){
-            return (textureShred.get());
+        TexturePtr GetTexture(){
+            return textureShred;
         };
         /**
             *Used to change the center of rotation
@@ -447,6 +447,8 @@ class Sprite{
         */
         void Kill();
         void Format(Animation a,int dir);
+
+        Point GetSize(){ return size;};
     private:
         TextureLoadMethod aliasing;
         TexturePtr textureShred;
