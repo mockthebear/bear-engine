@@ -22,6 +22,7 @@ class Test_TargetTexture: public State{
             //m_shader.Compile("engine/vertex.glvs","engine/lens.glfs");
             tileN = 174;
             tileAnim = 1.0f;
+            ScreenManager::GetInstance().SetScreenName("Test target texture");
             bear::out << "Test target\n";
             background = Assets.make<Sprite>("data/wall.jpg");
             targ.Generate(400,400);
@@ -69,28 +70,29 @@ class Test_TargetTexture: public State{
 
         };
         void Render(){
-            //background.Render(0,0,0);
+            background.Render(0,0,0);
 
 
             targ.Bind();
-            background.Render(0,0,45);
+            background.Render(Point(0,0),45);
 
             RenderHelp::DrawCircleColor(Point(400-64,400 - 64),32,255,0,255,255);
+
+
+
+            RenderHelp::DrawCircleColor(Point(32,32),32,255,255,255,255);
+            RenderHelp::DrawCircleColor(Point(400-32,400-32),32,255,255,255,255);
+
+
+
             targ.UnBind();
 
-            /*m_shader.Bind();
-            Point p = g_input.GetMouse();
-            p.y = p.y/(float)SCREEN_SIZE_H;
-            p.x = p.x/(float)SCREEN_SIZE_W;
-            p.y = 1.0f - p.y;
-            m_shader.SetUniform<Point>("Cent2d",p);
             targ.Render(Point(32 + movement,32));
-
-            m_shader.Unbind();*/
-            RenderHelp::DrawCircleColor(Point(32,32),32,255,255,255,255);
 
             tset->RenderLayer(0);
             tset->RenderLayer(1);
+
+
 
         };
         void Input();

@@ -43,11 +43,11 @@ class Test_RenderSpeed: public State{
 
         void Update(float dt){
             duration -= dt;
-            if (state >= 2000){
+            if( InputManager::GetInstance().IsAnyKeyPressed() != -1 ) {
+                requestDelete = true;
+            }
 
-                if( InputManager::GetInstance().IsAnyKeyPressed() != -1 ) {
-                    //requestDelete = true;
-                }
+            if (state >= 2000){
                 return;
             }
             static int owo = 0;
