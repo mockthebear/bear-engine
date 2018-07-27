@@ -111,10 +111,24 @@ typedef chain_ptr<BearTexture> TexturePtr;
 
 class Painter{
   public:
+      static glm::mat4 CalculateModel(BasicRenderDataPtr );
+
+    static void SetViewport(Point size,int flipScreen,Point screenNow,Point offset = Point(0.0f,0.0f));
+    static glm::mat4 Projection;
+
+
     static bool RenderTexture(BearTexture *ptr,RenderDataPtr data);
-    static BearTexture * MakeTexture(PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter);
     static void DrawVertex(VertexArrayObjectPtr v,BasicRenderDataPtr r,int drawMode = GL_TRIANGLES);
-    static glm::mat4 CalculateModel(BasicRenderDataPtr );
+
+
+
+    static bool RenderPointTexture(BearTexture *ptr,RenderDataPtr data);
+    static bool DrawSprites(int id);
+
+
+    static BearTexture * MakeTexture(PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter);
+
+     static bool CanSupport(PainterSupport sup);
 
 
     static uint32_t powerOfTwo( uint32_t num ){
@@ -132,18 +146,6 @@ class Painter{
         }
         return num;
     }
-
-
-
-    static bool CanSupport(PainterSupport sup);
-
-
-    static glm::mat4 Projection;
-
-    static void SetViewport(Point size,int flipScreen,Point screenNow,Point offset = Point(0.0f,0.0f));
-
-
-
   private:
     friend class ScreenManager;
 
@@ -160,5 +162,7 @@ class Painter{
     static bool m_shaderBuilt;
 
     static Shader textureShader;
+    static Shader pointTextureShader;
     static Shader polygonShader;
+    static VertexArrayObject m_vao;
 };

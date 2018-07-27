@@ -96,7 +96,9 @@ bool GameBehavior::OnLoad(){
     Game::GetInstance()->AddState(new Test_Scrolling());
     Game::GetInstance()->AddState(new Test_TargetTexture());
     Game::GetInstance()->AddState(new Test_Shader());
-    Game::GetInstance()->AddState(new Test_PSTILESET());
+    if (Painter::CanSupport(SUPPORT_POINTSPRITE)){
+        Game::GetInstance()->AddState(new Test_PSTILESET());
+    }
     Game::GetInstance()->AddState(new Test_RenderSpeed());
     Game::GetInstance()->AddState(new Test_Text());
     Game::GetInstance()->AddState(new Test_Sprite());

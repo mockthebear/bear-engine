@@ -404,6 +404,8 @@ void Sprite::Render(PointInt pos,double angle){
     if (IsLoaded()){
         m_renderData->position = Point(pos);
         m_renderData->SetAngle(angle);
+        //Painter::RenderPointTexture(textureShred.get(),m_renderData);
+        //Painter::DrawSprites(textureShred.get()->id);
         Painter::RenderTexture(textureShred.get(),m_renderData);
     }
 

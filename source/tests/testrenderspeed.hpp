@@ -83,6 +83,7 @@ class Test_RenderSpeed: public State{
                     tiles.Render(Point( (i % 60) * 16, (i/60)*16 )) ;
                 }
             }
+            //Painter::DrawSprites(tiles.GetTexture().get()->id);
             renderDuration = (double)sw.Get();
 
             lg.Render(Point(32,32));

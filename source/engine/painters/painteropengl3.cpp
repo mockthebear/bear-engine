@@ -10,7 +10,13 @@
 #include "../../framework/debughelper.hpp"
 
 
+bool Painter::m_shaderBuilt = false;
+Shader Painter::textureShader;
+Shader Painter::polygonShader;
+Shader Painter::pointTextureShader;
 glm::mat4 Painter::Projection;
+VertexArrayObject Painter::m_vao;
+
 
 
 void Painter::SetViewport(Point size,int flipScreen,Point screenNow,Point offset){
@@ -40,8 +46,8 @@ bool Painter::CanSupport(PainterSupport sup){
             return true;
         case SUPPORT_VERTEXBUFFER:
             return true;
-        case SUPPORT_ORTOHOVERTEX:
-            return false;
+        case SUPPORT_POINTSPRITE:
+            return true;
         default:
             return false;
     }
@@ -118,9 +124,7 @@ void RenderData::UpdateVertex(){
 
 
 
-bool Painter::m_shaderBuilt = false;
-Shader Painter::textureShader;
-Shader Painter::polygonShader;
+
 
 glm::mat4 Painter::CalculateModel(BasicRenderDataPtr t_data){
     glm::mat4 model(1.0f);
@@ -188,6 +192,53 @@ void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_da
 
 
 }
+
+bool Painter::RenderPointTexture(BearTexture *t_texture, RenderDataPtr t_data){
+    if (!t_texture || t_texture->id == 0){
+        return false;
+    }
+    float points[] ={
+        t_data->position.x, t_data->position.y,
+        t_data->m_forwardClip.x, t_data->m_forwardClip.y, t_data->m_forwardClip.w, t_data->m_forwardClip.h,
+        t_data->m_clip.w, t_data->m_clip.h,
+        t_data->m_scale.x, t_data->m_scale.y,
+        t_data->m_angle,
+
+    };
+    m_vao.vertexes.AddVertexes( sizeof(points) / sizeof(float) ,points);
+
+    return true;
+}
+
+
+bool Painter::DrawSprites(int id){
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture( GL_TEXTURE_2D, id );
+
+
+    m_vao.SetupVertexes();
+
+
+    pointTextureShader.Bind();
+    ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image",0);
+    Point sz = ScreenManager::GetInstance().GetGameSize();
+    sz.x = (1.0f / sz.x) * 2.0;  //2.0 because its from -1 to 1.
+    sz.y = (1.0f / sz.y) * 2.0;  //2.0 because its from -1 to 1.
+    ShaderSetter<Point>::SetUniform(Shader::GetCurrentShaderId(),"orthoVec",sz);
+
+    m_vao.Bind();
+
+    glDrawArrays(GL_POINTS, 0, m_vao.GetVertexesCount()/11);
+    pointTextureShader.Unbind();
+    m_vao.UnBind();
+
+
+    m_vao.clear();
+
+    return true;
+}
+
 
 bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     if (!t_texture || t_texture->id == 0){
@@ -318,6 +369,31 @@ void Painter::SetupShaders(){
         textureShader.CompileFromString(GL_VERTEX_SHADER, Shader::DefaultTextureVertexShader);
         textureShader.CompileFromString(GL_FRAGMENT_SHADER, Shader::DefaultTextureFragmentShader);
         textureShader.Link();
+
+        pointTextureShader.Compile(GL_VERTEX_SHADER, "data/shaders/ps_texture_vertex.glfs");
+        pointTextureShader.Compile(GL_GEOMETRY_SHADER, "data/shaders/ps_texture_geometry.glfs");
+        pointTextureShader.Compile(GL_FRAGMENT_SHADER, "data/shaders/ps_texture_frag.glfs");
+        pointTextureShader.Link();
+
+        Painter::m_vao.DisableElements();
+
+        Painter::m_vao.SetupVertexes(false);
+
+        Painter::m_vao.Bind();
+
+        int elements = 11;
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, elements * sizeof(float), 0); //Position
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(2 * sizeof(float))); //Vertex clip
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(6 * sizeof(float))); //image size
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(8 * sizeof(float))); //scale
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(10 * sizeof(float))); //rotation
+        Painter::m_vao.UnBind();
+
     }
 }
 
