@@ -1,6 +1,7 @@
 #include "../settings/definitions.hpp"
 
 #include SDL_LIB_HEADER
+#define GL_LIB <GL/glew.h>
 
 #ifdef RENDER_OPENGLES2
     #ifdef __EMSCRIPTEN__

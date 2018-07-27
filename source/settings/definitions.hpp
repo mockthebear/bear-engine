@@ -60,8 +60,6 @@
 
 */
 
-#define GLEW_STATIC
-
 #define CAT(X,Y) X ##_## Y
 #define CAT2(X,Y) CAT(X,Y)
 #define CAT3(X,Y,Z) CAT2(X,CAT2(Y,Z))
@@ -71,8 +69,6 @@
 #define FNAME CAT5(JNI_BASE,JNI_COM,JNI_MODULE,JNI_FROM,JNI_NAME)
 #define JniCallFunction(Fname) JNICALL CAT2(FNAME,Fname)
 
-
-#define GL_LIB <GL/glew.h>
 
 
 #ifdef __ANDROID__
