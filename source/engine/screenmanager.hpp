@@ -7,7 +7,7 @@
 #include <string>
 #include "../framework/geometry.hpp"
 #include "shadermanager.hpp"
-#include <GL/glew.h>
+#include "libheader.hpp"
 #include <glm/glm.hpp>
 
 

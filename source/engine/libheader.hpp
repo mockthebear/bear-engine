@@ -2,14 +2,25 @@
 
 #include SDL_LIB_HEADER
 
-#ifdef RENDER_OPENGLES
-    #define GL_GLEXT_PROTOTYPES 1
-    #include GLES_LIB
-#endif // RENDER_OPENGLES
+#ifdef RENDER_OPENGLES2
+    #ifdef __EMSCRIPTEN__
+        #include <emscripten.h>
+        #define GL_GLEXT_PROTOTYPES 1
+        #include <SDL_opengles2.h>
+    #else
+        #define GL_GLEXT_PROTOTYPES 1
+        #include <SDL2/SDL_opengles2.h>
+    #endif
+#endif // RENDER_OPENGLES2
 
 #ifdef RENDER_OPENGL
     #include GL_LIB
-#endif // RENDER_OPENGLES
+    #define SUPPORT_GLEW
+#endif // RENDER_OPENGL
 #ifdef RENDER_OPENGL3
     #include GL_LIB
-#endif // RENDER_OPENGLES
+    #define SUPPORT_GEOMETRY_SHADER
+    #define SUPPORT_GLEW
+#endif // RENDER_OPENGL3
+
+

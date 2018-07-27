@@ -39,7 +39,7 @@ SmartTexture::~SmartTexture(){
 void SmartTexture::Render(PointInt pos,float angle,Point scale){
 
 
-    glLoadIdentity();
+    /*glLoadIdentity();
     glEnable(GL_TEXTURE_2D);
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -74,6 +74,6 @@ void SmartTexture::Render(PointInt pos,float angle,Point scale){
         glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
     glEnd();
 
-    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_TEXTURE_2D);*/
 
 }

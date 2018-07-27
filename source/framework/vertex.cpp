@@ -134,12 +134,69 @@ bool VertexArrayObject::SetupVertexes(bool manageBuffers){
     return true;
 }
 
+#elif defined(RENDER_OPENGLES2)
+
+
+VertexArrayObject::~VertexArrayObject(){
+    if (m_vertexBuffer != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
+        glDeleteBuffers(1, &m_vertexBuffer);
+        if (m_elementBuffer != 0)
+            glDeleteBuffers(1, &m_elementBuffer);
+    }
+}
+
+void VertexArrayObject::Bind(){
+    if (m_vertexBuffer != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
+        glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+        if (m_useElementBuffer)
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
+    }
+}
+
+void VertexArrayObject::UnBind(){
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+bool VertexArrayObject::SetupVertexes(bool manageBuffers){
+    if (!Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
+        return false;
+    }
+    bool generatedBuffers = false;
+    if (m_vertexBuffer == 0){
+        glGenBuffers(1, &m_vertexBuffer);
+        if (m_useElementBuffer)
+            glGenBuffers(1, &m_elementBuffer);
+
+
+        generatedBuffers = true;
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER,  vertexes.vertexData.size() * sizeof(float), &vertexes.vertexData[0], GL_DYNAMIC_DRAW);
+    if (m_useElementBuffer){
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER,  vertexes.indexes.size() * sizeof(uint32_t), &vertexes.indexes[0], GL_STATIC_DRAW);
+    }
+
+
+
+    if (generatedBuffers && manageBuffers){
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    if (m_useElementBuffer)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    return true;
+}
+
 #else
 
 VertexArrayObject::~VertexArrayObject(){};
 
 
-bool VertexArrayObject::SetupVertexes(){
+bool VertexArrayObject::SetupVertexes(bool){
     return false;
 }
 #endif

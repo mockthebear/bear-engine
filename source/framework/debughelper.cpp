@@ -32,13 +32,13 @@ void DebugHelper::DisplayGlError(std::string ate){
 		if (err == GL_OUT_OF_MEMORY)
 			name = "GL_OUT_OF_MEMORY";
 
-
+#ifndef RENDER_OPENGLES2
 		if (err == GL_STACK_UNDERFLOW)
 			name = "GL_STACK_UNDERFLOW";
 
 		if (err == GL_STACK_OVERFLOW)
 			name = "GL_STACK_OVERFLOW";
-
+#endif // RENDER_OPENGLES2
 		bear::out << "GL error: " << name << " at "<<ate<<"\n";
 	}
 }

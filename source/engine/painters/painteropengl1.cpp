@@ -87,6 +87,7 @@ bool Painter::RenderPointTexture(BearTexture *t_texture, RenderDataPtr t_data){
     return true;
 }
 
+RenderData::~RenderData(){};
 
 bool Painter::DrawSprites(int id){
     return false;

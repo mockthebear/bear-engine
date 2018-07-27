@@ -3,6 +3,9 @@
 #include <iostream>
 #include "../framework/gamefile.hpp"
 #include <glm/gtc/type_ptr.hpp>
+
+
+
 uint32_t ShaderSetter<std::vector<Rect>>::maxSize = 0;
 float *ShaderSetter<std::vector<Rect>>::arr = nullptr;
 uint32_t ShaderSetter<std::vector<Point>>::maxSize = 0;
@@ -92,10 +95,12 @@ bool Shader::Link(){
 
 bool Shader::Compile(int type,std::string name){
 
+    #ifdef SUPPORT_GLEW
     if( !GLEW_VERSION_2_1 ){
         bear::out << "OpenGL 2.1 not supported!\n";
         return false;
     }
+    #endif // SUPPORT_GLEW
 
     GameFile file;
 

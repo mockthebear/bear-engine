@@ -7,6 +7,7 @@
 
 PointSpriteTileset::PointSpriteTileset(){
     if (Painter::CanSupport(SUPPORT_POINTSPRITE)){
+        #ifdef SUPPORT_GEOMETRY_SHADER
         m_vao.DisableElements();
 
         m_vao.SetupVertexes(false);
@@ -25,6 +26,7 @@ PointSpriteTileset::PointSpriteTileset(){
         m_psShader.Link();
 
         m_textureAtlas = Sprite("data/tiles.png");
+        #endif // SUPPORT_GEOMETRY_SHADER
     }else{
         bear::out << "Point sprite is not supported!\n";
     }

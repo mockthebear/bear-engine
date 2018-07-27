@@ -60,6 +60,7 @@
 
 */
 
+#define GLEW_STATIC
 
 #define CAT(X,Y) X ##_## Y
 #define CAT2(X,Y) CAT(X,Y)
@@ -72,7 +73,6 @@
 
 
 #define GL_LIB <GL/glew.h>
-#define GLES_LIB <SDL2/SDL_opengles2.h>
 
 
 #ifdef __ANDROID__

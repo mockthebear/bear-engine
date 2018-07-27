@@ -1,6 +1,7 @@
+
 #include "../../settings/definitions.hpp"
 
-#ifdef RENDER_OPENGL3
+#ifdef RENDER_OPENGLES2
 #include "painters.hpp"
 #include "../bear.hpp"
 #include "../screenmanager.hpp"
@@ -16,6 +17,9 @@ Shader Painter::polygonShader;
 Shader Painter::pointTextureShader;
 glm::mat4 Painter::Projection;
 VertexArrayObject Painter::m_vao;
+
+
+
 
 
 
@@ -53,21 +57,17 @@ bool Painter::CanSupport(PainterSupport sup){
     }
 }
 
+RenderData::~RenderData(){
+    if (VertexBuffer != 0){
+        glDeleteBuffers(1, &VertexBuffer);
+        glDeleteBuffers(1, &ElementBuffer);
+    }
+};
 
 void RenderData::Bind(){
-    glBindVertexArray(VertexArray);
     glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementBuffer);
 }
-
-RenderData::~RenderData(){
-    if (VertexArray != 0){
-        glDeleteBuffers(1, &VertexBuffer);
-        glDeleteBuffers(1, &ElementBuffer);
-        glDeleteVertexArrays(1, &VertexArray);
-        VertexArray = 0;
-    }
-};
 
 void RenderData::UpdateVertex(){
 
@@ -98,16 +98,16 @@ void RenderData::UpdateVertex(){
     };
 
 
-    if (VertexArray == 0){
+    if (VertexBuffer == 0){
         static unsigned int indices[] = {
             0, 1, 3, // first triangle
             1, 2, 3  // second triangle
         };
-        glGenVertexArrays(1, &VertexArray);
+
         glGenBuffers(1, &VertexBuffer);
         glGenBuffers(1, &ElementBuffer);
 
-        glBindVertexArray(VertexArray);
+
 
         glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
@@ -122,7 +122,6 @@ void RenderData::UpdateVertex(){
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)) );
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
     }else{
         glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
@@ -255,18 +254,6 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     }
     glEnable(GL_TEXTURE_2D);
 
-    //Benchmark
-    //
-    // Bind: 0.00165~
-    // Texture bind: 0
-    // Bind texture: 0.0003
-    // Pssar tudo pro shader: 0.009~
-    // Só nao desenhando: 0.010~
-    // Chamando tudo com draw elements 0.020
-    // Com operaçoes de model: 0.30
-
-
-
     glm::mat4 model = CalculateModel(t_data);
 
     bool noShader = Shader::GetCurrentShaderId() == 0;
@@ -306,8 +293,8 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
         return nullptr;
     }
 
-    unsigned int pow_w =  size.x;//powerOfTwo(size.x);
-    unsigned int pow_h =  size.y;//powerOfTwo(size.y); //No need to this on opengl. only on opengles
+    unsigned int pow_w =  powerOfTwo(size.x);
+    unsigned int pow_h =  powerOfTwo(size.y); //No need to this on opengl. only on opengles
 
     glBindTexture(GL_TEXTURE_2D, texId);
     filter.ApplyFilter();
@@ -323,22 +310,22 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
 
 
 bool Painter::SetupEnvoriment(ScreenManager *sm){
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    //SDL_SetHint(SDL_HINT_OPENGL_ES_DRIVER, "1");
+    SDL_SetHint(SDL_HINT_VIDEO_WIN_D3DCOMPILER, "none");
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_GL_SetSwapInterval(0);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	SDL_GL_SetSwapInterval(0);
-
-
-    glewExperimental = GL_TRUE;
-    GLenum glewError = glewInit();
+   // glewExperimental = GL_TRUE;
+   /* GLenum glewError = glewInit();
     if( glewError != GLEW_OK ){
         bear::out << "Error initializing GLEW!\n";
         return false;
-    }
+    }*/
 
 
     DebugHelper::DisplayGlError("1");
@@ -352,8 +339,6 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
     //glDisable( GL_DEPTH_TEST );
     //glEnable(GL_CULL_FACE);
 
-    glGenVertexArrays(1, &sm->m_vertexArrayID);
-    glBindVertexArray(sm->m_vertexArrayID);
 
 
     SetupShaders();
@@ -379,31 +364,8 @@ void Painter::SetupShaders(){
         textureShader.CompileFromString(GL_FRAGMENT_SHADER, Shader::DefaultTextureFragmentShader);
         textureShader.Link();
 
-        pointTextureShader.Compile(GL_VERTEX_SHADER, "data/shaders/ps_texture_vertex.glfs");
-        pointTextureShader.Compile(GL_GEOMETRY_SHADER, "data/shaders/ps_texture_geometry.glfs");
-        pointTextureShader.Compile(GL_FRAGMENT_SHADER, "data/shaders/ps_texture_frag.glfs");
-        pointTextureShader.Link();
-
-        Painter::m_vao.DisableElements();
-
-        Painter::m_vao.SetupVertexes(false);
-
-        Painter::m_vao.Bind();
-
-        int elements = 11;
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, elements * sizeof(float), 0); //Position
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(2 * sizeof(float))); //Vertex clip
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(6 * sizeof(float))); //image size
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(8 * sizeof(float))); //scale
-        glEnableVertexAttribArray(4);
-        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(10 * sizeof(float))); //rotation
-        Painter::m_vao.UnBind();
-
     }
 }
 
 #endif // RENDER_OPENGL3
+

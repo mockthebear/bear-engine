@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GL/glew.h>
+#include "libheader.hpp"
 #include <glm/glm.hpp>
 
 #include "basetypes.hpp"
