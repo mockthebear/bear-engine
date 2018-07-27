@@ -59,10 +59,10 @@ bool TargetTexture::Generate(int wa,int ha){
 
     glGenRenderbuffers(1, &m_renderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, m_renderBuffer);
-    //glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH32F_STENCIL8, wa, ha);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH32F_STENCIL8, wa, ha);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-    //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_renderBuffer);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_renderBuffer);
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         bear::out << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!\n";

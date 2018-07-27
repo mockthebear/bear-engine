@@ -34,7 +34,7 @@ class Test_PSTILESET: public State{
         void Update(float dt){
             duration -= dt;
             if( InputManager::GetInstance().IsAnyKeyPressed() != -1 ) {
-                //requestDelete = true;
+                requestDelete = true;
             }
             if (duration <= 0){
                 lg.AddData(ScreenManager::GetInstance().GetFps());
