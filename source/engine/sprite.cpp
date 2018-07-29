@@ -6,7 +6,6 @@
 #include "../framework/utils.hpp"
 #include "renderhelp.hpp"
 #include "camera.hpp"
-#include "smarttexture.hpp"
 #include "../framework/resourcemanager.hpp"
 #include "../framework/debughelper.hpp"
 #include "../image/stb_image.h"

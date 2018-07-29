@@ -61,7 +61,7 @@
 					<Add option="-pthread" />
 				</Linker>
 			</Target>
-			<Target title="Debug windows">
+			<Target title="Debug windows opengl3">
 				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../game/" />
 				<Option object_output="../obj/Release/" />
@@ -152,6 +152,38 @@
 					<Add option="-lws2_32" />
 				</Linker>
 			</Target>
+			<Target title="Debug windows opengl1">
+				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../game/" />
+				<Option object_output="../obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
+				<Compiler>
+					<Add option="-std=c++0x" />
+					<Add option="-pg" />
+					<Add option="-g" />
+					<Add option="-DIGNORESTEAM" />
+					<Add option="-DRENDER_OPENGL" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg -lgmon" />
+					<Add option="-Wl,-Bstatic" />
+					<Add option="-lenet" />
+					<Add option="-pthread" />
+					<Add option="-Wl,-Bdynamic" />
+					<Add option="-lMinGW32" />
+					<Add option="-lSDL2main" />
+					<Add option="-lSDL2" />
+					<Add option="-lSDL2_ttf" />
+					<Add option="-lopenal32" />
+					<Add option="-lvorbisfile" />
+					<Add option="-lopengl32" />
+					<Add option="-lglew32" />
+					<Add option="-lglu32" />
+					<Add option="-lws2_32" />
+				</Linker>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
@@ -161,6 +193,7 @@
 		<Unit filename="crashhandler/crashhandlerwin32.cpp" />
 		<Unit filename="engine/assetmanager.cpp" />
 		<Unit filename="engine/assetmanager.hpp" />
+		<Unit filename="engine/basetypes.cpp" />
 		<Unit filename="engine/basetypes.hpp" />
 		<Unit filename="engine/bear.cpp" />
 		<Unit filename="engine/bear.hpp" />
@@ -198,12 +231,6 @@
 		<Unit filename="engine/screenmanager.hpp" />
 		<Unit filename="engine/shadermanager.cpp" />
 		<Unit filename="engine/shadermanager.hpp" />
-		<Unit filename="engine/shooteffect.cpp" />
-		<Unit filename="engine/shooteffect.hpp" />
-		<Unit filename="engine/smarttexture.cpp" />
-		<Unit filename="engine/smarttexture.hpp" />
-		<Unit filename="engine/smarttexturemanager.cpp" />
-		<Unit filename="engine/smarttexturemanager.hpp" />
 		<Unit filename="engine/smarttileset.cpp" />
 		<Unit filename="engine/smarttileset.hpp" />
 		<Unit filename="engine/sprite.cpp" />
