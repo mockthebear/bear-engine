@@ -2,7 +2,6 @@
 #define PARTICLES_BE
 #include "object.hpp"
 #include "sprite.hpp"
-#include "smarttexture.hpp"
 #include "text.hpp"
 
 namespace MovementSet{
@@ -58,16 +57,6 @@ class Particle: public GameObject{
             Create the most simple particle. Just empty things
         */
         Particle(int x,int y);
-        /**
-            *Create an particle with an SmartTexture vector. Each component must be an frame
-            @param x The x position
-            @param y The y position
-            @param vect An vector with N elements of SmartTexture.
-            @param amount The amount equivalent to N
-            @param fameDelay of course is an animation, so you need the delay between the frames
-            @param repeat the amount of times the animation will repeat
-        */
-        Particle(int x,int y,SmartTexture **vect,int amount,float fameDelay,int repeat=0);
         /**
             *Create an animated text effect
             @param x The x position
@@ -233,7 +222,6 @@ class Particle: public GameObject{
         */
         bool HasSprite;
         Sprite sp;
-        SmartTexture **textures;
         Text txt;
 
         float internalFloat;

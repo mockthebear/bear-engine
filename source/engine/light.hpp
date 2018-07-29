@@ -1,5 +1,5 @@
 #pragma once
-
+#include "../framework/geometry.hpp"
 
 #ifndef DISABLE_THREADPOOL
 #define HAVE_STRUCT_TIMESPEC
@@ -56,9 +56,6 @@ enum LightStep{
 
 #else
 
-
-
-    #include "smarttexture.hpp"
     #include "../framework/threadpool.hpp"
 
     class Light{
@@ -66,7 +63,8 @@ enum LightStep{
             Light();
             static Light* GetInstance();
             static Light* Startup();
-            bool IsStarted(){return out != nullptr;};
+            bool IsStarted(){return false;};
+            //bool IsStarted(){return out != nullptr;};
             bool Shutdown();
             bool StartLights(Point size,Point ExtraSize,uint16_t dotSize,float permissive=8.8,uint16_t maxDarkness=200);
 
@@ -119,7 +117,7 @@ enum LightStep{
             Point size,ExtraSize;
             Uint32 *pix;
 
-            SmartTexture *out;
+            //SmartTexture *out;
 
             //auto things
             bool onAutomatic;

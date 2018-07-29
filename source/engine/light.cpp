@@ -130,7 +130,6 @@ void Light::Render(Point pos,float maxDarkness){
 
 
 Light::Light(){
-    out = nullptr;
     onAutomatic = false;
     #ifndef DISABLE_THREADPOOL
     pthread_mutex_init(&Critical,nullptr);
@@ -303,7 +302,6 @@ bool Light::Shutdown(){
         return false;
     }
     Console::GetInstance().AddTextInfo("Deleting light.");
-    delete out;
 
     delete []ShadeMap;
     delete []DataMap;
@@ -313,14 +311,13 @@ bool Light::Shutdown(){
     }
     delete []MapMap;
     MapMap = nullptr;
-    out = nullptr;
     Console::GetInstance().AddTextInfo("Light deleted.");
     return true;
 }
 bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float permissive,uint16_t maxDarkness){
-    if (out != nullptr){
+    /*if (out != nullptr){
         Shutdown();
-    }
+    }*/
     size = size_;
     ExtraSize = ExtraSize_;
     size.x += ExtraSize.x;
@@ -330,10 +327,10 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float perm
     sizeY = (size.y )/dotSize;
     blockSize = dotSize;
     MaxDarkness = maxDarkness;
-    out = new SmartTexture(0,0,sizeX,sizeY,true,true);
+    //out = new SmartTexture(0,0,sizeX,sizeY,true,true);
     ShadeMap = new uint8_t[sizeY*sizeX];
     DataMap = new uint8_t[sizeY*sizeX];
-    pix = out->GetPixels();
+
     for (int y=0;y<sizeY;y++){
 
         for (int x=0;x<sizeX;x++){
@@ -485,7 +482,7 @@ void Light::Update(float dt,LightStep step){
         LightPoints = 0;
         CurrentAlloc = 0;
         LightJobs = 0;
-        pix = out->GetPixels();
+        //pix = out->GetPixels();
         for (int y=0;y<sizeY;y++){
             for (int x=0;x<sizeX;x++){
                 ShadeMap[y * sizeX+  x] = MaxDarkness;
@@ -536,9 +533,9 @@ void Light::Render(Point pos){
     if(!IsStarted()){
         return;
     }
-    out->UpdateTexture();
-    int extraX = ((int)(floor(Camera::pos.x))%blockSize);
-    int extraY = ((int)(floor(Camera::pos.y))%blockSize);
+    //out->UpdateTexture();
+    //int extraX = ((int)(floor(Camera::pos.x))%blockSize);
+    //int extraY = ((int)(floor(Camera::pos.y))%blockSize);
 
     /*
     double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
@@ -552,10 +549,10 @@ void Light::Render(Point pos){
     dimensions2.w = size.x*scaleRatioW;
     SDL_RenderCopyEx(BearEngine->GetRenderer(),out->GetTexture(),nullptr,&dimensions2,0,nullptr,SDL_FLIP_NONE);*/
 
-    out->Render(Point(
+    /*out->Render(Point(
         pos.x - (extraX  + blockSize*4) ,
         pos.y  -(extraY  + blockSize*4)
-                      ),0,Point(size.x/sizeX, size.y/sizeY));
+                      ),0,Point(size.x/sizeX, size.y/sizeY));*/
 
 }
 

@@ -1,6 +1,5 @@
 #ifndef RENDERH
 #define RENDERH
-#include "smarttexture.hpp"
 #include "collision.hpp"
 #include "../framework/geometry.hpp"
 #include "../framework/typechecker.hpp"

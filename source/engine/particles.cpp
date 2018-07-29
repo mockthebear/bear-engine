@@ -25,7 +25,6 @@ Particle::Particle(){
     currentFrame=Frame=0;
     currentDelay=Delay=0;
     HasSprite = false;
-    textures = nullptr;
     Alpha = 255;
     Scale = 1;
     Scaling = 0;
@@ -45,7 +44,6 @@ Particle::Particle(int x,int y){
     currentFrame=Frame=0;
     currentDelay=Delay=0;
     HasSprite = false;
-    textures = nullptr;
     Alpha = 255;
     AlphaDegen = 0;
 
@@ -57,34 +55,6 @@ Particle::Particle(int x,int y){
     Scaling = 0;
 
 
-}
-
-Particle::Particle(int x,int y,SmartTexture **vect,int amount,float fameDelay,int rep){
-    OBJ_REGISTER(Particle);
-    Rotating = rotation = 0;
-
-    box.x = x;
-    box.y = y;
-
-    repeat = rep;
-    currentFrame=0;
-    currentDelay=fameDelay;
-    Frame = amount;
-    Delay = fameDelay;
-    HasSprite = false;
-    textures = vect;
-
-    Alpha = 255;
-    AlphaDegen = 0;
-
-
-    Depth = PARTICLE_DEPTH;
-
-    PatternMove = MOVE_SET_NONE;
-    Speed = Point(0,0);
-    createdPosition = Point(x,y);
-    Scale = 1;
-    Scaling = 0;
 }
 
 Particle::Particle(int x,int y,Text txt_,float duration){
@@ -98,7 +68,6 @@ Particle::Particle(int x,int y,Text txt_,float duration){
     Frame = 1;
     Delay = duration;
     HasSprite = false;
-    textures = nullptr;
     txt = txt_;
     Alpha = 255;
     Depth = PARTICLE_DEPTH;
@@ -123,7 +92,6 @@ Particle::Particle(int x,int y,Sprite sp_,float duration,int rep){
 
     Alpha = 255;
     Depth = PARTICLE_DEPTH;
-    textures = nullptr;
     PatternMove = MOVE_SET_NONE;
     Speed = Point(0,0);
     createdPosition = Point(x,y);
@@ -146,7 +114,6 @@ void Particle::SetSprite(Sprite sp_,float duration,int repeats){
     Frame           =   sp.GetFrameCount();
     currentDelay    =   std::max(sp_.GetFrameTime(),duration);
     Delay           =   std::max(sp_.GetFrameTime(),duration);
-    textures        =   nullptr;
 }
 
 void Particle::SetPatternMoveLine(Point p,Point accel){
@@ -218,10 +185,6 @@ void Particle::Render(){
         //sp.SetCenter(Point(sp.GetWidth()/Frame,sp.GetHeight()/Frame));
         sp.Render(box.x-Camera::pos.x,box.y-Camera::pos.y,rotation);
         sp.SetAlpha(255);
-    }else if(textures != NULL){
-        if (currentFrame >= Frame)
-            return;
-        textures[currentFrame]->Render(Camera::AdjustPosition(box),rotation);
     }else if(txt.IsWorking()){
         txt.SetRotation(rotation);
         //txt.SetScale(Point(Scale,Scale));
