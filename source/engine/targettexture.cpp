@@ -10,13 +10,38 @@
 void TargetTexture::Render(Point pos){
     m_renderData->position = pos;
     //
+    //
     Painter::RenderTexture(this,m_renderData);
 }
 
+bool TargetTexture::BindTexture(bool s_bind){
+    if (id == 0){
+        return false;
+    }
+    if (s_bind){
+        glBindTexture(GL_TEXTURE_2D, id);
+    }else{
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+    return true;
+}
+
+bool TargetTexture::BindRenderBuffer(bool s_bind){
+    if (id == 0){
+        return false;
+    }
+    if (s_bind){
+        glBindRenderbuffer(GL_TEXTURE_2D, m_renderBuffer);
+    }else{
+        glBindRenderbuffer(GL_TEXTURE_2D, 0);
+    }
+    return true;
+}
 bool TargetTexture::Bind(){
     glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
-    Point sz = ScreenManager::GetInstance().GetGameSize();
-    ScreenManager::GetInstance().ForceProjection(sz,SDL_FLIP_VERTICAL);
+    Point originalScreen = ScreenManager::GetInstance().GetGameSize();
+    Painter::SetViewport(originalScreen,Point(0.0, 0.0));
+    Painter::SetProjection(Rect(0.0f, originalScreen.x, 0.0f, originalScreen.y));
     return true;
 }
 
@@ -33,12 +58,17 @@ bool TargetTexture::FreeTexture(){
         glDeleteTextures(1, &tex);
         glDeleteFramebuffers(1, &m_frameBuffer);
         glDeleteRenderbuffers(1, &m_renderBuffer);
+        m_frameBuffer = 0;
+        m_renderBuffer = 0;
+        tex = 0;
     }
     return true;
 }
 
 bool TargetTexture::Generate(int wa,int ha){
-
+    if (m_frameBuffer != 0){
+        FreeTexture();
+    }
     glGenFramebuffers(1, &m_frameBuffer);
     TextureLoadMethod mthd(TEXTURE_NEAREST);
 
@@ -49,7 +79,7 @@ bool TargetTexture::Generate(int wa,int ha){
     id = tex->id;
     tex->DropTexture();
     delete tex;
-
+    //m_renderData->flip = SDL_FLIP_VERTICAL;
     m_renderData->SetClip(Rect(0,0,size_w,size_h),Point(size_w,size_h));
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);

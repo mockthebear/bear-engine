@@ -9,6 +9,8 @@ class TargetTexture : public BearTexture{
     };
     bool Generate(int w,int h);
     bool Bind();
+    bool BindTexture(bool bind=true);
+    bool BindRenderBuffer(bool bind=true);
     static bool UnBind();
     void Render(Point pos);
     bool FreeTexture();

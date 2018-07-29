@@ -25,9 +25,10 @@ class Test_TargetTexture: public State{
             ScreenManager::GetInstance().SetScreenName("Test target texture");
             bear::out << "Test target\n";
             background = Assets.make<Sprite>("data/wall.jpg");
-            targ.Generate(400,400);
+            targ.Generate(300,300);
             tset = new SmartTileset(Point(32,32),Point(15,15),2,Point(320,320));
             tset->SetSprite(Assets.make<Sprite>("data/tiles.png"));
+            example = Text("ui/UnB-Office_Regular.ttf",32,TEXT_SOLID,"Hello text",{33,33,120});
             Camera::Initiate();
             tset->SetTile(0,0,0,110);
             tset->SetTile(0,2,0,111);
@@ -80,14 +81,21 @@ class Test_TargetTexture: public State{
 
 
 
-            RenderHelp::DrawCircleColor(Point(32,32),32,255,255,255,255);
+
+            RenderHelp::DrawSquareColor(Rect(g_input.GetMouse().x, g_input.GetMouse().y, 32,32),255,0,0,255,true);
             RenderHelp::DrawCircleColor(Point(400-32,400-32),32,255,255,255,255);
 
 
 
+            example.Render(Point(16,16));
+
             targ.UnBind();
 
             targ.Render(Point(32 + movement,32));
+            RenderHelp::DrawSquareColor(Rect(32 + movement,32,300,300),0,0,0,255,true);
+
+
+            RenderHelp::DrawSquareColor(Rect(g_input.GetMouse().x, g_input.GetMouse().y, 32,32),255,0,0,255,true);
 
             tset->RenderLayer(0);
             tset->RenderLayer(1);
@@ -108,6 +116,7 @@ class Test_TargetTexture: public State{
         float duration;
         float tileAnim;
         int tileN;
+        Text example;
         TargetTexture targ;
 };
 

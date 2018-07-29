@@ -7,6 +7,7 @@
 #include <string>
 #include "../framework/geometry.hpp"
 #include "shadermanager.hpp"
+#include "targettexture.hpp"
 #include "libheader.hpp"
 #include <glm/glm.hpp>
 
@@ -52,18 +53,16 @@ class ScreenManager{
             shaking = true;
         };
         void RenderPresent();
-        SDL_Texture * GetDefaultRenderer(){return m_defaultScreen;};
         void Render();
         bool SetupOpenGL();
         void PreRender();
-        double GetScaleRatioH(){return m_defaultScreen != nullptr ? 1 : m_scaleRatio.y;};
-        double GetScaleRatioW(){return m_defaultScreen != nullptr ? 1 : m_scaleRatio.x;};
-        double GetOffsetW(){return (m_defaultScreen != nullptr ? 0 : m_offsetScreen.x)+shake.x;};
-        double GetOffsetH(){return (m_defaultScreen != nullptr ? 0 : m_offsetScreen.y)+shake.y;};
+        double GetScaleRatioH(){return  m_scaleRatio.y;};
+        double GetScaleRatioW(){return  m_scaleRatio.x;};
+        double GetOffsetW(){return m_offsetScreen.x+shake.x;};
+        double GetOffsetH(){return m_offsetScreen.y+shake.y;};
         void ResizeToScale(int w,int h,ResizeAction behave);
         float GetFps(){return m_fps;};
 
-        GLuint GetDefaultFrameBuffer();
         bool StartPostProcessing();
 
         void SetTopShader(Shader &shdr){
@@ -80,20 +79,24 @@ class ScreenManager{
 
         GLuint GetVAO(){return m_vertexArrayID;};
 
-        void ResetProjection();
+        void ResetProjection(int flip = SDL_FLIP_NONE);
         void ForceProjection(Point screenSize,int flipScreen = SDL_FLIP_NONE);
 
-
+        void StopPostProcessing(){
+            postProcess = false;
+            m_targetScreen.FreeTexture();
+        }
 
     private:
         friend class Painter;
 
         Shader storedShader;
+
+        TargetTexture m_targetScreen;
+
         bool postProcess;
-        GLuint frameBuffer,fbo_texture,rbo_depth,fbo,vbo_fbo_vertices;
 
         SDL_GLContext m_glContext;
-        SDL_Texture *m_defaultScreen;
         float m_fps;
         float m_frameDelay;
         int   m_frames;

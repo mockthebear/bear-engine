@@ -26,7 +26,6 @@ ScreenManager::ScreenManager(){
     shaking = 0;
     shaking = false;
     m_fps = 0;
-    m_defaultScreen = nullptr;
     m_frames = 0;
     m_frameDelay = 11.0f;
     m_window = NULL;
@@ -40,9 +39,7 @@ ScreenManager& ScreenManager::GetInstance(){
 }
 void ScreenManager::TerminateScreen(){
     if (postProcess){
-        glDeleteTextures(1, &fbo_texture);
-        glDeleteRenderbuffers(1, &rbo_depth);
-        glDeleteFramebuffers(1, &fbo);
+        m_targetScreen.FreeTexture();
         postProcess = false;
     }
     if (m_renderer != NULL){
@@ -81,53 +78,6 @@ bool ScreenManager::SetupOpenGL(){
     int maxSize = Painter::GetMaxTextureSize();
     m_maxTextureSize.x = maxSize;
     m_maxTextureSize.y = maxSize;
-    return true;
-}
-
-bool ScreenManager::StartPostProcessing(){
-    postProcess = true;
-
-    glActiveTexture(GL_TEXTURE0);
-    glGenTextures(1, &fbo_texture);
-    glBindTexture(GL_TEXTURE_2D, fbo_texture);
-
-
-    ConfigManager::GetInstance().screenMode.ApplyFilter();
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_originalScreen.x, m_originalScreen.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    /* Depth buffer */
-    glGenRenderbuffers(1, &rbo_depth);
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_originalScreen.x, m_originalScreen.y);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-    /* Framebuffer to link everything together */
-    glGenFramebuffers(1, &fbo);
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, fbo_texture, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth);
-
-
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    GLfloat fbo_vertices[] = {
-        -1,  1,
-        1,  1,
-        -1,  -1,
-        1,  -1,
-    };
-    glGenBuffers(1, &vbo_fbo_vertices);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_fbo_vertices);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(fbo_vertices), fbo_vertices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    DebugHelper::DisplayGlError("StartPostProcessing");
     return true;
 }
 
@@ -182,55 +132,44 @@ SDL_Renderer* ScreenManager::StartRenderer(){
 
 void ScreenManager::RenderPresent(){
 
-    /*if (postProcess){
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glLoadIdentity();
-        glClearColor(ClearColor[0],ClearColor[1],ClearColor[2],ClearColor[3]);
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-        glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
+    if (postProcess){
+
         if (storedShader.IsLoaded()){
             storedShader.Bind();
         }
-        glBindTexture(GL_TEXTURE_2D, fbo_texture);
-        glEnable(GL_TEXTURE_2D);
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-        float w = m_originalScreen.x;
-        float h = m_originalScreen.y;
-
-        glTranslatef(
-                        ( w / 2.f  ),
-                        ( h / 2.f  ),
-                        0.f );
-
-        glBegin( GL_TRIANGLE_FAN );
-                glTexCoord2f(  0.0f,    1.0f ); glVertex2f( -w / 2.f, -h / 2.f );
-                glTexCoord2f( 1.0f ,    1.0f ); glVertex2f(  w / 2.f, -h / 2.f );
-                glTexCoord2f( 1.0f , 0.0f ); glVertex2f(  w / 2.f,  h / 2.f );
-                glTexCoord2f(  0.0f , 0.0f ); glVertex2f( -w / 2.f,  h / 2.f );
-        glEnd();
-
+        m_targetScreen.UnBind();
+        m_targetScreen.Render(Point(0.0f,0.0f));
         if (storedShader.IsLoaded()){
             storedShader.Unbind();
         }
         DebugHelper::DisplayGlError("RenderPresent");
-    }*/
+    }
     glFlush();
     SDL_GL_SwapWindow(m_window);
 
 }
 
+
+bool ScreenManager::StartPostProcessing(){
+    postProcess = true;
+
+
+    m_targetScreen.ClearTexture();
+    m_targetScreen.Generate(m_originalScreen.x, m_originalScreen.y);
+
+    DebugHelper::DisplayGlError("StartPostProcessing");
+    return true;
+}
+
 void ScreenManager::PreRender(){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(ClearColor[0],ClearColor[1],ClearColor[2],ClearColor[3]);
     if (postProcess){
-        glViewport(shake.x,shake.y,m_screen.x, m_screen.y);
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-        glBindTexture( GL_TEXTURE_2D, 0 );
+        m_targetScreen.Bind();
         glClearColor(ClearColor[0],ClearColor[1],ClearColor[2],ClearColor[3]);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }else{
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-        glClearColor(ClearColor[0],ClearColor[1],ClearColor[2],ClearColor[3]);
     }
+
 }
 
 void ScreenManager::Render(){
@@ -238,12 +177,18 @@ void ScreenManager::Render(){
 }
 
 void ScreenManager::ForceProjection(Point screenSize,int flipScreen){
-    Painter::SetViewport(screenSize, flipScreen,screenSize);
+    //Painter::SetViewport(screenSize, flipScreen,screenSize);
+    //glm::ortho(0.0f, 800.0f, 600.0f, 0.0f, -1.0f, 1.0f);
+
+
+
     screenProjection = false;
 }
 
-void ScreenManager::ResetProjection(){
-    Painter::SetViewport(m_originalScreen, SDL_FLIP_NONE,m_screen,m_offsetScreen);
+void ScreenManager::ResetProjection(int flipScreen){
+    //Painter::Projection = glm::ortho(0.0f, (float)m_originalScreen.x, 0.0f, (float)m_originalScreen.y, -1.0f, 1.0f);
+    Painter::SetProjection(m_originalScreen, flipScreen);
+    Painter::SetViewport(m_screen,m_offsetScreen);
     screenProjection = true;
 }
 
@@ -256,25 +201,10 @@ void ScreenManager::NotifyResized(){
 
     if (GameBehavior::GetInstance().OnResize(newW,newH)){
         if (postProcess){
-            glBindTexture(GL_TEXTURE_2D, fbo_texture);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_screen.x, m_screen.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-            glBindTexture(GL_TEXTURE_2D, 0);
-
-            glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
-            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_screen.x, m_screen.y);
-            glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-
-        }else{
-            ResetProjection();
-            /*glViewport(m_offsetScreen.x, m_offsetScreen.y,m_screen.x, m_screen.y);
-            glMatrixMode( GL_PROJECTION );
-            glLoadIdentity();
-            glOrtho( 0.0, m_originalScreen.x, m_originalScreen.y, 0.0, 1.0, -1.0 );
-            glMatrixMode( GL_MODELVIEW );
-            glLoadIdentity();
-            glPushMatrix();*/
+            m_targetScreen.FreeTexture();
+            StartPostProcessing();
         }
+        ResetProjection();
     }
 
 }
@@ -289,9 +219,7 @@ void ScreenManager::SetWindowSize(int w,int h){
     m_scaleRatio = Point(1,1);
     lastValidScale = Point(1,1);
 
-    //if (screenProjection){
-        ResetProjection();
-    //}
+    ResetProjection();
 }
 
 void ScreenManager::ToggleFullScreen(){
@@ -300,7 +228,7 @@ void ScreenManager::ToggleFullScreen(){
         SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     }else{
         SDL_SetWindowFullscreen(m_window, SDL_FALSE);
-        ScreenManager::GetInstance().Resize(640,576);
+        ScreenManager::GetInstance().Resize(m_originalScreen.x,m_originalScreen.y);
     }
     full = !full;
 }
@@ -313,15 +241,11 @@ void ScreenManager::Resize(int w,int h){
     m_screen.y = h;
 
     SDL_SetWindowSize(m_window,w,h);
-    //if (screenProjection){
-        ResetProjection();
-    //}
+
+    ResetProjection();
 
     if (postProcess){
-        glDeleteTextures(1, &fbo_texture);
-        glDeleteRenderbuffers(1, &rbo_depth);
-        glDeleteFramebuffers(1, &fbo);
-        glDeleteBuffers(1, &vbo_fbo_vertices);
+        m_targetScreen.FreeTexture();
         StartPostProcessing();
     }
 
@@ -425,12 +349,4 @@ void ScreenManager::Update(float dt){
 
     }
 }
-
-GLuint ScreenManager::GetDefaultFrameBuffer(){
-    if (!postProcess){
-        return 0;
-    }
-    return frameBuffer;
-}
-
 
