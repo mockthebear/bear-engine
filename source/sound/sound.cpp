@@ -29,19 +29,10 @@ bool Sound::SetMasterVolume(uint8_t vol,int classType_){
         }
         return true;
     }
-    float oldValue = MasterVolume[classType_];
     for (int i=0;i<SoundPool::GetInstance().count;i++){
-        //alGetSourcei(, AL_SOURCE_STATE, &state);
         if (SoundPool::GetInstance().classes[i] == classType_){
             ALuint thiSource = SoundPool::GetInstance().sources[i];
-            float currVol=1.0f;
-            alGetSourcef(thiSource, AL_GAIN, &currVol);
-            currVol = currVol/oldValue;
-            if (currVol == 0){
-                currVol = 1.0f;
-            }
-            alSourcef(thiSource, AL_GAIN, newValue*currVol);
-
+            alSourcef(thiSource, AL_MAX_GAIN ,newValue);
         }
     }
     MasterVolume[classType_] = newValue;
@@ -169,7 +160,9 @@ int Sound::PlayOnce(const char *s,bool global,int volume,Point3 pos,int classN){
             SoundLoader::ShowError();
             alSource3f(sourceID_, AL_POSITION, pos.x, pos.y, pos.z);
             SoundLoader::ShowError();
-            alSourcef(sourceID_, AL_GAIN, MasterVolume[classN]*((float)volume/MAX_VOL_SIZE) );
+            alSourcef(sourceID_, AL_GAIN, ((float)volume/MAX_VOL_SIZE) );
+            SoundLoader::ShowError();
+            alSourcef(sourceID_, AL_MAX_GAIN, MasterVolume[classN] );
             SoundLoader::ShowError();
             alSourcef(sourceID_, AL_PITCH, 1.0);
             SoundLoader::ShowError();
@@ -214,7 +207,9 @@ int Sound::PlayOncePiched(const char *s,int ptch,bool global,int volume,Point3 p
             SoundLoader::ShowError();
             alSource3f(sourceID_, AL_POSITION, pos.x, pos.y, pos.z);
             SoundLoader::ShowError();
-            alSourcef(sourceID_, AL_GAIN, MasterVolume[classN]*((float)volume/MAX_VOL_SIZE) );
+            alSourcef(sourceID_, AL_GAIN, ((float)volume/MAX_VOL_SIZE) );
+            SoundLoader::ShowError();
+            alSourcef(sourceID_, AL_MAX_GAIN, MasterVolume[classN] );
             SoundLoader::ShowError();
             alSourcef(sourceID_, AL_PITCH, 1.0);
             SoundLoader::ShowError();
@@ -255,7 +250,8 @@ void Sound::SetVolume(int vol){
     }else{
         vol = volume;
     }
-    alSourcef(sourceID, AL_GAIN, MasterVolume[classType]*((float)vol/MAX_VOL_SIZE) );
+    alSourcef(sourceID, AL_MAX_GAIN, MasterVolume[classType] );
+    alSourcef(sourceID, AL_GAIN, ((float)vol/MAX_VOL_SIZE) );
     SoundLoader::ShowError("on volume");
 }
 
@@ -393,9 +389,9 @@ bool Sound::FadeOut(float speed,float minVol){
     if (speed > 0){
         speed = - speed;
     }
-    minVol = MasterVolume[classType]*((float)minVol/MAX_VOL_SIZE);
-    float curSound = MasterVolume[classType]*((float)volume/MAX_VOL_SIZE);
-    SoundWorker::FaderList.emplace_back( SoundFaderInstance(curSound,sourceID,snd,minVol,speed));
+    minVol = ((float)minVol/MAX_VOL_SIZE);
+    float curSound =((float)volume/MAX_VOL_SIZE);
+    SoundWorker::FaderList.emplace_back( SoundFaderInstance(curSound,sourceID,snd,minVol,speed,classType));
     return true;
 }
 
@@ -405,8 +401,8 @@ bool Sound::FadeIn(float speed,float maxVol,bool looped){
     }
     SetVolume(0);
     Play(looped);
-    maxVol = MasterVolume[classType]*((float)maxVol/MAX_VOL_SIZE);
-    SoundWorker::FaderList.emplace_back( SoundFaderInstance(0.0f,sourceID,snd,maxVol,speed));
+    maxVol = ((float)maxVol/MAX_VOL_SIZE);
+    SoundWorker::FaderList.emplace_back( SoundFaderInstance(0.0f,sourceID,snd,maxVol,speed,classType));
     return true;
 }
 

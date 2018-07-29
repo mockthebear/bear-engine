@@ -16,9 +16,6 @@
 /**
     @brief Basic sound class
 */
-static volatile float MasterVolume[MAX_VOL_TYPES] = {1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,
-                                 1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
-
 
 class Sound{
     public:

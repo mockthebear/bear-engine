@@ -7,6 +7,10 @@
 #define MAX_VOL_TYPES 16
 #define MAX_VOL_SIZE 128.0f
 
+static volatile float MasterVolume[MAX_VOL_TYPES] = {1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,
+                                 1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
+
+
 class BufferData{
     public:
     BufferData():buffer(0),format(0),freq(0){};
@@ -44,13 +48,15 @@ struct RIFF_Header {
 class SoundFaderInstance{
     public:
         SoundFaderInstance():volume(0.0f),max(0.0f),sourceID(0),snd(),increase(0.0f),dead(true){};
-        SoundFaderInstance(float baseVol,ALuint source,SoundPtr p,float maxm,float increasee):volume(baseVol),max(maxm),sourceID(source),snd(p),increase(increasee),dead(false){};
+        SoundFaderInstance(float baseVol,ALuint source,SoundPtr p,float maxm,float increasee,int classTypee):volume(baseVol),max(maxm),sourceID(source),snd(p),increase(increasee),classType(classTypee),dead(false){};
         float volume;
         float max;
         ALuint sourceID;
         SoundPtr snd;
         float increase;
+        int classType;
         bool dead;
+
 };
 
 class SoundWorker{
@@ -62,3 +68,5 @@ class SoundWorker{
 
         static  std::vector<SoundFaderInstance> FaderList;
 };
+
+
