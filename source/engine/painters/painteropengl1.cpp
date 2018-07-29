@@ -9,10 +9,20 @@ void RenderData::UpdateVertex(){}
 glm::mat4 Painter::Projection;
 
 
-void Painter::SetViewport(Point size,int flipScreen,Point screenNow,Point offset){
+void Painter::SetViewport(Point screenNow,Point offset){
     glViewport(offset.x, offset.y, screenNow.x, screenNow.y);
+
+}
+
+void Painter::SetProjection(Rect rproj){
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    glOrtho(rproj.x, rproj.y, rproj.w, rproj.h, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
+void Painter::SetProjection(Point size,int flipScreen){
     Point xAxis;
     Point yAxis;
     if (flipScreen&SDL_FLIP_HORIZONTAL){
@@ -29,11 +39,14 @@ void Painter::SetViewport(Point size,int flipScreen,Point screenNow,Point offset
         yAxis.x = size.y;
         yAxis.y = 0.0f;
     }
-
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
     glOrtho(xAxis.x, xAxis.y, yAxis.x, yAxis.y, -1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
+
+
 
 
 bool Painter::CanSupport(PainterSupport sup){
@@ -71,20 +84,8 @@ void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_da
 
 
 bool Painter::RenderPointTexture(BearTexture *t_texture, RenderDataPtr t_data){
-    if (!t_texture || t_texture->id == 0){
-        return false;
-    }
-    float points[] ={
-        t_data->position.x, t_data->position.y,
-        t_data->m_forwardClip.x, t_data->m_forwardClip.y, t_data->m_forwardClip.w, t_data->m_forwardClip.h,
-        t_data->m_clip.w, t_data->m_clip.h,
-        t_data->m_scale.x, t_data->m_scale.y,
-        t_data->m_angle,
+    return false;
 
-    };
-    m_vao.vertexes.AddVertexes( sizeof(points) / sizeof(float) ,points);
-
-    return true;
 }
 
 RenderData::~RenderData(){};
@@ -94,7 +95,52 @@ bool Painter::DrawSprites(int id){
 }
 
 bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
-    return false;
+    GLfloat texLeft = t_data->m_forwardClip.x;
+    GLfloat texRight =  t_data->m_forwardClip.y;
+    GLfloat texTop = t_data->m_forwardClip.w;
+    GLfloat texBottom = t_data->m_forwardClip.h;
+
+    GLfloat quadWidth = t_data->size.x;
+    GLfloat quadHeight = t_data->size.y;
+
+    glLoadIdentity();
+
+    glEnable(GL_TEXTURE_2D);
+
+    glBindTexture( GL_TEXTURE_2D, t_texture->id );
+
+    glColor4fv(t_data->color.Get4fv());
+    glScalef(t_data->m_scale.x , t_data->m_scale.y , 1.0f);
+
+    glTranslatef(
+        (t_data->position.x * (1.0f/t_data->m_scale.x)  + quadWidth  / 2.f  ) + (- t_data->center.x* (t_data->m_scale.x)  + t_data->center.x),
+        (t_data->position.y * (1.0f/t_data->m_scale.y)  + quadHeight / 2.f  ) + (- t_data->center.y* (t_data->m_scale.y)  + t_data->center.y),
+    0.f);
+
+    glRotatef( t_data->m_angle, 0.f, 0.f, 1.f );
+
+
+
+    if ((t_data->flip&SDL_FLIP_HORIZONTAL) != 0){
+        float holder =  texLeft;
+        texLeft = texRight;
+        texRight = holder;
+    }
+    if ((t_data->flip&SDL_FLIP_VERTICAL) != 0){
+        float holder =  texTop;
+        texTop = texBottom;
+        texBottom = holder;
+    }
+    glBegin( GL_TRIANGLE_FAN );
+        glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
+        glTexCoord2f( texRight ,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
+        glTexCoord2f( texRight , texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
+        glTexCoord2f(  texLeft , texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+    glBindTexture( GL_TEXTURE_2D, 0 );
+    return true;
 }
 
 BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter){
