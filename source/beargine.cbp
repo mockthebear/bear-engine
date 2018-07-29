@@ -445,6 +445,7 @@
 		<Unit filename="tests/testpathfind.hpp" />
 		<Unit filename="tests/testpointtileset.hpp" />
 		<Unit filename="tests/testpool.hpp" />
+		<Unit filename="tests/testpostprocess.hpp" />
 		<Unit filename="tests/testrenderspeed.hpp" />
 		<Unit filename="tests/testscrolling.hpp" />
 		<Unit filename="tests/testshader.hpp" />

@@ -106,7 +106,9 @@ class Painter{
   public:
       static glm::mat4 CalculateModel(BasicRenderDataPtr );
 
-    static void SetViewport(Point size,int flipScreen,Point screenNow,Point offset = Point(0.0f,0.0f));
+    static void SetViewport(Point screenNow,Point offset = Point(0.0f,0.0f));
+    static void SetProjection(Point size,int flipScreen = SDL_FLIP_NONE);
+    static void SetProjection(Rect rproj);
     static glm::mat4 Projection;
 
 

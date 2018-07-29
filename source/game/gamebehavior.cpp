@@ -28,6 +28,7 @@
 #include "../tests/testsound.hpp"
 #include "../tests/testrenderspeed.hpp"
 #include "../tests/testpointtileset.hpp"
+#include "../tests/testpostprocess.hpp"
 
 
 
@@ -95,6 +96,7 @@ bool GameBehavior::OnLoad(){
 
     Game::GetInstance()->AddState(new Test_Scrolling());
     Game::GetInstance()->AddState(new Test_TargetTexture());
+    Game::GetInstance()->AddState(new Test_PostProcess());
     Game::GetInstance()->AddState(new Test_Shader());
     if (Painter::CanSupport(SUPPORT_POINTSPRITE)){
         Game::GetInstance()->AddState(new Test_PSTILESET());

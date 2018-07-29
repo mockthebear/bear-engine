@@ -19,8 +19,15 @@ VertexArrayObject Painter::m_vao;
 
 
 
-void Painter::SetViewport(Point size,int flipScreen,Point screenNow,Point offset){
+void Painter::SetViewport(Point screenNow,Point offset){
     glViewport(offset.x, offset.y, screenNow.x, screenNow.y);
+}
+
+void Painter::SetProjection(Rect rproj){
+    Painter::Projection = glm::ortho(rproj.x, rproj.y, rproj.w, rproj.h, -1.0f, 1.0f);
+}
+
+void Painter::SetProjection(Point size,int flipScreen){
     Point xAxis;
     Point yAxis;
     if (flipScreen&SDL_FLIP_HORIZONTAL){
@@ -310,7 +317,12 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
     unsigned int pow_h =  size.y;//powerOfTwo(size.y); //No need to this on opengl. only on opengles
 
     glBindTexture(GL_TEXTURE_2D, texId);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
     filter.ApplyFilter();
+
     glTexImage2D(GL_TEXTURE_2D, 0, mode, pow_w, pow_h, 0, mode, GL_UNSIGNED_BYTE, nullptr);
     if (pixels != nullptr){
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x, size.y, mode, GL_UNSIGNED_BYTE, pixels);
