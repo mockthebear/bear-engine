@@ -160,7 +160,7 @@ void ReliableUdpServer::Update(float dt){
             }
             case ENET_EVENT_TYPE_RECEIVE:{
                 SocketMessage msg;
-                uint32_t pid = (int)event.peer -> data;
+                uint32_t pid = (uint64_t)event.peer -> data;
                 msg.SetStream((char*)event.packet -> data,event.packet -> dataLength);
                 m_messages[pid].push(msg);
                 enet_packet_destroy (event.packet);
@@ -168,7 +168,7 @@ void ReliableUdpServer::Update(float dt){
             }
 
             case ENET_EVENT_TYPE_DISCONNECT:{
-                printf ("%d disconnected.\n", (int)event.peer -> data);
+                printf ("%d disconnected.\n", (uint64_t)event.peer -> data);
                 peerIds.remove(m_lastPid);
             }
         }

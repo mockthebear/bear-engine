@@ -1,5 +1,5 @@
-#version 330 core
-layout(location = 0) out vec4 color;
+#version 130
+out vec4 color;
 
 uniform sampler2D image;
 in vec2 TexCoords;

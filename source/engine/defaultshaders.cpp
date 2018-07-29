@@ -3,9 +3,9 @@
 #if defined(RENDER_OPENGL3) || defined(RENDER_OPENGL2)
 
 const char *Shader::DefaultTextureVertexShader = "\n"
-"#version 330 core\n"
-"layout (location = 0) in vec2 vPos;\n"
-"layout (location = 1) in vec2 clip;\n"
+"#version 130\n"
+"in vec2 vPos;\n"
+"in vec2 clip;\n"
 "\n"
 "out vec2 TexCoords;\n"
 "\n"
@@ -19,9 +19,9 @@ const char *Shader::DefaultTextureVertexShader = "\n"
 "}\n";
 
 const char *Shader::DefaultTextureFragmentShader = "\n"
-"#version 330 core\n"
+"#version 130\n"
 "in vec2 TexCoords;\n"
-"layout(location = 0) out vec4 color;\n"
+"out vec4 color;\n"
 "\n"
 "uniform sampler2D image;\n"
 "uniform vec4 iColor;\n"
@@ -34,8 +34,8 @@ const char *Shader::DefaultTextureFragmentShader = "\n"
 
 
 const char *Shader::DefaultQuadVertexShader = "\n"
-"#version 330 core\n"
-"layout (location = 0) in vec2 vPos;\n"
+"#version 130\n"
+"in vec2 vPos;\n"
 "\n"
 "uniform mat4 model;\n"
 "uniform mat4 projection;\n"
@@ -46,8 +46,8 @@ const char *Shader::DefaultQuadVertexShader = "\n"
 "}\n";
 
 const char *Shader::DefaultQuadFragmentShader = "\n"
-"#version 330 core\n"
-"layout(location = 0) out vec4 color;\n"
+"#version 130\n"
+"out vec4 color;\n"
 "\n"
 "uniform vec4 iColor;\n"
 "\n"
@@ -60,7 +60,7 @@ const char *Shader::DefaultQuadFragmentShader = "\n"
 #elif defined(RENDER_OPENGLES2)
 
 const char *Shader::DefaultTextureVertexShader = "\n"
-"#version 330 core\n"
+"#version 300 core\n"
 "layout (location = 0) in vec2 vPos;\n"
 "layout (location = 1) in vec2 clip;\n"
 "\n"
@@ -71,7 +71,7 @@ const char *Shader::DefaultTextureVertexShader = "\n"
 "}\n";
 
 const char *Shader::DefaultTextureFragmentShader = "\n"
-"#version 330 core\n"
+"#version 130 core\n"
 "in vec2 TexCoords;\n"
 "layout(location = 0) out vec4 color;\n"
 "\n"
@@ -86,7 +86,7 @@ const char *Shader::DefaultTextureFragmentShader = "\n"
 
 
 const char *Shader::DefaultQuadVertexShader = "\n"
-"#version 330 core\n"
+"#version 130 core\n"
 "layout (location = 0) in vec2 vPos;\n"
 "\n"
 "uniform mat4 model;\n"
@@ -98,7 +98,7 @@ const char *Shader::DefaultQuadVertexShader = "\n"
 "}\n";
 
 const char *Shader::DefaultQuadFragmentShader = "\n"
-"#version 330 core\n"
+"#version 130 core\n"
 "layout(location = 0) out vec4 color;\n"
 "\n"
 "uniform vec4 iColor;\n"
@@ -139,7 +139,7 @@ const char *Shader::DefaultTextureFragmentShader = "\n"
 
 
 const char *Shader::DefaultQuadVertexShader = "\n"
-"#version 330 core\n"
+"#version 130 core\n"
 "\n"
 "out vec2 TexCoords;\n"
 "\n"
@@ -151,7 +151,7 @@ const char *Shader::DefaultQuadVertexShader = "\n"
 "}\n";
 
 const char *Shader::DefaultQuadFragmentShader = "\n"
-"#version 330 core\n"
+"#version 130 core\n"
 "in vec2 TexCoords;\n"
 "\n"
 "uniform sampler2D image;\n"

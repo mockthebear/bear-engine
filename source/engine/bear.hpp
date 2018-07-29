@@ -13,7 +13,7 @@ namespace bear {
             void printme(int n);
             void printme(unsigned int n);
             void printme(long unsigned int n);
-            void printme(uint64_t n);
+            //void printme(uint64_t n);
             void printme(float n);
             void printme(double n);
             void printme(const char *c);
