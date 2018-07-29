@@ -92,6 +92,21 @@ namespace bear {
         return o;
     }
 
+    template<typename T> static inline bear::outstream &operator << ( bear::outstream &o ,GenericRect<T> pointPos){
+        o.printme("(");
+        o.printme(pointPos.x);
+        o.printme(",");
+        o.printme(pointPos.y);
+        o.printme(",");
+        o.printme(pointPos.w);
+        o.printme(",");
+        o.printme(pointPos.h);
+        o.printme(")");
+
+        return o;
+    }
+
+
     template<typename T> static inline bear::outstream &operator << ( bear::outstream &o ,T *n){
         o.printme(typeid(T).name());
         o.printme("_ptr");
