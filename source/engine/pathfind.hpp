@@ -30,7 +30,7 @@ class PFNode: public Point{
         }
 
         void updatePriority(const int & xd, const int & yd){
-             priority=level+getDistance(Point((float)xd, (float)yd))*10.0f;
+             priority=level+GetDistance(Point((float)xd, (float)yd))*10.0f;
         }
 };
 bool operator<(const PFNode & a, const PFNode & b);

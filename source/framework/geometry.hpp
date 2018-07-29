@@ -76,16 +76,7 @@ template <typename T=float> class GenericPoint{
         }
 
         GenericPoint(const SDL_Point &p):x(p.x),y(p.y){}
-        /**
-            Get the distance between two points
-            @return distance between two points
-        */
-        T getDistance(GenericPoint *p){
-            return sqrt(pow((x - p->x),(T)2) + pow((y-p->y),(T)2));
-        };
-        T GetDistance(GenericPoint *p){
-            return sqrt(pow((x - p->x),(T)2) + pow((y-p->y),(T)2));
-        };
+
         /**
             *Get the magnitude of the current point
             @return Magnitude
@@ -97,9 +88,6 @@ template <typename T=float> class GenericPoint{
             Get the distance between two points
             @return distance between two points
         */
-        T getDistance(GenericPoint p){
-             return sqrt(pow((x - p.x),(T)2) + pow((y-p.y),(T)2));
-        };
         T GetDistance(GenericPoint p){
              return sqrt(pow((x - p.x),(T)2) + pow((y-p.y),(T)2));
         };
@@ -107,10 +95,6 @@ template <typename T=float> class GenericPoint{
             Get the direction in rads between two points
             @param return in radians the angle
         */
-        T getDirection(GenericPoint p){
-            return atan2(y-p.y,x-p.x);
-        };
-
         T GetDirection(GenericPoint to){
             return atan2(to.y-y,to.x-x);
         };

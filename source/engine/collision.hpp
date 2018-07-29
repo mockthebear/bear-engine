@@ -222,7 +222,7 @@ namespace Collision {
             Point Center1 = A.GetCenter();
             Point Center2 = B.GetCenter();
             int dir = 0;
-            float angle = Center1.getDirection(Center2);
+            float angle = Center2.GetDirection(Center1);
             /*
                 0 left
                 1 top

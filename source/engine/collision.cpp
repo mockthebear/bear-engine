@@ -425,7 +425,7 @@ bool Collision::SoftWarpAway(GameObject* thisObject,GameObject* otherObject,Poin
 bool Collision::SoftWarpAway(GameObject* thisObject,GameObject* otherObject){
     Point Center1 = thisObject->box.GetCenter();
     Point Center2 = otherObject->box.GetCenter();
-    float angle = Center2.getDirection(Center1);
+    float angle = Center2.GetDirection(Center1);
     Rect aux = thisObject->box;
     float dist = 0;
     while (Collision::IsColliding(aux,otherObject->box)){

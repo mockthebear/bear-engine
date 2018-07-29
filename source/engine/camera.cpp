@@ -105,8 +105,8 @@ void Camera::UpdateByPos(Rect box,float dt){
     toGo.x = floor(box.GetXCenter());
     toGo.y = floor(box.GetYCenter());
     Point posCenter(RealPos.GetXCenter(),RealPos.GetYCenter());
-    if (Smooth && toGo.getDistance(posCenter) >= speed*dt ){
-        float angle = toGo.getDirection(posCenter);
+    if (Smooth && toGo.GetDistance(posCenter) >= speed*dt ){
+        float angle = posCenter.GetDirection(toGo);
         RealPos.x += (cos(angle)*dt*speed);
         RealPos.y += (sin(angle)*dt*speed);
     }else{
