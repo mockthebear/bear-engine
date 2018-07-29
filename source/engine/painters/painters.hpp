@@ -104,7 +104,9 @@ typedef chain_ptr<BearTexture> TexturePtr;
 
 class Painter{
   public:
-      static glm::mat4 CalculateModel(BasicRenderDataPtr );
+    static glm::mat4 CalculateModel(BasicRenderDataPtr );
+
+    static void SetTexturePixels(uint32_t texture, PointInt size,int mode,unsigned char* pixels = nullptr );
 
     static void SetViewport(Point screenNow,Point offset = Point(0.0f,0.0f));
     static void SetProjection(Point size,int flipScreen = SDL_FLIP_NONE);

@@ -72,22 +72,11 @@ class TextureLoadMethod{
 
 class BearTexture{
     public:
-        BearTexture(){
-            id = 0;
-            texture_w = texture_h = 0;
-            size_w = size_h = 0;
-            textureMode = TEXTURE_NEAREST;
-        };
-        uint32_t DropTexture(){
-           uint32_t ret = id;
-           id = 0;
-           return ret;
-        }
-        void ClearTexture(){
-            uint32_t tex = DropTexture();
-            if (tex > 0)
-                glDeleteTextures(1, &tex);
-        }
+        BearTexture():id(0),texture_w(0),texture_h(0),size_w(0),size_h(0),textureMode(TEXTURE_NEAREST),mode(GL_RGBA){};
+
+        uint32_t DropTexture();
+        void ClearTexture();
+        void ApplyPixels(uint8_t *pixels);
 
         BearTexture(uint32_t textureId,uint32_t imagewidth,uint32_t imageheight,uint32_t texturewidth,uint32_t textureheight,GLenum imgMode)
         :id(textureId),texture_w(texturewidth),texture_h(textureheight),size_w(imagewidth),size_h(imageheight),textureMode(TEXTURE_NEAREST),mode(imgMode){};
