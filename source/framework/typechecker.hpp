@@ -52,6 +52,11 @@ class Types{
             while(name.at(0) >= '0' && name.at(0) <= '9'){
                 name.erase(0,1);
             }
+            // In visual studio the class name is always something like:
+            // [class ClassName]. So this check for a c and a space then remove the "class" from the name
+			if (name.at(0) == 'c' && name.at(5) == ' ') {
+				name.erase(0, 6);
+			}
             return name;
         }
 
