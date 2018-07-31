@@ -165,11 +165,11 @@ class Particle: public GameObject{
         /**
          Particles dont take damage
         */
-        void NotifyDamage(GameObject *o,int nothing){};
+        void NotifyDamage(GameObject *,int){};
         /**
             Empty. There is no collision
         */
-        void NotifyCollision(GameObject *p){};
+        void NotifyCollision(GameObject *){};
         /**
             Comparator
         */

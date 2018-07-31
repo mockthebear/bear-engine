@@ -9,24 +9,25 @@
 
 
 
-SmartTileset::SmartTileset(PointInt tileSize,PointInt tilesetSize,int layers,PointInt maxTextureSize):tileSize(PointInt(8,8)){
+SmartTileset::SmartTileset(PointInt _tileSize,PointInt _tilesetSize,int layers,PointInt _maxTextureSize):tileSize(PointInt(8,8)){
     Stopwatch timer;
     bear::out << "Begin at "<<float(timer.Get()/1000.0)<<"\n";
     isValid = false;
     lastTarget = nullptr;
     PointInt engineMaxSize = ScreenManager::GetInstance().GetMaxTextureSize();
-    if (maxTextureSize.x == -1 || maxTextureSize.x > engineMaxSize.x){
-        maxTextureSize.x = engineMaxSize.x;
+    if (_maxTextureSize.x == -1 || _maxTextureSize.x > engineMaxSize.x){
+        _maxTextureSize.x = engineMaxSize.x;
     }
-    if (maxTextureSize.y == -1 || maxTextureSize.y > engineMaxSize.y){
-        maxTextureSize.y = engineMaxSize.y;
+    if (_maxTextureSize.y == -1 || _maxTextureSize.y > engineMaxSize.y){
+        _maxTextureSize.y = engineMaxSize.y;
     }
-
-    PointInt truncator = maxTextureSize/tileSize;
+    tileSize = _tileSize;
+    PointInt truncator = _maxTextureSize/tileSize;
 
     maxTextureSize = truncator*tileSize;
 
-    this->tilesetCompatSize = tilesetSize;
+    this->tilesetCompatSize = _tilesetSize;
+    tilesetSize = _tilesetSize;
     bear::out << "Max texture size set to " << maxTextureSize.x << " x " << maxTextureSize.y << "\n";
     PointInt tilesPerBlock = maxTextureSize/tileSize;
     tilesetSize = tilesetSize * tileSize;

@@ -147,6 +147,7 @@ class SocketClient{
         #else
         SocketClient():m_SocketHandler(-1){};
         #endif // _WIN32
+        virtual ~SocketClient(){};
         virtual bool Connect(std::string addr,uint16_t port,int duration) = 0;
 
         virtual void Update(float dt) = 0;
@@ -168,6 +169,7 @@ class SocketClient{
 class SocketHost{
     public:
         SocketHost():m_lastPid(0){};
+        virtual ~SocketHost(){};
         virtual bool Bind(uint16_t port) = 0;
         virtual void Update(float dt) = 0;
         virtual bool Receive(SocketMessage *msg,int pid) = 0;

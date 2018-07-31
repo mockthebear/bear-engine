@@ -179,6 +179,6 @@ class Game{
 
 
 };
-
+void exitHandler(int sig);
 extern Game g_game;
 #endif

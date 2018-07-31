@@ -66,15 +66,15 @@ void Console::Begin(){
     }
 
 }
-bool Console::AddText(std::string str,bool onlyGraphic){
+bool Console::AddText(std::string _str,bool onlyGraphic){
     if (hasStarted){
         if (!onlyGraphic){
             if (logFile)
-                myfile << str << "\r\n";
-            std::cout << str<<"\n";
+                myfile << _str << "\r\n";
+            std::cout << _str<<"\n";
 
             #ifdef __ANDROID__
-            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s\n",str.c_str());
+            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s\n",_str.c_str());
             #endif
         }
         if (m_lines <= counter){
@@ -87,19 +87,19 @@ bool Console::AddText(std::string str,bool onlyGraphic){
                     m_line[i]->SetText(str);
             }
             if (!Game::Crashed)
-                m_line[m_lines-1]->SetText(str);
+                m_line[m_lines-1]->SetText(_str);
         }else{
             if (!Game::Crashed)
-                m_line[counter]->SetText(str);
+                m_line[counter]->SetText(_str);
             counter++;
         }
     }else{
         if (onlyGraphic)
             return false;
-        StoredLines.emplace_back("[N.S] " + str);
-        std::cout << "[Console:Not started] "<<str<<"\n";
+        StoredLines.emplace_back("[N.S] " + _str);
+        std::cout << "[Console:Not started] "<<_str<<"\n";
         if (logFile)
-            myfile << "[Console:Not started] "<<str<<"\r\n";
+            myfile << "[Console:Not started] "<<_str<<"\r\n";
 
 
 

@@ -5,10 +5,11 @@ TileMap::TileMap(){
     mapWidth = mapHeight = mapDepth = 0;
 }
 
-TileMap::TileMap(int mapWidth,int mapHeight,int layers,TileSet tileSet):TileMap(){
+TileMap::TileMap(int _mapWidth,int _mapHeight,int layers,TileSet tileSet):TileMap(){
 
-    this->mapWidth = mapWidth;
-    this->mapHeight = mapHeight;
+    mapWidth = _mapWidth;
+    mapHeight = _mapHeight;
+
     this->mapDepth = mapDepth;
     set = tileSet;
     tileMatrix = utils::Mat3<int>(mapWidth,mapHeight,mapDepth);

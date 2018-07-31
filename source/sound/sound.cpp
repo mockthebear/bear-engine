@@ -51,19 +51,19 @@ Sound::Sound(SoundPtr snda,const char *s):Sound(){
     working = ConfigManager::GetInstance().IsWorkingAudio();
 }
 
-Sound::Sound(char *s,int classType):Sound(){
+Sound::Sound(char *s,int _classType):Sound(){
     working = ConfigManager::GetInstance().IsWorkingAudio();
     Open((const char *)s);
     file = s;
-    this->classType = classType;
+    this->classType = _classType;
 }
 
 
-Sound::Sound(const char *s,int classType):Sound(){
+Sound::Sound(const char *s,int _classType):Sound(){
     working = ConfigManager::GetInstance().IsWorkingAudio();
     Open(s);
     file = s;
-    this->classType = classType;
+    this->classType = _classType;
 }
 
 bool Sound::Open(std::string str){
@@ -255,14 +255,14 @@ void Sound::SetVolume(int vol){
     SoundLoader::ShowError("on volume");
 }
 
-void Sound::SetPosition(float pos){
+void Sound::SetPosition(float _pos){
      if (!working)
         return;
     if (!IsOpen())
         return;
     if (!checkSource())
         return;
-    alSourcef(sourceID,AL_SEC_OFFSET,pos);
+    alSourcef(sourceID,AL_SEC_OFFSET,_pos);
     SoundLoader::ShowError("on offset");
 }
 
@@ -273,9 +273,9 @@ float Sound::GetPosition(){
         return 0;
     if (!checkSource())
         return 0;
-    float pos=0;
-    alGetSourcef(sourceID,AL_SEC_OFFSET,&pos);
-    return pos;
+    float _pos=0;
+    alGetSourcef(sourceID,AL_SEC_OFFSET,&_pos);
+    return _pos;
 }
 void Sound::SetClassType(int n){
     classType=n;

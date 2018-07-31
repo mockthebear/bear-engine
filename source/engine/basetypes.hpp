@@ -38,12 +38,8 @@ enum TextureLoadMethodEnum{
 class TextureLoadMethod{
     public:
     static TextureLoadMethod DefaultLoadingMethod;
-    TextureLoadMethod(){
-        mode = TEXTURE_NEAREST;
-    };
-    TextureLoadMethod(TextureLoadMethodEnum md){
-        mode = md;
-    };
+    TextureLoadMethod():mode(TEXTURE_NEAREST){};
+    TextureLoadMethod(TextureLoadMethodEnum md):mode(md){};
     void ApplyFilter(){
         switch (mode){
             case TEXTURE_NEAREST:
@@ -59,6 +55,10 @@ class TextureLoadMethod{
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
                 break;
             case TEXTURE_DEFAULT:
+                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+                break;
+            default:
                 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
                 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
                 break;

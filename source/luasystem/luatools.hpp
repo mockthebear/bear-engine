@@ -92,10 +92,10 @@ template<class T> class LuaReferenceCounter{
     any cast between int and std::string
 */
 template<typename ValueType> struct LuaTyper{
-    static ValueType& GetTypeIfSame(ValueType aux,ValueType& karg){
+    static ValueType& GetTypeIfSame(ValueType _aux,ValueType& karg){
         return karg;
     };
-    template<typename K> static ValueType& GetTypeIfSame(ValueType aux,K& karg){
+    template<typename K> static ValueType& GetTypeIfSame(ValueType _aux,K& karg){
         if ( typeid(ValueType) != typeid(K) ){
             Console::GetInstance().AddText("Mismatched types: Expected [%s] got [%s]",typeid(ValueType).name(),typeid(K).name());
             static ValueType emptyStaticValue;

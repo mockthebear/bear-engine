@@ -128,8 +128,8 @@ void Particle::SetPatternMoveLineFriction(Point p,Point accel){
     PatternMove = MOVE_SET_FRICTION;
 }
 
-void Particle::SetPatternMoveCircle(float speed,float angle,float radius){
-    Acceleration.x = speed;
+void Particle::SetPatternMoveCircle(float _speed,float angle,float radius){
+    Acceleration.x = _speed;
     Acceleration.y = angle;
     internalFloat = radius;
     PatternMove = MOVE_SET_CIRCLE;

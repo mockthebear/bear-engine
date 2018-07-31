@@ -10,7 +10,7 @@
 class Behavior{
     public:
         Behavior(){};
-        ~Behavior(){};
+        virtual ~Behavior(){};
         /**
             @brief Function called when the game is opening
             *

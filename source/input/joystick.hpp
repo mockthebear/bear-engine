@@ -47,8 +47,7 @@ class Joystick;
 
 class JoyHat{
     public:
-        JoyHat(){
-            keyState = 0;
+        JoyHat():keyState(0){
             for (int i=0;i<JOYHAT_BUTTONS_COUNT;i++){
                 keys[i] = RELEASED;
             }

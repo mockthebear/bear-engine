@@ -26,7 +26,7 @@ class Sound{
         Sound(char *s,int classType=0);
         Sound(const char *s,int classType=0);
         Sound(SoundPtr snd,const char *s);
-        Sound(SoundPtr snd):Sound(){};
+        Sound(SoundPtr snd_a):Sound(){snd = snd_a;};
         bool Open(std::string str);
         void SetVolume(int vol);
         bool Play (bool repeat=false);

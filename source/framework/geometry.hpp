@@ -28,10 +28,7 @@ template <typename T=float> class GenericPoint{
             Start with the two given values
             @param n An vector of two elements (const), and those are respectively x and y
         */
-        template<typename T2> GenericPoint(GenericPoint<T2> p){
-            x = (T)p.x;
-            y = (T)p.y;
-        };
+        template<typename T2> GenericPoint(GenericPoint<T2> p):x(p.x),y(p.y){};
 
         GenericPoint(double angle){
             x = cos(angle);
@@ -235,11 +232,11 @@ template <typename T=float>class GenericRect{
             h = p2.y;
         };
 
-        template<typename K>GenericRect(GenericPoint<K> p, T w, T h){
+        template<typename K>GenericRect(GenericPoint<K> p, T _w, T _h){
             x = p.x;
             y = p.y;
-            w = w;
-            h = h;
+            w = _w;
+            h = _h;
         };
 
         GenericRect(const int n[4]){
@@ -291,7 +288,7 @@ template <typename T=float>class GenericRect{
             y = p.y;
             w = p.w;
             h = p.h;
-            return *this;
+            return (*this);
         };
         GenericRect<T> operator/(const float& p){
             x /= p;

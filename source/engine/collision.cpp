@@ -472,6 +472,8 @@ bool Collision::WarpAway(Rect &obj1,Rect obj2){
             obj1.y = obj2.y + obj2.h;
             break;
         };
+        default: break;
+
     }
     return true;
 }

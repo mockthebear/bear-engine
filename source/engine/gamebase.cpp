@@ -313,32 +313,32 @@ Game *Game::GetInstance(const char *name){
     return &g_game;
 }
 void Game::Update(){
-    float dt = std::min(GetDeltaTime(),1.2f );
+    float localDt = std::min(GetDeltaTime(),ConfigManager::MinimumDT);
     if (startFlags&BEAR_FLAG_START_INPUT)
-        InputManager::GetInstance().Update(dt);
+        InputManager::GetInstance().Update(localDt);
 
     if (startFlags&BEAR_FLAG_START_SOUND)
-        SoundWorker::Update(dt);
+        SoundWorker::Update(localDt);
 
-    GameBehavior::GetInstance().OnUpdate(dt);
+    GameBehavior::GetInstance().OnUpdate(localDt);
 
 
     if (startFlags&BEAR_FLAG_START_SCREEN)
         ScreenManager::GetInstance().PreRender();
 
     if (!CanStop()){
-        g_scheduler.Update(dt);
+        g_scheduler.Update(localDt);
         #ifndef DISABLE_LUAINTERFACE
         if (startFlags&BEAR_FLAG_START_LUA)
-            LuaInterface::Instance().Update(dt);
+            LuaInterface::Instance().Update(localDt);
         #endif
 
-        stateStack.top()->Update(std::min(dt,ConfigManager::MinimumDT) );
+        stateStack.top()->Update(localDt);
 
 
 
         if (startFlags&BEAR_FLAG_START_SCREEN)
-            ScreenManager::GetInstance().Update(dt);
+            ScreenManager::GetInstance().Update(localDt);
     }
 
 }

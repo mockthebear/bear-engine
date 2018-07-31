@@ -355,7 +355,7 @@ void LuaInterface::RegisterParticleClass(){
     }));
 }
 void LuaInterface::RegisterTimerEvents(){
-    ClassRegister<Stopwatch>::RegisterClassOutside(LuaManager::L, "Stopwatch", [](lua_State* L)
+    ClassRegister<Stopwatch>::RegisterClassOutside(LuaManager::L, "Stopwatch", [](lua_State* La)
     {
         return LuaReferenceCounter<Stopwatch>::makeReference(Stopwatch());
     });
@@ -364,7 +364,7 @@ void LuaInterface::RegisterTimerEvents(){
     ClassRegister<Stopwatch>::RegisterClassMethod(L,"Stopwatch","Reset",&Stopwatch::Reset);
     ClassRegister<Stopwatch>::RegisterClassMethod(L,"Stopwatch","Set",&Stopwatch::Set);
 
-    ClassRegister<Timer>::RegisterClassOutside(LuaManager::L, "Timer", [](lua_State* L)
+    ClassRegister<Timer>::RegisterClassOutside(LuaManager::L, "Timer", [](lua_State* La)
     {
         return LuaReferenceCounter<Timer>::makeReference(Timer());
     });
@@ -410,12 +410,12 @@ void LuaInterface::RegisterTimerEvents(){
 }
 
 void LuaInterface::RegisterSound(){
-    ClassRegister<Sound>::RegisterClassOutside(LuaManager::L,"Sound",[](lua_State* L)
+    ClassRegister<Sound>::RegisterClassOutside(LuaManager::L,"Sound",[](lua_State* La)
     {
         std::string name;
-        if (lua_gettop(L) == 2)
+        if (lua_gettop(La) == 2)
         {
-            name = GenericLuaGetter<std::string>::Call(L);
+            name = GenericLuaGetter<std::string>::Call(La);
             return LuaReferenceCounter<Sound>::makeReference(Game::GetCurrentState().Assets.make<Sound>(name.c_str()));
         }else{
             return new Sound();
@@ -448,21 +448,21 @@ void LuaInterface::RegisterSound(){
 
 void LuaInterface::RegisterFonts(){
     // Text("str",[12,[{r=255,g=255,b=255,a=255}]])   -> Text
-    ClassRegister<Text>::RegisterClassOutside(LuaManager::L,"Text",[](lua_State* L)
+    ClassRegister<Text>::RegisterClassOutside(LuaManager::L,"Text",[](lua_State* La)
     {
         std::string name;
         int size = 12;
         SDL_Color color = {100,100,100,255};
-        if (lua_gettop(L) >= 4)
+        if (lua_gettop(La) >= 4)
         {
-            color = GenericLuaGetter<SDL_Color>::Call(L);
+            color = GenericLuaGetter<SDL_Color>::Call(La);
         }
-        if (lua_gettop(L) >= 3)
+        if (lua_gettop(La) >= 3)
         {
-            size = GenericLuaGetter<int>::Call(L);
+            size = GenericLuaGetter<int>::Call(La);
         }
 
-        name = GenericLuaGetter<std::string>::Call(L);
+        name = GenericLuaGetter<std::string>::Call(La);
 
         Text *t = new Text(name,size,color);
         t->SetKeepAlive(true);
@@ -499,9 +499,9 @@ void LuaInterface::RegisterFonts(){
     ClassRegister<Text>::RegisterClassMethod(L,"Text","SetAliasign",&Text::SetAliasign);
     ClassRegister<Text>::RegisterClassMethod(L,"Text","SetFont",&Text::SetFont);
 
-    ClassRegister<CustomFont>::RegisterClassOutside(LuaManager::L,"CustomFont",[](lua_State* L)
+    ClassRegister<CustomFont>::RegisterClassOutside(LuaManager::L,"CustomFont",[](lua_State* La)
     {
-        std::string name = GenericLuaGetter<std::string>::Call(L);
+        std::string name = GenericLuaGetter<std::string>::Call(La);
         CustomFont *t = LuaReferenceCounter<CustomFont>::makeReference(new CustomFont(name));
         return t;
     });
@@ -516,16 +516,16 @@ void LuaInterface::RegisterFonts(){
 }
 
 void LuaInterface::RegisterObjects(){
-    static LuaCFunctionLambda GarbageCollectorFunction = [](lua_State* L)
+    static LuaCFunctionLambda GarbageCollectorFunction = [](lua_State* La)
     {
         bear::out << "Calling gc\n";
         return 1;
     };
 
-    ClassRegister<LuaObject>::RegisterClassOutside(LuaManager::L,"LuaObject",[](lua_State* L)
+    ClassRegister<LuaObject>::RegisterClassOutside(LuaManager::L,"LuaObject",[](lua_State* La)
     {
-        int y = GenericLuaGetter<int>::Call(L);
-        int x = GenericLuaGetter<int>::Call(L);
+        int y = GenericLuaGetter<int>::Call(La);
+        int x = GenericLuaGetter<int>::Call(La);
         LuaObject *t = (LuaObject*)BearEngine->GetCurrentState().Pool.AddInstance(LuaObject(x,y));
         return t;
     });
@@ -576,7 +576,7 @@ void LuaInterface::RegisterObjects(){
     TypeObserver<LuaObject,bool>::RegisterMethod(LuaManager::L,"forceRender",&LuaObject::forceRender);
     TypeObserver<LuaObject,int>::RegisterMethod(LuaManager::L,"perspective",&LuaObject::perspective);
 
-    ClassRegister<LuaGameState>::RegisterClassOutside(LuaManager::L,"LuaGameState",[](lua_State* L)
+    ClassRegister<LuaGameState>::RegisterClassOutside(LuaManager::L,"LuaGameState",[](lua_State* La)
     {
         LuaGameState *t = new LuaGameState();
         return t;
@@ -587,9 +587,9 @@ void LuaInterface::RegisterObjects(){
     TypeObserver<LuaGameState,bool>::RegisterMethod(LuaManager::L,"canClose",&LuaGameState::canClose);
 
 
-    ClassRegister<GameObject>::RegisterClassVirtual(LuaManager::L,"GameObject",[](lua_State* L)
+    ClassRegister<GameObject>::RegisterClassVirtual(LuaManager::L,"GameObject",[](lua_State* La)
     {
-        uint64_t y = GenericLuaGetter<uint64_t>::Call(L);
+        uint64_t y = GenericLuaGetter<uint64_t>::Call(La);
         GameObject *t = (GameObject*)y;
         return t;
     },&GarbageCollectorFunction);
@@ -759,7 +759,7 @@ void LuaInterface::RegisterCamera(){
 }
 
 void LuaInterface::RegisterAssets(){
-     ClassRegister<ColorReplacer>::RegisterClassOutside(LuaManager::L,"ColorReplacer",[](lua_State* L)
+     ClassRegister<ColorReplacer>::RegisterClassOutside(LuaManager::L,"ColorReplacer",[](lua_State* La)
     {
         return LuaReferenceCounter<ColorReplacer>::makeReference(ColorReplacer());
     });
@@ -770,7 +770,7 @@ void LuaInterface::RegisterAssets(){
 
 
 
-    ClassRegister<AssetMannager>::RegisterClassOutside(LuaManager::L,"AssetMannager",[](lua_State* L)
+    ClassRegister<AssetMannager>::RegisterClassOutside(LuaManager::L,"AssetMannager",[](lua_State* La)
     {
         return LuaReferenceCounter<AssetMannager>::makeReference(AssetMannager());
     });
@@ -856,7 +856,7 @@ void LuaInterface::RegisterUI(){
         BearEngine->GetCurrentState().AddWindow(ui);
     }));
 
-    ClassRegister<LuaUi>::RegisterClassOutside(LuaManager::L,"LuaUi",[](lua_State* L)
+    ClassRegister<LuaUi>::RegisterClassOutside(LuaManager::L,"LuaUi",[](lua_State* La)
     {
         LuaUi *t = new LuaUi();
         //BearEngine->GetCurrentState().AddWindow(t);
@@ -993,7 +993,7 @@ void LuaInterface::RegisterInput(){
     }));
 }
 void LuaInterface::RegisterSprite(){
-    ClassRegister<Animation>::RegisterClassOutside(LuaManager::L,"Animation",[](lua_State* L)
+    ClassRegister<Animation>::RegisterClassOutside(LuaManager::L,"Animation",[](lua_State* La)
     {
         return LuaReferenceCounter<Animation>::makeReference(Animation());
     });
@@ -1021,19 +1021,19 @@ void LuaInterface::RegisterSprite(){
     TypeObserver<Animation,float>::RegisterMethod(LuaManager::L,"SprMaxDelay",&Animation::SprMaxDelay);
 
 
-    ClassRegister<Sprite>::RegisterClassOutside(LuaManager::L,"Sprite",[](lua_State* L)
+    ClassRegister<Sprite>::RegisterClassOutside(LuaManager::L,"Sprite",[](lua_State* La)
     {
         std::string name;
-        if (lua_gettop(L) == 3)
+        if (lua_gettop(La) == 3)
         {
-            ColorReplacer r = GenericLuaGetter<ColorReplacer>::Call(L);
-            name = GenericLuaGetter<std::string>::Call(L);
+            ColorReplacer r = GenericLuaGetter<ColorReplacer>::Call(La);
+            name = GenericLuaGetter<std::string>::Call(La);
             Sprite *t = LuaReferenceCounter<Sprite>::makeReference(Game::GetCurrentState().Assets.make<Sprite>(name,r));
             return t;
         }
-        else if (lua_gettop(L) == 2)
+        else if (lua_gettop(La) == 2)
         {
-            name = GenericLuaGetter<std::string>::Call(L);
+            name = GenericLuaGetter<std::string>::Call(La);
         }else{
 
             return new Sprite();

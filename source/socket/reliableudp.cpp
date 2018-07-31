@@ -97,7 +97,6 @@ bool ReliableUdpClient::Connect(std::string addr,uint16_t port,int waitTime){
         Start();
     }
     ENetAddress address;
-    ENetEvent event;
     enet_address_set_host (&address, addr.c_str());
     address.port = port;
     peer = enet_host_connect (client, &address, 2, 0);

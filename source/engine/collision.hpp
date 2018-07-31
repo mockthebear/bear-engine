@@ -266,7 +266,7 @@ namespace Collision {
         // http://www.metanetsoftware.com/technique/tutorialA.html
         // http://www.gamedev.net/page/resources/_/technical/game-programming/2d-rotated-rectangle-collision-r2604
         static inline bool IsColliding(Rect& a,  Rect& b, float angleOfA, float angleOfB) {
-            if (angleOfA == 0 && angleOfB == 0){
+            if (angleOfA == 0.0f && angleOfB == 0.0f){
                 return IsColliding(a,b);
             }
             Point A[] = { Point( a.x, a.y + a.h ),

@@ -89,7 +89,7 @@ class Sprite{
         */
 
 
-        Sprite(TexturePtr texture):Sprite(){};
+        Sprite(TexturePtr texture):Sprite(){textureShred = texture;};
         Sprite(TexturePtr texture,std::string name,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
         Sprite(TexturePtr texture,std::string name,std::string alias,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
 
