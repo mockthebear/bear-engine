@@ -16,11 +16,19 @@
 
 #ifdef RENDER_OPENGL
     #include GL_LIB
+    #define SUPPORT_VERTEX_BUFFER
     #define SUPPORT_GLEW
 #endif // RENDER_OPENGL
+#ifdef RENDER_OPENGL2
+    #include GL_LIB
+    #define SUPPORT_VERTEX_BUFFER
+    #define SUPPORT_GLEW
+#endif // RENDER_OPENGL2
 #ifdef RENDER_OPENGL3
     #include GL_LIB
     #define SUPPORT_GEOMETRY_SHADER
+    #define SUPPORT_VERTEX_ARRAY
+    #define SUPPORT_VERTEX_BUFFER
     #define SUPPORT_GLEW
 #endif // RENDER_OPENGL3
 

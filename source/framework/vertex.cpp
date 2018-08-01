@@ -1,6 +1,7 @@
 #include "vertex.hpp"
 #include "../engine/basetypes.hpp"
 #include "../engine/painters/painters.hpp"
+#include "debughelper.hpp"
 
 void Vertex::AddVertexes(int size,float *f){
     for (int i=0;i<size;i++){
@@ -56,22 +57,10 @@ int Vertex::Generate(Circle r, int triangleAmount){
         vertexData.emplace_back(sin(angle));
         indexes.emplace_back(i+1);
     }
-
-
-    /*float vertices[] = {
-        0.0f  , 0.0f,
-        0.0f  , 1.0f,
-        1.0f  , 1.0f,
-        1.0f  , 0.0f,
-    };
-    uint32_t indices[] = {
-        0, 1, 2, 3,
-    };*/
-
     return 8;
 }
 
-#if defined(RENDER_OPENGL3) || defined(RENDER_OPENGL)
+#if defined(SUPPORT_VERTEX_ARRAY)
 
 VertexArrayObject::~VertexArrayObject(){
     if (m_vertexArray != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
@@ -134,7 +123,7 @@ bool VertexArrayObject::SetupVertexes(bool manageBuffers){
     return true;
 }
 
-#elif defined(RENDER_OPENGLES2)
+#else
 
 
 VertexArrayObject::~VertexArrayObject(){
@@ -155,12 +144,24 @@ void VertexArrayObject::Bind(){
 
 void VertexArrayObject::UnBind(){
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 bool VertexArrayObject::SetupVertexes(bool manageBuffers){
     if (!Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
         return false;
     }
+
+    int32_t lastBound;
+    glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &lastBound);
+
+    if (m_vertexBuffer != 0 && ((uint32_t)lastBound) != m_vertexBuffer){
+        glDeleteBuffers(1, &m_vertexBuffer);
+        glDeleteBuffers(1, &m_elementBuffer);
+        m_vertexBuffer = 0;
+    }
+
+
     bool generatedBuffers = false;
     if (m_vertexBuffer == 0){
         glGenBuffers(1, &m_vertexBuffer);
@@ -170,12 +171,17 @@ bool VertexArrayObject::SetupVertexes(bool manageBuffers){
 
         generatedBuffers = true;
     }
+
+
+
     glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+
     glBufferData(GL_ARRAY_BUFFER,  vertexes.vertexData.size() * sizeof(float), &vertexes.vertexData[0], GL_DYNAMIC_DRAW);
     if (m_useElementBuffer){
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER,  vertexes.indexes.size() * sizeof(uint32_t), &vertexes.indexes[0], GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER,  vertexes.indexes.size() * sizeof(uint32_t), &vertexes.indexes[0], GL_DYNAMIC_DRAW);
     }
+
 
 
 
@@ -184,13 +190,12 @@ bool VertexArrayObject::SetupVertexes(bool manageBuffers){
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
 
     }
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    if (m_useElementBuffer)
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    DebugHelper::DisplayGlError("Error on vertex");
 
     return true;
 }
-
+/*
 #else
 
 VertexArrayObject::~VertexArrayObject(){};
@@ -198,5 +203,5 @@ VertexArrayObject::~VertexArrayObject(){};
 
 bool VertexArrayObject::SetupVertexes(bool){
     return false;
-}
+}*/
 #endif

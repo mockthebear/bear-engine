@@ -143,6 +143,15 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     return true;
 }
 
+void Painter::SetTexturePixels(uint32_t texture, PointInt size,int mode,unsigned char* pixels ){
+    if (!pixels){
+        return;
+    }
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x, size.y, mode, GL_UNSIGNED_BYTE, pixels);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter){
     if (size.x == 0 || size.y == 0){
         return nullptr;

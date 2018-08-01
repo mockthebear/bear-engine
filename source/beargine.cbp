@@ -221,6 +221,37 @@
 					<Add option="-pthread" />
 				</Linker>
 			</Target>
+			<Target title="Debug windows opengl2">
+				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../game/" />
+				<Option object_output="../obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
+				<Compiler>
+					<Add option="-std=c++0x" />
+					<Add option="-pg" />
+					<Add option="-g" />
+					<Add option="-DRENDER_OPENGL2" />
+				</Compiler>
+				<Linker>
+					<Add option="-pg -lgmon" />
+					<Add option="-Wl,-Bstatic" />
+					<Add option="-lenet" />
+					<Add option="-pthread" />
+					<Add option="-Wl,-Bdynamic" />
+					<Add option="-lMinGW32" />
+					<Add option="-lSDL2main" />
+					<Add option="-lSDL2" />
+					<Add option="-lSDL2_ttf" />
+					<Add option="-lopenal32" />
+					<Add option="-lvorbisfile" />
+					<Add option="-lopengl32" />
+					<Add option="-lglew32" />
+					<Add option="-lglu32" />
+					<Add option="-lws2_32" />
+				</Linker>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
@@ -251,6 +282,7 @@
 		<Unit filename="engine/light.hpp" />
 		<Unit filename="engine/object.hpp" />
 		<Unit filename="engine/painters/painteropengl1.cpp" />
+		<Unit filename="engine/painters/painteropengl2.cpp" />
 		<Unit filename="engine/painters/painteropengl3.cpp" />
 		<Unit filename="engine/painters/painteropengles2.cpp" />
 		<Unit filename="engine/painters/painters.hpp" />
