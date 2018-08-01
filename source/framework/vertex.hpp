@@ -67,6 +67,9 @@ class VertexArrayObject{
     uint32_t GetElementBuffer(){
         return m_elementBuffer;
     }
+    static uint32_t VBOMASTER;
+    static uint32_t ELEMMASTER;
+
   private:
     int m_indexCount;
     bool m_useElementBuffer;

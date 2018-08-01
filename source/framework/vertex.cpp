@@ -126,15 +126,23 @@ bool VertexArrayObject::SetupVertexes(bool manageBuffers){
 #else
 
 
+
+
 VertexArrayObject::~VertexArrayObject(){
+    #ifndef SUPPORT_SINGLE_BUFFER
     if (m_vertexBuffer != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
         glDeleteBuffers(1, &m_vertexBuffer);
         if (m_elementBuffer != 0)
             glDeleteBuffers(1, &m_elementBuffer);
     }
+    #endif // SUPPORT_SINGLE_BUFFER
 }
 
 void VertexArrayObject::Bind(){
+    #ifdef SUPPORT_SINGLE_BUFFER
+    m_vertexBuffer = Painter::GetSharedBuffer(0);
+    m_elementBuffer = Painter::GetSharedBuffer(1);
+    #endif
     if (m_vertexBuffer != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
         glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
         if (m_useElementBuffer)
@@ -152,17 +160,9 @@ bool VertexArrayObject::SetupVertexes(bool manageBuffers){
         return false;
     }
 
-    int32_t lastBound;
-    glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &lastBound);
-
-    if (m_vertexBuffer != 0 && ((uint32_t)lastBound) != m_vertexBuffer){
-        glDeleteBuffers(1, &m_vertexBuffer);
-        glDeleteBuffers(1, &m_elementBuffer);
-        m_vertexBuffer = 0;
-    }
-
 
     bool generatedBuffers = false;
+    #ifndef SUPPORT_SINGLE_BUFFER
     if (m_vertexBuffer == 0){
         glGenBuffers(1, &m_vertexBuffer);
         if (m_useElementBuffer)
@@ -171,6 +171,11 @@ bool VertexArrayObject::SetupVertexes(bool manageBuffers){
 
         generatedBuffers = true;
     }
+    #else
+    generatedBuffers = true;
+    m_vertexBuffer = Painter::GetSharedBuffer(0);
+    m_elementBuffer = Painter::GetSharedBuffer(1);
+    #endif
 
 
 

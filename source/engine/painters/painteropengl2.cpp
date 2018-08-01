@@ -9,27 +9,29 @@ bool Painter::m_shaderBuilt = false;
 Shader Painter::textureShader;
 Shader Painter::polygonShader;
 Shader Painter::pointTextureShader;
+uint32_t Painter::Buffers[4] = {0, 0, 0, 0};
 
-
+uint32_t Painter::GetSharedBuffer(int id){
+    return Buffers[id];
+}
 
 void RenderData::Bind(){
-    if (VertexBuffer != 0){
-        glDeleteBuffers(1, &VertexBuffer);
-        glDeleteBuffers(1, &ElementBuffer);
-        VertexBuffer = 0;
-    }
-
+    #ifdef SUPPORT_SINGLE_BUFFER
+    VertexBuffer = Painter::GetSharedBuffer(0);
+    ElementBuffer = Painter::GetSharedBuffer(1);
+    #endif
     UpdateVertex();
-
     glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementBuffer);
 }
 
 RenderData::~RenderData(){
+    #ifndef SUPPORT_SINGLE_BUFFER
     if (VertexBuffer != 0){
         glDeleteBuffers(1, &VertexBuffer);
         glDeleteBuffers(1, &ElementBuffer);
     }
+    #endif // SUPPORT_SINGLE_BUFFER
 };
 
 void RenderData::UpdateVertex(){
@@ -60,7 +62,28 @@ void RenderData::UpdateVertex(){
 
     };
 
+    #ifdef SUPPORT_SINGLE_BUFFER
+    VertexBuffer = Painter::GetSharedBuffer(0);
+    ElementBuffer = Painter::GetSharedBuffer(1);
+    static unsigned int indices[] = {
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
+    };
+    glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)) );
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    #else
     if (VertexBuffer == 0){
         static unsigned int indices[] = {
             0, 1, 3, // first triangle
@@ -90,6 +113,7 @@ void RenderData::UpdateVertex(){
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
+    #endif // SUPPORT_SINGLE_BUFFER
 
 }
 glm::mat4 Painter::CalculateModel(BasicRenderDataPtr t_data){
@@ -281,7 +305,7 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -307,6 +331,9 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	DebugHelper::DisplayGlError("Error on starting");
+
+
+	glGenBuffers(4, Painter::Buffers);
     return true;
 }
 

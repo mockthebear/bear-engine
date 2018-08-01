@@ -143,6 +143,7 @@ class Painter{
         }
         return num;
     }
+    static uint32_t GetSharedBuffer(int id);
   private:
     friend class ScreenManager;
 
@@ -162,4 +163,6 @@ class Painter{
     static Shader pointTextureShader;
     static Shader polygonShader;
     static VertexArrayObject m_vao;
+
+    static uint32_t Buffers[4];
 };
