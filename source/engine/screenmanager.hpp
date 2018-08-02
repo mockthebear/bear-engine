@@ -9,7 +9,7 @@
 #include "shadermanager.hpp"
 #include "targettexture.hpp"
 #include "libheader.hpp"
-#include <glm/glm.hpp>
+#include "../glm/glm.hpp"
 
 
 enum ResizeAction{

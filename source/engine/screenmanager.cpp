@@ -10,7 +10,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include "../input/inputmanager.hpp"
-#include <glm/gtc/matrix_transform.hpp>
+#include "../glm/gtc/matrix_transform.hpp"
 
 float ScreenManager::ClearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 

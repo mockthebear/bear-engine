@@ -2,7 +2,7 @@
 #include "bear.hpp"
 #include <iostream>
 #include "../framework/gamefile.hpp"
-#include <glm/gtc/type_ptr.hpp>
+#include "../glm/gtc/type_ptr.hpp"
 
 
 

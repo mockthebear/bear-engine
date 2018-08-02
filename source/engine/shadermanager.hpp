@@ -1,7 +1,7 @@
 #pragma once
 
 #include "libheader.hpp"
-#include <glm/glm.hpp>
+#include "../glm/glm.hpp"
 
 #include "basetypes.hpp"
 #include "../framework/geometry.hpp"
@@ -10,9 +10,8 @@
 #include <typeinfo>
 #include <vector>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "../glm/gtc/matrix_transform.hpp"
+#include "../glm/gtc/type_ptr.hpp"
 
 
 template <typename T> struct ShaderSetter{
