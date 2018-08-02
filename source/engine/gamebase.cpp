@@ -2,6 +2,7 @@
 #include <ctime>
 #include <time.h>
 #ifdef __EMSCRIPTEN__
+#define DISABLE_SOCKET
 #include <emscripten.h>
 #endif
 #include <csignal>

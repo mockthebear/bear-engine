@@ -3,6 +3,9 @@
 #include "../socket/tcp.hpp"
 #pragma once
 
+#ifndef DISABLE_SOCKET
+
+
 class Test_Socket: public State{
     public:
         Test_Socket(){
@@ -55,3 +58,4 @@ class Test_Socket: public State{
 };
 
 
+#endif // DISABLE_SOCKET

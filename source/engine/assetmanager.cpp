@@ -130,11 +130,11 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,std::string al
             delete be;
             spriteMap[alias].reset(c);
             if (setOutput)
-                Console::GetInstance().AddTextInfoF("FORCED: Made replace texture for [%s] in  manager %d",str,id);
+                Console::GetInstance().AddTextInfoF("FORCED: Made replace texture for [%s] in  manager %d",str.c_str(),id);
         }else{
             spriteMap[alias] = chain_ptr<BearTexture>::make(c);
             if (setOutput)
-                Console::GetInstance().AddTextInfoF("Made replace texture for [%s] = [%s] in  manager %d",str,alias,id);
+                Console::GetInstance().AddTextInfoF("Made replace texture for [%s] = [%s] in  manager %d",str.c_str(),alias.c_str(),id);
         }
         return spriteMap[alias];
     }
@@ -155,11 +155,11 @@ TexturePtr AssetMannager::makeTexture(bool forced,std::string str,ColorReplacer 
             delete be;
             spriteMap[str].reset(c);
             if (setOutput)
-                Console::GetInstance().AddTextInfoF("FORCED: Made replace texture for [%s] in  manager %d",str,id);
+                Console::GetInstance().AddTextInfoF("FORCED: Made replace texture for [%s] in  manager %d",str.c_str(),id);
         }else{
             spriteMap[str] = chain_ptr<BearTexture>::make(c);
             if (setOutput)
-                Console::GetInstance().AddTextInfoF("Made replace texture for [%s] no alias in  manager %d",str,id);
+                Console::GetInstance().AddTextInfoF("Made replace texture for [%s] no alias in  manager %d",str.c_str(),id);
         }
         return spriteMap[str];
     }
@@ -180,7 +180,7 @@ SoundPtr AssetMannager::makeSound(bool forced,std::string str){
         }else{
             soundMap[str] = chain_ptr<BufferData>::make(c);
             if (setOutput)
-                Console::GetInstance().AddTextInfoF("Lets alloc [%s] in %d",str,id);
+                Console::GetInstance().AddTextInfoF("Lets alloc [%s] in %d",str.c_str(),id);
         }
         return soundMap[str];
     }
@@ -202,7 +202,7 @@ SoundPtr AssetMannager::makeSound(bool forced,SDL_RWops* rw,std::string str){
         }else{
             soundMap[str] = chain_ptr<BufferData>::make(c);
             if (setOutput)
-                Console::GetInstance().AddTextInfoF("Lets alloc rw[%s] in %d",str,id);
+                Console::GetInstance().AddTextInfoF("Lets alloc rw[%s] in %d",str.c_str(),id);
         }
         return soundMap[str];
     }

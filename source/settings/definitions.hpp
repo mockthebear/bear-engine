@@ -17,6 +17,7 @@
 */
 #ifdef __EMSCRIPTEN__
 #define ASSETS_FOLDER "game/"
+#define DISABLE_SOCKET
 #else
 #define ASSETS_FOLDER ""
 #endif
