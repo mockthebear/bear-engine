@@ -68,6 +68,7 @@ bool ScreenManager::SetupOpenGL(){
     if (!Painter::SetupEnvoriment(this)){
         return false;
     }
+    ResetProjection();
 
     if (postProcess){
         StartPostProcessing();
@@ -92,7 +93,6 @@ SDL_Window* ScreenManager::StartScreen(std::string name){
         bear::out << "[ScreenManager::StartScreen] Impossible to create"<<m_screen.x<<"x"<<m_screen.y<<" dummy display.\n";
     }
     m_originalScreen = m_screen;
-    ResetProjection();
     Uint32 flags = 0;
     if (ConfigManager::GetInstance().GetResizeAction() != RESIZE_BEHAVIOR_NORESIZE){
         flags |= SDL_WINDOW_RESIZABLE;

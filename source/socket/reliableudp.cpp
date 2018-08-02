@@ -1,7 +1,7 @@
 #include "reliableudp.hpp"
 #include "../engine/bear.hpp"
 
-#ifndef DISABLE_SOCKET
+#if !defined(DISABLE_SOCKET)
 bool ReliableUdpClient::StartedEnet = false;
 
 bool ReliableUdpClient::IsConnected(){

@@ -1,5 +1,7 @@
 #include "socketdef.hpp"
-#ifndef DISABLE_SOCKET
+#include "../settings/definitions.hpp"
+#if !defined(DISABLE_SOCKET)
+
 #pragma once
 #include <enet/enet.h>
 #include <queue>

@@ -1,6 +1,6 @@
 #include "socketdef.hpp"
 
-#ifndef DISABLE_SOCKET
+#if !defined(DISABLE_SOCKET)
 
 class TcpClient: public SocketClient{
     public:

@@ -2,7 +2,7 @@
 #include "../ui/base.hpp"
 //#include "luatypewrapper.hpp"
 
-#ifndef __EMSCRIPTEN__
+
 
 class LuaUi : public UIBase{
     public:
@@ -69,12 +69,4 @@ class LuaUi : public UIBase{
         bool MainWidget;
 
 };
-/*
-template<> struct GenericLuaReturner<LuaUi*>{
-    static void Ret(LuaUi* vr,lua_State *L,bool forceTable = false){
-        MakeLuaObject<LuaUi>::Make(L,vr,"LuaUi",forceTable);
-    };
-};
-*/
 
-#endif // __EMSCRIPTEN__

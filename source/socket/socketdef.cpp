@@ -1,6 +1,7 @@
 #include "socketdef.hpp"
 
-#ifndef DISABLE_SOCKET
+#include "../settings/definitions.hpp"
+#if !defined(DISABLE_SOCKET)
 
 
 #ifdef _WIN32
@@ -17,5 +18,9 @@ bool BaseSocket::StartSocket(){
     #endif // _WIN32
     return true;
 }
+#else
 
+bool BaseSocket::StartSocket(){
+    return false;
+}
 #endif

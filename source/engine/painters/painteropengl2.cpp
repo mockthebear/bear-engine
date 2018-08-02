@@ -156,7 +156,9 @@ glm::mat4 Painter::CalculateModel(BasicRenderDataPtr t_data){
 
 
 void Painter::SetViewport(Point screenNow,Point offset){
+    bear::out << "Setting viewport\n";
     glViewport(offset.x, offset.y, screenNow.x, screenNow.y);
+    bear::out << "Done\n";
 
 }
 
@@ -283,8 +285,8 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
         return nullptr;
     }
 
-    unsigned int pow_w =  size.x;//powerOfTwo(size.x);
-    unsigned int pow_h =  size.y;//powerOfTwo(size.y); //No need to this on opengl. only on opengles
+    unsigned int pow_w = powerOfTwo(size.x);
+    unsigned int pow_h = powerOfTwo(size.y); //No need to this on opengl. only on opengles
 
     glBindTexture(GL_TEXTURE_2D, texId);
     filter.ApplyFilter();
@@ -300,6 +302,7 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
 
 
 bool Painter::SetupEnvoriment(ScreenManager *sm){
+    bear::out << "Initializing\n";
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -322,7 +325,7 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
 	SDL_GL_SwapWindow(sm->m_window);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+    bear::out << "Loading shaders\n";
     SetupShaders();
 
     glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -330,7 +333,7 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
 
 	DebugHelper::DisplayGlError("Error on starting");
 
-
+    bear::out << "Making buffers\n";
 	glGenBuffers(4, Painter::Buffers);
     return true;
 }
@@ -339,13 +342,17 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
 void Painter::SetupShaders(){
     if (!m_shaderBuilt){
         m_shaderBuilt = true;
-
+        bear::out << "[QUAD shader]Building vertex shader\n";
         polygonShader.CompileFromString(GL_VERTEX_SHADER, Shader::DefaultQuadVertexShader);
+        bear::out << "[QUAD shader]Building frag shader\n";
         polygonShader.CompileFromString(GL_FRAGMENT_SHADER, Shader::DefaultQuadFragmentShader);
+        bear::out << "[QUAD shader]linking\n";
         polygonShader.Link();
-
+        bear::out << "[TEXTURE shader]Building vertex shader\n";
         textureShader.CompileFromString(GL_VERTEX_SHADER, Shader::DefaultTextureVertexShader);
+        bear::out << "[TEXTURE shader]Building frag shader\n";
         textureShader.CompileFromString(GL_FRAGMENT_SHADER, Shader::DefaultTextureFragmentShader);
+        bear::out << "[TEXTURE shader]linking\n";
         textureShader.Link();
     }
 }

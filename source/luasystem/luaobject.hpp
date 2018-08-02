@@ -1,9 +1,7 @@
 #include "../engine/object.hpp"
 #include "luainterface.hpp"
 
-#ifndef LUAOBJH
-#define LUAOBJH
-#ifndef __EMSCRIPTEN__
+#pragma once
 
 
 class LuaObject: public GameObject{
@@ -42,8 +40,6 @@ class LuaObject: public GameObject{
 
 };
 
-#endif // __EMSCRIPTEN__
 
-#endif //LuaObject
 
 

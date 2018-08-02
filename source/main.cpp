@@ -50,7 +50,7 @@ int main (int argc, char** argv) {
     if (g_game.IsStarted()){
         Game::GetInstance()->Begin();
         #ifdef __EMSCRIPTEN__
-        emscripten_set_main_loop(GameLoop, 60, 1);
+        emscripten_set_main_loop(GameLoop, 0, 1);
         #else
             while (!Game::GetInstance()->CanStop()){
                 Game::GetInstance()->Run();

@@ -1,5 +1,5 @@
 #include "tcp.hpp"
-#ifndef DISABLE_SOCKET
+#if !defined(DISABLE_SOCKET)
 #include "../engine/bear.hpp"
 #include "../framework/utils.hpp"
 #include <stdio.h>

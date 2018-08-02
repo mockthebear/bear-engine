@@ -1,21 +1,20 @@
 #pragma once
-#ifndef __EMSCRIPTEN__
-#ifndef DISABLE_SOCKET
-#include <stdio.h>
-#include <stdint.h>
-#include <string>
-#include <string.h>
-#include <queue>
-#include <map>
-#ifdef _WIN32
-#include <winsock2.h>
-typedef sockaddr_in SocketAddr;
-#else
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-typedef struct sockaddr_in SocketAddr;
-#endif // _WIN32
+#if !defined(DISABLE_SOCKET)
+    #include <stdio.h>
+    #include <stdint.h>
+    #include <string>
+    #include <string.h>
+    #include <queue>
+    #include <map>
+    #ifdef _WIN32
+        #include <winsock2.h>
+        typedef sockaddr_in SocketAddr;
+        #else
+        #include <sys/types.h>
+        #include <sys/socket.h>
+        #include <netinet/in.h>
+        typedef struct sockaddr_in SocketAddr;
+    #endif // _WIN32
 
 
 template <int MsgSize=1024> class SocketMessage_{
@@ -179,10 +178,8 @@ class SocketHost{
         std::map<uint64_t,std::queue<SocketMessage>> m_messages;
 };
 
+#endif // DISABLE_SOCKET
 class BaseSocket{
     public:
         static bool StartSocket();
 };
-
-#endif // DISABLE_SOCKET
-#endif // __EMSCRIPTEN__

@@ -5,7 +5,7 @@
 #include <vector>
 #include <list>
 
-#ifndef __EMSCRIPTEN__
+
 
 #pragma once
 
@@ -27,4 +27,3 @@ class LuaGameState: public GenericState{
         uint64_t other;
 };
 
-#endif // __EMSCRIPTEN__

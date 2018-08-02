@@ -17,7 +17,7 @@
 #include "../performance/console.hpp"
 #include "../sound/soundsources.hpp"
 #include "../sound/soundloader.hpp"
-#ifndef DISABLE_SOCKET
+#if !defined(DISABLE_SOCKET)
 #include "../socket/socketdef.hpp"
 #endif // DISABLE_SOCKET
 #include "timer.hpp"
@@ -114,8 +114,9 @@ void Game::init(const char *name){
                 Console::GetInstance().AddTextInfo("TTF is on!");
             }
         }
-        #ifndef DISABLE_SOCKET
+        #if !defined(DISABLE_SOCKET)
         if (startFlags&BEAR_FLAG_START_SOCKET){
+            Console::GetInstance().AddTextInfo("Starting socket");
             if (!BaseSocket::StartSocket()){
                 Console::GetInstance().AddTextInfo("Failed to create socket context");
             }
@@ -123,10 +124,12 @@ void Game::init(const char *name){
         #endif // DISABLE_SOCKET
 
         if (startFlags&BEAR_FLAG_START_SOUND){
+            Console::GetInstance().AddTextInfo("Starting sound");
             ConfigManager::GetInstance().SetSound(HasAudio);
         }
         GameBehavior::GetInstance();
         if (startFlags&BEAR_FLAG_START_SCREEN){
+            Console::GetInstance().AddTextInfo("Starting screen");
             window = ScreenManager::GetInstance().StartScreen(name);
             if (window == NULL){
                 Console::GetInstance().AddTextInfo("Failed creating screen");
