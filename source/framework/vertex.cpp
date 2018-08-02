@@ -147,6 +147,8 @@ void VertexArrayObject::Bind(){
         glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
         if (m_useElementBuffer)
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
     }
 }
 
@@ -187,12 +189,14 @@ bool VertexArrayObject::SetupVertexes(bool manageBuffers){
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,  vertexes.indexes.size() * sizeof(uint32_t), &vertexes.indexes[0], GL_DYNAMIC_DRAW);
     }
 
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+
 
 
 
     if (generatedBuffers && manageBuffers){
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+
 
     }
 
