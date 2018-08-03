@@ -78,9 +78,11 @@ bool TargetTexture::Generate(int wa,int ha){
     BearTexture *tex = Painter::MakeTexture(PointInt(wa,ha), GL_RGBA, nullptr, mthd);
     id = tex->id;
     tex->DropTexture();
+    texture_w = tex->texture_w;
+    texture_h = tex->texture_h;
     delete tex;
     //m_renderData->flip = SDL_FLIP_VERTICAL;
-    m_renderData->SetClip(Rect(0,0,size_w,size_h),Point(size_w,size_h));
+    m_renderData->SetClip(Rect(0,0,size_w,size_h),Point(texture_w,texture_h));
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, id, 0);
@@ -89,7 +91,7 @@ bool TargetTexture::Generate(int wa,int ha){
 
     glGenRenderbuffers(1, &m_renderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, m_renderBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH32F_STENCIL8, wa, ha);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH32F_STENCIL8, size_w, size_h);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_renderBuffer);

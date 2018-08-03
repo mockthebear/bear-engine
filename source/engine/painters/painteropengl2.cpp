@@ -20,6 +20,7 @@ void RenderData::Bind(){
     VertexBuffer = Painter::GetSharedBuffer(0);
     ElementBuffer = Painter::GetSharedBuffer(1);
     #endif
+    DebugHelper::DisplayGlError("Binding");
     UpdateVertex();
     glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementBuffer);
@@ -33,6 +34,28 @@ RenderData::~RenderData(){
     }
     #endif // SUPPORT_SINGLE_BUFFER
 };
+
+void RenderData::SetVertexAtribLocations(){
+    GLint posAttrib = 0;
+    GLint clipAttrib = 1;
+    #ifdef NEED_SHADER_LOCATION
+
+    uint32_t shaderId = 0;
+    if ((shaderId = Shader::GetCurrentShaderId()) == 0){
+        shaderId = Painter::textureShader.GetId();
+    }
+    posAttrib = glGetAttribLocation(shaderId, "vPos");
+    clipAttrib = glGetAttribLocation(shaderId, "clip");
+    #endif // NEED_SHADER_LOCATION
+
+
+    glEnableVertexAttribArray(posAttrib);
+    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(clipAttrib);
+    glVertexAttribPointer(clipAttrib, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)) );
+
+    DebugHelper::DisplayGlError("SetVertexAtribLocations");
+}
 
 void RenderData::UpdateVertex(){
 
@@ -93,25 +116,22 @@ void RenderData::UpdateVertex(){
         glGenBuffers(1, &VertexBuffer);
         glGenBuffers(1, &ElementBuffer);
 
-
         glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementBuffer);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+        SetVertexAtribLocations();
 
     }else{
         glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
-
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)) );
-
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        SetVertexAtribLocations();
     }
     #endif // SUPPORT_SINGLE_BUFFER
+
+    DebugHelper::DisplayGlError("UpdateVertex");
 
 }
 glm::mat4 Painter::CalculateModel(BasicRenderDataPtr t_data){
@@ -156,10 +176,7 @@ glm::mat4 Painter::CalculateModel(BasicRenderDataPtr t_data){
 
 
 void Painter::SetViewport(Point screenNow,Point offset){
-    bear::out << "Setting viewport\n";
     glViewport(offset.x, offset.y, screenNow.x, screenNow.y);
-    bear::out << "Done\n";
-
 }
 
 void Painter::SetProjection(Rect rproj){
@@ -207,24 +224,27 @@ void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_da
 
     bool noShader = Shader::GetCurrentShaderId() == 0;
 
+    DebugHelper::DisplayGlError("on shader");
+
     if (noShader){
         polygonShader.Bind();
     }
 
+    DebugHelper::DisplayGlError("set uniforms");
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Projection);
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"model",model);
     ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"iColor",t_data->color);
     ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image",0);
 
-
-
     vertexData->Bind();
+
 
     glDrawElements(drawMode, vertexData->GetIndexCount(), GL_UNSIGNED_INT, 0);
 
     if (noShader){
         polygonShader.Unbind();
     }
+    DebugHelper::DisplayGlError("DrawVertex");
 }
 
 
@@ -238,7 +258,8 @@ bool Painter::DrawSprites(int id){
 }
 
 bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
-    glEnable(GL_TEXTURE_2D);
+
+    //glEnable(GL_TEXTURE_2D);
 
     glm::mat4 model = CalculateModel(t_data);
 
@@ -247,22 +268,20 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     if (noShader){
         textureShader.Bind();
     }
-
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Projection);
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"model",model);
     ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"iColor",t_data->color);
     ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image",0);
 
-
     glBindTexture( GL_TEXTURE_2D, t_texture->id );
 
     t_data->Bind();
-
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     if (noShader){
         textureShader.Unbind();
     }
+    DebugHelper::DisplayGlError("RenderTexture");
     return true;
 }
 
@@ -273,6 +292,7 @@ void Painter::SetTexturePixels(uint32_t texture, PointInt size,int mode,unsigned
     glBindTexture(GL_TEXTURE_2D, texture);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x, size.y, mode, GL_UNSIGNED_BYTE, pixels);
     glBindTexture(GL_TEXTURE_2D, 0);
+    DebugHelper::DisplayGlError("SetTexturePixels");
 }
 
 BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter){
@@ -281,6 +301,7 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
     }
     GLuint texId = 0;
     glGenTextures(1, &texId);
+    DebugHelper::DisplayGlError("glGenTextures");
     if (texId == 0){
         return nullptr;
     }
@@ -292,11 +313,13 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
     filter.ApplyFilter();
     glTexImage2D(GL_TEXTURE_2D, 0, mode, pow_w, pow_h, 0, mode, GL_UNSIGNED_BYTE, nullptr);
     if (pixels != nullptr){
+
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x, size.y, mode, GL_UNSIGNED_BYTE, pixels);
     }
     glBindTexture(GL_TEXTURE_2D, 0);
     BearTexture *ret = new BearTexture(texId,size.x,size.y,pow_w,pow_h,mode);
     ret->textureMode = filter;
+    DebugHelper::DisplayGlError("MakeTexture");
     return ret;
 }
 
@@ -335,6 +358,7 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
 
     bear::out << "Making buffers\n";
 	glGenBuffers(4, Painter::Buffers);
+	DebugHelper::DisplayGlError("SetupEnvoriment");
     return true;
 }
 

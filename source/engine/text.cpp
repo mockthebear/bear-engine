@@ -406,7 +406,7 @@ void Text::RemakeTexture(bool Destory){
                 bher->ClearTexture();
                 delete bher;
             });
-            m_renderData->SetClip(Rect(0.0f,0.0f,texture->size_w,texture->size_h), Point(texture->size_w,texture->size_h));
+            m_renderData->SetClip(Rect(0.0f,0.0f,texture->size_w,texture->size_h), Point(texture->texture_w,texture->texture_h));
         }
 
     }else{
