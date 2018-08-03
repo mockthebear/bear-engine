@@ -89,6 +89,7 @@ class RenderData : public BasicRenderData{
         Rect m_forwardClip;
 
         void UpdateVertex();
+        void SetVertexAtribLocations();
 
         GLuint VertexArray;
         GLuint VertexBuffer;
@@ -144,6 +145,11 @@ class Painter{
         return num;
     }
     static uint32_t GetSharedBuffer(int id);
+
+     static Shader textureShader;
+    static Shader pointTextureShader;
+    static Shader polygonShader;
+
   private:
     friend class ScreenManager;
 
@@ -159,9 +165,7 @@ class Painter{
 
     static bool m_shaderBuilt;
 
-    static Shader textureShader;
-    static Shader pointTextureShader;
-    static Shader polygonShader;
+
     static VertexArrayObject m_vao;
 
     static uint32_t Buffers[4];
