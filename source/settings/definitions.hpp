@@ -16,7 +16,7 @@
     Web porting
 */
 #ifdef __EMSCRIPTEN__
-#define ASSETS_FOLDER "game/"
+#define ASSETS_FOLDER ""
 #define DISABLE_SOCKET
 #else
 #define ASSETS_FOLDER ""

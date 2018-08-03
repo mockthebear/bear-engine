@@ -64,14 +64,18 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
 
     static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
     static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
+
+    DebugHelper::DisplayGlError("Made arrays");
     renderData->position = box.GetPos();
     renderData->size.x = box.w;
     renderData->size.y = box.h;
     renderData->SetAngle(angle);
     renderData->color = BearColor(r,g,b,a);
     vertexBuffer->clear();
+    DebugHelper::DisplayGlError("Generating");
     vertexBuffer->vertexes.Generate(box);
     vertexBuffer->SetupVertexes();
+    DebugHelper::DisplayGlError("Setup");
     if (!outline){
         Painter::DrawVertex(vertexBuffer,renderData,GL_TRIANGLE_FAN);
 

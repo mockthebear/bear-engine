@@ -10,7 +10,7 @@ local ASSETS_FOLDER = "game"
 local SOURCE_FOLDER = "source"
 local FILEOUT = "snakescape.html"
 local LDFLAGS = "--emrun"
-local PRELOADSTUFF = "--preload-file game/engine/ --preload-file game/lua/ --preload-file game/ui/ --preload-file game/data --preload-file game/test.burr --preload-file game/snd.burr --preload-file game/teste.txt"
+local PRELOADSTUFF = "--preload-file engine/ --preload-file lua/ --preload-file ui/ --preload-file data/ --preload-file test.burr --preload-file snd.burr --preload-file teste.txt"
 local CFLAGS 	= "-s ASSERTIONS=1 -DRENDER_OPENGL2 -DNEED_SHADER_LOCATION -s USE_SDL=2 -s USE_SDL_TTF=2 -s USE_VORBIS=1 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1 -std=c++11"
 local CCFLAGS 	= "-s ASSERTIONS=1 -DRENDER_OPENGL2 -DNEED_SHADER_LOCATION -s USE_SDL=2 -s USE_SDL_TTF=2 -s USE_VORBIS=1 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1"
 
@@ -65,7 +65,7 @@ function parseFolderRecursively(Fold)
 				
 					--checkFile(fileOut)
 					local line = COMPILER.." -c source/"..i.." -o "..fileOut.." "..CFLAGS
-					FILES = FILES .. "obj/emscripten/"..i:gsub("%.cpp",".bc").." "
+					FILES = FILES .. "../obj/emscripten/"..i:gsub("%.cpp",".bc").." "
 					--check the avaliability of the dir
 					--print("Now:",line)
 					cmdLines = cmdLines..fileOut.." "
@@ -78,7 +78,7 @@ function parseFolderRecursively(Fold)
 			elseif i:find("%.c$") then
 				local fileOut = "obj/emscripten/"..i:gsub("%.c$",".bc")
 				local line = COMPILERC.." -c source/"..i.." -o "..fileOut.." "..CCFLAGS
-				FILES = FILES .. "obj/emscripten/"..i:gsub("%.c",".bc").." "
+				FILES = FILES .. "../obj/emscripten/"..i:gsub("%.c",".bc").." "
 				--check the avaliability of the dir
 				--print("Now:",line)
 				cmdLines = cmdLines..fileOut.." "
@@ -97,21 +97,21 @@ if parseFolderRecursively(SOURCE_FOLDER) then
 	local outp = FILES..' '..CFLAGS..' '..LDFLAGS.. ' '..PRELOADSTUFF
 	--print("Ready files: ",outp)
 
-	outp = "emcc -o kek.html "..outp
+	outp = "cd game/ && emcc -o kek.html "..outp
 
 	--
 	local a = io.open("OWO.txt","w")
 
 	
 
-	for i,b in pairs(owo) do 
+	--[[for i,b in pairs(owo) do 
 		print("-->"..b)
 		local ret = os.execute(b)
 		a:write(b.."\r\n")
 		if ret == 1 then
 			return false
 		end
-	end
+	end]]
 
 	a:write(outp)
 	a:close()

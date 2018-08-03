@@ -204,7 +204,7 @@ function MakeLuaStateWithComplexObjects()
 		w:AddComponent(widgets.Button({
 			str = "Button",
 			action = function (thisButton,mouseKey)
-				print("Pressed!!!!!!!")
+				--print("Pressed!!!!!!!")
 				MakeObject()
 				w:GetChildById('testlabel'):SetText("Pressed")
 			end,

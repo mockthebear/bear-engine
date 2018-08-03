@@ -1,6 +1,7 @@
 #pragma once
 #include "libheader.hpp"
 #include "../framework/debughelper.hpp"
+#include "../framework/chainptr.hpp"
 
 typedef class BearColor{
     public:
@@ -109,3 +110,4 @@ enum PainterSupport{
     SUPPORT_POINTSPRITE,
 };
 
+typedef chain_ptr<BearTexture> TexturePtr;

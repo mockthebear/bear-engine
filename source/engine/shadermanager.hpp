@@ -140,6 +140,42 @@ template<> struct ShaderSetter<std::vector<Rect>>{
     };
 };
 
+template<> struct ShaderSetter<TexturePtr>{
+    static bool SetUniform(GLuint shdr,const char *str,TexturePtr tex,int id = 0){
+        GLint loc = glGetUniformLocation(shdr, str );
+        if (loc == -1 || !tex.get() || tex.get()->id == 0){
+            return false;
+        }
+        glUniform1i(loc,id);
+        glActiveTexture(GL_TEXTURE0 + id);
+        glBindTexture(GL_TEXTURE_2D, tex.get()->id);
+        return true;
+    };
+    static bool DisableTexture(int id = 0){
+        glActiveTexture(GL_TEXTURE0 + id);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        return true;
+    }
+};
+
+template<> struct ShaderSetter<BearTexture>{
+    static bool SetUniform(GLuint shdr,const char *str,BearTexture& tex,int id = 0){
+        GLint loc = glGetUniformLocation(shdr, str );
+        if (loc == -1 || tex.id == 0){
+            return false;
+        }
+        glUniform1i(loc,id);
+        glActiveTexture(GL_TEXTURE0 + id);
+        glBindTexture(GL_TEXTURE_2D, tex.id);
+        return true;
+    };
+    static bool DisableTexture(int id = 0){
+        glActiveTexture(GL_TEXTURE0 + id);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        return true;
+    }
+};
+
 template<> struct ShaderSetter<int>{
     static bool SetUniform(GLuint shdr,const char *str,int var){
         GLint loc = glGetUniformLocation(shdr, str );

@@ -101,8 +101,6 @@ typedef std::shared_ptr<RenderData> RenderDataPtr;
 typedef std::shared_ptr<BasicRenderData> BasicRenderDataPtr;
 
 
-typedef chain_ptr<BearTexture> TexturePtr;
-
 class Painter{
   public:
     static glm::mat4 CalculateModel(BasicRenderDataPtr );

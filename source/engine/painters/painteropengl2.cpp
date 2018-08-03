@@ -104,7 +104,7 @@ void RenderData::UpdateVertex(){
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)) );
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+
 
     #else
     if (VertexBuffer == 0){
@@ -130,7 +130,6 @@ void RenderData::UpdateVertex(){
         SetVertexAtribLocations();
     }
     #endif // SUPPORT_SINGLE_BUFFER
-
     DebugHelper::DisplayGlError("UpdateVertex");
 
 }
@@ -234,17 +233,17 @@ void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_da
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Projection);
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"model",model);
     ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"iColor",t_data->color);
-    ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image",0);
 
     vertexData->Bind();
 
 
     glDrawElements(drawMode, vertexData->GetIndexCount(), GL_UNSIGNED_INT, 0);
-
+    DebugHelper::DisplayGlError("DrawVertex");
     if (noShader){
         polygonShader.Unbind();
     }
-    DebugHelper::DisplayGlError("DrawVertex");
+    DebugHelper::DisplayGlError("Unbind");
+
 }
 
 
@@ -259,7 +258,7 @@ bool Painter::DrawSprites(int id){
 
 bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
 
-    //glEnable(GL_TEXTURE_2D);
+
 
     glm::mat4 model = CalculateModel(t_data);
 
@@ -273,10 +272,13 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"iColor",t_data->color);
     ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image",0);
 
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture( GL_TEXTURE_2D, t_texture->id );
 
     t_data->Bind();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    glBindTexture( GL_TEXTURE_2D, 0 );
 
     if (noShader){
         textureShader.Unbind();

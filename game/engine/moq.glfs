@@ -1,15 +1,13 @@
-#version 130
-out vec4 color;
+#version 100
+precision mediump float;
 
 uniform vec4 iColor;
+uniform float dt;
+const float PI = 3.1415926535;
 
 uniform sampler2D image;
 
-uniform float dt;
-
-const float PI = 3.1415926535;
-
-in vec2 TexCoords;
+varying vec2 TexCoords;
 
 void main(void)
 
@@ -17,10 +15,9 @@ void main(void)
    	vec4 auxColor = texture2D(image, TexCoords).rgba;
    	float kek = floor(gl_FragCoord.y);
    	if (mod(kek,6.0) == 0.0 || mod(kek,6.0) == 1.0){
-   		auxColor = vec4(auxColor.r/4.0f,auxColor.b*dt,auxColor.b/4.0f,auxColor.a);
+   		auxColor = vec4(auxColor.r/4.0,auxColor.b*dt,auxColor.b/4.0,auxColor.a);
    	}else{
-		auxColor = vec4(auxColor.r/4.0f,auxColor.b/4.0f,auxColor.b/4.0f,auxColor.a);
+		auxColor = vec4(auxColor.r/4.0,auxColor.b/4.0,auxColor.b/4.0,auxColor.a);
    	}
-   	color = auxColor * iColor;
-
+   	gl_FragColor = auxColor * iColor;
 }
