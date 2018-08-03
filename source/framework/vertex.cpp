@@ -170,7 +170,7 @@ bool VertexArrayObject::SetupVertexes(bool manageBuffers){
         if (m_useElementBuffer)
             glGenBuffers(1, &m_elementBuffer);
 
-
+        DebugHelper::DisplayGlError("on gen buffers");
         generatedBuffers = true;
     }
     #else
@@ -179,28 +179,33 @@ bool VertexArrayObject::SetupVertexes(bool manageBuffers){
     m_elementBuffer = Painter::GetSharedBuffer(1);
     #endif
 
-
+    DebugHelper::DisplayGlError("pre bind");
 
     glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-
+    DebugHelper::DisplayGlError("afterbind");
     glBufferData(GL_ARRAY_BUFFER,  vertexes.vertexData.size() * sizeof(float), &vertexes.vertexData[0], GL_DYNAMIC_DRAW);
+    DebugHelper::DisplayGlError("on bind vert");
     if (m_useElementBuffer){
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,  vertexes.indexes.size() * sizeof(uint32_t), &vertexes.indexes[0], GL_DYNAMIC_DRAW);
+        DebugHelper::DisplayGlError("on set elems");
     }
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+    GLint posAttrib = 0;
 
-
-
-
-    if (generatedBuffers && manageBuffers){
-
-
+    #ifdef NEED_SHADER_LOCATION
+    uint32_t shaderId = 0;
+    if ((shaderId = Shader::GetCurrentShaderId()) == 0){
+        shaderId = Painter::polygonShader.GetId();
     }
+    posAttrib = glGetAttribLocation(shaderId, "vPos");
+    #endif // NEED_SHADER_LOCATION
 
-    DebugHelper::DisplayGlError("Error on vertex");
+    glEnableVertexAttribArray(posAttrib);
+    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+
+
+    DebugHelper::DisplayGlError("on set attr");
 
     return true;
 }

@@ -23,7 +23,7 @@ std::string DirManager::AdjustUserPath(std::string path){
     S << SDL_AndroidGetExternalStoragePath() <<"/"<< path;
     true_path = S.str();
     #else
-    true_path = SDL_GetBasePath()+  path;
+    true_path = std::string(ASSETS_FOLDER) + std::string(SDL_GetBasePath()) +  path;
     #endif
     return true_path;
 }

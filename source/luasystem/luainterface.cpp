@@ -89,7 +89,7 @@ void LuaInterface::Startup()
         RegisterClasses();
 
 
-        if ( luaL_loadfile(L, "lua/main.lua")==0 )
+        if ( luaL_loadfile(L, DirManager::AdjustUserPath("lua/main.lua").c_str())==0 )
         {
             // execute Lua program
             if (lua_pcall(L, 0, LUA_MULTRET, 0) != 0)
@@ -201,7 +201,7 @@ REUP:
 
 bool LuaInterface::CallScript(std::string name,std::string fName)
 {
-    if ( luaL_loadfile(L, name.c_str())==0 )
+    if ( luaL_loadfile(L, DirManager::AdjustUserPath(name).c_str())==0 )
     {
         if (lua_pcall(L, 0, LUA_MULTRET, 0) != 0)
         {

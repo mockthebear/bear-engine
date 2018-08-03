@@ -496,7 +496,8 @@ class LuaCaller{
             if (!L){
                 return false;
             }
-            if ( luaL_loadfile(L, name.c_str()) != 0 ) {
+
+            if ( luaL_loadfile(L, DirManager::AdjustUserPath(name).c_str()) != 0 ) {
                 Console::GetInstance().AddTextInfo(utils::format("[Lua error]: %s",lua_tostring(L, -1)));
                 lua_pop(L, 1);
                 return false;
