@@ -12,6 +12,7 @@
     #include LUA_INCLUDE
 #include "luatypewrapper.hpp"
 #include "luacaller.hpp"
+#include "../framework/dirmanager.hpp"
 
 #define LUA_LAYER_UI 0
 
