@@ -14,10 +14,11 @@ class Test_Sound: public State{
 
         };
         void Begin(){
-            bgm = Sound("fogurai.ogg");
-            //bgm.Play(1);
+            bgm = Sound("data/yay3.wav");
+            soundInfo = Text("Sound?",22,{255,255,180});
+            bgm.Play(-1);
             //getchar();
-            //bgm.Kill();
+            //
             Assets.erase();
 
         };
@@ -28,18 +29,22 @@ class Test_Sound: public State{
                 requestDelete = true;
             }
 
+            soundInfo.SetText( utils::format("Duration: %f / %f",bgm.GetPosition(),bgm.GetDuration()) );
+
         };
         void Render(){
-
+            soundInfo.Render(Point(SCREEN_SIZE_W/2,SCREEN_SIZE_H/2),TEXT_RENDER_CENTER);
         };
         void Input();
         void Resume(){};
         void End(){
             bear::out << "Rip sound\n";
+            bgm.Kill();
 
         };
     private:
         Sound bgm;
+        Text soundInfo;
         float duration;
 };
 
