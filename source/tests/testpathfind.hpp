@@ -47,18 +47,16 @@ class Test_PathFind: public State{
         };
         void Render(){
             //bear::out << "B\n";
-            RenderHelp::DrawSquareColor(Rect(32,32,16,16),255,255,255,255);
+
             for (auto &it : Blocks){
                 int x = ((int)it.x)%16;
                 int y = ((int)it.y)%16;
-                if (g_input.IsKeyDown(SDLK_1))
-                    RenderHelp::DrawSquareColor(Rect(it.x-x,it.y-y,16,16),255,255,255,255);
+                RenderHelp::DrawSquareColor(Rect(it.x-x,it.y-y,16,16),255,255,255,255);
             }
             Point first = finish;
             int iter = 0;
             for (auto &it : Path){
-                if (g_input.IsKeyDown(SDLK_2))
-                    RenderHelp::DrawLineColor(Point(first.x+8,first.y+8),Point(it.x+8,it.y+8),255,(iter/(float)Path.size())*255,0,255);
+                RenderHelp::DrawLineColor(Point(first.x+8,first.y+8),Point(it.x+8,it.y+8),255,(iter/(float)Path.size())*255,0,255);
                 first = it;
                 iter++;
             }

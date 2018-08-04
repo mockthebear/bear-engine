@@ -11,8 +11,8 @@ local SOURCE_FOLDER = "source"
 local FILEOUT = "snakescape.html"
 local LDFLAGS = "--emrun"
 local PRELOADSTUFF = "--preload-file engine/ --preload-file lua/ --preload-file ui/ --preload-file data/ --preload-file test.burr --preload-file snd.burr --preload-file teste.txt"
-local CFLAGS 	= "-s ASSERTIONS=1 -DRENDER_OPENGL2 -DNEED_SHADER_LOCATION -s USE_SDL=2 -s USE_SDL_TTF=2 -s USE_VORBIS=1 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1 -std=c++11"
-local CCFLAGS 	= "-s ASSERTIONS=1 -DRENDER_OPENGL2 -DNEED_SHADER_LOCATION -s USE_SDL=2 -s USE_SDL_TTF=2 -s USE_VORBIS=1 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1"
+local CFLAGS 	= "-s ASSERTIONS=1 -DRENDER_OPENGL2 -DSUPPORT_SINGLE_BUFFER -DNEED_SHADER_LOCATION -O2 -Oz -s USE_SDL=2 -s USE_SDL_TTF=2 -s USE_VORBIS=1 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1 -std=c++11"
+local CCFLAGS 	= "-s ASSERTIONS=1 -DRENDER_OPENGL2 -DSUPPORT_SINGLE_BUFFER -DNEED_SHADER_LOCATION -O2 -Oz -s USE_SDL=2 -s USE_SDL_TTF=2 -s USE_VORBIS=1 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1"
 
 
 local OUTSTR = ""
@@ -104,14 +104,14 @@ if parseFolderRecursively(SOURCE_FOLDER) then
 
 	
 
-	--[[for i,b in pairs(owo) do 
+	for i,b in pairs(owo) do 
 		print("-->"..b)
 		local ret = os.execute(b)
 		a:write(b.."\r\n")
 		if ret == 1 then
 			return false
 		end
-	end]]
+	end
 
 	a:write(outp)
 	a:close()

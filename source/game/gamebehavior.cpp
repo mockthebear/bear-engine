@@ -82,8 +82,6 @@ bool GameBehavior::OnLoad(){
     */
     //Game::GetInstance()->AddState(new Test_Light());
 
-    Game::GetInstance()->AddState(new Test_PathFind());
-    Game::GetInstance()->AddState(new Test_Sound());
     #ifdef THREADPOOLTEST
     //Game::GetInstance()->AddState(new Test_Threadpool());
     #endif // THREADPOOLTEST
@@ -105,7 +103,8 @@ bool GameBehavior::OnLoad(){
         Game::GetInstance()->AddState(new Test_PSTILESET());
     }
     Game::GetInstance()->AddState(new Test_RenderSpeed());
-
+    Game::GetInstance()->AddState(new Test_PathFind());
+    Game::GetInstance()->AddState(new Test_Sound());
     Game::GetInstance()->AddState(new Test_Text());
     Game::GetInstance()->AddState(new Test_Shader());
     Game::GetInstance()->AddState(new Test_Sprite());
