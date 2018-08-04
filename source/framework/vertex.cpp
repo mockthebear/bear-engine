@@ -145,10 +145,20 @@ void VertexArrayObject::Bind(){
     #endif
     if (m_vertexBuffer != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
         glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-        if (m_useElementBuffer)
+        //if (m_useElementBuffer)
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+        GLint posAttrib = 0;
+
+        #ifdef NEED_SHADER_LOCATION
+        uint32_t shaderId = 0;
+        if ((shaderId = Shader::GetCurrentShaderId()) == 0){
+            shaderId = Painter::polygonShader.GetId();
+        }
+        posAttrib = glGetAttribLocation(shaderId, "vPos");
+        #endif // NEED_SHADER_LOCATION
+
+        glEnableVertexAttribArray(posAttrib);
+        glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
     }
 }
 
@@ -167,7 +177,7 @@ bool VertexArrayObject::SetupVertexes(bool manageBuffers){
     #ifndef SUPPORT_SINGLE_BUFFER
     if (m_vertexBuffer == 0){
         glGenBuffers(1, &m_vertexBuffer);
-        if (m_useElementBuffer)
+        //if (m_useElementBuffer)
             glGenBuffers(1, &m_elementBuffer);
 
         DebugHelper::DisplayGlError("on gen buffers");
@@ -185,11 +195,11 @@ bool VertexArrayObject::SetupVertexes(bool manageBuffers){
     DebugHelper::DisplayGlError("afterbind");
     glBufferData(GL_ARRAY_BUFFER,  vertexes.vertexData.size() * sizeof(float), &vertexes.vertexData[0], GL_DYNAMIC_DRAW);
     DebugHelper::DisplayGlError("on bind vert");
-    if (m_useElementBuffer){
+    //if (m_useElementBuffer){
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,  vertexes.indexes.size() * sizeof(uint32_t), &vertexes.indexes[0], GL_DYNAMIC_DRAW);
         DebugHelper::DisplayGlError("on set elems");
-    }
+    //}
 
     GLint posAttrib = 0;
 
