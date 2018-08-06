@@ -3,9 +3,11 @@
 #include <string>
 #include <typeindex>
 #include "../framework/geometry.hpp"
+#include "../glm/glm.hpp"
 /**
     @brief Custom outstream from bear engine
 */
+
 
 namespace bear {
     class outstream{
@@ -14,6 +16,7 @@ namespace bear {
             void printme(unsigned int n);
             void printme(long unsigned int n);
             //void printme(uint64_t n);
+            void printme(glm::mat4 &m);
             void printme(float n);
             void printme(double n);
             void printme(const char *c);
@@ -77,6 +80,11 @@ namespace bear {
     */
     static inline bear::outstream &operator << ( bear::outstream &o ,std::string str){
         o.printme(str.c_str());
+        return o;
+    }
+
+    static inline bear::outstream &operator << ( bear::outstream &o ,glm::mat4 m4){
+        o.printme(m4);
         return o;
     }
     /**

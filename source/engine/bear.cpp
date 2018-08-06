@@ -16,6 +16,19 @@ void bear::outstream::printme(long unsigned int n){
     Console::GetInstance().Store("%lud",n);
 }
 
+void bear::outstream::printme(glm::mat4& m4){
+    for (int y = 0; y<4;y++){
+        Console::GetInstance().Store("\n| ");
+        for (int x = 0; x<4;x++){
+            Console::GetInstance().Store("%f",m4[x][y]);
+            if (x != 3)
+                Console::GetInstance().Store(", ");
+        }
+        Console::GetInstance().Store(" |");
+    }
+    Console::GetInstance().Store("\n");
+}
+
 
 void bear::outstream::printme(float n){
     Console::GetInstance().Store("%f",n);
