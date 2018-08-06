@@ -131,17 +131,44 @@ void RenderData::UpdateVertex(){
     }
     #endif // SUPPORT_SINGLE_BUFFER
     DebugHelper::DisplayGlError("UpdateVertex");
+}
+
+
+void BasicRenderData::UpdateModel(){
+
+    m_model = glm::mat4(1.0f);
+    if (m_angle != 0){
+
+
+        m_model[3][0] += 0.5f * size.x;
+        m_model[3][1] += 0.5f * size.y;
+
+        float theta = glm::radians(m_angle);
+
+        m_model[0][0] = cos(theta);
+        m_model[1][0] = -sin(theta);
+        m_model[0][1] = sin(theta);
+        m_model[1][1] = cos(theta);
+
+        float a = -0.5f * size.x;
+        float b = -0.5f * size.y;
+
+
+        m_model[3][1] += (b * m_model[0][0] + (a * m_model[0][1]));
+        m_model[3][0] += (b * m_model[1][0] + (a * m_model[1][1]));
+
+    }
+
+    m_model[0][0] = m_model[0][0] * (m_scale.x * size.x);
+    m_model[1][0] = m_model[1][0] * (m_scale.y * size.y);
+    m_model[0][1] = m_model[0][1] * (m_scale.x * size.x);
+    m_model[1][1] = m_model[1][1] * (m_scale.y * size.y);
 
 }
+
+
 glm::mat4 Painter::CalculateModel(BasicRenderDataPtr t_data){
     glm::mat4 model(1.0f);
-
-
-    model[3][0] += t_data->position.x;
-    model[3][1] += t_data->position.y;
-    model[3][2] += 0.0f;
-
-
 
     if (t_data->m_angle != 0){
 
@@ -169,6 +196,12 @@ glm::mat4 Painter::CalculateModel(BasicRenderDataPtr t_data){
     model[1][0] = model[1][0] * (t_data->m_scale.y * t_data->size.y);
     model[0][1] = model[0][1] * (t_data->m_scale.x * t_data->size.x);
     model[1][1] = model[1][1] * (t_data->m_scale.y * t_data->size.y);
+
+
+    model[3][0] += t_data->position.x;
+    model[3][1] += t_data->position.y;
+    model[3][2] = 0.0f;
+
     return model;
 }
 
@@ -260,7 +293,11 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
 
 
 
-    glm::mat4 model = CalculateModel(t_data);
+    glm::mat4 model = t_data->GetModel();
+
+    model[3][0] += t_data->position.x;
+    model[3][1] += t_data->position.y;
+    model[3][2] = 0.0f;
 
     bool noShader = Shader::GetCurrentShaderId() == 0;
 

@@ -26,15 +26,21 @@ class Painter;
 
 class BasicRenderData{
      public:
-        BasicRenderData():position(0.0f,0.0f),size(1.0f,1.0f),color(1.0f,1.0f,1.0f,1.0f),flip(0),m_scale(1.0f,1.0f),m_angle(0.0f){}
+        BasicRenderData():position(0.0f,0.0f),size(1.0f,1.0f),color(1.0f,1.0f,1.0f,1.0f),flip(0),m_scale(1.0f,1.0f),m_angle(0.0f),m_model(1.0){}
 
         void SetAngle(float p_angle){
-            m_angle = p_angle;
+            if (m_angle != p_angle){
+                UpdateModel();
+                m_angle = p_angle;
+            }
         }
 
 
         void SetScale(Point p_scale){
-            m_scale = p_scale;
+            if (m_scale != p_scale){
+                UpdateModel();
+                m_scale = p_scale;
+            }
         }
 
         Point& GetScale(){return m_scale;};
@@ -46,11 +52,16 @@ class BasicRenderData{
         BearColor color;
         uint8_t flip;
 
+        void UpdateModel();
+
+
+        glm::mat4 GetModel() {return m_model;};
+
     protected:
         friend class Painter;
-
         Point m_scale;
         float m_angle;
+        glm::mat4 m_model;
 };
 
 
@@ -74,6 +85,7 @@ class RenderData : public BasicRenderData{
             m_forwardClip.w = m_clip.y / textureSize.y;
             m_forwardClip.h = ( m_clip.y + m_clip.h ) / textureSize.y;
             UpdateVertex();
+            UpdateModel();
         }
 
 
@@ -94,6 +106,8 @@ class RenderData : public BasicRenderData{
         GLuint VertexArray;
         GLuint VertexBuffer;
         GLuint ElementBuffer;
+
+
 
 };
 
