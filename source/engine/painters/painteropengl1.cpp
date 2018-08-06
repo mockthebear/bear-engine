@@ -106,7 +106,7 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     glLoadIdentity();
 
     glEnable(GL_TEXTURE_2D);
-
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture( GL_TEXTURE_2D, t_texture->id );
 
     glColor4fv(t_data->color.Get4fv());

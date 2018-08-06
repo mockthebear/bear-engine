@@ -230,6 +230,7 @@ bool Painter::RenderPointTexture(BearTexture *t_texture, RenderDataPtr t_data){
 bool Painter::DrawSprites(int id){
 
     glEnable(GL_TEXTURE_2D);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture( GL_TEXTURE_2D, id );
 
 
@@ -288,7 +289,7 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image",0);
 
 
-
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture( GL_TEXTURE_2D, t_texture->id );
 
     t_data->Bind();
@@ -327,8 +328,8 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
 
     glBindTexture(GL_TEXTURE_2D, texId);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     filter.ApplyFilter();
 

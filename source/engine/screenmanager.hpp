@@ -85,6 +85,7 @@ class ScreenManager{
         void StopPostProcessing(){
             postProcess = false;
             m_targetScreen.FreeTexture();
+            ResetProjection();
         }
 
     private:
