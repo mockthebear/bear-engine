@@ -308,10 +308,12 @@
 		<Unit filename="engine/targettexture.hpp" />
 		<Unit filename="engine/text.cpp" />
 		<Unit filename="engine/text.hpp" />
-		<Unit filename="engine/tilemap.cpp" />
-		<Unit filename="engine/tilemap.hpp" />
-		<Unit filename="engine/tileset.cpp" />
-		<Unit filename="engine/tileset.hpp" />
+		<Unit filename="engine/tiles/buffertilemap.cpp" />
+		<Unit filename="engine/tiles/buffertilemap.hpp" />
+		<Unit filename="engine/tiles/tilemap.cpp" />
+		<Unit filename="engine/tiles/tilemap.hpp" />
+		<Unit filename="engine/tiles/tileset.cpp" />
+		<Unit filename="engine/tiles/tileset.hpp" />
 		<Unit filename="engine/timer.cpp" />
 		<Unit filename="engine/timer.hpp" />
 		<Unit filename="framework/basepool.hpp" />

@@ -37,10 +37,8 @@ class BasicRenderData{
 
 
         void SetScale(Point p_scale){
-            if (m_scale != p_scale){
-                UpdateModel();
-                m_scale = p_scale;
-            }
+            m_scale = p_scale;
+            UpdateModel();
         }
 
         Point& GetScale(){return m_scale;};
@@ -72,7 +70,7 @@ class RenderData : public BasicRenderData{
         ~RenderData();
 
 
-        void SetClip(Rect r, Point textureSize){
+        virtual void SetClip(Rect r, Point textureSize){
             m_clip = r;
             size.x = m_clip.w;
             size.y = m_clip.h;
