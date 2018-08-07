@@ -93,8 +93,20 @@ namespace bear {
     template<typename T> static inline bear::outstream &operator << ( bear::outstream &o ,GenericPoint<T> pointPos){
         o.printme("(");
         o.printme(pointPos.x);
-        o.printme(",");
+        o.printme(", ");
         o.printme(pointPos.y);
+        o.printme(")");
+
+        return o;
+    }
+
+    template<typename T> static inline bear::outstream &operator << ( bear::outstream &o ,GenericPoint3<T> pointPos){
+        o.printme("(");
+        o.printme(pointPos.x);
+        o.printme(", ");
+        o.printme(pointPos.y);
+        o.printme(", ");
+        o.printme(pointPos.z);
         o.printme(")");
 
         return o;
@@ -103,11 +115,11 @@ namespace bear {
     template<typename T> static inline bear::outstream &operator << ( bear::outstream &o ,GenericRect<T> pointPos){
         o.printme("(");
         o.printme(pointPos.x);
-        o.printme(",");
+        o.printme(", ");
         o.printme(pointPos.y);
-        o.printme(",");
+        o.printme(", ");
         o.printme(pointPos.w);
-        o.printme(",");
+        o.printme(", ");
         o.printme(pointPos.h);
         o.printme(")");
 

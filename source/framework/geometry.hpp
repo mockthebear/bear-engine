@@ -205,6 +205,8 @@ typedef GenericPoint3<float> Point3;
 */
 typedef GenericPoint<int> PointInt;
 
+typedef GenericPoint3<int> PointInt3;
+
 
 /**
     @brief Basic rect class
@@ -218,6 +220,15 @@ template <typename T=float>class GenericRect{
         /**
             Empty constructor start all components with 0
         */
+
+        GenericRect(T val){
+            x = val;
+            y = val;
+            h = val;
+            w = val;
+        };
+
+
         template<typename K>GenericRect(GenericRect<K> reqt){
             x = reqt.x;
             y = reqt.y;
