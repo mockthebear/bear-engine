@@ -344,8 +344,11 @@ BearTexture * Sprite::Preload(std::string fileName,ColorReplacer &r,TextureLoadM
 void Sprite::Query(TexturePtr ptr){
     BearTexture *texturee = ptr.get();
     if (texturee != NULL){
-        size.x = texturee->texture_w;
-        size.y = texturee->texture_h;
+        size.x = texturee->size_w;
+        size.y = texturee->size_h;
+
+        TextureSize.x = texturee->texture_w;
+        TextureSize.y = texturee->texture_h;
         SetClip(0,0,texturee->texture_w,texturee->texture_h);
     }
 }
@@ -396,7 +399,7 @@ bool Sprite::Open(SDL_RWops* file,std::string name,TextureLoadMethod HasAliasing
 }
 
 void Sprite::SetClip(int x, int y,int w,int h){
-    m_renderData->SetClip(Rect(x,y,w,h),size);
+    m_renderData->SetClip(Rect(x,y,w,h),TextureSize);
 }
 
 void Sprite::Render(PointInt pos,double angle){

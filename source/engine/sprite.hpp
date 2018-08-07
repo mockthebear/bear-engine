@@ -449,6 +449,7 @@ class Sprite{
         void Format(Animation a,int dir);
 
         Point GetSize(){ return size;};
+        Point GetTextureSize(){ return TextureSize;};
 
         RenderDataPtr GetRenderData(){
             return m_renderData;
@@ -462,6 +463,7 @@ class Sprite{
 
         RenderDataPtr m_renderData;
         Point size;
+        Point TextureSize;
 
         //float OUTR,OUTB,OUTG;
         //float m_alpha;
