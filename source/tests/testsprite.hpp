@@ -6,6 +6,8 @@
 #include "../engine/sprite.hpp"
 #include "../engine/renderhelp.hpp"
 #include "../engine/shadermanager.hpp"
+#include "../engine/tiles/tilemap.hpp"
+#include "../engine/tiles/buffertilemap.hpp"
 
 #include "../framework/resourcemanager.hpp"
 
@@ -45,6 +47,7 @@ class Test_Sprite: public State{
             sheet2 = Assets.make<Sprite>("data/totem.png",4,0.2);
 
             smol = Assets.make<Sprite>("data/doge death.png");
+            smol.SetScale(Point(8,8));
 
             sheet.SetGrid(32,64);
             sheet.SetFrame(0,0);
@@ -59,9 +62,6 @@ class Test_Sprite: public State{
 
             */
 
-            tiles = Assets.make<Sprite>("data/tiles.png");
-            tiles.SetGrid(32,32);
-
             bear::out << "Opening resources\n";
             if (!ResourceManager::GetInstance().Load("test.burr","test")){
                 bear::out << "Could not find test.burr\n";
@@ -73,9 +73,26 @@ class Test_Sprite: public State{
             bear::out << "Sprites loaded.\n";
 
 
+            tset = TileMap(PointInt(32,32), PointInt3(16,4,2), Assets.make<Sprite>("data/tiles.png"));
+            tset.SetBlankTile(1);
+            btset = BufferTileMap(PointInt(32,32), PointInt3(16,4,2), Assets.make<Sprite>("data/tiles.png"));
+            //btset.SetBlankTile(1);
+            for (int l = 0; l<2;l++){
+                for (int x = 0; x<16;x++){
+                    for (int y = 0; y<4;y++){
+                        tset.SetTile(PointInt3(x,y, l), Tile(y + x * 4 + l * 16 * 4, rand()%4));
+                    }
+                }
+            }
+            for (int l = 0; l<2;l++){
+                for (int x = 0; x<16;x++){
+                    for (int y = 0; y<4;y++){
+                        btset.SetTile(PointInt3(x, y, l), Tile(rand()%100, rand()%4));
+                    }
+                }
+            }
 
-
-
+            btset.UpdateBuffers();
         };
 
 
@@ -85,7 +102,10 @@ class Test_Sprite: public State{
             sheet.Update(dt);
             sheet2.Update(dt);
             if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
-                requestDelete = true;
+                btset.SetTile(PointInt3(0, 0, 0), Tile(4, 0));
+                btset.SetTile(PointInt3(0, 0, 1), Tile(127 + rand()%2, 1));
+                btset.UpdateBuffers();
+                //requestDelete = true;
             }
 
         };
@@ -100,17 +120,12 @@ class Test_Sprite: public State{
             raccoonHead.Render(Point(120,64),0);
             sheet.Render(200,200);
             sheet2.Render(232,200);
-            for (int i=0;i<20;i++){
-                tiles.SetFrame(i%12,0);
-                tiles.Render(32*i,264);
-                tiles.SetFrame((i+1)%12,0);
-                tiles.Render(32*i,296);
-            }
-            smol.SetScale(Point(8,8));
+
             smol.Render(300,300,0);
             cursor.Render(g_input.GetMouse());
 
-            //Painter::DrawSprites(background.GetTexture().get()->id);
+            tset.Render(Point(32,320));
+            btset.Render(Point(32,0));
 
             RenderHelp::DrawSquareColor(Rect(10,10,SCREEN_SIZE_W-20,SCREEN_SIZE_H-20),255,0,255,255,true);
             RenderHelp::DrawCircleColor(Point(400,400),86,255,0,100,100);
@@ -123,12 +138,13 @@ class Test_Sprite: public State{
             ResourceManager::GetInstance().Erase("test");
         };
     private:
+        TileMap tset;
+        BufferTileMap btset;
         Sprite background;
         Sprite bearHead;
         Sprite raccoonHead;
         Sprite cursor;
         Sprite sheet,sheet2;
-        Sprite tiles;
         Sprite smol;
         float duration;
 };
