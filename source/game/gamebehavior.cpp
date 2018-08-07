@@ -113,7 +113,7 @@ bool GameBehavior::OnLoad(){
     Game::GetInstance()->AddState(new Test_Pool());
     Game::GetInstance()->AddState(new Test_Joystick());
     Game::GetInstance()->AddState(new Test_Shapes());
-    Game::GetInstance()->AddState(new Test_FastTiles());
+    //Game::GetInstance()->AddState(new Test_FastTiles());
     Game::GetInstance()->AddState(new Test_Files());
 
     return DefaultBehavior::GetInstance().OnLoad();
