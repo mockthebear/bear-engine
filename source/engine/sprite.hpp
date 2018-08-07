@@ -449,6 +449,10 @@ class Sprite{
         void Format(Animation a,int dir);
 
         Point GetSize(){ return size;};
+
+        RenderDataPtr GetRenderData(){
+            return m_renderData;
+        }
     private:
         TextureLoadMethod aliasing;
         TexturePtr textureShred;

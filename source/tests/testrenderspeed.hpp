@@ -21,7 +21,6 @@ class Test_RenderSpeed: public State{
             lg = LineGraph(Point(500,200),200);
             m_renderTimer = LineGraph(Point(500,200),200);
             tilesCount = Text("ui/UnB-Office_Regular.ttf",22,TEXT_SOLID,"a",{255,33,180});
-            tilesCount.RemakeTexture();
 
         };
         ~Test_RenderSpeed(){

@@ -1,0 +1,20 @@
+#version 100
+attribute vec2 vPos;
+attribute vec2 clip;
+attribute vec2 translate;
+
+varying  vec2 TexCoords;
+
+uniform mat4 model;
+uniform mat4 projection;
+
+void main()
+{
+    mat4 aux_model = model;
+
+    aux_model[3][0] += translate.x;
+    aux_model[3][1] += translate.y;   
+
+    TexCoords = clip;
+    gl_Position = projection * aux_model * vec4(vPos.xy, 0.0, 1.0);
+}

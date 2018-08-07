@@ -15,6 +15,7 @@ class Test_Sound: public State{
         };
         void Begin(){
             bgm = Sound("data/yay3.wav");
+            ScreenManager::GetInstance().SetScreenName("Test sound");
             soundInfo = Text("Sound?",22,{255,255,180});
             bgm.Play(-1);
             //getchar();

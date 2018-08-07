@@ -21,8 +21,9 @@ int Vertex::Generate(Rect r){
         1.0f  , 1.0f,
         1.0f  , 0.0f,
     };
+    uint32_t offst = vertexData.size();
     uint32_t indices[] = {
-        0, 1, 2, 3,
+        offst, offst+1, offst+2, offst+3,
     };
     vertexData.insert(vertexData.begin(), &vertices[0], &vertices[8]);
     indexes.insert(indexes.begin(), &indices[0], &indices[4]);
