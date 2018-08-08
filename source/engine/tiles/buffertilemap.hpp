@@ -4,6 +4,12 @@
 #include "../../glm/glm.hpp"
 
 
+class BufferTileVAO: public VertexArrayObject{
+    public:
+        BufferTileVAO():VertexArrayObject(){}
+
+        virtual void SetAttributes();
+};
 
 
 class BufferTileMap: public TileMap{
@@ -31,16 +37,17 @@ class BufferTileMap: public TileMap{
     protected:
         void BindBuffer();
         void UpdateModel();
+        void SetupAttributes();
 
         void InternalAddTile(uint32_t id, uint8_t rotate, SDL_RendererFlip flip, Point pos);
 
-
-        std::vector<float> vertexData;
-        std::vector<uint32_t> indexes;
         uint32_t elemCount;
 
-        uint32_t VertexBuffer;
+        /*uint32_t VertexBuffer;
         uint32_t ElementBuffer;
+        uint32_t VertexArray;*/
+
+        BufferTileVAO m_vao;
 
         BasicRenderData m_renderData;
         BearColor m_color;
@@ -49,4 +56,6 @@ class BufferTileMap: public TileMap{
 
         static Shader m_shader;
         static bool m_madeShaders;
+
+        static float forwardSquares[4][8];
 };

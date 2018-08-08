@@ -1,9 +1,42 @@
 #include "buffertilemap.hpp"
 #include "../bear.hpp"
+#ifndef SUPPORT_VERTEX_BUFFER
+#include "../text.hpp"
+#endif // SUPPORT_VERTEX_BUFFER
 
 Shader BufferTileMap::m_shader;
 bool BufferTileMap::m_madeShaders = false;
 
+
+void BufferTileVAO::SetAttributes(){
+    int posAttrib = 0;
+    int clipAttrib = 1;
+    int transLAttrib = 2;
+    #ifdef NEED_SHADER_LOCATION
+
+    uint32_t shaderId = m_shader.GetId();
+
+
+    /*if ((shaderId = Shader::GetCurrentShaderId()) == 0){
+        shaderId = Painter::textureShader.GetId();
+    }*/
+
+    posAttrib = glGetAttribLocation(shaderId, "vPos");
+    clipAttrib = glGetAttribLocation(shaderId, "clip");
+    transLAttrib = glGetAttribLocation(shaderId, "translate");
+    DebugHelper::DisplayGlError("on get attrs");
+    #endif // NEED_SHADER_LOCATION
+
+    glEnableVertexAttribArray(posAttrib);
+    glVertexAttribPointer(posAttrib,    2,    GL_FLOAT, GL_FALSE,   6 * sizeof(GLfloat), (GLvoid*)0);
+    DebugHelper::DisplayGlError("on set attr 1");
+    glEnableVertexAttribArray(clipAttrib);
+    glVertexAttribPointer(clipAttrib,   2,    GL_FLOAT, GL_FALSE,   6 * sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)) );
+    DebugHelper::DisplayGlError("on set attr 2");
+    glEnableVertexAttribArray(transLAttrib);
+    glVertexAttribPointer(transLAttrib, 2,    GL_FLOAT, GL_FALSE,   6 * sizeof(GLfloat), (GLvoid*)(4*sizeof(GLfloat)) );
+    DebugHelper::DisplayGlError("on set attr 3");
+}
 
 
 void BufferTileMap::checkShaders(){
@@ -16,28 +49,46 @@ void BufferTileMap::checkShaders(){
 }
 
 BufferTileMap::BufferTileMap(PointInt tileSize,PointInt3 mapSize, Sprite set):TileMap(tileSize,mapSize,set){
+    #ifdef SUPPORT_VERTEX_BUFFER
     checkShaders();
     elemCount = 0;
-    VertexBuffer = 0;
-    ElementBuffer = 0;
-
-    VertexBuffer = Painter::GetSharedBuffer(0);
-    ElementBuffer = Painter::GetSharedBuffer(1);
-
     m_color = BearColor(1.0f, 1.0f, 1.0f, 1.0f);
     m_scale = Point(1.0f, 1.0f);
     UpdateModel();
+    #endif // SUPPORT_VERTEX_BUFFER
 }
 
 void BufferTileMap::BindBuffer(){
-    glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER,  vertexData.size() * sizeof(float), &vertexData[0], GL_DYNAMIC_DRAW);
-    DebugHelper::DisplayGlError("on set array");
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,  indexes.size() * sizeof(uint32_t), &indexes[0] , GL_DYNAMIC_DRAW);
-    DebugHelper::DisplayGlError("on set buffer");
+    m_vao.Bind();
 }
+
+
+float BufferTileMap::forwardSquares[4][8] = {
+    {
+        0.0f  , 0.0f,
+        0.0f  , 1.0f,
+        1.0f  , 1.0f,
+        1.0f  , 0.0f,
+    },
+    {
+        1.0f  , 0.0f,
+        0.0f  , 0.0f,
+        0.0f  , 1.0f,
+        1.0f  , 1.0f,
+    },
+    {
+        1.0f  , 1.0f,
+        1.0f  , 0.0f,
+        0.0f  , 0.0f,
+        0.0f  , 1.0f,
+    },
+    {
+        0.0f  , 1.0f,
+        1.0f  , 1.0f,
+        1.0f  , 0.0f,
+        0.0f  , 0.0f,
+    },
+};
 
 void BufferTileMap::InternalAddTile(uint32_t id,uint8_t rotate, SDL_RendererFlip flip, Point pos){
     if (id == m_blankTile){
@@ -67,12 +118,14 @@ void BufferTileMap::InternalAddTile(uint32_t id,uint8_t rotate, SDL_RendererFlip
         texBottom = holder;
     }
 
+    float * square = forwardSquares[rotate%4];
+
     float vertices[] = {
         // Pos      // Tex
-        0.0f  , 0.0f    , texLeft   , texTop,       pos.x,     pos.y,
-        0.0f  , 1.0f    , texLeft   , texBottom,    pos.x,     pos.y,
-        1.0f  , 1.0f    , texRight  , texBottom,    pos.x,     pos.y,
-        1.0f  , 0.0f    , texRight  , texTop,       pos.x,     pos.y,
+        square[0]  , square[1]    , texLeft   , texTop,       pos.x,     pos.y,
+        square[2]  , square[3]    , texLeft   , texBottom,    pos.x,     pos.y,
+        square[4]  , square[5]    , texRight  , texBottom,    pos.x,     pos.y,
+        square[6]  , square[7]    , texRight  , texTop,       pos.x,     pos.y,
 
     };
 
@@ -84,15 +137,15 @@ void BufferTileMap::InternalAddTile(uint32_t id,uint8_t rotate, SDL_RendererFlip
 
 
 
-    indexes.insert(indexes.end(), &indices[0], &indices[6]);
+    m_vao.vertexes.indexes.insert(m_vao.vertexes.indexes.end(), &indices[0], &indices[6]);
 
-    vertexData.insert(vertexData.end() , &vertices[0], &vertices[24]);
+    m_vao.vertexes.vertexData.insert(m_vao.vertexes.vertexData.end() , &vertices[0], &vertices[24]);
     //
 }
 
 void BufferTileMap::UpdateBuffers(){
-    vertexData.clear();
-    indexes.clear();
+    #ifdef SUPPORT_VERTEX_BUFFER
+    m_vao.clear();
     elemCount = 0;
     int l,y,x;
     for (l = 0; l < m_size.z; l++){
@@ -100,12 +153,13 @@ void BufferTileMap::UpdateBuffers(){
             for (x = 0; x < m_size.x; x++){
                 Tile &t = m_map.get()[CalculateOffset(PointInt3(x,y,l))];
                 if (t.id != m_blankTile){
-                    bear::out << "Aadding " << PointInt3(x,y,l) << " at " << t.id << "\n";
                     InternalAddTile(t.id, t.rotate, t.flip, Point( x * m_tileSize.x, y * m_tileSize.y));
                 }
             }
         }
     }
+    m_vao.SetupVertexes();
+    #endif // SUPPORT_VERTEX_BUFFER
 }
 
 void BufferTileMap::UpdateModel(){
@@ -117,44 +171,16 @@ void BufferTileMap::UpdateModel(){
 }
 
 void BufferTileMap::Render(Point offset, Rect vision){
+    #ifdef SUPPORT_VERTEX_BUFFER
     if (elemCount == 0){
         return;
     }
-    BindBuffer();
 
-    int posAttrib = 0;
-    int clipAttrib = 1;
-    int transLAttrib = 2;
 
     m_shader.Bind();
+    BindBuffer();
 
 
-    #ifdef NEED_SHADER_LOCATION
-
-
-    uint32_t shaderId = m_shader.GetId();
-
-
-    /*if ((shaderId = Shader::GetCurrentShaderId()) == 0){
-        shaderId = Painter::textureShader.GetId();
-    }*/
-
-    posAttrib = glGetAttribLocation(shaderId, "vPos");
-    clipAttrib = glGetAttribLocation(shaderId, "clip");
-    transLAttrib = glGetAttribLocation(shaderId, "translate");
-    DebugHelper::DisplayGlError("on get attrs");
-    #endif // NEED_SHADER_LOCATION
-
-
-    glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib,    2,    GL_FLOAT, GL_FALSE,   6 * sizeof(GLfloat), (GLvoid*)0);
-    DebugHelper::DisplayGlError("on set attr 1");
-    glEnableVertexAttribArray(clipAttrib);
-    glVertexAttribPointer(clipAttrib,   2,    GL_FLOAT, GL_FALSE,   6 * sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)) );
-    DebugHelper::DisplayGlError("on set attr 2");
-    glEnableVertexAttribArray(transLAttrib);
-    glVertexAttribPointer(transLAttrib, 2,    GL_FLOAT, GL_FALSE,   6 * sizeof(GLfloat), (GLvoid*)(4*sizeof(GLfloat)) );
-    DebugHelper::DisplayGlError("on set attr 3");
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tileset.GetTexture().get()->id);
@@ -166,11 +192,16 @@ void BufferTileMap::Render(Point offset, Rect vision){
     ShaderSetter<Point>::SetUniform(Shader::GetCurrentShaderId(),"offset",offset);
 
 
-    glDrawElements(GL_TRIANGLES, indexes.size(), GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, m_vao.vertexes.indexes.size() , GL_UNSIGNED_INT, nullptr);
     DebugHelper::DisplayGlError("on rebder");
 
 
     m_shader.Unbind();
+    #else
+    Text T("[BufferTileMap]No support!",35);
+    T.Render(offset);
+
+    #endif
 
 }
 
