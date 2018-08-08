@@ -67,6 +67,9 @@ class VertexArrayObject{
     uint32_t GetElementBuffer(){
         return m_elementBuffer;
     }
+
+    virtual void SetAttributes();
+
     static uint32_t VBOMASTER;
     static uint32_t ELEMMASTER;
 
