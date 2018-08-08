@@ -16,7 +16,6 @@
 
 #ifdef RENDER_OPENGL
     #include GL_LIB
-    #define SUPPORT_VERTEX_BUFFER
     #define SUPPORT_GLEW
 #endif // RENDER_OPENGL
 #ifdef RENDER_OPENGL2
