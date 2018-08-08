@@ -67,7 +67,7 @@ class RenderData : public BasicRenderData{
     public:
         RenderData():BasicRenderData(),center(0.0f,0.0f),m_clip(0.0f,0.0f,0.0f,0.0f),m_forwardClip(0.0f,1.0f,0.0f,1.0f),VertexArray(0),VertexBuffer(0),ElementBuffer(0){};
 
-        ~RenderData();
+        virtual ~RenderData();
 
 
         virtual void SetClip(Rect r, Point textureSize){
