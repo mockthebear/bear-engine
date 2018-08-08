@@ -16,6 +16,7 @@ Shader Painter::polygonShader;
 Shader Painter::pointTextureShader;
 glm::mat4 Painter::Projection;
 VertexArrayObject Painter::m_vao;
+uint32_t Painter::Buffers[4] = {0, 0, 0, 0};
 
 
 
@@ -460,6 +461,10 @@ void Painter::SetupShaders(){
         glEnableVertexAttribArray(4);
         glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(10 * sizeof(float))); //rotation
         Painter::m_vao.UnBind();
+
+        bear::out << "Making buffers\n";
+        glGenBuffers(4, Painter::Buffers);
+        DebugHelper::DisplayGlError("SetupEnvoriment");
 
     }
 }
