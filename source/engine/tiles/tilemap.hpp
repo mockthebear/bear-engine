@@ -25,8 +25,6 @@ class TileMap: public TileSet{
         */
         TileMap(PointInt tileSize,PointInt3 mapSize, Sprite set);
 
-        Point GetTileSize();
-
 
         virtual void Render(Point offset, Rect vision=Rect(-1.0f));
         virtual void SetTile(PointInt3 pos, Tile t);
@@ -35,6 +33,10 @@ class TileMap: public TileSet{
 
         void SetBlankTile(uint32_t id){
             m_blankTile = id;
+        };
+
+        PointInt3 GetMapSize(){
+            return m_size;
         };
 
 
