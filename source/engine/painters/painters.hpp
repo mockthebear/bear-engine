@@ -30,15 +30,17 @@ class BasicRenderData{
 
         void SetAngle(float p_angle){
             if (m_angle != p_angle){
-                UpdateModel();
                 m_angle = p_angle;
+                UpdateModel();
             }
         }
 
 
         void SetScale(Point p_scale){
-            m_scale = p_scale;
-            UpdateModel();
+            if (m_scale != p_scale){
+                m_scale = p_scale;
+                UpdateModel();
+            }
         }
 
         Point& GetScale(){return m_scale;};
