@@ -1,5 +1,5 @@
 console.txt
-bear.exe
+*.exe
 bear
 bearengine.exe
 bearengine.iobj
@@ -8,3 +8,4 @@ bearengine.pdb
 bearengine.ilk
 writeTest.txt
 gmon.out
+*wasm
