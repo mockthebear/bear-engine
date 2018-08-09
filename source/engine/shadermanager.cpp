@@ -21,9 +21,7 @@ Shader::Shader(){
     m_shaderId = 0;
 }
 
-Shader::Shader(std::string str){
-    m_shaderId = 0;
-}
+
 
 void Shader::Close(){
     if (m_shaderId != 0 && glIsProgram(m_shaderId)){
