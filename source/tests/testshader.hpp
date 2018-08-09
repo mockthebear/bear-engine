@@ -41,7 +41,6 @@ class Test_Shader: public State{
             noise = Painter::MakeTexture(PointInt(64,64),GL_ALPHA,(unsigned char*)pixels,meth);
 
 
-            //ScreenManager::GetInstance().SetTopShader(m_shader);
         };
 
         void Update(float dt){
@@ -73,11 +72,10 @@ class Test_Shader: public State{
         void Resume(){};
         void End(){
             delete noise;
-            //m_shader.Close();
+
             //This dont necessary clear the shader data
         };
     private:
-        Shader m_shader;
         float sinner;
         Shader shdr;
         Shader shdr2;
