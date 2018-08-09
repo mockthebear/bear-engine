@@ -1,19 +1,19 @@
-#include "particles.hpp"
+#include "spriteeffect.hpp"
 #include "camera.hpp"
 #include "renderhelp.hpp"
 #include <iostream>
-#define PARTICLE_DEPTH 10000
+#define SpriteEffect_DEPTH 10000
 #define PI 3.1415926
 
-Particle::Particle(){
-    OBJ_REGISTER(Particle);
+SpriteEffect::SpriteEffect(){
+    OBJ_REGISTER(SpriteEffect);
     Rotating = rotation = 0;
     box.x = 0;
     box.y = 0;
     box.w = 1;
     box.h = 1;
 
-    Depth = PARTICLE_DEPTH;
+    Depth = SpriteEffect_DEPTH;
 
     repeat = 0;
 
@@ -30,8 +30,8 @@ Particle::Particle(){
     Scaling = 0;
 
 }
-Particle::Particle(int x,int y){
-    OBJ_REGISTER(Particle);
+SpriteEffect::SpriteEffect(int x,int y){
+    OBJ_REGISTER(SpriteEffect);
     Rotating = rotation = 0;
 
     box.x = x;
@@ -47,7 +47,7 @@ Particle::Particle(int x,int y){
     Alpha = 255;
     AlphaDegen = 0;
 
-    Depth = PARTICLE_DEPTH;
+    Depth = SpriteEffect_DEPTH;
     PatternMove = MOVE_SET_NONE;
     Speed = Point(0,0);
     createdPosition = Point(x,y);
@@ -57,8 +57,8 @@ Particle::Particle(int x,int y){
 
 }
 
-Particle::Particle(int x,int y,Text txt_,float duration){
-    OBJ_REGISTER(Particle);
+SpriteEffect::SpriteEffect(int x,int y,Text txt_,float duration){
+    OBJ_REGISTER(SpriteEffect);
     Rotating = rotation = 0;
     box.x = x;
     box.y = y;
@@ -70,7 +70,7 @@ Particle::Particle(int x,int y,Text txt_,float duration){
     HasSprite = false;
     txt = txt_;
     Alpha = 255;
-    Depth = PARTICLE_DEPTH;
+    Depth = SpriteEffect_DEPTH;
     PatternMove = MOVE_SET_NONE;
     Speed = Point(0,0);
     createdPosition = Point(x,y);
@@ -79,8 +79,8 @@ Particle::Particle(int x,int y,Text txt_,float duration){
     Scaling = 0;
 }
 
-Particle::Particle(int x,int y,Sprite sp_,float duration,int rep){
-    OBJ_REGISTER(Particle);
+SpriteEffect::SpriteEffect(int x,int y,Sprite sp_,float duration,int rep){
+    OBJ_REGISTER(SpriteEffect);
     Rotating = rotation = 0;
     box.x = x;
     box.y = y;
@@ -91,7 +91,7 @@ Particle::Particle(int x,int y,Sprite sp_,float duration,int rep){
     SetSprite(sp_,duration,rep);
 
     Alpha = 255;
-    Depth = PARTICLE_DEPTH;
+    Depth = SpriteEffect_DEPTH;
     PatternMove = MOVE_SET_NONE;
     Speed = Point(0,0);
     createdPosition = Point(x,y);
@@ -100,13 +100,13 @@ Particle::Particle(int x,int y,Sprite sp_,float duration,int rep){
 }
 
 
-Particle::~Particle(){
+SpriteEffect::~SpriteEffect(){
 
 }
 
 
 
-void Particle::SetSprite(Sprite sp_,float duration,int repeats){
+void SpriteEffect::SetSprite(Sprite sp_,float duration,int repeats){
     sp              =   sp_;
     HasSprite       =   true;
     repeat          =   repeats;
@@ -116,26 +116,26 @@ void Particle::SetSprite(Sprite sp_,float duration,int repeats){
     Delay           =   std::max(sp_.GetFrameTime(),duration);
 }
 
-void Particle::SetPatternMoveLine(Point p,Point accel){
+void SpriteEffect::SetPatternMoveLine(Point p,Point accel){
     Speed = p;
     Acceleration = accel;
     PatternMove = MOVE_SET_LINE;
 }
 
-void Particle::SetPatternMoveLineFriction(Point p,Point accel){
+void SpriteEffect::SetPatternMoveLineFriction(Point p,Point accel){
     Speed = p;
     Acceleration = accel;
     PatternMove = MOVE_SET_FRICTION;
 }
 
-void Particle::SetPatternMoveCircle(float _speed,float angle,float radius){
+void SpriteEffect::SetPatternMoveCircle(float _speed,float angle,float radius){
     Acceleration.x = _speed;
     Acceleration.y = angle;
     internalFloat = radius;
     PatternMove = MOVE_SET_CIRCLE;
 }
 
-void Particle::Update(float dt){
+void SpriteEffect::Update(float dt){
 
     if (HasSprite)
         sp.Update(dt);
@@ -175,7 +175,7 @@ void Particle::Update(float dt){
     }
 }
 
-void Particle::Render(){
+void SpriteEffect::Render(){
     if (IsDead()){
         return;
     }
@@ -195,10 +195,10 @@ void Particle::Render(){
     }
 
 }
-bool Particle::IsDead(){
+bool SpriteEffect::IsDead(){
     return currentFrame >= Frame || (Alpha <= 0 || Alpha > 255);
 }
 
-bool Particle::Is(int t){
-    return t == OBJ_PARTICLE;
+bool SpriteEffect::Is(int t){
+    return t == OBJ_SpriteEffect;
 }

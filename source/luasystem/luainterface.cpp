@@ -331,22 +331,22 @@ void LuaInterface::RegisterClasses()
     RegisterInput();
     RegisterUI();
     RegisterScreenRender();
-    RegisterParticleClass();
+    RegisterSpriteEffectClass();
 
 }
 
-void LuaInterface::RegisterParticleClass(){
-    GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_particles");
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_particles","CreateAnimatedSprite",std::function< int (Point,Point,std::string,int,int,int)>([](Point pos,Point speed,std::string spritePath,int amount,int delay,int repeat){
-        Particle *p = ParticleCreator::CreateAnimatedSprite(pos.x,pos.y,speed.x,speed.y,spritePath,amount,delay,repeat);
+void LuaInterface::RegisterSpriteEffectClass(){
+    GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_SpriteEffects");
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_SpriteEffects","CreateAnimatedSprite",std::function< int (Point,Point,std::string,int,int,int)>([](Point pos,Point speed,std::string spritePath,int amount,int delay,int repeat){
+        SpriteEffect *p = SpriteEffectCreator::CreateAnimatedSprite(pos.x,pos.y,speed.x,speed.y,spritePath,amount,delay,repeat);
         if (!p){
             return -1;
         }
         return p->poolIndex;
     }),0,1.0,1);
 
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_particles","SetDepth",std::function<bool(int,int)>([](int part,int deph){
-        Particle* p = (Particle*)Game::GetCurrentState().ParticlePool->GetInstance(part);
+    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_SpriteEffects","SetDepth",std::function<bool(int,int)>([](int part,int deph){
+        SpriteEffect* p = (SpriteEffect*)Game::GetCurrentState().SpriteEffectPool->GetInstance(part);
         if (!p){
             return false;
         }

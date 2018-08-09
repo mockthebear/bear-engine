@@ -171,7 +171,7 @@ class GenericState{
             @code
                 requestDelete = false;
                 requestQuit = false;
-                ParticlePool = new SPP<Particle>(100);
+                SpriteEffectPool = new SPP<SpriteEffect>(100);
             @endcode
         */
         GenericState();
@@ -211,9 +211,9 @@ class GenericState{
 
         /**
             *Its an basic GameObject pool. SPP<T>
-            *Its used by the class ParticleCreator
+            *Its used by the class SpriteEffectCreator
         */
-        SPP<Particle> *ParticlePool;
+        SPP<SpriteEffect> *SpriteEffectPool;
         /**
             *Render map. It is used to make an "depth" inside the 2D world.
             *Its an map to order the rendering.

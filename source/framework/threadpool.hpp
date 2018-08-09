@@ -114,7 +114,7 @@ typedef struct{
  * You can also kill the threads, and when you enter in a stage of the game that you will need the threads
  * all the time, you simply create once and let it running.
  *
- * One thing you can process parallel is the particles.
+ * One thing you can process parallel is the SpriteEffects.
  *
  * The ThreadPool work with Jobs and Workers. There is an algorythm to feed the workers with jobs.
  *
@@ -122,8 +122,8 @@ typedef struct{
          void SomeState::Update(float dt){
             ThreadPool::GetInstance().AddParallelFor([=](int t,int mt,void *index){
                 int i = *index;
-                ParticlePool->GetInstance(i)->Update(dt);
-            },0,ParticlePool->GetMaxInstances());
+                SpriteEffectPool->GetInstance(i)->Update(dt);
+            },0,SpriteEffectPool->GetMaxInstances());
             //Dont deploy the threads yet
             //You may need add one or two
             YourGameLoop(dt);
@@ -136,7 +136,7 @@ typedef struct{
             //The simply unlock at the middle of render
             RenderObjects();
             ThreadPool::GetInstance().Lock();
-            ParticlePool->Render();
+            SpriteEffectPool->Render();
         }
  @endcode
  */
@@ -254,7 +254,7 @@ class ThreadPool{
             *
             *Check ThreadPool::KillThreads\n
             *<b>IMPORTANT</b>: dont create an destroy at each game loop.\n
-            *Create when you need, an big parallel for, in a game state with particles...
+            *Create when you need, an big parallel for, in a game state with SpriteEffects...
         */
         bool CreateThreads();
 

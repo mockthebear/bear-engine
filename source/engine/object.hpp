@@ -37,7 +37,7 @@ enum ObjType{
     OBJ_PROJECTILE,
     OBJ_TRAP,
     OBJ_BOSS,
-    OBJ_PARTICLE,
+    OBJ_SpriteEffect,
 
     //Blegh
     OBJ_ENEMY,

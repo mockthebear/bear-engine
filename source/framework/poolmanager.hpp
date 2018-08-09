@@ -174,7 +174,7 @@ class PoolManager{
             @code
             Pool.Register<Player>(1);
             Pool.Register<MyEnemy>(100);
-            Pool.Register<Particles>(800);
+            Pool.Register<SpriteEffects>(800);
             @endcode
 
         */

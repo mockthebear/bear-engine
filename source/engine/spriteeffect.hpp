@@ -1,5 +1,5 @@
-#ifndef PARTICLES_BE
-#define PARTICLES_BE
+#ifndef SpriteEffectS_BE
+#define SpriteEffectS_BE
 #include "object.hpp"
 #include "sprite.hpp"
 #include "text.hpp"
@@ -46,17 +46,17 @@ enum MovementPattern{
     MOVE_SET_FRICTION,
 };
 /**
-    @brief Particles, Non-Object animations, Effect Text, and others
+    @brief SpriteEffects, Non-Object animations, Effect Text, and others
     *
     * Unless you're trying to make something complex or trying to understand
-    * how these class works, you may check ParticleCreator.
+    * how these class works, you may check SpriteEffectCreator.
 */
-class Particle: public GameObject{
+class SpriteEffect: public GameObject{
     public:
         /**
-            Create the most simple particle. Just empty things
+            Create the most simple SpriteEffect. Just empty things
         */
-        Particle(int x,int y);
+        SpriteEffect(int x,int y);
         /**
             *Create an animated text effect
             @param x The x position
@@ -64,9 +64,9 @@ class Particle: public GameObject{
             @param txt an Text
             @param the duration
         */
-        Particle(int x,int y,Text txt,float duration);
+        SpriteEffect(int x,int y,Text txt,float duration);
         /**
-            *Create an particle with an SmartTexture vector. Each component must be an frame
+            *Create an SpriteEffect with an SmartTexture vector. Each component must be an frame
             @param x The x position
             @param y The y position
             @param sp The sprite.
@@ -74,31 +74,31 @@ class Particle: public GameObject{
             @param delay of course is an animation, so you need the delay between the frames
             @param repeat the amount of times the animation will repeat
         */
-        Particle(int x,int y,Sprite sp,float duration = 0,int repeat=0);
+        SpriteEffect(int x,int y,Sprite sp,float duration = 0,int repeat=0);
 
 
         /**
-            *Empty constructor create an dead particle
+            *Empty constructor create an dead SpriteEffect
         */
-        Particle();
+        SpriteEffect();
         /**
             *BYEEE
         */
-        ~Particle();
+        ~SpriteEffect();
 
         /**
             You can force an sprite to be set. Should be used on
-            Particle::Particle(int x,int y)
+            SpriteEffect::SpriteEffect(int x,int y)
         */
         void SetSprite(Sprite sp,float duration=0,int repeat=0);
         /**
-            Set the particle to move in a line.
+            Set the SpriteEffect to move in a line.
             @param speed in x and y
             @param acceleration in x and y
         */
         void SetPatternMoveLine(Point velocity,Point acceleration);
         /**
-            Set the particle to on an circle
+            Set the SpriteEffect to on an circle
             @param speed radial speed
             @param angle Angle that it begins
             @param the radius of the circle
@@ -107,12 +107,12 @@ class Particle: public GameObject{
         /**
             Custom movement set
             @param customP is an lambda function or function pointer
-            void(Particle *dis,float dt,float &data)
-                @param dis is the pointer to the current particle
+            void(SpriteEffect *dis,float dt,float &data)
+                @param dis is the pointer to the current SpriteEffect
                 @param dt is the delta time
                 @param data is an reference to an internal float. you can use it to save one value
         */
-        void SetPatternMoveCustom(std::function<void(Particle *dis,float dt,float &data)> customP){
+        void SetPatternMoveCustom(std::function<void(SpriteEffect *dis,float dt,float &data)> customP){
             PatternMove = MOVE_SET_CUSTOM;
             customF = customP;
             internalFloat = 0;
@@ -126,13 +126,13 @@ class Particle: public GameObject{
         void SetDepth(int r){Depth = r;};
         void SetRepeat(int r){repeat = r;};
         /**
-            Set the particle to decrease alpha in the same rate at the end of duration
+            Set the SpriteEffect to decrease alpha in the same rate at the end of duration
         */
         void SetAlphaAsDuration(){
             AlphaDegen = Alpha/(float)( (Delay)*(repeat+1)*Frame);
         }
         /**
-            Set the particle alpha to decrease at your own degen
+            Set the SpriteEffect alpha to decrease at your own degen
             @param degen. The amount of alpha it will be lost per second
             @param currentAlpha The current alpha
         */
@@ -163,7 +163,7 @@ class Particle: public GameObject{
         bool IsDead();
         void Kill(){Frame=0;Alpha=0;};
         /**
-         Particles dont take damage
+         SpriteEffects dont take damage
         */
         void NotifyDamage(GameObject *,int){};
         /**
@@ -180,7 +180,7 @@ class Particle: public GameObject{
         */
         bool canForceUpdate(){return true;};
         /**
-            You can edit the depth with Particle::Depth
+            You can edit the depth with SpriteEffect::Depth
             @return always true
         */
         int hasPerspective(){return Depth;};
@@ -206,7 +206,7 @@ class Particle: public GameObject{
         */
         MovementPattern PatternMove;
         Point Speed,Acceleration;
-        std::function<void(Particle *dis,float dt,float &data)> customF;
+        std::function<void(SpriteEffect *dis,float dt,float &data)> customF;
         /*
             Animation
         */
@@ -230,4 +230,4 @@ class Particle: public GameObject{
 
 };
 
-#endif // PARTICLES_BE
+#endif // SpriteEffectS_BE

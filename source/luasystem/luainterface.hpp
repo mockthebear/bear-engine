@@ -109,7 +109,7 @@ class LuaInterface{
         void RegisterAssets();
         void RegisterClasses();
         void RegisterGameObjectClass();
-        void RegisterParticleClass();
+        void RegisterSpriteEffectClass();
 
         void RegisterSprite();
         void RegisterInput();
