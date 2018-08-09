@@ -24,6 +24,8 @@ class Test_Shapes: public State{
 
         };
         void Render(){
+            RenderHelp::DrawLineColor(Point(32,32),g_input.GetMouse(),255,255,255,255,2);
+
             RenderHelp::DrawSquareColor(Rect(32,32,64,64),255,255,100,255);
             RenderHelp::DrawLineColor(Point(96,96),Point(128,128),255,0,255);
             RenderHelp::DrawLineColor(Point(128,128),Point(98,220),255,0,0,255,4);
@@ -34,7 +36,20 @@ class Test_Shapes: public State{
             RenderHelp::DrawSquareColor(Rect(320,320,120,64),255,255,255,255,false,45);
 
 
-            RenderHelp::DrawLineColor(Point(400,400),g_input.GetMouse(),255,255,255,255,2);
+
+            std::vector<Point> lines;
+
+            for (int i=0;i<16;i++){
+                float x = 32 + i * 32;
+                float y = 80 + 32*sin( Geometry::toRad( (360.0f / 16.0f) * (float)(i+duration) ) );
+
+                lines.emplace_back(Point(x,y));
+            }
+
+
+            RenderHelp::DrawLinesColor(lines,0,255,0,255,2);
+
+
 
 
             RenderHelp::DrawCircleColor(Point(98,220),32,100,100,255,100);
