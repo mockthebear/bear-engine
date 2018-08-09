@@ -64,10 +64,12 @@ bool Painter::CanSupport(PainterSupport sup){
     }
 }
 
-void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_data,int drawMode){
+void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_data,int drawMode, bool ignoreModel){
     glLoadIdentity();
-    glTranslatef(t_data->position.x, t_data->position.y, 0.0f);
-    glRotatef( glm::degrees(t_data->m_angle), 0.f, 0.f, 1.f );
+    if (!ignoreModel){
+        glTranslatef(t_data->position.x, t_data->position.y, 0.0f);
+        glRotatef( glm::degrees(t_data->m_angle), 0.f, 0.f, 1.f );
+    }
     glBegin( drawMode );
         glColor4fv(t_data->color.Get4fv());
         int i = 0;

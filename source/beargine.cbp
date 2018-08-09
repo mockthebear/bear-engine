@@ -264,10 +264,6 @@
 		<Unit filename="engine/painters/painteropengl3.cpp" />
 		<Unit filename="engine/painters/painteropengles2.cpp" />
 		<Unit filename="engine/painters/painters.hpp" />
-		<Unit filename="engine/particlecreator.cpp" />
-		<Unit filename="engine/particlecreator.hpp" />
-		<Unit filename="engine/particles.cpp" />
-		<Unit filename="engine/particles.hpp" />
 		<Unit filename="engine/pathfind.cpp" />
 		<Unit filename="engine/pathfind.hpp" />
 		<Unit filename="engine/pstileset.cpp" />
@@ -282,6 +278,10 @@
 		<Unit filename="engine/smarttileset.hpp" />
 		<Unit filename="engine/sprite.cpp" />
 		<Unit filename="engine/sprite.hpp" />
+		<Unit filename="engine/spriteeffect.cpp" />
+		<Unit filename="engine/spriteeffect.hpp" />
+		<Unit filename="engine/spriteeffectcreator.cpp" />
+		<Unit filename="engine/spriteeffectcreator.hpp" />
 		<Unit filename="engine/targettexture.cpp" />
 		<Unit filename="engine/targettexture.hpp" />
 		<Unit filename="engine/text.cpp" />

@@ -55,6 +55,7 @@ BufferTileMap::BufferTileMap(PointInt tileSize,PointInt3 mapSize, Sprite set):Ti
 
 void BufferTileMap::BindBuffer(){
     m_vao.Bind();
+    DebugHelper::DisplayGlError("on bind");
 }
 
 
@@ -130,12 +131,8 @@ void BufferTileMap::InternalAddTile(uint32_t id,uint8_t rotate, SDL_RendererFlip
     };
     elemCount += 4;
 
-
-
-    m_vao.vertexes.indexes.insert(m_vao.vertexes.indexes.end(), &indices[0], &indices[6]);
-
+    m_vao.vertexes.indexes.insert(m_vao.vertexes.indexes.begin(), &indices[0], &indices[6]);
     m_vao.vertexes.vertexData.insert(m_vao.vertexes.vertexData.end() , &vertices[0], &vertices[24]);
-    //
 }
 
 void BufferTileMap::UpdateBuffers(){
@@ -177,18 +174,22 @@ void BufferTileMap::Render(Point offset, Rect vision){
 
 
 
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tileset.GetTexture().get()->id);
+    DebugHelper::DisplayGlError("on texture");
 
 
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Painter::Projection);
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"model",m_tileModel);
     ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"iColor",m_color);
     ShaderSetter<Point>::SetUniform(Shader::GetCurrentShaderId(),"offset",offset);
+    DebugHelper::DisplayGlError("on uniforms");
 
 
     glDrawElements(GL_TRIANGLES, m_vao.vertexes.indexes.size() , GL_UNSIGNED_INT, nullptr);
     DebugHelper::DisplayGlError("on rebder");
+    glBindTexture( GL_TEXTURE_2D, 0 );
 
 
     m_shader.Unbind();

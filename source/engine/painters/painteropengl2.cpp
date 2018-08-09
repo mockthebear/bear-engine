@@ -16,6 +16,7 @@ uint32_t Painter::GetSharedBuffer(int id){
 }
 
 void RenderData::Bind(){
+    DebugHelper::DisplayGlError("Pre bind");
     #ifdef SUPPORT_SINGLE_BUFFER
     VertexBuffer = Painter::GetSharedBuffer(0);
     ElementBuffer = Painter::GetSharedBuffer(1);
@@ -251,8 +252,13 @@ bool Painter::CanSupport(PainterSupport sup){
     }
 }
 
-void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_data,int drawMode){
-    glm::mat4 model = CalculateModel(t_data);
+void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_data,int drawMode, bool ignoreModel){
+    glm::mat4 model;
+    if (!ignoreModel){
+       model = CalculateModel(t_data);
+    }else{
+        model = glm::mat4(1.0f);
+    }
 
     bool noShader = Shader::GetCurrentShaderId() == 0;
 
@@ -350,6 +356,8 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
 
     glBindTexture(GL_TEXTURE_2D, texId);
     filter.ApplyFilter();
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage2D(GL_TEXTURE_2D, 0, mode, pow_w, pow_h, 0, mode, GL_UNSIGNED_BYTE, nullptr);
     if (pixels != nullptr){
 

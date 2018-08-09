@@ -128,7 +128,7 @@ class Painter{
 
 
     static bool RenderTexture(BearTexture *ptr,RenderDataPtr data);
-    static void DrawVertex(VertexArrayObjectPtr v,BasicRenderDataPtr r,int drawMode = GL_TRIANGLES);
+    static void DrawVertex(VertexArrayObjectPtr v,BasicRenderDataPtr r,int drawMode = GL_TRIANGLES,bool ignoreModel = false);
 
 
 
