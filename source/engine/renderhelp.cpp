@@ -85,19 +85,48 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
     DebugHelper::DisplayGlError("DrawSquareColor");
 }
 
-void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thicc){
-
+void RenderHelp::DrawLinesColor(std::vector<Point> lines,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thickness){
     static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
     static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
 
-    renderData->position = p1;
-    renderData->size.x = (p2.x - p1.x);
-    renderData->size.y = (p2.y - p1.y);
+    if (lines.size() == 0){
+        return;
+    }
+
     renderData->color = BearColor(r,g,b,a);
 
-    if (!Painter::CanSupport(SUPPORT_ORTOHOVERTEX)){
-        renderData->SetAngle( atan( (p2.y - p1.y) / (p2.x - p1.x) ) );
+
+
+    vertexBuffer->clear();
+
+    bool first = true;
+    Point lastP;
+    for (auto &it : lines){
+        if (first){
+            lastP = it;
+            first = false;
+            continue;
+        }
+        vertexBuffer->vertexes.Generate(lastP, it);
+        lastP = it;
+
     }
+    vertexBuffer->SetupVertexes();
+
+
+    Painter::DrawVertex(vertexBuffer,renderData,GL_LINES,true);
+    DebugHelper::DisplayGlError("DrawLineColor");
+}
+
+
+void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thicc){
+    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+    static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
+
+    renderData->color = BearColor(r,g,b,a);
+    renderData->size.x = 1;
+    renderData->size.y = 1;
+
 
     vertexBuffer->clear();
 
@@ -105,9 +134,12 @@ void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,u
     vertexBuffer->SetupVertexes();
 
 
-    Painter::DrawVertex(vertexBuffer,renderData,GL_LINES);
+    Painter::DrawVertex(vertexBuffer,renderData,GL_LINES,true);
     DebugHelper::DisplayGlError("DrawLineColor");
+
+
 }
+
 
 uint8_t RenderHelp::GetR(uint32_t r){
     return r&0xff;

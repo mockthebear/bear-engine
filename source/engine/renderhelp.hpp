@@ -26,6 +26,9 @@ class RenderHelp{
             @param b blue
             @param a alpha = 255
         */
+
+        static void DrawLinesColor(std::vector<Point> lines,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f);
+
         static void DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f);
 
 
