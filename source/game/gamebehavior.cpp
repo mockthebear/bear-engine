@@ -104,11 +104,11 @@ bool GameBehavior::OnLoad(){
     if (Painter::CanSupport(SUPPORT_POINTSPRITE)){
         Game::GetInstance()->AddState(new Test_PSTILESET());
     }
+    Game::GetInstance()->AddState(new Test_Sound());
     Game::GetInstance()->AddState(new Test_RenderSpeed());
     Game::GetInstance()->AddState(new Test_PathFind());
-    Game::GetInstance()->AddState(new Test_Sound());
-    Game::GetInstance()->AddState(new Test_FastTiles());
     Game::GetInstance()->AddState(new Test_Text());
+    Game::GetInstance()->AddState(new Test_FastTiles());
     Game::GetInstance()->AddState(new Test_Shader());
     Game::GetInstance()->AddState(new Test_Sprite());
     Game::GetInstance()->AddState(new Test_Pool());
@@ -139,7 +139,7 @@ void GameBehavior::OnFocus(bool hasFocus){
 void GameBehavior::OnFinishRender(){
     static Text T("Fps: ?",23,{250,250,0,255});
     T.SetText(utils::format("%2.2f",ScreenManager::GetInstance().GetFps()));
-    T.Render(Point(32,32));
+    T.Render(Point(SCREEN_SIZE_W, 16),TEXT_RENDER_TOPRIGHT);
 }
 
 void GameBehavior::OnRestored(){
