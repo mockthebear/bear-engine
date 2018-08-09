@@ -6,61 +6,6 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Release Windows">
-				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../game/" />
-				<Option object_output="../obj/Release/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-O2" />
-					<Add option="-std=c++0x" />
-					<Add option="-pg" />
-					<Add option="-g" />
-					<Add option="-DIGNORESTEAM" />
-					<Add option="-DRENDER_OPENGL" />
-				</Compiler>
-				<Linker>
-					<Add option="-pg -lgmon" />
-					<Add option="-lMinGW32" />
-					<Add option="-lSDL2main" />
-					<Add option="-lSDL2" />
-					<Add option="-lSDL2_ttf" />
-					<Add option="-lopenal32" />
-					<Add option="-lvorbisfile" />
-					<Add option="-lopengl32" />
-					<Add option="-lglew32" />
-					<Add option="-lglu32" />
-					<Add option="-pthread" />
-					<Add option="-lenet" />
-					<Add option="-lws2_32" />
-				</Linker>
-			</Target>
-			<Target title="Release Unix">
-				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../game/" />
-				<Option object_output="../obj/Unix/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Option use_console_runner="0" />
-				<Compiler>
-					<Add option="-O2" />
-					<Add option="-std=c++0x" />
-					<Add option="-pg" />
-					<Add option="-DIGNORESTEAM" />
-					<Add option="-DRENDER_OPENGL" />
-				</Compiler>
-				<Linker>
-					<Add option="-pg -lgmon" />
-					<Add option="-ldl" />
-					<Add option="-lSDL2main" />
-					<Add option="-lSDL2" />
-					<Add option="-lSDL2_ttf" />
-					<Add option="-lopenal" />
-					<Add option="-lvorbisfile" />
-					<Add option="-pthread" />
-				</Linker>
-			</Target>
 			<Target title="Debug windows opengl3">
 				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../game/" />
@@ -69,7 +14,6 @@
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
 				<Compiler>
-					<Add option="-Wnon-virtual-dtor" />
 					<Add option="-Wshadow" />
 					<Add option="-Wredundant-decls" />
 					<Add option="-Wcast-align" />
@@ -129,36 +73,6 @@
 					<Add option="-lGLEW" />
 					<Add option="-lGL" />
 					<Add option="-pthread" />
-				</Linker>
-			</Target>
-			<Target title="Debug windows opengles2">
-				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../game/" />
-				<Option object_output="../obj/Release/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Option use_console_runner="0" />
-				<Compiler>
-					<Add option="-std=c++0x" />
-					<Add option="-pg" />
-					<Add option="-g" />
-					<Add option="-DIGNORESTEAM" />
-					<Add option="-DRENDER_OPENGLES2" />
-				</Compiler>
-				<Linker>
-					<Add option="-pg -lgmon" />
-					<Add option="-Wl,-Bstatic" />
-					<Add option="-lenet" />
-					<Add option="-pthread" />
-					<Add option="-Wl,-Bdynamic" />
-					<Add option="-lMinGW32" />
-					<Add option="-lSDL2main" />
-					<Add option="-lSDL2" />
-					<Add option="-lSDL2_ttf" />
-					<Add option="-lopenal32" />
-					<Add option="-lvorbisfile" />
-					<Add option="-lGLESv2" />
-					<Add option="-lws2_32" />
 				</Linker>
 			</Target>
 			<Target title="Debug windows opengl1">
@@ -236,6 +150,70 @@
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
+					<Add option="-Wl,-Bstatic" />
+					<Add option="-lenet" />
+					<Add option="-pthread" />
+					<Add option="-Wl,-Bdynamic" />
+					<Add option="-lMinGW32" />
+					<Add option="-lSDL2main" />
+					<Add option="-lSDL2" />
+					<Add option="-lSDL2_ttf" />
+					<Add option="-lopenal32" />
+					<Add option="-lvorbisfile" />
+					<Add option="-lopengl32" />
+					<Add option="-lglew32" />
+					<Add option="-lglu32" />
+					<Add option="-lws2_32" />
+				</Linker>
+			</Target>
+			<Target title="Release windows opengl2">
+				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../game/" />
+				<Option object_output="../obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-std=c++0x" />
+					<Add option="-DRENDER_OPENGL2" />
+				</Compiler>
+				<Linker>
+					<Add option="-O3" />
+					<Add option="-Wl,-Bstatic" />
+					<Add option="-lenet" />
+					<Add option="-pthread" />
+					<Add option="-Wl,-Bdynamic" />
+					<Add option="-lMinGW32" />
+					<Add option="-lSDL2main" />
+					<Add option="-lSDL2" />
+					<Add option="-lSDL2_ttf" />
+					<Add option="-lopenal32" />
+					<Add option="-lvorbisfile" />
+					<Add option="-lopengl32" />
+					<Add option="-lglew32" />
+					<Add option="-lglu32" />
+					<Add option="-lws2_32" />
+				</Linker>
+			</Target>
+			<Target title="Release windows opengl3">
+				<Option output="../game/bear" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../game/" />
+				<Option object_output="../obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-Wshadow" />
+					<Add option="-Wcast-align" />
+					<Add option="-Wall" />
+					<Add option="-std=c++0x" />
+					<Add option="-DIGNORESTEAM" />
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DRENDER_OPENGL3" />
+				</Compiler>
+				<Linker>
 					<Add option="-Wl,-Bstatic" />
 					<Add option="-lenet" />
 					<Add option="-pthread" />
