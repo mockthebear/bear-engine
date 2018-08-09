@@ -224,7 +224,6 @@ class Shader{
     public:
 
         Shader();
-        Shader(std::string file);
 
         bool IsLoaded(){return m_shaderId > 0;};
         void Close();
@@ -265,6 +264,7 @@ class Shader{
         void ProgramError( GLuint program );
         void ShaderError( GLuint shader );
 
-        GLuint m_shaderId;
+        uint32_t m_shaderId;
+        uint32_t m_AuxshaderId;
 
 };

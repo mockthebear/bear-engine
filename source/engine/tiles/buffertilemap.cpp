@@ -131,7 +131,7 @@ void BufferTileMap::InternalAddTile(uint32_t id,uint8_t rotate, SDL_RendererFlip
     };
     elemCount += 4;
 
-    m_vao.vertexes.indexes.insert(m_vao.vertexes.indexes.begin(), &indices[0], &indices[6]);
+    m_vao.vertexes.indexes.insert(m_vao.vertexes.indexes.end(), &indices[0], &indices[6]);
     m_vao.vertexes.vertexData.insert(m_vao.vertexes.vertexData.end() , &vertices[0], &vertices[24]);
 }
 
