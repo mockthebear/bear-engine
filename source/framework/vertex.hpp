@@ -14,6 +14,7 @@ class Vertex{
         void clear(){
             vertexData.clear();
             indexes.clear();
+            indexCount = 0;
         }
 
         void AddVertexes(int size,float *f);
@@ -23,21 +24,25 @@ class Vertex{
         int Generate(Rect r);
         int Generate(Circle r,int triangleAmount);
         int Generate(Point p1, Point p2);
+        int AddVertice(Point p1);
+        int RepeatLastIndex();
         std::vector<float> vertexData;
         std::vector<uint32_t> indexes;
+        uint32_t indexCount;
 };
 
 
 class VertexArrayObject{
   public:
 
-    VertexArrayObject():m_indexCount(0),m_useElementBuffer(true),m_vertexArray(0),m_vertexBuffer(0),m_elementBuffer(0){}
+    VertexArrayObject():m_useElementBuffer(true),m_vertexArray(0),m_vertexBuffer(0),m_elementBuffer(0){}
     uint32_t GetIndexCount(){
         return vertexes.indexes.size();
     }
 
     void clear(){
         vertexes.clear();
+
     }
 
     uint32_t GetVertexesCount(){
@@ -74,7 +79,6 @@ class VertexArrayObject{
     static uint32_t ELEMMASTER;
 
   private:
-    int m_indexCount;
     bool m_useElementBuffer;
 
     uint32_t m_vertexArray;

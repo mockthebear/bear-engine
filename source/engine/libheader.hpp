@@ -22,6 +22,7 @@
     #include GL_LIB
     #define SUPPORT_VERTEX_BUFFER
     //#define SUPPORT_SINGLE_BUFFER
+    //#define REMAKE_VETEX_ON_BIND
     #define SUPPORT_GLEW
 #endif // RENDER_OPENGL2
 #ifdef RENDER_OPENGL3

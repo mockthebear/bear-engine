@@ -1,4 +1,10 @@
-
+function expandFlags(arg)
+	local str = ""
+	for i,b in pairs(arg) do 
+		str = str .. "-D"..b.." "
+	end
+	return str
+end
 
 
 local fileTypes = {"cpp","c"}
@@ -10,9 +16,10 @@ local ASSETS_FOLDER = "game"
 local SOURCE_FOLDER = "source"
 local FILEOUT = "snakescape.html"
 local LDFLAGS = "--emrun"
+local DEFINEFLAGS = {"REMAKE_VETEX_ON_BIND","RENDER_OPENGL2","SUPPORT_SINGLE_BUFFER", "NEED_SHADER_LOCATION"}
 local PRELOADSTUFF = "--preload-file engine/ --preload-file lua/ --preload-file ui/ --preload-file data/ --preload-file test.burr --preload-file snd.burr --preload-file teste.txt"
-local CFLAGS 	= "-s ASSERTIONS=1 -DRENDER_OPENGL2 -DSUPPORT_SINGLE_BUFFER -DNEED_SHADER_LOCATION -O2 -Oz -s USE_SDL=2 -s USE_SDL_TTF=2 -s USE_VORBIS=1 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1 -std=c++11"
-local CCFLAGS 	= "-s ASSERTIONS=1 -DRENDER_OPENGL2 -DSUPPORT_SINGLE_BUFFER -DNEED_SHADER_LOCATION -O2 -Oz -s USE_SDL=2 -s USE_SDL_TTF=2 -s USE_VORBIS=1 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1"
+local CFLAGS 	= "-s ASSERTIONS=1 "..expandFlags(DEFINEFLAGS).." -O2 -Oz -s USE_SDL=2 -s USE_SDL_TTF=2 -s USE_VORBIS=1 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1 -std=c++11"
+local CCFLAGS 	= "-s ASSERTIONS=1 "..expandFlags(DEFINEFLAGS).." -O2 -Oz -s USE_SDL=2 -s USE_SDL_TTF=2 -s USE_VORBIS=1 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1"
 
 
 local OUTSTR = ""

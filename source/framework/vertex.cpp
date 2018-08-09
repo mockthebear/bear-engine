@@ -6,6 +6,7 @@
 void Vertex::AddVertexes(int size,float *f){
     for (int i=0;i<size;i++){
         vertexData.emplace_back(f[i]);
+        indexCount++;
     }
 }
 void Vertex::AddIndices(int size,uint32_t *f){
@@ -21,26 +22,47 @@ int Vertex::Generate(Rect r){
         1.0f  , 1.0f,
         1.0f  , 0.0f,
     };
-    uint32_t offst = vertexData.size();
     uint32_t indices[] = {
-        offst, offst+1, offst+2, offst+3,
+        indexCount, indexCount+1, indexCount+2, indexCount+3,
     };
-    vertexData.insert(vertexData.begin(), &vertices[0], &vertices[8]);
-    indexes.insert(indexes.begin(), &indices[0], &indices[4]);
+    indexCount += sizeof(indices);
+    vertexData.insert(vertexData.end(), &vertices[0], &vertices[8]);
+    indexes.insert(indexes.end(), &indices[0], &indices[4]);
     return 8;
 }
 
+int Vertex::RepeatLastIndex(){
+    uint32_t indices[] = {
+        indexCount-1,
+    };
+    indexes.insert(indexes.end(), &indices[0], &indices[1]);
+    return 0;
+}
 
-int Vertex::Generate(Point,Point){
+int Vertex::AddVertice(Point p1){
     float vertices[] = {
-        0.0f  , 0.0f,
-        1.0f  , 1.0f,
+        p1.x  , p1.y,
     };
     uint32_t indices[] = {
-        0, 1,
+        indexCount,
     };
-    vertexData.insert(vertexData.begin(), &vertices[0], &vertices[4]);
-    indexes.insert(indexes.begin(), &indices[0], &indices[2]);
+    indexCount += 1;
+    vertexData.insert(vertexData.end(), &vertices[0], &vertices[2]);
+    indexes.insert(indexes.end(), &indices[0], &indices[1]);
+    return 1;
+}
+
+int Vertex::Generate(Point p1,Point p2){
+    float vertices[] = {
+        p1.x  , p1.y,
+        p2.x  , p2.y,
+    };
+    uint32_t indices[] = {
+        indexCount, indexCount+1,
+    };
+    indexCount += 2;
+    vertexData.insert(vertexData.end(), &vertices[0], &vertices[4]);
+    indexes.insert(indexes.end(), &indices[0], &indices[2]);
     return 2;
 }
 
@@ -49,15 +71,18 @@ int Vertex::Generate(Circle r, int triangleAmount){
     vertexData.emplace_back(0.0f);
     vertexData.emplace_back(0.0f);
 
-    indexes.emplace_back(0);
+    indexes.emplace_back(indexCount);
+    indexCount ++;
 
     float angle;
     for (int i = 0; i <= triangleAmount; i++){
         angle = i * 2.0f * Geometry::PI() / (float)triangleAmount;
         vertexData.emplace_back(cos(angle));
         vertexData.emplace_back(sin(angle));
-        indexes.emplace_back(i+1);
+        indexes.emplace_back(indexCount);
+        indexCount ++;
     }
+
     return 8;
 }
 
@@ -148,10 +173,14 @@ void VertexArrayObject::Bind(){
     m_elementBuffer = Painter::GetSharedBuffer(1);
     #endif
     if (m_vertexBuffer != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
+        #ifdef REMAKE_VETEX_ON_BIND
+        SetupVertexes(m_useElementBuffer);
+        #else
         glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
         if (m_useElementBuffer)
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
         SetAttributes();
+        #endif // REMAKE_VETEX_ON_BIND
     }
 }
 
