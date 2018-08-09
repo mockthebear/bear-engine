@@ -34,6 +34,7 @@ class BufferTileMap: public TileMap{
 
         void UpdateBuffers();
 
+        static Shader m_shader;
     protected:
         void BindBuffer();
         void UpdateModel();
@@ -54,7 +55,7 @@ class BufferTileMap: public TileMap{
         Point m_scale;
         glm::mat4 m_tileModel;
 
-        static Shader m_shader;
+
         static bool m_madeShaders;
 
         static float forwardSquares[4][8];

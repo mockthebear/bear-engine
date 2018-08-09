@@ -23,19 +23,19 @@ class DefaultBehavior: public Behavior{
             *
             *
         */
-        ~DefaultBehavior();
+        virtual ~DefaultBehavior();
         /**
             @brief Empty
             *
             *
         */
-        bool OnLoad();
+        virtual bool OnLoad();
         /**
             @brief Clear assets saved in asset tables
             *
             *
         */
-        void OnClose();
+        virtual void OnClose();
         /**
             @brief On resize, the game will request what to do to the class ConfigManager
             *
@@ -51,24 +51,25 @@ class DefaultBehavior: public Behavior{
             @endcode
 
         */
-        bool OnResize(int newW,int newH);
+        virtual bool OnResize(int newW,int newH);
         /**
             @brief When lose/win focus
             @param isFocused true when you get the focus
         */
-        void OnFocus(bool isFocused);
+        virtual void OnFocus(bool isFocused);
 
-        void OnUpdate(float dt);
+        virtual void OnUpdate(float dt);
 
-        void OnPreRender(){};
+        virtual void OnPreRender(){};
+        virtual void OnFinishRender(){};
         /**
             @brief Empty Can be used on android to know if the game came to background or left background
         */
-        void OnRestored();
+        virtual void OnRestored();
         /**
             @brief Empty Can be used on android to know if the game came to background or left background
         */
-        void OnMinimized();
+        virtual void OnMinimized();
 
         virtual bool Begin();
 

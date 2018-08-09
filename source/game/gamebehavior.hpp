@@ -57,6 +57,8 @@ class GameBehavior: public DefaultBehavior{
         */
         void OnMinimized();
 
+        void OnFinishRender();
+
 
 };
 #endif // DEFBEHAVRIORH

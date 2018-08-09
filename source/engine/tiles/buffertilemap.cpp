@@ -14,12 +14,7 @@ void BufferTileVAO::SetAttributes(){
     int transLAttrib = 2;
     #ifdef NEED_SHADER_LOCATION
 
-    uint32_t shaderId = m_shader.GetId();
-
-
-    /*if ((shaderId = Shader::GetCurrentShaderId()) == 0){
-        shaderId = Painter::textureShader.GetId();
-    }*/
+    uint32_t shaderId = BufferTileMap::m_shader.GetId();
 
     posAttrib = glGetAttribLocation(shaderId, "vPos");
     clipAttrib = glGetAttribLocation(shaderId, "clip");

@@ -9,14 +9,12 @@ class Test_TargetTexture: public State{
     public:
         Test_TargetTexture(){
             requestQuit = requestDelete = false;
-            tset = nullptr;
+
             duration = 100.0f;
             movement = 0;
         };
         ~Test_TargetTexture(){
-            if (tset){
-                delete tset;
-            }
+
         };
         void Begin(){
             //m_shader.Compile("engine/vertex.glvs","engine/lens.glfs");
@@ -25,42 +23,20 @@ class Test_TargetTexture: public State{
             ScreenManager::GetInstance().SetScreenName("Test target texture");
             bear::out << "Test target\n";
             background = Assets.make<Sprite>("data/wall.jpg");
-            targ.Generate(300,300);
-            tset = new SmartTileset(Point(32,32),Point(15,15),2,Point(320,320));
-            tset->SetSprite(Assets.make<Sprite>("data/tiles.png"));
+            bear = Assets.make<Sprite>("data/bear.png");
+            targ.Generate(400,400);
+
             example = Text("ui/UnB-Office_Regular.ttf",32,TEXT_SOLID,"Hello text",{33,33,120});
             Camera::Initiate();
-            tset->SetTile(0,0,0,110);
-            tset->SetTile(0,2,0,111);
-            tset->SetTile(0,0,3,112);
-            tset->SetTile(0,0,4,113);
-            tset->SetTile(0,0,5,110);
-            tset->SetTile(0,0,6,110);
-            tset->SetTile(0,0,7,110);
-            tset->SetTile(0,1,7,120);
-            tset->SetTile(0,2,7,174);
-            tset->SetTile(0,3,7,120);
-            tset->SetTile(1,0,8,110);
-            tset->SetTile(0,18,8,110);
-            tset->SetTile(1,0,7,117);
 
-            tset->MakeMap();
 
         };
 
         void Update(float dt){
-            tset->Update(dt);
+
             movement += dt * 1.0f;
             duration -= dt;
-            tileAnim -= dt;
-            if (tileAnim <= 0){
-                tileAnim = 1.0f;
-                tileN++;
-                tset->SetTileDirect(0,2,7,tileN);
-                if (tileN >= 174+5){
-                    tileN = 174;
-                }
-            }
+
 
             if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
 
@@ -75,31 +51,30 @@ class Test_TargetTexture: public State{
 
 
             targ.Bind();
-            background.Render(Point(0,0),45);
-
-            RenderHelp::DrawCircleColor(Point(400-64,400 - 64),32,255,0,255,255);
-
-
-
-
-            RenderHelp::DrawSquareColor(Rect(g_input.GetMouse().x, g_input.GetMouse().y, 32,32),255,0,0,255,true);
-            RenderHelp::DrawCircleColor(Point(400-32,400-32),32,255,255,255,255);
+            //
+                background.Render(Point(0,0),45);
+                RenderHelp::DrawCircleColor(Point(2,2),32,255,0,255,255);
 
 
 
-            example.Render(Point(16,16));
+
+                RenderHelp::DrawSquareColor(Rect(g_input.GetMouse().x, g_input.GetMouse().y, 32,32),255,0,0,255,true);
+                RenderHelp::DrawCircleColor(Point(400-32,400-32),32,255,255,255,255);
+
+                bear.Render(Point(150,150),0);
+
+
+
+                example.Render(Point(16,16));
 
             targ.UnBind();
 
             targ.Render(Point(32 + movement,32));
-            RenderHelp::DrawSquareColor(Rect(32 + movement,32,300,300),0,0,0,255,true);
+
+            RenderHelp::DrawSquareColor(Rect(32 + movement,32,400,400),0,0,0,255,true);
 
 
             RenderHelp::DrawSquareColor(Rect(g_input.GetMouse().x, g_input.GetMouse().y, 32,32),255,0,0,255,true);
-
-            tset->RenderLayer(0);
-            tset->RenderLayer(1);
-
 
 
         };
@@ -111,8 +86,8 @@ class Test_TargetTexture: public State{
     private:
         float movement;
         Shader m_shader;
-        SmartTileset *tset;
         Sprite background;
+        Sprite bear;
         float duration;
         float tileAnim;
         int tileN;

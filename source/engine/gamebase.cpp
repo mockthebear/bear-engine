@@ -350,10 +350,12 @@ void Game::Render(){
     if ( (startFlags&BEAR_FLAG_START_SCREEN) == 0)
         return;
     GameBehavior::GetInstance().OnPreRender();
+
     stateStack.top()->Render();
     g_scheduler.Render();
     ScreenManager::GetInstance().Render();
     InputManager::GetInstance().Render();
+    GameBehavior::GetInstance().OnFinishRender();
     ScreenManager::GetInstance().RenderPresent();
 }
 

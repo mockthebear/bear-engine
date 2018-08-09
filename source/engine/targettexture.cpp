@@ -69,7 +69,7 @@ bool TargetTexture::Generate(int wa,int ha){
     if (m_frameBuffer != 0){
         FreeTexture();
     }
-    glGenFramebuffers(1, &m_frameBuffer);
+
     TextureLoadMethod mthd(TEXTURE_NEAREST);
 
     texture_w = size_w = wa;
@@ -84,17 +84,18 @@ bool TargetTexture::Generate(int wa,int ha){
     //m_renderData->flip = SDL_FLIP_VERTICAL;
     m_renderData->SetClip(Rect(0,0,size_w,size_h),Point(texture_w,texture_h));
 
+    glGenFramebuffers(1, &m_frameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, id, 0);
 
 
 
-    glGenRenderbuffers(1, &m_renderBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, m_renderBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH32F_STENCIL8, size_w, size_h);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    //glGenRenderbuffers(1, &m_renderBuffer);
+    //glBindRenderbuffer(GL_RENDERBUFFER, m_renderBuffer);
+    //glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH32F_STENCIL8, size_w, size_h);
+    //glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_renderBuffer);
+    //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_renderBuffer);
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         bear::out << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!\n";

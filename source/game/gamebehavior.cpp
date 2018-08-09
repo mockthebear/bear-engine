@@ -136,6 +136,12 @@ void GameBehavior::OnFocus(bool hasFocus){
     DefaultBehavior::GetInstance().OnFocus(hasFocus);
 }
 
+void GameBehavior::OnFinishRender(){
+    static Text T("Fps: ?",23,{250,250,0,255});
+    T.SetText(utils::format("%2.2f",ScreenManager::GetInstance().GetFps()));
+    T.Render(Point(32,32));
+}
+
 void GameBehavior::OnRestored(){
 
     DefaultBehavior::GetInstance().OnRestored();
