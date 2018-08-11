@@ -28,18 +28,20 @@ class RenderHelp{
         */
 
         static void DrawLinesColor(std::vector<Point> lines,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f);
+        static void DrawSquaresColor(std::vector<Rect> rects,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false);
+
 
         static void DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f);
 
 
-        static void DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false,float angle=0);
+        static void DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false);
 
-        static void DrawSquareColor_lua(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false,float angle=0){
-            DrawSquareColor(box,r,g,b,a,outline,angle);
+        static void DrawSquareColor_lua(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false){
+            DrawSquareColor(box,r,g,b,a,outline);
         }
 
-        static void DrawSquareColor(int x,int y,int w,int h,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false,float angle=0){
-            DrawSquareColor(Rect(x,y,w,h),r,g,b,a,outline,angle);
+        static void DrawSquareColor(int x,int y,int w,int h,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false){
+            DrawSquareColor(Rect(x,y,w,h),r,g,b,a,outline);
         }
 
         static void DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,int sides = 16);

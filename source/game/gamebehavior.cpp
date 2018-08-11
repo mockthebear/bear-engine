@@ -96,7 +96,7 @@ bool GameBehavior::OnLoad(){
 
 
 
-    //Game::GetInstance()->AddState(new Test_Scrolling());
+    Game::GetInstance()->AddState(new Test_Scrolling());
 
     Game::GetInstance()->AddState(new Test_PostProcess());
     Game::GetInstance()->AddState(new Test_TargetTexture());

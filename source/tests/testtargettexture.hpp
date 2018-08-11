@@ -2,7 +2,6 @@
 #include "../settings/definitions.hpp"
 #include "../engine/genericstate.hpp"
 #include "../engine/renderhelp.hpp"
-#include "../engine/smarttileset.hpp"
 #pragma once
 
 class Test_TargetTexture: public State{
@@ -51,29 +50,17 @@ class Test_TargetTexture: public State{
 
 
             targ.Bind();
-            //
+                targ.Clear();
                 background.Render(Point(0,0),45);
                 RenderHelp::DrawCircleColor(Point(2,2),32,255,0,255,255);
-
-
-
-
                 RenderHelp::DrawSquareColor(Rect(g_input.GetMouse().x, g_input.GetMouse().y, 32,32),255,0,0,255,true);
                 RenderHelp::DrawCircleColor(Point(400-32,400-32),32,255,255,255,255);
-
                 bear.Render(Point(150,150),0);
-
-
-
                 example.Render(Point(16,16));
-
             targ.UnBind();
 
             targ.Render(Point(32 + movement,32));
-
             RenderHelp::DrawSquareColor(Rect(32 + movement,32,400,400),0,0,0,255,true);
-
-
             RenderHelp::DrawSquareColor(Rect(g_input.GetMouse().x, g_input.GetMouse().y, 32,32),255,0,0,255,true);
 
 
