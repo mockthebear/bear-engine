@@ -44,6 +44,11 @@ bool TargetTexture::Bind(){
     Painter::SetProjection(Rect(0.0f, originalScreen.x, 0.0f, originalScreen.y));
     return true;
 }
+void TargetTexture::Clear(BearColor c){
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
+    RenderHelp::DrawSquareColor(Rect(0 ,0 , size_w, size_w), c.r, c.g, c.b, c.a);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
 
 
 bool TargetTexture::UnBind(){
@@ -100,6 +105,7 @@ bool TargetTexture::Generate(int wa,int ha){
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         bear::out << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!\n";
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    m_valid = true;
 
     return true;
 
