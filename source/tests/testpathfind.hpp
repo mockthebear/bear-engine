@@ -47,12 +47,13 @@ class Test_PathFind: public State{
         };
         void Render(){
             //bear::out << "B\n";
-
+            std::vector<Rect> recs;
             for (auto &it : Blocks){
                 int x = ((int)it.x)%16;
                 int y = ((int)it.y)%16;
-                RenderHelp::DrawSquareColor(Rect(it.x-x,it.y-y,16,16),255,255,255,255);
+                recs.emplace_back(Rect(it.x-x,it.y-y,16,16));
             }
+            RenderHelp::DrawSquaresColor(recs,255,255,255,255);
             Point first = finish;
             int iter = 0;
             for (auto &it : Path){

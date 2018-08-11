@@ -33,20 +33,24 @@ class Test_Shapes: public State{
             RenderHelp::DrawSquareColor(Rect(220,220,120,64),255,255,255,255,false);
 
 
-            RenderHelp::DrawSquareColor(Rect(320,320,120,64),255,255,255,255,false,45);
+            RenderHelp::DrawSquareColor(Rect(320,320,120,64),255,255,255,255,false);
 
 
 
             std::vector<Point> lines;
+            std::vector<Rect> squares;
 
             for (int i=0;i<16;i++){
-                float x = 32 + i * 32;
+                float x = 64 + i * 32;
                 float y = 80 + 32*sin( Geometry::toRad( (360.0f / 16.0f) * (float)(i+duration) ) );
 
                 lines.emplace_back(Point(x,y));
+
+                squares.emplace_back(Rect(x-16,y-16,32,32));
             }
 
-
+            RenderHelp::DrawSquaresColor(squares, 40,40,180,120, false);
+            RenderHelp::DrawSquaresColor(squares, 255,255,255,150, true);
             RenderHelp::DrawLinesColor(lines,0,255,0,255,2);
 
 
