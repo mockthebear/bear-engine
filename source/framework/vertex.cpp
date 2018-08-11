@@ -15,20 +15,38 @@ void Vertex::AddIndices(int size,uint32_t *f){
     }
 }
 
-int Vertex::Generate(Rect r){
+int Vertex::Generate(Rect r, bool onlyOnes){
+    if (onlyOnes){
+        r = Rect(0.0f, 0.0f, 1.0f, 1.0f);
+    }else{
+        r = Rect(r.x, r.y, r.x+r.w, r.y+r.h);
+    }
     float vertices[] = {
-        0.0f  , 0.0f,
-        0.0f  , 1.0f,
-        1.0f  , 1.0f,
-        1.0f  , 0.0f,
+        r.x  , r.y,
+        r.x  , r.h,
+        r.w  , r.h,
+        r.w  , r.y,
     };
     uint32_t indices[] = {
-        indexCount, indexCount+1, indexCount+2, indexCount+3,
+        indexCount, indexCount+1, indexCount+3,
+        indexCount+1, indexCount+2, indexCount+3,
     };
-    indexCount += sizeof(indices);
+    indexCount += 4;
     vertexData.insert(vertexData.end(), &vertices[0], &vertices[8]);
-    indexes.insert(indexes.end(), &indices[0], &indices[4]);
+    indexes.insert(indexes.end(), &indices[0], &indices[6]);
     return 8;
+}
+
+int Vertex::GenerateLineLoop(Rect r, bool onlyOnes){
+    if (onlyOnes){
+        r = Rect(0.0f, 0.0f, 1.0f, 1.0f);
+    }
+    uint32_t vtcs = 0;
+    vtcs += Generate(Point(r.x, r.y), Point(r.x + r.w, r.y));
+    vtcs += Generate(Point(r.x+ r.w, r.y), Point(r.x+ r.w, r.y+ r.h));
+    vtcs += Generate(Point(r.x+ r.w, r.y+ r.h), Point(r.x, r.y+r.h));
+    vtcs += Generate(Point(r.x, r.y+r.h), Point(r.x, r.y));
+    return vtcs;
 }
 
 int Vertex::RepeatLastIndex(){

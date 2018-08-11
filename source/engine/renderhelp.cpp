@@ -60,29 +60,56 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
 }
 
 
-void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline,float angle){
+void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline){
 
     static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
     static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
 
-    DebugHelper::DisplayGlError("Made arrays");
-    renderData->position = box.GetPos();
-    renderData->size.x = box.w;
-    renderData->size.y = box.h;
-    renderData->SetAngle(angle);
     renderData->color = BearColor(r,g,b,a);
     vertexBuffer->clear();
-    DebugHelper::DisplayGlError("Generating");
-    vertexBuffer->vertexes.Generate(box);
-    vertexBuffer->SetupVertexes();
-    DebugHelper::DisplayGlError("Setup");
     if (!outline){
-        Painter::DrawVertex(vertexBuffer,renderData,GL_TRIANGLE_FAN);
-
+        vertexBuffer->vertexes.Generate(box, false);
     }else{
-        Painter::DrawVertex(vertexBuffer,renderData,GL_LINE_LOOP);
+        vertexBuffer->vertexes.GenerateLineLoop(box, false);
+    }
+    vertexBuffer->SetupVertexes();
+
+    if (!outline){
+        Painter::DrawVertex(vertexBuffer,renderData,GL_TRIANGLES);
+    }else{
+        Painter::DrawVertex(vertexBuffer,renderData,GL_LINES);
     }
     DebugHelper::DisplayGlError("DrawSquareColor");
+}
+
+void RenderHelp::DrawSquaresColor(std::vector<Rect> rects,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline){
+    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+    static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
+
+    if (rects.size() == 0){
+        return;
+    }
+    renderData->color = BearColor(r,g,b,a);
+    vertexBuffer->clear();
+
+    for (auto &it : rects){
+        if (!outline){
+            vertexBuffer->vertexes.Generate(it, false);
+        }else{
+            vertexBuffer->vertexes.GenerateLineLoop(it, false);
+        }
+    }
+    vertexBuffer->SetupVertexes();
+
+
+    if (!outline){
+        Painter::DrawVertex(vertexBuffer,renderData,GL_TRIANGLES,true);
+    }else{
+        Painter::DrawVertex(vertexBuffer,renderData,GL_LINES,true);
+    }
+
+    DebugHelper::DisplayGlError("DrawSquaresColor");
+
 }
 
 void RenderHelp::DrawLinesColor(std::vector<Point> lines,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thickness){
@@ -115,7 +142,7 @@ void RenderHelp::DrawLinesColor(std::vector<Point> lines,uint8_t r,uint8_t g,uin
 
 
     Painter::DrawVertex(vertexBuffer,renderData,GL_LINES,true);
-    DebugHelper::DisplayGlError("DrawLineColor");
+    DebugHelper::DisplayGlError("DrawLinesColor");
 }
 
 

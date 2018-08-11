@@ -21,7 +21,8 @@ class Vertex{
         void AddIndices(int size,uint32_t *f);
 
 
-        int Generate(Rect r);
+        int Generate(Rect r,bool onlyOnes = true);
+        int GenerateLineLoop(Rect r,bool onlyOnes = true);
         int Generate(Circle r,int triangleAmount);
         int Generate(Point p1, Point p2);
         int AddVertice(Point p1);

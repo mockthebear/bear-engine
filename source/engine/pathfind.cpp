@@ -78,8 +78,8 @@ void PathFind::Render(){
     for(y=0;y<size.y;y++){
         for(x=0;x<size.x;x++){
             if (m_map[x][y]){
-                RenderHelp::DrawSquareColor(x*cellSize,y*cellSize,cellSize,cellSize,100,100,100,200);
-                RenderHelp::DrawSquareColor(x*cellSize,y*cellSize,cellSize,cellSize,255,100,100,200,true);
+                RenderHelp::DrawSquareColor(Rect(x*cellSize,y*cellSize,cellSize,cellSize),100,100,100,200);
+                RenderHelp::DrawSquareColor(Rect(x*cellSize,y*cellSize,cellSize,cellSize),255,100,100,200,true);
             }
         }
     }
