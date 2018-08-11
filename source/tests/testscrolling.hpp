@@ -1,7 +1,7 @@
 #include "../settings/definitions.hpp"
 #include "../engine/genericstate.hpp"
 #include "../engine/renderhelp.hpp"
-#include "../engine/smarttileset.hpp"
+#include "../engine/tiles/targettexturetilemap.hpp"
 #pragma once
 
 class Test_Scrolling: public State{
@@ -17,25 +17,28 @@ class Test_Scrolling: public State{
         };
         void Begin(){
             follower = Rect(32,32,32,32);
-            tset = new SmartTileset(Point(32,32),Point(160,120),2,Point(800,800));
-            tset->SetSprite(Assets.make<Sprite>("data/tiles.png"));
+            tset = TargetTextureTileMap(PointInt(32,32), PointInt3(160,120,2), PointInt(800,800), true);
+            tset.SetSprite(Assets.make<Sprite>("data/tiles.png"));
             background = Assets.make<Sprite>("data/wall.jpg");
-            for (int i=0;i<160;i++){
-                tset->SetTile(0,i,0,110);
-                tset->SetTile(0,i,i,110);
+            for (int x=0;x<160;x++){
+                for (int y=0;y<120;y++){
+                    tset.SetTile(PointInt3(x, y, 0),Tile(rand()%170, rand()%4));
+                    tset.SetTile(PointInt3(x, y, 1),Tile(rand()%170, rand()%4));
+                }
             }
-            tset->MakeMap();
+            tset.MakeMap();
             Camera::Follow(&follower,false);
             Camera::speed = 8.0f;
         };
 
         void Update(float dt){
             duration -= dt;
-            tset->Update(dt);
+            tset.Update(dt);
             if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
                 requestDelete = true;
             }
             follower.x += 37.0 * dt;
+            follower.y += 2.0 * dt;
 
 
             Camera::Update(dt);
@@ -43,8 +46,8 @@ class Test_Scrolling: public State{
         void Render(){
             background.Render(0,0,0);
 
-            tset->RenderLayer(0);
-            tset->RenderLayer(1);
+            tset.RenderLayer(0, Point(), Camera::pos);
+            tset.RenderLayer(1, Point(), Camera::pos);
 
             RenderHelp::DrawSquareColor(Rect(follower.x - Camera::pos.x,follower.y - Camera::pos.y,follower.w,follower.h),0,0,0,255,true);
         };
@@ -54,7 +57,7 @@ class Test_Scrolling: public State{
     private:
         Rect follower;
         Sprite background;
-        SmartTileset *tset;
+        TargetTextureTileMap tset;
         float duration;
 };
 

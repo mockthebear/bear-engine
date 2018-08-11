@@ -288,6 +288,8 @@
 		<Unit filename="engine/text.hpp" />
 		<Unit filename="engine/tiles/buffertilemap.cpp" />
 		<Unit filename="engine/tiles/buffertilemap.hpp" />
+		<Unit filename="engine/tiles/targettexturetilemap.cpp" />
+		<Unit filename="engine/tiles/targettexturetilemap.hpp" />
 		<Unit filename="engine/tiles/tilemap.cpp" />
 		<Unit filename="engine/tiles/tilemap.hpp" />
 		<Unit filename="engine/tiles/tileset.cpp" />
