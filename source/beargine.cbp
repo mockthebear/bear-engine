@@ -274,8 +274,6 @@
 		<Unit filename="engine/screenmanager.hpp" />
 		<Unit filename="engine/shadermanager.cpp" />
 		<Unit filename="engine/shadermanager.hpp" />
-		<Unit filename="engine/smarttileset.cpp" />
-		<Unit filename="engine/smarttileset.hpp" />
 		<Unit filename="engine/sprite.cpp" />
 		<Unit filename="engine/sprite.hpp" />
 		<Unit filename="engine/spriteeffect.cpp" />
