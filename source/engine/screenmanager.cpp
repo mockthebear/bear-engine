@@ -12,7 +12,7 @@
 #include "../input/inputmanager.hpp"
 #include "../glm/gtc/matrix_transform.hpp"
 
-float ScreenManager::ClearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+float ScreenManager::ClearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 
 ScreenManager::~ScreenManager(){
     TerminateScreen();
@@ -252,67 +252,80 @@ void ScreenManager::Resize(int w,int h){
     //SDL_SetWindowSize(m_window,w,h);
 }
 void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
-    if (behave != RESIZE_FREE_SCALE){
-        if (w < ConfigManager::GetInstance().GetScreenW()*MinimumScale.x || h < ConfigManager::GetInstance().GetScreenH()*MinimumScale.y){
-            Resize(ConfigManager::GetInstance().GetScreenW()*MinimumScale.x,ConfigManager::GetInstance().GetScreenH()*MinimumScale.y);
-            return;
-        }
+
+
+    if (w < ConfigManager::GetInstance().GetScreenW()*MinimumScale.x || h < ConfigManager::GetInstance().GetScreenH()*MinimumScale.y){
+        Resize(ConfigManager::GetInstance().GetScreenW()*MinimumScale.x,ConfigManager::GetInstance().GetScreenH()*MinimumScale.y);
+        return;
     }
+
     m_scaleRatio.x =  ( (double)w / (double)m_originalScreen.x);
     m_scaleRatio.y =  ( (double)h / (double)m_originalScreen.y);
-    if (behave != RESIZE_FREE_SCALE){
-
-        m_scaleRatio.x = floor(m_scaleRatio.x*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
-        m_scaleRatio.y = floor(m_scaleRatio.y*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
-
-
-        m_scaleRatio.x = std::max(1.0f,m_scaleRatio.x);
-        m_scaleRatio.y = std::max(1.0f,m_scaleRatio.y);
-    }
-
     m_trueScaleRatio = m_scaleRatio;
 
+    if (behave == RESIZE_KEEP_ASPECT){
+        float lowestScale = std::min(m_scaleRatio.x, m_scaleRatio.y);
 
-    if (behave == RESIZE_SCALE ){
-        /*
-            Strech screen to maintain an scale ratio
-        */
+        m_scaleRatio.x = lowestScale;
+        m_scaleRatio.y = lowestScale;
 
-        Point aux = m_originalScreen;
-        aux.x *= m_scaleRatio.x;
-        aux.y *= m_scaleRatio.y;
-        m_screen.x = aux.x;
-        m_screen.y = aux.y;
+        m_screen.x = m_originalScreen.x * lowestScale;
+        m_screen.y = m_originalScreen.y * lowestScale;
+
+        m_offsetScreen.x = m_originalScreen.x == w ? 0 : w/2 - m_screen.x/2;
+        m_offsetScreen.y = m_originalScreen.y == h ? 0 : h/2 - m_screen.y/2;
 
     }else{
-        m_screen.x = w;
-        m_screen.y = h;
-    }
 
-    if (behave != RESIZE_FREE_SCALE){
-        if (w < m_originalScreen.x*m_scaleRatio.x || h < m_originalScreen.y*m_scaleRatio.y){
-            Point ValidScale = m_scaleRatio;
-            Point LocalScale = m_scaleRatio;
-            while(m_originalScreen.x*LocalScale.x > w || m_originalScreen.y*LocalScale.y > h){
-                ValidScale.x -= 1.0/m_ScreenRationMultiplier;
-                ValidScale.y -= 1.0/m_ScreenRationMultiplier;
-                LocalScale.x = floor(ValidScale.x*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
-                LocalScale.y = floor(ValidScale.y*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
-            }
-            m_scaleRatio = LocalScale;
+        if (behave != RESIZE_FREE_SCALE){
+            m_scaleRatio.x = floor(m_scaleRatio.x*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
+            m_scaleRatio.y = floor(m_scaleRatio.y*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
+            m_scaleRatio.x = std::max(1.0f,m_scaleRatio.x);
+            m_scaleRatio.y = std::max(1.0f,m_scaleRatio.y);
+        }
+
+        m_trueScaleRatio = m_scaleRatio;
+        if (behave == RESIZE_SCALE ){
+            /*
+                Strech screen to maintain an scale ratio
+            */
+
             Point aux = m_originalScreen;
             aux.x *= m_scaleRatio.x;
             aux.y *= m_scaleRatio.y;
             m_screen.x = aux.x;
             m_screen.y = aux.y;
+
+        }else{
+            m_screen.x = w;
+            m_screen.y = h;
         }
-    }
-    if (behave != RESIZE_FREE_SCALE){
-        m_offsetScreen.x = m_originalScreen.x == w ? 0 : w/2 - m_screen.x/2;
-        m_offsetScreen.y = m_originalScreen.y == h ? 0 : h/2 - m_screen.y/2;
-    }else{
-        m_offsetScreen.x = 0;
-        m_offsetScreen.y = 0;
+
+        if (behave != RESIZE_FREE_SCALE){
+            if (w < m_originalScreen.x*m_scaleRatio.x || h < m_originalScreen.y*m_scaleRatio.y){
+                Point ValidScale = m_scaleRatio;
+                Point LocalScale = m_scaleRatio;
+                while(m_originalScreen.x*LocalScale.x > w || m_originalScreen.y*LocalScale.y > h){
+                    ValidScale.x -= 1.0/m_ScreenRationMultiplier;
+                    ValidScale.y -= 1.0/m_ScreenRationMultiplier;
+                    LocalScale.x = floor(ValidScale.x*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
+                    LocalScale.y = floor(ValidScale.y*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
+                }
+                m_scaleRatio = LocalScale;
+                Point aux = m_originalScreen;
+                aux.x *= m_scaleRatio.x;
+                aux.y *= m_scaleRatio.y;
+                m_screen.x = aux.x;
+                m_screen.y = aux.y;
+            }
+        }
+        if (behave != RESIZE_FREE_SCALE){
+            m_offsetScreen.x = m_originalScreen.x == w ? 0 : w/2 - m_screen.x/2;
+            m_offsetScreen.y = m_originalScreen.y == h ? 0 : h/2 - m_screen.y/2;
+        }else{
+            m_offsetScreen.x = 0;
+            m_offsetScreen.y = 0;
+        }
     }
 
 }
@@ -345,6 +358,7 @@ void ScreenManager::Update(float dt){
     if (m_frameDelay <= 0){
         m_frameDelay = 10.0f;
         m_fps = m_frames;
+        bear::out << m_fps << "\n";
         m_frames = 0;
 
     }

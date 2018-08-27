@@ -52,8 +52,8 @@ bool DefaultBehavior::OnResize(int newW,int newH){
         case RESIZE_BEHAVIOR_SCALE_FREE:
             ScreenManager::GetInstance().ResizeToScale(newW,newH,RESIZE_FREE_SCALE);
             break;
-        case RESIZE_BEHAVIOR_SDL_RENDER_LOGICAL:
-            SDL_RenderSetLogicalSize(Game::GetInstance()->GetRenderer(), ConfigManager::GetInstance().GetScreenW(), ConfigManager::GetInstance().GetScreenH());
+        case RESIZE_BEHAVIOR_KEEP_ASPECT_RATIO:
+            ScreenManager::GetInstance().ResizeToScale(newW,newH,RESIZE_KEEP_ASPECT);
             break;
         case RESIZE_BEHAVIOR_INCREASE:
             Camera::Resize(Point(newW,newH));

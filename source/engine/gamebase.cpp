@@ -224,6 +224,7 @@ void Game::init(const char *name){
 
             #endif
         }
+        Camera::Initiate();
 
         CalculateDeltaTime();
         if (startFlags&BEAR_FLAG_START_CONSOLE){

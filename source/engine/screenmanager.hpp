@@ -15,6 +15,7 @@
 enum ResizeAction{
     RESIZE_SCALE,
     RESIZE_FREE_SCALE,
+    RESIZE_KEEP_ASPECT,
 };
 
 class ScreenManager{
@@ -37,7 +38,6 @@ class ScreenManager{
         void NotifyResized();
         void NotyifyScreenClosed();
         void TerminateScreen();
-        void SetResizeAction();
         void SetMinimumScale(Point s){ MinimumScale = s;};
         Point GetMinimumScale(){ return MinimumScale;};
         void Resize(int w,int h);

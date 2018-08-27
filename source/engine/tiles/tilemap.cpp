@@ -38,7 +38,7 @@ void TileMap::Render(Point offset, Rect vision){
 void TileMap::SetTile(PointInt3 pos, Tile t){
     uint32_t memOffset = CalculateOffset(pos);
     if (pos.x >= m_size.x || pos.y >= m_size.y || pos.z >= m_size.z){
-        bear::out << "Trying to set tile when there is no how."<<pos<<"\n";
+        bear::out << "Trying to set tile when there is no how."<<pos<<" and the size is "<<m_size<<"\n";
     }
     m_map.get()[memOffset] = t;
 }

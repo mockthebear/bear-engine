@@ -239,6 +239,10 @@ BearTexture *Sprite::Preload(const char *file,bool adjustDir,TextureLoadMethod H
     std::string aux = stdnamee;
     if (ResourceManager::IsValidResource(aux)){
         SDL_RWops *rw = ResourceManager::GetInstance().GetFile(stdnamee); //Safe
+        if (!rw){
+            Console::GetInstance().AddTextInfo(utils::format("[Standard]Cannot preload sprite [%s] because: %s",aux.c_str(),SDL_GetError()));
+        return nullptr;
+        }
         BearTexture *returnTexture = Sprite::Preload(rw,stdnamee,HasAliasing);
         SDL_RWclose(rw);
         return returnTexture;

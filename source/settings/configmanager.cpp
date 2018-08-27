@@ -17,7 +17,7 @@ ConfigManager::ConfigManager(){
     m_screenSize.x=SCREEN_SIZE_W;
     m_screenSize.y=SCREEN_SIZE_H;
     pause = false;
-    m_rbheavior = RESIZE_BEHAVIOR_SCALE;
+    m_rbheavior = RESIZE_BEHAVIOR_KEEP_ASPECT_RATIO;
 
     MinimumDT = 1000.0f/(float)MinFps;
 

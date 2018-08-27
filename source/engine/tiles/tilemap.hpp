@@ -8,6 +8,7 @@ class Tile{
     public:
         Tile():id(0),flip(SDL_FLIP_NONE),rotate(0.0f){};
         Tile(uint32_t _id, uint8_t _rotate = 0,SDL_RendererFlip _flip = SDL_FLIP_NONE):id(_id),flip(_flip),rotate(_rotate){};
+        Tile(uint32_t _id, uint8_t _rotate = 0,uint8_t _flip = 0):id(_id),flip(SDL_RendererFlip(_flip)),rotate(_rotate){};
 
         uint32_t id;
         SDL_RendererFlip flip;

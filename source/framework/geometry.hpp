@@ -402,10 +402,10 @@ template <typename T=float>class GenericRect{
         /**
             @return A Point containing in x,y the middle position of the rect
         */
-        GenericPoint<T> GetCenter(){return GenericPoint<T>(x+(w/2.0),y+(h/2.0));}
+        GenericPoint<T> GetCenter(){return GenericPoint<T>(x+(w/2.0),y+(h/2.0));};
+        GenericPoint<T> GetSize(){return GenericPoint<T>(w,h);};
         T x,y,w,h;
 
-        uint32_t GetSize(){return std::max(w,h);};
 };
 
 typedef GenericRect<float> Rect;
