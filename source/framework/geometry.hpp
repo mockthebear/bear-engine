@@ -398,6 +398,11 @@ template <typename T=float>class GenericRect{
             }
         }
 
+        void PositionSized(){
+            w += x;
+            h += y;
+        }
+
 
         /**
             @return A Point containing in x,y the middle position of the rect
