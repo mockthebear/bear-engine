@@ -45,7 +45,7 @@ void PointSpriteTileset::AddTile(Point pos, int id){
 void PointSpriteTileset::Render(){
     if (Painter::CanSupport(SUPPORT_POINTSPRITE)){
         if (m_needBufferUpdate){
-            m_vao.SetupVertexes(false);
+            m_vao.SetupVertexes();
             m_needBufferUpdate = false;
         }
         m_psShader.Bind();

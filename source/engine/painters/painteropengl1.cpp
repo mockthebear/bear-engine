@@ -201,7 +201,7 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
     }
 
 
-    DebugHelper::DisplayGlError("1");
+    DisplayGlError("1");
 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -212,7 +212,7 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
 
     PointInt originalScreen = sm->GetGameSize();
 	glViewport( 0.f, 0.f, originalScreen.x, originalScreen.y );
-	DebugHelper::DisplayGlError("2");
+	DisplayGlError("2");
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     glOrtho( 0.0, originalScreen.x, originalScreen.y, 0.0, 1.0, -1.0 );
@@ -221,7 +221,7 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
 
     glPushMatrix();
     glClearColor( 1.f, 1.f, 1.f, 1.f );
-    DebugHelper::DisplayGlError("3");
+    DisplayGlError("3");
 
 
 

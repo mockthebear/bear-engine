@@ -31,6 +31,8 @@
 
 #define MAXFPS 900.0
 
+#define SILENT_GL
+
 
 #define POOL_DEFAULT_THREADS 2
 //#define DISABLE_THREADPOOL

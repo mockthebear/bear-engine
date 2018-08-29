@@ -4,6 +4,8 @@
 #include "../screenmanager.hpp"
 #include "../../framework/debughelper.hpp"
 
+
+
 glm::mat4 Painter::Projection;
 bool Painter::m_shaderBuilt = false;
 Shader Painter::textureShader;
@@ -16,12 +18,12 @@ uint32_t Painter::GetSharedBuffer(int id){
 }
 
 void RenderData::Bind(){
-    DebugHelper::DisplayGlError("Pre bind");
+    DisplayGlError("Pre bind");
     #ifdef SUPPORT_SINGLE_BUFFER
     VertexBuffer = Painter::GetSharedBuffer(0);
     ElementBuffer = Painter::GetSharedBuffer(1);
     #endif
-    DebugHelper::DisplayGlError("Binding");
+    DisplayGlError("Binding");
     UpdateVertex();
     glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementBuffer);
@@ -55,7 +57,7 @@ void RenderData::SetVertexAtribLocations(){
     glEnableVertexAttribArray(clipAttrib);
     glVertexAttribPointer(clipAttrib, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)) );
 
-    DebugHelper::DisplayGlError("SetVertexAtribLocations");
+    DisplayGlError("SetVertexAtribLocations");
 }
 
 void RenderData::UpdateVertex(){
@@ -131,7 +133,7 @@ void RenderData::UpdateVertex(){
         SetVertexAtribLocations();
     }
     #endif // SUPPORT_SINGLE_BUFFER
-    DebugHelper::DisplayGlError("UpdateVertex");
+    DisplayGlError("UpdateVertex");
 }
 
 
@@ -252,36 +254,35 @@ bool Painter::CanSupport(PainterSupport sup){
     }
 }
 
-void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_data,int drawMode, bool ignoreModel){
-    glm::mat4 model;
-    if (!ignoreModel){
-       model = CalculateModel(t_data);
-    }else{
-        model = glm::mat4(1.0f);
-    }
+void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_data,int drawMode, bool isBound){
 
     bool noShader = Shader::GetCurrentShaderId() == 0;
 
-    DebugHelper::DisplayGlError("on shader");
+    #ifndef SILENT_GL
+    DisplayGlError("on shader");
+    #endif // SILENT_GL
 
     if (noShader){
         polygonShader.Bind();
     }
 
-    DebugHelper::DisplayGlError("set uniforms");
+    //DisplayGlError("set uniforms");
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Projection);
-    ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"model",model);
     ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"iColor",t_data->color);
+    if (!isBound)
+        vertexData->Bind();
 
-    vertexData->Bind();
+    if (vertexData->HasElementBuffer()){
+        glDrawElements(drawMode, vertexData->GetIndexCount(), GL_UNSIGNED_INT, 0);
+    }else{
+        glDrawArrays(drawMode, 0, vertexData->GetVertexesCount());
+    }
 
-
-    glDrawElements(drawMode, vertexData->GetIndexCount(), GL_UNSIGNED_INT, 0);
-    DebugHelper::DisplayGlError("DrawVertex");
+    //DisplayGlError("DrawVertex");
     if (noShader){
         polygonShader.Unbind();
     }
-    DebugHelper::DisplayGlError("Unbind");
+    //DisplayGlError("Unbind");
 
 }
 
@@ -326,7 +327,7 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     if (noShader){
         textureShader.Unbind();
     }
-    DebugHelper::DisplayGlError("RenderTexture");
+    DisplayGlError("RenderTexture");
     return true;
 }
 
@@ -337,7 +338,7 @@ void Painter::SetTexturePixels(uint32_t texture, PointInt size,int mode,unsigned
     glBindTexture(GL_TEXTURE_2D, texture);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x, size.y, mode, GL_UNSIGNED_BYTE, pixels);
     glBindTexture(GL_TEXTURE_2D, 0);
-    DebugHelper::DisplayGlError("SetTexturePixels");
+    DisplayGlError("SetTexturePixels");
 }
 
 BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter){
@@ -346,7 +347,7 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
     }
     GLuint texId = 0;
     glGenTextures(1, &texId);
-    DebugHelper::DisplayGlError("glGenTextures");
+    DisplayGlError("glGenTextures");
     if (texId == 0){
         return nullptr;
     }
@@ -366,7 +367,7 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
     glBindTexture(GL_TEXTURE_2D, 0);
     BearTexture *ret = new BearTexture(texId,size.x,size.y,pow_w,pow_h,mode);
     ret->textureMode = filter;
-    DebugHelper::DisplayGlError("MakeTexture");
+    DisplayGlError("MakeTexture");
     return ret;
 }
 
@@ -390,7 +391,7 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
         return false;
     }
 
-    DebugHelper::DisplayGlError("1");
+    DisplayGlError("1");
 
 	SDL_GL_SwapWindow(sm->m_window);
     glEnable(GL_BLEND);
@@ -401,11 +402,11 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
     glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-	DebugHelper::DisplayGlError("Error on starting");
+	DisplayGlError("Error on starting");
 
     bear::out << "Making buffers\n";
 	glGenBuffers(4, Painter::Buffers);
-	DebugHelper::DisplayGlError("SetupEnvoriment");
+	DisplayGlError("SetupEnvoriment");
     return true;
 }
 
@@ -425,6 +426,14 @@ void Painter::SetupShaders(){
         textureShader.CompileFromString(GL_FRAGMENT_SHADER, Shader::DefaultTextureFragmentShader);
         bear::out << "[TEXTURE shader]linking\n";
         textureShader.Link();
+
+
+        polygonShader.Bind();
+        ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Painter::Projection);
+        polygonShader.Unbind();
+        textureShader.Bind();
+        ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Painter::Projection);
+        textureShader.Unbind();
     }
 }
 

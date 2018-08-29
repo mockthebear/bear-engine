@@ -46,34 +46,34 @@ class TextureLoadMethod{
         switch (mode){
             case TEXTURE_NEAREST:
                 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-                DebugHelper::DisplayGlError("TEXTURE_NEAREST: 1");
+                DisplayGlError("TEXTURE_NEAREST: 1");
                 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-                DebugHelper::DisplayGlError("TEXTURE_NEAREST: 2");
+                DisplayGlError("TEXTURE_NEAREST: 2");
                 break;
             case TEXTURE_LINEAR:
                 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-                DebugHelper::DisplayGlError("TEXTURE_LINEAR: 1");
+                DisplayGlError("TEXTURE_LINEAR: 1");
                 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-                DebugHelper::DisplayGlError("TEXTURE_LINEAR: 2");
+                DisplayGlError("TEXTURE_LINEAR: 2");
                 break;
             case TEXTURE_TRILINEAR:
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                DebugHelper::DisplayGlError("TEXTURE_TRILINEAR: 1");
+                DisplayGlError("TEXTURE_TRILINEAR: 1");
                 //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                DebugHelper::DisplayGlError("TEXTURE_TRILINEAR: 2");
+                DisplayGlError("TEXTURE_TRILINEAR: 2");
                 break;
             case TEXTURE_DEFAULT:
                 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-                DebugHelper::DisplayGlError("TEXTURE_DEFAULT: 1");
+                DisplayGlError("TEXTURE_DEFAULT: 1");
                 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-                DebugHelper::DisplayGlError("TEXTURE_DEFAULT: 2");
+                DisplayGlError("TEXTURE_DEFAULT: 2");
                 break;
             default:
                 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-                DebugHelper::DisplayGlError("?: 1");
+                DisplayGlError("?: 1");
                 glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-                DebugHelper::DisplayGlError("?: 2");
+                DisplayGlError("?: 2");
                 break;
         }
     }

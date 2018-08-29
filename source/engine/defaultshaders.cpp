@@ -96,12 +96,11 @@ const char *Shader::DefaultQuadVertexShader = "\n"
 "#version 100\n"
 "attribute vec2 vPos;\n"
 "\n"
-"uniform mat4 model;\n"
 "uniform mat4 projection;\n"
 "\n"
 "void main()\n"
 "{\n"
-"    gl_Position = projection * model * vec4(vPos.xy, 0.0, 1.0);\n"
+"    gl_Position = projection * vec4(vPos.xy, 0.0, 1.0);\n"
 "}\n";
 
 const char *Shader::DefaultQuadFragmentShader = "\n"

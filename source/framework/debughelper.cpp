@@ -12,7 +12,7 @@ void DebugHelper::AssertAlloc(void *ptr,std::string file,std::string func,int li
         getchar();
     }
 }
-void DebugHelper::DisplayGlError(std::string ate){
+void DebugHelper::DisplayGlErrFunc(std::string ate){
     GLenum err;
 	while ((err = glGetError()) != GL_NO_ERROR)
 	{

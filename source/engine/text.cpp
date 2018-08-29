@@ -286,7 +286,7 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
 
         Painter::RenderTexture(texture.get(),m_renderData);
 
-        DebugHelper::DisplayGlError("Text::Render");
+        DisplayGlError("Text::Render");
 
     }else if (texturespr){
         Point p = texturespr->Render(text,m_renderData->position.x,m_renderData->position.y,m_renderData->color[3]*255);

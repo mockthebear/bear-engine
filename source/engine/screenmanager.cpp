@@ -142,7 +142,7 @@ void ScreenManager::RenderPresent(){
         if (storedShader.IsLoaded()){
             storedShader.Unbind();
         }
-        DebugHelper::DisplayGlError("RenderPresent");
+        DisplayGlError("RenderPresent");
     }
     glFlush();
     SDL_GL_SwapWindow(m_window);
@@ -157,7 +157,7 @@ bool ScreenManager::StartPostProcessing(){
     m_targetScreen.ClearTexture();
     m_targetScreen.Generate(m_originalScreen.x, m_originalScreen.y);
 
-    DebugHelper::DisplayGlError("StartPostProcessing");
+    DisplayGlError("StartPostProcessing");
     return true;
 }
 
