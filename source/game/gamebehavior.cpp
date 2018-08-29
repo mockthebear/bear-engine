@@ -30,6 +30,7 @@
 #include "../tests/testpointtileset.hpp"
 #include "../tests/testpostprocess.hpp"
 #include "../tests/testfasttile.hpp"
+#include "../tests/testrectrenderspeed.hpp"
 
 
 
@@ -106,6 +107,7 @@ bool GameBehavior::OnLoad(){
     }
     Game::GetInstance()->AddState(new Test_Sound());
     Game::GetInstance()->AddState(new Test_RenderSpeed());
+    Game::GetInstance()->AddState(new Test_RectRenderSpeed());
     Game::GetInstance()->AddState(new Test_PathFind());
     Game::GetInstance()->AddState(new Test_Text());
     Game::GetInstance()->AddState(new Test_FastTiles());
