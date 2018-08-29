@@ -128,7 +128,14 @@ class Painter{
 
 
     static bool RenderTexture(BearTexture *ptr,RenderDataPtr data);
-    static void DrawVertex(VertexArrayObjectPtr v,BasicRenderDataPtr r,int drawMode = GL_TRIANGLES,bool ignoreModel = false);
+    /**
+        *Make a render call.
+        @param vertexes A reference to a VertexArrayObject. It carry all the vertexes informations
+        @param renderInfo A reference to a BasicRenderData. It carry some more information like transformations passed to shader or model things
+        @param drawMode Base is GL_TRIANGLES. But do your thing
+        @param isBound this avoid double bound of a vertexes param. Use as true in case of you bound previously.
+    */
+    static void DrawVertex(VertexArrayObjectPtr vertexes,BasicRenderDataPtr renderInfo,int drawMode = GL_TRIANGLES,bool isBound = false);
 
 
 

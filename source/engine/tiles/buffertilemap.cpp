@@ -19,18 +19,18 @@ void BufferTileVAO::SetAttributes(){
     posAttrib = glGetAttribLocation(shaderId, "vPos");
     clipAttrib = glGetAttribLocation(shaderId, "clip");
     transLAttrib = glGetAttribLocation(shaderId, "translate");
-    DebugHelper::DisplayGlError("on get attrs");
+    DisplayGlError("on get attrs");
     #endif // NEED_SHADER_LOCATION
 
     glEnableVertexAttribArray(posAttrib);
     glVertexAttribPointer(posAttrib,    2,    GL_FLOAT, GL_FALSE,   6 * sizeof(GLfloat), (GLvoid*)0);
-    DebugHelper::DisplayGlError("on set attr 1");
+    DisplayGlError("on set attr 1");
     glEnableVertexAttribArray(clipAttrib);
     glVertexAttribPointer(clipAttrib,   2,    GL_FLOAT, GL_FALSE,   6 * sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)) );
-    DebugHelper::DisplayGlError("on set attr 2");
+    DisplayGlError("on set attr 2");
     glEnableVertexAttribArray(transLAttrib);
     glVertexAttribPointer(transLAttrib, 2,    GL_FLOAT, GL_FALSE,   6 * sizeof(GLfloat), (GLvoid*)(4*sizeof(GLfloat)) );
-    DebugHelper::DisplayGlError("on set attr 3");
+    DisplayGlError("on set attr 3");
 }
 
 
@@ -55,7 +55,7 @@ BufferTileMap::BufferTileMap(PointInt tileSize,PointInt3 mapSize, Sprite set):Ti
 
 void BufferTileMap::BindBuffer(){
     m_vao.Bind();
-    DebugHelper::DisplayGlError("on bind");
+    DisplayGlError("on bind");
 }
 
 
@@ -177,18 +177,18 @@ void BufferTileMap::Render(Point offset, Rect vision){
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tileset.GetTexture().get()->id);
-    DebugHelper::DisplayGlError("on texture");
+    DisplayGlError("on texture");
 
 
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Painter::Projection);
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"model",m_tileModel);
     ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"iColor",m_color);
     ShaderSetter<Point>::SetUniform(Shader::GetCurrentShaderId(),"offset",offset);
-    DebugHelper::DisplayGlError("on uniforms");
+    DisplayGlError("on uniforms");
 
 
     glDrawElements(GL_TRIANGLES, m_vao.vertexes.indexes.size() , GL_UNSIGNED_INT, nullptr);
-    DebugHelper::DisplayGlError("on rebder");
+    DisplayGlError("on rebder");
     glBindTexture( GL_TEXTURE_2D, 0 );
 
 
