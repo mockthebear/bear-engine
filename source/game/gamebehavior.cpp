@@ -139,9 +139,9 @@ void GameBehavior::OnFocus(bool hasFocus){
 }
 
 void GameBehavior::OnFinishRender(){
-    static Text T("Fps: ?",23,{250,250,0,255});
-    T.SetText(utils::format("%2.2f",ScreenManager::GetInstance().GetFps()));
-    T.Render(Point(SCREEN_SIZE_W, 16),TEXT_RENDER_TOPRIGHT);
+    //static Text T("Fps: ?",23,{250,250,0,255});
+    //T.SetText(utils::format("%2.2f",ScreenManager::GetInstance().GetFps()));
+    //T.Render(Point(SCREEN_SIZE_W, 16),TEXT_RENDER_TOPRIGHT);
 }
 
 void GameBehavior::OnRestored(){

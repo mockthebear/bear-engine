@@ -17,19 +17,28 @@ void Vertex::AddIndices(int size,uint32_t *f){
     }
 }
 
-int Vertex::Generate(Rect r, bool onlyOnes){
+int Vertex::Generate(Rect r, bool onlyOnes, float ang){
     if (onlyOnes){
         r = Rect(0.0f, 0.0f, 1.0f, 1.0f);
-    }else{
-        r.PositionSized();
     }
+    Point center(r.w/2.0f ,  r.h/2.0f);
+    ang = Geometry::toRad(ang);
+    float s = sin(ang);
+    float c = cos(ang);
     float vertices[] = {
-        r.x  , r.y,
-        r.x  , r.h,
-        r.w  , r.h,
-        r.w  , r.y,
+        0.0f    , 0.0f,
+        0.0f    , r.h,
+        r.w     , r.h,
+        r.w     , 0.0f,
     };
+    for (int i=0;i<4;i++){
+        float px = vertices[i * 2  + 0] -= center.x;
+        float py = vertices[i * 2  + 1] -= center.y;
+        vertices[i * 2  + 0] = (px * c - py * s) + center.x + r.x;
+        vertices[i * 2  + 1] = (px * s + py * c) + center.y + r.y;
+    }
     vertexData.insert(vertexData.end(), &vertices[0], &vertices[8]);
+
     if (useIndexes){
         uint32_t indices[] = {
             indexCount, indexCount+1, indexCount+3,
@@ -145,7 +154,7 @@ void VertexArrayObject::UnBind(){
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-bool VertexArrayObject::SetupVertexes(bool manageBuffers){
+bool VertexArrayObject::SetupVertexes(){
     if (!Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
         return false;
     }
@@ -169,7 +178,7 @@ bool VertexArrayObject::SetupVertexes(bool manageBuffers){
 
 
 
-    if (generatedBuffers && manageBuffers){
+    if (generatedBuffers){
         SetAttributes();
     }
     glBindVertexArray(0);
@@ -207,7 +216,7 @@ void VertexArrayObject::Bind(){
     #endif
     if (m_vertexBuffer != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
         #ifdef REMAKE_VETEX_ON_BIND
-        SetupVertexes(m_useElementBuffer);
+        SetupVertexes();
         #else
         glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
         if (m_useElementBuffer)
@@ -297,7 +306,7 @@ bool VertexArrayObject::SetupVertexes(){
 }
 /*
 #else
-
+c
 VertexArrayObject::~VertexArrayObject(){};
 
 

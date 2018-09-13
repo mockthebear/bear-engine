@@ -10,7 +10,7 @@ PointSpriteTileset::PointSpriteTileset(){
         #ifdef SUPPORT_GEOMETRY_SHADER
         m_vao.DisableElements();
 
-        m_vao.SetupVertexes(false);
+        m_vao.SetupVertexes();
 
         m_vao.Bind();
         glEnableVertexAttribArray(0);

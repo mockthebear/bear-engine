@@ -79,14 +79,28 @@ void RenderData::UpdateVertex(){
         texBottom = holder;
     }
 
+
     GLfloat vertices[] = {
         // Pos      // Tex
-        0.0f  , 0.0f    , texLeft   , texTop,
-        0.0f  , 1.0f    , texLeft   , texBottom,
-        1.0f  , 1.0f    , texRight  , texBottom,
-        1.0f  , 0.0f    , texRight  , texTop,
+        0.0f                , 0.0f                  , texLeft   , texTop,
+        0.0f                , m_scale.y * size.y    , texLeft   , texBottom,
+        m_scale.x * size.x  , m_scale.y * size.y    , texRight  , texBottom,
+        m_scale.x * size.x  , 0.0f                  , texRight  , texTop,
 
     };
+
+    float auxa = Geometry::toRad(m_angle);
+
+    float s = sin(auxa);
+    float c = cos(auxa);
+
+    for (int i=0;i<4;i++){
+        float px = vertices[i * 4  + 0] -= center.x;
+        float py = vertices[i * 4  + 1] -= center.y;
+        vertices[i * 4  + 0] = (px * c - py * s) + center.x + position.x;
+        vertices[i * 4  + 1] = (px * s + py * c) + center.y + position.y;
+    }
+
 
     #ifdef SUPPORT_SINGLE_BUFFER
     VertexBuffer = Painter::GetSharedBuffer(0);
@@ -134,78 +148,6 @@ void RenderData::UpdateVertex(){
     }
     #endif // SUPPORT_SINGLE_BUFFER
     DisplayGlError("UpdateVertex");
-}
-
-
-void BasicRenderData::UpdateModel(){
-
-    m_model = glm::mat4(1.0f);
-    if (m_angle != 0){
-
-
-        m_model[3][0] += 0.5f * size.x;
-        m_model[3][1] += 0.5f * size.y;
-
-        float theta = glm::radians(m_angle);
-
-        m_model[0][0] = cos(theta);
-        m_model[1][0] = -sin(theta);
-        m_model[0][1] = sin(theta);
-        m_model[1][1] = cos(theta);
-
-        float a = -0.5f * size.x;
-        float b = -0.5f * size.y;
-
-
-        m_model[3][1] += (b * m_model[0][0] + (a * m_model[0][1]));
-        m_model[3][0] += (b * m_model[1][0] + (a * m_model[1][1]));
-
-    }
-
-    m_model[0][0] = m_model[0][0] * (m_scale.x * size.x);
-    m_model[1][0] = m_model[1][0] * (m_scale.y * size.y);
-    m_model[0][1] = m_model[0][1] * (m_scale.x * size.x);
-    m_model[1][1] = m_model[1][1] * (m_scale.y * size.y);
-
-}
-
-
-glm::mat4 Painter::CalculateModel(BasicRenderDataPtr t_data){
-    glm::mat4 model(1.0f);
-
-    if (t_data->m_angle != 0){
-
-
-        model[3][0] += 0.5f * t_data->size.x;
-        model[3][1] += 0.5f * t_data->size.y;
-
-        float theta = glm::radians(t_data->m_angle);
-
-        model[0][0] = cos(theta);
-        model[1][0] = -sin(theta);
-        model[0][1] = sin(theta);
-        model[1][1] = cos(theta);
-
-        float a = -0.5f * t_data->size.x;
-        float b = -0.5f * t_data->size.y;
-
-
-        model[3][1] += (b * model[0][0] + (a * model[0][1]));
-        model[3][0] += (b * model[1][0] + (a * model[1][1]));
-
-    }
-
-    model[0][0] = model[0][0] * (t_data->m_scale.x * t_data->size.x);
-    model[1][0] = model[1][0] * (t_data->m_scale.y * t_data->size.y);
-    model[0][1] = model[0][1] * (t_data->m_scale.x * t_data->size.x);
-    model[1][1] = model[1][1] * (t_data->m_scale.y * t_data->size.y);
-
-
-    model[3][0] += t_data->position.x;
-    model[3][1] += t_data->position.y;
-    model[3][2] = 0.0f;
-
-    return model;
 }
 
 
@@ -282,41 +224,27 @@ void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_da
     if (noShader){
         polygonShader.Unbind();
     }
-    //DisplayGlError("Unbind");
-
-}
-
-
-bool Painter::RenderPointTexture(BearTexture *t_texture, RenderDataPtr t_data){
-    return false;
-
-}
-
-bool Painter::DrawSprites(int id){
-    return false;
 }
 
 bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
 
-
-
-    glm::mat4 model = t_data->GetModel();
-
-    model[3][0] += t_data->position.x;
-    model[3][1] += t_data->position.y;
-    model[3][2] = 0.0f;
-
+    DisplayGlError("Pre rendering");
     bool noShader = Shader::GetCurrentShaderId() == 0;
 
     if (noShader){
         textureShader.Bind();
     }
+    DisplayGlError("Bound");
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Projection);
-    ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"model",model);
     ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"iColor",t_data->color);
-    ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image",0);
+    ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image", 0);
+
+    DisplayGlError("Set uniforms");
 
     glActiveTexture(GL_TEXTURE0);
+
+    DisplayGlError("Activated");
+
     glBindTexture( GL_TEXTURE_2D, t_texture->id );
 
     t_data->Bind();
@@ -330,6 +258,18 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     DisplayGlError("RenderTexture");
     return true;
 }
+
+
+
+bool Painter::RenderPointTexture(BearTexture *t_texture, RenderDataPtr t_data){
+    return false;
+
+}
+
+bool Painter::DrawSprites(int id){
+    return false;
+}
+
 
 void Painter::SetTexturePixels(uint32_t texture, PointInt size,int mode,unsigned char* pixels ){
     if (!pixels){

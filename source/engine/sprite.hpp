@@ -454,6 +454,18 @@ class Sprite{
         RenderDataPtr GetRenderData(){
             return m_renderData;
         }
+        uint32_t GetImageId(){
+            if (textureShred.get()){
+                return textureShred.get()->GLimageId;
+            }else{
+                return 0;
+            }
+        }
+        void SetImageId(uint32_t id){
+            if (textureShred.get()){
+                textureShred.get()->GLimageId = id;
+            }
+        }
     private:
         TextureLoadMethod aliasing;
         TexturePtr textureShred;

@@ -39,7 +39,6 @@ Sprite::Sprite(){
     timeElapsed = 0;
     frameTime = 0;
     m_renderData = std::make_shared<RenderData>();
-
 }
 
 Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,TextureLoadMethod hasAliasing):Sprite(){
@@ -408,10 +407,8 @@ void Sprite::SetClip(int x, int y,int w,int h){
 
 void Sprite::Render(PointInt pos,double angle){
     if (IsLoaded()){
-        m_renderData->position = Point(pos);
+        m_renderData->SetPosition(pos);
         m_renderData->SetAngle(angle);
-        //Painter::RenderPointTexture(textureShred.get(),m_renderData);
-        //Painter::DrawSprites(textureShred.get()->id);
         Painter::RenderTexture(textureShred.get(),m_renderData);
     }
 

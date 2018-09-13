@@ -26,7 +26,11 @@ class Test_Shapes: public State{
         void Render(){
             RenderHelp::DrawLineColor(Point(32,32),g_input.GetMouse(),255,255,255,255,2);
 
-            RenderHelp::DrawSquareColor(Rect(32,32,64,64),255,255,100,255);
+            RenderHelp::DrawSquareColor(Rect(32,32,64,64),255,255,100,255,false, duration/10.0);
+            RenderHelp::DrawSquareColor(Rect(32,32,64,64),255,0,0,255,true);
+            RenderHelp::DrawSquareColor(Rect(64,64,2,2),255,0,0,255);
+
+
             RenderHelp::DrawLineColor(Point(96,96),Point(128,128),255,0,255);
             RenderHelp::DrawLineColor(Point(128,128),Point(98,220),255,0,0,255,4);
             RenderHelp::DrawSquareColor(Rect(98,220,64,64),255,100,100,255,true);

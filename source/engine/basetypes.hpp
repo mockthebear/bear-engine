@@ -85,7 +85,7 @@ class TextureLoadMethod{
 
 class BearTexture{
     public:
-        BearTexture():id(0),texture_w(0),texture_h(0),size_w(0),size_h(0),textureMode(TEXTURE_NEAREST),mode(GL_RGBA){};
+        BearTexture():id(0),texture_w(0),texture_h(0),size_w(0),size_h(0),textureMode(TEXTURE_NEAREST),mode(GL_RGBA),GLimageId(0){};
 
         uint32_t DropTexture();
         void ClearTexture();
@@ -100,6 +100,7 @@ class BearTexture{
         uint32_t size_h;
         TextureLoadMethod textureMode;
         GLenum mode;
+        uint32_t GLimageId;
 
 };
 

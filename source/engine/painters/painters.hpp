@@ -26,12 +26,11 @@ class Painter;
 
 class BasicRenderData{
      public:
-        BasicRenderData():position(0.0f,0.0f),size(1.0f,1.0f),color(1.0f,1.0f,1.0f,1.0f),flip(0),m_scale(1.0f,1.0f),m_angle(0.0f),m_model(1.0){}
+        BasicRenderData():position(0.0f,0.0f),size(1.0f,1.0f),center(0.0f,0.0f),color(1.0f,1.0f,1.0f,1.0f),flip(0),m_scale(1.0f,1.0f),m_angle(0.0f){}
 
         void SetAngle(float p_angle){
             if (m_angle != p_angle){
                 m_angle = p_angle;
-                UpdateModel();
             }
         }
 
@@ -39,29 +38,28 @@ class BasicRenderData{
         void SetScale(Point p_scale){
             if (m_scale != p_scale){
                 m_scale = p_scale;
-                UpdateModel();
+                center = Point(size.x * m_scale.x * 0.5f, size.y * m_scale.y * 0.5f);
             }
         }
 
         Point& GetScale(){return m_scale;};
         float& GetAngle(){return m_angle;};
 
+        virtual void SetPosition(Point pos){
+            position = pos;
+        }
+
         Point position;
         Point size;
+        Point center;
 
         BearColor color;
         uint8_t flip;
-
-        void UpdateModel();
-
-
-        glm::mat4 GetModel() {return m_model;};
 
     protected:
         friend class Painter;
         Point m_scale;
         float m_angle;
-        glm::mat4 m_model;
 };
 
 
@@ -85,7 +83,12 @@ class RenderData : public BasicRenderData{
             m_forwardClip.w = m_clip.y / textureSize.y;
             m_forwardClip.h = ( m_clip.y + m_clip.h ) / textureSize.y;
             UpdateVertex();
-            UpdateModel();
+            center = Point(size.x * m_scale.x * 0.5f, size.y * m_scale.y * 0.5f);
+        }
+
+        virtual void SetPosition(Point pos){
+            position = pos;
+            UpdateVertex();
         }
 
 

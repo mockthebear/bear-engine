@@ -8,9 +8,7 @@
 
 
 void TargetTexture::Render(Point pos){
-    m_renderData->position = pos;
-    //
-    //
+    m_renderData->SetPosition(pos);
     Painter::RenderTexture(this,m_renderData);
 }
 

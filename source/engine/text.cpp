@@ -280,7 +280,7 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
             }
         }
 
-        m_renderData->position = Point(cameraX,cameraY);
+        m_renderData->SetPosition(Point(cameraX,cameraY));
 
 
 
