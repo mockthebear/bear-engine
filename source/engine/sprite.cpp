@@ -28,28 +28,15 @@ uint32_t ColorReplacer::Get(uint32_t color){
 }
 
 
-Sprite::Sprite(){
-    m_lf = 0;
-    currentFrame = PointInt(0,0);
-    frameCount = 1;
-    repeat = 1;
-    aliasing = TEXTURE_LINEAR;
-    fname = "";
-    over = 0;
-    timeElapsed = 0;
-    frameTime = 0;
-    m_renderData = std::make_shared<RenderData>();
-}
-
 Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,TextureLoadMethod hasAliasing):Sprite(){
     if (hasAliasing.mode == TEXTURE_DEFAULT){
         hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
     }
-    textureShred = texture_;
+    m_texture = texture_;
     fname = alias;
     aliasing = hasAliasing;
-    if (textureShred.get()){
-        Query(textureShred);
+    if (m_texture.get()){
+        Query(m_texture);
     }
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
@@ -60,11 +47,11 @@ Sprite::Sprite(TexturePtr texture_,std::string name,TextureLoadMethod hasAliasin
     if (hasAliasing.mode == TEXTURE_DEFAULT){
         hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
     }
-    textureShred = texture_;
+    m_texture = texture_;
     fname = name;
     aliasing = hasAliasing;
-    if (textureShred.get()){
-        Query(textureShred);
+    if (m_texture.get()){
+        Query(m_texture);
     }
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
@@ -74,14 +61,14 @@ Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,int fcount
     if (hasAliasing.mode == TEXTURE_DEFAULT){
         hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
     }
-    textureShred = texture_;
+    m_texture = texture_;
     frameCount = fcount;
     repeat = rep;
     frameTime = ftime;
     fname = alias;
     aliasing = hasAliasing;
-    if (textureShred.get()){
-        Query(textureShred);
+    if (m_texture.get()){
+        Query(m_texture);
     }
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
@@ -91,14 +78,14 @@ Sprite::Sprite(TexturePtr texture_,std::string name,int fcount,float ftime,int r
     if (hasAliasing.mode == TEXTURE_DEFAULT){
         hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
     }
-    textureShred = texture_;
+    m_texture = texture_;
      frameCount = fcount;
     repeat = rep;
     frameTime = ftime;
     fname = name;
     aliasing = hasAliasing;
-    if (textureShred.get()){
-        Query(textureShred);
+    if (m_texture.get()){
+        Query(m_texture);
     }
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
@@ -113,8 +100,8 @@ Sprite::Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount,
     frameTime = ftime;
     fname = name;
     aliasing = hasAliasing;
-    textureShred = texture_;
-    Query(textureShred);
+    m_texture = texture_;
+    Query(m_texture);
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
     SetAlpha(255);
@@ -129,9 +116,9 @@ Sprite::Sprite(std::string file,ColorReplacer &r,bool replacer,int fcount,float 
     frameTime = ftime;
     fname = file;
     aliasing = hasAliasing;
-    textureShred = GlobalAssetManager::GetInstance().makeTexture(false,file,r,hasAliasing);
-    if (textureShred.get()){
-        Query(textureShred);
+    m_texture = GlobalAssetManager::GetInstance().makeTexture(false,file,r,hasAliasing);
+    if (m_texture.get()){
+        Query(m_texture);
     }
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
@@ -178,10 +165,6 @@ Sprite::Sprite(std::string file,int fcount,float ftime,int rep,TextureLoadMethod
     SetGrid(GetWidth()/frameCount,GetHeight());
     SetFrame(0);
     SetAlpha(255);
-}
-
-void Sprite::Kill(){
-    //textureShred.destroy();
 }
 
 void Sprite::Update(float dt){
@@ -368,18 +351,18 @@ bool Sprite::Open(std::string filepath,TextureLoadMethod hasAliasing){
         SDL_RWclose(file);
         return ret;
     }
-    textureShred = GlobalAssetManager::GetInstance().makeTexture(false,stdnamee,hasAliasing);
-    if (textureShred.get()){
-        Query(textureShred);
+    m_texture = GlobalAssetManager::GetInstance().makeTexture(false,stdnamee,hasAliasing);
+    if (m_texture.get()){
+        Query(m_texture);
         return true;
     }
     return false;
 }
 
 bool Sprite::Open(SDL_RWops* file,std::string name,TextureLoadMethod HasAliasing){
-    textureShred = GlobalAssetManager::GetInstance().makeTexture(false,file,name,HasAliasing);
-    if (textureShred.get()){
-        Query(textureShred);
+    m_texture = GlobalAssetManager::GetInstance().makeTexture(false,file,name,HasAliasing);
+    if (m_texture.get()){
+        Query(m_texture);
         return true;
     }else{
         #ifdef __EMSCRIPTEN__
@@ -409,9 +392,8 @@ void Sprite::Render(PointInt pos,double angle){
     if (IsLoaded()){
         m_renderData->SetPosition(pos);
         m_renderData->SetAngle(angle);
-        Painter::RenderTexture(textureShred.get(),m_renderData);
+        RenderAll();
     }
-
 }
 void Sprite::Renderxy(int x,int y,double angle){
     Render(x-Camera::pos.x,y-Camera::pos.y,angle);

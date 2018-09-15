@@ -8,11 +8,11 @@
 #include "../framework/geometry.hpp"
 #include "../framework/chainptr.hpp"
 #include "painters/painters.hpp"
+#include "rendertexture.hpp"
 
-#include <unordered_map>
-#include <map>
+
 #include <string>
-
+#include <map>
 #include <memory>
 
 #include "libheader.hpp"
@@ -72,14 +72,10 @@ class Animation;
  */
 
 
-class Sprite{
+class Sprite: public RenderTexture{
     public:
 
-        /**
-            *LEL, dont waste your time on empty constructor. srsly
-            *it just start with 0 on everything
-        */
-        Sprite();
+        Sprite():RenderTexture(),fname(""),timeElapsed(0.0f),frameTime(0.0f),over(0),repeat(0),frameCount(1),m_lf(0),currentFrame(0.0f, 0.0f),grid(1.0f, 1.0f){};
         /**
             *This constructor its a bit special, and need a bit more attention
             *You start the sprite and pass only an SDL_Texture. There is no mapping
@@ -89,7 +85,7 @@ class Sprite{
         */
 
 
-        Sprite(TexturePtr texture):Sprite(){textureShred = texture;};
+        Sprite(TexturePtr texture):Sprite(){m_texture = texture;};
         Sprite(TexturePtr texture,std::string name,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
         Sprite(TexturePtr texture,std::string name,std::string alias,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
 
@@ -238,7 +234,6 @@ class Sprite{
             timeElapsed = 0;
             if (changeYaxis)
                 currentFrame.y = 0;
-
         }
         /**
             *You can force an frame.
@@ -281,8 +276,8 @@ class Sprite{
             @param fc The new frame count
         */
         void SetFrameCount(int fc){
-            frameCount=fc;
-            over = false;
+            frameCount  =   std::max(1, fc);
+            over        =   false;
         };
         /**
             *Return the frame count
@@ -290,10 +285,6 @@ class Sprite{
         */
         int GetFrameCount(){
             return frameCount;
-        };
-
-        Point GetCurrentFrame(){
-            return Point(currentFrame);
         };
         /**
             *Change the frame time
@@ -316,27 +307,9 @@ class Sprite{
             @return true if the sprite is loaded
         */
         bool IsLoaded(){
-            return textureShred.get() != nullptr ;
-        };
-        /**
-            *Get the texture. Note that texture can be an shared one
-            @return The SDL_Texture pointer;
-        */
-        TexturePtr GetTexture(){
-            return textureShred;
-        };
-        /**
-            *Used to change the center of rotation
-            @param p Sprite position (inside the image)
-        */
-        void SetCenter(Point p){
-            m_renderData->center.x = p.x;
-            m_renderData->center.y = p.y;
+            return HasTexture();
         };
 
-        Point GetCenter(){
-            return Point(m_renderData->center);
-        }
 
         void SetStayLastFrame(int lf){
             m_lf = lf;
@@ -362,54 +335,7 @@ class Sprite{
         bool IsAnimationOver(){
             return over >= repeat;
         };
-        /**
-            *Change the sprite scale. Its an local scale, not shared.
-            @param scale the original value is 1.
-        */
-        void SetScaleX(float scale=1.0f){
-            m_renderData->GetScale().x=scale;
-        };
 
-        void SetScaleY(float scale=1.0f){
-            m_renderData->GetScale().y=scale;
-        };
-        /**
-            *Change the sprite scale. Its an local scale, not shared.
-            @param scale the original value is 1.
-        */
-        void SetScale(Point t_scale = Point(1.0f,1.0f)){
-            m_renderData->SetScale(t_scale);
-        };
-
-        Point GetScale(){
-            return m_renderData->GetScale();;
-        };
-        /**
-            *You can cut some color channels and reblend the sprite
-            *This changes the texture, so its <b>SHARED</b>
-            *When set something here, if you use the same sprite in another place, its good to restore
-            @param Red [0-255] The default is 255 of all sprites;
-            @param Blue [0-255] The default is 255 of all sprites;
-            @param Green [0-255] The default is 255 of all sprites;
-        */
-        void ReBlend(uint8_t Red,uint8_t Blue,uint8_t Green){
-            m_renderData->color[0] = Red/255.0f;
-            m_renderData->color[1] = Blue/255.0f;
-            m_renderData->color[2] = Green/255.0f;
-        };
-        /**
-            *Changed the sprite alpha
-            *This changes the texture, so its <b>SHARED</b>
-            *When set something here, if you use the same sprite in another place, its good to restore
-            @param alpha [0-255] The default is 255 of all sprites;
-        */
-        void SetAlpha(uint8_t alpha){
-            m_renderData->color[3] = alpha/255.0f;
-        };
-
-        uint8_t GetAlpha(){
-            return m_renderData->color[3]*255;
-        };
         /**
             *Set a grid for animation frames
             @param gx The grid size in x axis
@@ -421,18 +347,6 @@ class Sprite{
             return grid;
         };
         /**
-            Flip the current sprite locally
-            @param flipState
-        */
-        void SetFlip(SDL_RendererFlip flipState){
-            m_renderData->flip = (uint8_t)flipState;
-        }
-
-        SDL_RendererFlip GetFlip(){
-            return (SDL_RendererFlip)m_renderData->flip;
-        }
-
-        /**
             Get the current frame in the grid
             @return the frame on x,y position
         */
@@ -442,64 +356,16 @@ class Sprite{
             @param ptr The pointer
         */
         void Query(TexturePtr ptr);
-        /**
-            Placeholder function. Not used
-        */
-        void Kill();
         void Format(Animation a,int dir);
-
-        Point GetSize(){ return size;};
-        Point GetTextureSize(){ return TextureSize;};
-
-        RenderDataPtr GetRenderData(){
-            return m_renderData;
-        }
-        uint32_t GetImageId(){
-            if (textureShred.get()){
-                return textureShred.get()->GLimageId;
-            }else{
-                return 0;
-            }
-        }
-        void SetImageId(uint32_t id){
-            if (textureShred.get()){
-                textureShred.get()->GLimageId = id;
-            }
-        }
     private:
-        TextureLoadMethod aliasing;
-        TexturePtr textureShred;
         friend class AssetMannager;
-
         std::string fname;
-
-        RenderDataPtr m_renderData;
-        Point size;
-        Point TextureSize;
-
-        //float OUTR,OUTB,OUTG;
-        //float m_alpha;
-        //scaleX,scaleY,
-        //Rect dimensions;
-        //Rect clipRect;
-        //Point center;
-        //bool hasCenter;
-        //SDL_RendererFlip sprFlip;
-
-
         float timeElapsed,frameTime;
         int over;
         int repeat;
         int frameCount,m_lf;
         PointInt currentFrame;
         PointInt grid;
-
-
-
-        //GLfloat texLeft;
-        //GLfloat texRight;
-        //GLfloat texTop;
-        //GLfloat texBottom;
 };
 
 
