@@ -262,6 +262,7 @@ bool VertexArrayObject::SetVertexBuffer(float * data,uint32_t size){
     DisplayGlError("afterbind");
     if (m_vboSize != size){
         glBufferData(GL_ARRAY_BUFFER,  size, 0, GL_DYNAMIC_DRAW);
+        DisplayGlError("now the buffer is located");
         m_vboSize = size;
     }
     glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
