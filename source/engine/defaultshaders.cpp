@@ -10,11 +10,12 @@ const char *Shader::DefaultTextureVertexShader = "\n"
 "out vec2 TexCoords;\n"
 "\n"
 "uniform mat4 projection;\n"
+"uniform vec2 translation;\n"
 "\n"
 "void main()\n"
 "{\n"
 "    TexCoords = clip;\n"
-"    gl_Position = projection * vec4(vPos.xy, 0.0, 1.0);\n"
+"    gl_Position = projection * vec4(vPos.xy + translation, 0.0, 1.0);\n"
 "}\n";
 
 const char *Shader::DefaultTextureFragmentShader = "\n"
