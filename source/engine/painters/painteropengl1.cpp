@@ -16,6 +16,12 @@ void Painter::SetViewport(Point screenNow,Point offset){
 
 void BasicRenderData::UpdateModel(){}
 
+
+void RenderData::SetPosition(Point pos){
+    position = pos;
+    UpdateVertex();
+}
+
 void Painter::SetProjection(Rect rproj){
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();

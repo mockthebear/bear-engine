@@ -17,6 +17,11 @@ uint32_t Painter::GetSharedBuffer(int id){
     return Buffers[id];
 }
 
+void RenderData::SetPosition(Point pos){
+    position = pos;
+    UpdateVertex();
+}
+
 void RenderData::Bind(){
     DisplayGlError("Pre bind");
     #ifdef SUPPORT_SINGLE_BUFFER

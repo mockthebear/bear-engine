@@ -63,6 +63,9 @@ bool Painter::CanSupport(PainterSupport sup){
 
 
 void RenderData::Bind(){
+    if (m_needUpdate){
+        UpdateVertex();
+    }
     glBindVertexArray(VertexArray);
     glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementBuffer);
@@ -76,6 +79,12 @@ RenderData::~RenderData(){
         VertexArray = 0;
     }
 };
+
+void RenderData::SetPosition(Point pos){
+    position = pos;
+}
+
+
 
 void RenderData::UpdateVertex(){
 
@@ -113,8 +122,8 @@ void RenderData::UpdateVertex(){
     for (int i=0;i<4;i++){
         float px = vertices[i * 4  + 0] -= center.x;
         float py = vertices[i * 4  + 1] -= center.y;
-        vertices[i * 4  + 0] = (px * c - py * s) + center.x + position.x;
-        vertices[i * 4  + 1] = (px * s + py * c) + center.y + position.y;
+        vertices[i * 4  + 0] = (px * c - py * s) + center.x;
+        vertices[i * 4  + 1] = (px * s + py * c) + center.y;
     }
 
 
@@ -149,6 +158,8 @@ void RenderData::UpdateVertex(){
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
+    m_needUpdate = false;
+
 }
 
 
@@ -162,7 +173,6 @@ void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_da
 
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Projection);
     ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"iColor",t_data->color);
-    ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image",0);
 
     if (!isBound){
         vertexData->Bind();
@@ -240,6 +250,7 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
 
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Projection);
     ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"iColor",t_data->color);
+    ShaderSetter<Point>::SetUniform(Shader::GetCurrentShaderId(),"translation",t_data->position);
     ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image",0);
 
 

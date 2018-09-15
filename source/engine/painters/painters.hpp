@@ -26,11 +26,12 @@ class Painter;
 
 class BasicRenderData{
      public:
-        BasicRenderData():position(0.0f,0.0f),size(1.0f,1.0f),center(0.0f,0.0f),color(1.0f,1.0f,1.0f,1.0f),flip(0),m_scale(1.0f,1.0f),m_angle(0.0f){}
+        BasicRenderData():position(0.0f,0.0f),size(1.0f,1.0f),center(0.0f,0.0f),color(1.0f,1.0f,1.0f,1.0f),flip(0),m_scale(1.0f,1.0f),m_angle(0.0f),m_needUpdate(true){}
 
         void SetAngle(float p_angle){
             if (m_angle != p_angle){
                 m_angle = p_angle;
+                m_needUpdate = true;
             }
         }
 
@@ -39,6 +40,7 @@ class BasicRenderData{
             if (m_scale != p_scale){
                 m_scale = p_scale;
                 center = Point(size.x * m_scale.x * 0.5f, size.y * m_scale.y * 0.5f);
+                m_needUpdate = true;
             }
         }
 
@@ -47,6 +49,7 @@ class BasicRenderData{
 
         virtual void SetPosition(Point pos){
             position = pos;
+            m_needUpdate = true;
         }
 
         Point position;
@@ -60,6 +63,7 @@ class BasicRenderData{
         friend class Painter;
         Point m_scale;
         float m_angle;
+        bool m_needUpdate;
 };
 
 
@@ -82,14 +86,11 @@ class RenderData : public BasicRenderData{
             m_forwardClip.y =  ( m_clip.x + m_clip.w ) / textureSize.x;
             m_forwardClip.w = m_clip.y / textureSize.y;
             m_forwardClip.h = ( m_clip.y + m_clip.h ) / textureSize.y;
-            UpdateVertex();
             center = Point(size.x * m_scale.x * 0.5f, size.y * m_scale.y * 0.5f);
+            m_needUpdate = true;
         }
 
-        virtual void SetPosition(Point pos){
-            position = pos;
-            UpdateVertex();
-        }
+        virtual void SetPosition(Point pos);
 
 
         Rect& GetClip(){return m_clip;};
@@ -97,8 +98,12 @@ class RenderData : public BasicRenderData{
         Point center;
 
         void Bind();
+
+        void EnableVertexTranslation(){m_sumPos = true;};
+
     private:
         friend class Painter;
+
 
         Rect m_clip;
         Rect m_forwardClip;
@@ -109,8 +114,7 @@ class RenderData : public BasicRenderData{
         GLuint VertexArray;
         GLuint VertexBuffer;
         GLuint ElementBuffer;
-
-
+        bool m_sumPos;
 
 };
 
