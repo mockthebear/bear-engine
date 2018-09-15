@@ -270,6 +270,8 @@
 		<Unit filename="engine/pstileset.hpp" />
 		<Unit filename="engine/renderhelp.cpp" />
 		<Unit filename="engine/renderhelp.hpp" />
+		<Unit filename="engine/rendertexture.cpp" />
+		<Unit filename="engine/rendertexture.hpp" />
 		<Unit filename="engine/screenmanager.cpp" />
 		<Unit filename="engine/screenmanager.hpp" />
 		<Unit filename="engine/shadermanager.cpp" />
