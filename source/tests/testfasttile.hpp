@@ -9,7 +9,7 @@ class Test_FastTiles: public State{
     public:
         Test_FastTiles(){
             requestQuit = requestDelete = false;
-            bear::out << "Test\n";
+            bear::out << "Test Test_FastTiles\n";
             duration = 10.0f;
         };
         ~Test_FastTiles(){
