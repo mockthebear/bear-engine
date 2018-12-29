@@ -222,8 +222,8 @@ BearTexture *Sprite::Preload(const char *file,bool adjustDir,TextureLoadMethod H
     if (ResourceManager::IsValidResource(aux)){
         SDL_RWops *rw = ResourceManager::GetInstance().GetFile(stdnamee); //Safe
         if (!rw){
-            Console::GetInstance().AddTextInfo(utils::format("[Standard]Cannot preload sprite [%s] because: %s",aux.c_str(),SDL_GetError()));
-        return nullptr;
+            Console::GetInstance().AddTextInfo(utils::format("[RW] 1 Cannot preload sprite [%s] because: %s",aux.c_str(),SDL_GetError()));
+            return Painter::UnloadedTexture;
         }
         BearTexture *returnTexture = Sprite::Preload(rw,stdnamee,HasAliasing);
         SDL_RWclose(rw);
@@ -234,8 +234,8 @@ BearTexture *Sprite::Preload(const char *file,bool adjustDir,TextureLoadMethod H
     unsigned char* imageData = nullptr;
     SDL_RWops* rw = SDL_RWFromFile(stdnamee.c_str(), "rb");
     if (!rw){
-        Console::GetInstance().AddTextInfo(utils::format("[Standard]Cannot preload sprite [%s] because: %s",stdnamee.c_str(),SDL_GetError()));
-        return nullptr;
+        Console::GetInstance().AddTextInfo(utils::format("[SDLOpen] 2 Cannot preload sprite [%s] because: %s",stdnamee.c_str(),SDL_GetError()));
+        return Painter::UnloadedTexture;
     }
     uint64_t rsize;
     int sizeX,sizeY,comp;
@@ -248,7 +248,7 @@ BearTexture *Sprite::Preload(const char *file,bool adjustDir,TextureLoadMethod H
         stbi_image_free(imageData);
         return ret;
     }
-    return nullptr;
+    return Painter::UnloadedTexture;
 }
 
 BearTexture * Sprite::Preload(SDL_RWops* rw,std::string name,TextureLoadMethod hasAliasing){
@@ -260,7 +260,7 @@ BearTexture * Sprite::Preload(SDL_RWops* rw,std::string name,TextureLoadMethod h
     uint64_t rsize;
     if (rw == nullptr){
         Console::GetInstance().AddTextInfo(utils::format("Cannot preload rw sprite [%s]",name.c_str()));
-        return nullptr;
+        return Painter::UnloadedTexture;
     }
     char *res = ResourceManager::GetFileBuffer(rw,rsize);
     imageData = stbi_load_from_memory((stbi_uc*)res,rsize,&sizeX,&sizeY,&comp,STBI_rgb_alpha);
@@ -272,7 +272,7 @@ BearTexture * Sprite::Preload(SDL_RWops* rw,std::string name,TextureLoadMethod h
     }
 
 
-    return nullptr;
+    return Painter::UnloadedTexture;
 }
 BearTexture * Sprite::Preload(std::string fileName,ColorReplacer &r,TextureLoadMethod hasAliasing){
 
@@ -280,7 +280,7 @@ BearTexture * Sprite::Preload(std::string fileName,ColorReplacer &r,TextureLoadM
         hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
     }
     if (fileName == ""){
-        return nullptr;
+        return Painter::UnloadedTexture;
     }
     unsigned char* imageData = nullptr;
     int sizeX,sizeY,comp;
@@ -292,7 +292,7 @@ BearTexture * Sprite::Preload(std::string fileName,ColorReplacer &r,TextureLoadM
         SDL_RWops* rw = ResourceManager::GetInstance().GetFile(fileName); //safe
         if (!rw){
             bear::out << "Error loading ["<<fileName<<"]: " << SDL_GetError() << "\n";
-            return nullptr;
+            return Painter::UnloadedTexture;
         }
         uint64_t rsize;
         char *res = ResourceManager::GetFileBuffer(rw,rsize);
@@ -324,7 +324,7 @@ BearTexture * Sprite::Preload(std::string fileName,ColorReplacer &r,TextureLoadM
         stbi_image_free(imageData);
         return ret;
     }
-    return nullptr;
+    return Painter::UnloadedTexture;
 }
 
 void Sprite::Query(TexturePtr ptr){
