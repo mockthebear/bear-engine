@@ -248,6 +248,9 @@ std::string GameFile::Read(uint16_t size){
     if (!IsReading()){
         return "";
     }
+    if (size == 0xffff){
+        size = GetSize();
+    }
     std::string buffer = "";
     while (m_filePos < m_size || size > 0){
         char c = ReadByte();
