@@ -27,7 +27,7 @@ class Test_RenderSpeed: public State{
 
         };
         void Begin(){
-            ScreenManager::GetInstance().SetScreenName("Test Render Speed");
+            ScreenManager::GetInstance().SetScreenName("Test Sprite Render Speed");
             bear::out << "Testing Load sprite from an direct file:\n";
 
 

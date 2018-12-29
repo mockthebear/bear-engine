@@ -8,7 +8,7 @@ class Test_Scrolling: public State{
     public:
         Test_Scrolling(){
             requestQuit = requestDelete = false;
-            bear::out << "Test\n";
+            bear::out << "Test target texture map scrolling\n";
             duration = 300.0f;
             Camera::Initiate();
         };
@@ -16,6 +16,7 @@ class Test_Scrolling: public State{
 
         };
         void Begin(){
+            ScreenManager::GetInstance().SetScreenName("Test target texture map");
             follower = Rect(32,32,32,32);
             tset = TargetTextureTileMap(PointInt(32,32), PointInt3(160,120,2), PointInt(800,800), true);
             tset.SetSprite(Assets.make<Sprite>("data/tiles.png"));

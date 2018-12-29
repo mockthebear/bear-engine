@@ -16,6 +16,7 @@ class Test_FastTiles: public State{
 
         };
         void Begin(){
+            ScreenManager::GetInstance().SetScreenName("Test static tileset");
             GameFile fmap("data/tilemap.txt");
             PointInt3 size;
             size.x = fmap.GetNumber(true);
