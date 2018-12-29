@@ -241,19 +241,15 @@ void Joystick::Button(int button,int state){
 
 
 void Joystick::MoveAxis(int axisId,int value){
-    //std::cout << axisId <<" = " << value << "\n";
     if (HasCallAxis){
         AxisCallBack(m_id,axisId,value);
     }
-
-
 
     float changePos = MAXJOYAXIS/3;
     int tolerance = TOLERANCE;
 
     Axis[axisId] = value;
 
-    //std::cout << value;
     bool isSum = false;
     int axI = axisId*2;
     if (value < 0){
@@ -262,7 +258,6 @@ void Joystick::MoveAxis(int axisId,int value){
         isSum = true;
     }
     if (abs(value) <= tolerance){
-        //std::cout << "Released "<<axI<< " and "<<(axI+1) << "\n";
         if (axisState[axI] == PRESSED){
             axisState[axI] = JUST_RELEASED;
         }
@@ -277,12 +272,10 @@ void Joystick::MoveAxis(int axisId,int value){
 
 
     if (!isPressing){
-        //std::cout << value << " RELEASED " << axI << "\n";
         if (axisState[axI] == PRESSED){
            axisState[axI] = JUST_RELEASED;
         }
     }else{
-        //std::cout << value << " PRESSED " << axI << "\n";
         if (axisState[axI] == RELEASED){
             axisState[axI] = JUST_PRESSED;
             anyKeyPressed = axI+2000;
