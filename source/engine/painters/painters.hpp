@@ -26,7 +26,7 @@ class Painter;
 
 class BasicRenderData{
      public:
-        BasicRenderData():position(0.0f,0.0f),size(1.0f,1.0f),center(0.0f,0.0f),color(1.0f,1.0f,1.0f,1.0f),flip(0),m_scale(1.0f,1.0f),m_angle(0.0f),m_needUpdate(true){}
+        BasicRenderData():position(0.0f,0.0f),size(0.0f,0.0f),center(0.0f,0.0f),color(1.0f,1.0f,1.0f,1.0f),flip(0),m_scale(1.0f,1.0f),m_angle(0.0f),m_needUpdate(true){}
 
         void SetAngle(float p_angle){
             if (m_angle != p_angle){
@@ -69,7 +69,7 @@ class BasicRenderData{
 
 class RenderData : public BasicRenderData{
     public:
-        RenderData():BasicRenderData(),center(0.0f,0.0f),m_clip(0.0f,0.0f,1.0f,1.0f),m_forwardClip(0.0f,1.0f,0.0f,1.0f),VertexArray(0),VertexBuffer(0),ElementBuffer(0){};
+        RenderData():BasicRenderData(),center(0.0f,0.0f),m_clip(0.0f,0.0f,0.0f,0.0f),m_forwardClip(0.0f,1.0f,0.0f,1.0f),VertexArray(0),VertexBuffer(0),ElementBuffer(0){};
 
         virtual ~RenderData();
 
