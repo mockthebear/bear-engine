@@ -30,6 +30,9 @@ template <typename T> class chain_ptr{
         }
 
         static chain_ptr<T> make(T *TrueData){
+            if (TrueData == nullptr){
+                return chain_ptr();
+            }
             T ***LocalHolder = new T**[1];
             T **MainlyHolder = new T*[1];
             LocalHolder[0] = MainlyHolder;
