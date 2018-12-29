@@ -259,6 +259,7 @@
 		<Unit filename="engine/light.cpp" />
 		<Unit filename="engine/light.hpp" />
 		<Unit filename="engine/object.hpp" />
+		<Unit filename="engine/painters/common.cpp" />
 		<Unit filename="engine/painters/painteropengl1.cpp" />
 		<Unit filename="engine/painters/painteropengl2.cpp" />
 		<Unit filename="engine/painters/painteropengl3.cpp" />

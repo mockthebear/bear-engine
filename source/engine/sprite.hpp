@@ -75,7 +75,9 @@ class Animation;
 class Sprite: public RenderTexture{
     public:
 
-        Sprite():RenderTexture(),fname(""),timeElapsed(0.0f),frameTime(0.0f),over(0),repeat(0),frameCount(1),m_lf(0),currentFrame(0.0f, 0.0f),grid(1.0f, 1.0f){};
+        Sprite():RenderTexture(),fname(""),timeElapsed(0.0f),frameTime(0.0f),over(0),repeat(0),frameCount(1),m_lf(0),currentFrame(0.0f, 0.0f),grid(1.0f, 1.0f){
+            Query(m_texture);
+        };
         /**
             *This constructor its a bit special, and need a bit more attention
             *You start the sprite and pass only an SDL_Texture. There is no mapping

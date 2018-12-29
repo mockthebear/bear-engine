@@ -72,7 +72,8 @@ class Test_Sprite: public State{
             bearHead = Assets.make<Sprite>("test:bear.png",TEXTURE_TRILINEAR);
             bear::out << "Sprites loaded.\n";
 
-
+            //emptySprite.SetTexture(smol.GetTexture());
+            //emptySprite.SetRenderData(smol.GetRenderData());
 
         };
 
@@ -89,8 +90,9 @@ class Test_Sprite: public State{
         };
         void Render(){
 
-
             background.Render(0,0,0);
+
+            /*
             //
             bearHead.SetAlpha(120);
             bearHead.Render(Point(64,64),duration * 3.6f * 2.0f);
@@ -102,8 +104,18 @@ class Test_Sprite: public State{
             smol.Render(300,300,0);
             cursor.Render(g_input.GetMouse());
 
+
+
             RenderHelp::DrawSquareColor(Rect(10,10,SCREEN_SIZE_W-20,SCREEN_SIZE_H-20),255,0,255,255,true);
-            RenderHelp::DrawCircleColor(Point(400,400),86,255,0,100,100);
+            RenderHelp::DrawCircleColor(Point(400,400),86,255,0,100,100);*/
+
+
+
+
+            emptySprite.Render(Point(100,100));
+
+            //Painter::RenderTexture(Painter::UnloadedTexturePtr.get(),RenderDataPtr());
+            RenderHelp::DrawSquareColor(Rect(100,100,32,32),255,255,255,255,true);
 
         };
         void Input();
@@ -119,6 +131,7 @@ class Test_Sprite: public State{
         Sprite cursor;
         Sprite sheet,sheet2;
         Sprite smol;
+        Sprite emptySprite;
         float duration;
 };
 

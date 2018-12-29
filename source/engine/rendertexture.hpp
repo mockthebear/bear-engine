@@ -8,11 +8,14 @@
 
 class RenderTexture{
     public:
-        RenderTexture():aliasing(TEXTURE_LINEAR),m_renderData(std::make_shared<RenderData>()),size(1.0f, 1.0f),TextureSize(1.0f, 1.0f){};
+        RenderTexture():aliasing(TEXTURE_LINEAR),m_renderData(std::make_shared<RenderData>()),size(1.0f, 1.0f),TextureSize(1.0f, 1.0f){
+             m_texture = Painter::UnloadedTexturePtr;
+        };
 
         bool HasTexture();
         void SetTexture(TexturePtr t);
         RenderDataPtr GetRenderData();
+        void SetRenderData(RenderDataPtr rd){m_renderData = rd;};
         void SetFlip(SDL_RendererFlip flipState);
         SDL_RendererFlip GetFlip();
         /**

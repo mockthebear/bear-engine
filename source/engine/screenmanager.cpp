@@ -79,6 +79,7 @@ bool ScreenManager::SetupOpenGL(){
     int maxSize = Painter::GetMaxTextureSize();
     m_maxTextureSize.x = maxSize;
     m_maxTextureSize.y = maxSize;
+    Painter::SetEmptyTexture();
     return true;
 }
 
