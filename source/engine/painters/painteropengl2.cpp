@@ -325,7 +325,6 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
     BearTexture *ret = new BearTexture(texId,size.x,size.y,pow_w,pow_h,mode);
     ret->textureMode = filter;
     DisplayGlError("MakeTexture");
-    std::cout << "maded: "<<texId<<"\n";
     return ret;
 }
 
