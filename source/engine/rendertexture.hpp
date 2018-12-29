@@ -8,9 +8,11 @@
 
 class RenderTexture{
     public:
-        RenderTexture():aliasing(TEXTURE_LINEAR),m_renderData(std::make_shared<RenderData>()),size(1.0f, 1.0f),TextureSize(1.0f, 1.0f){
-             m_texture = Painter::UnloadedTexturePtr;
-        };
+        RenderTexture():aliasing(TEXTURE_LINEAR),m_renderData(std::make_shared<RenderData>()),size(1.0f, 1.0f),TextureSize(1.0f, 1.0f){};
+
+        void LoadEmpty(){
+            m_texture = Painter::UnloadedTexturePtr;
+        }
 
         bool HasTexture();
         void SetTexture(TexturePtr t);
