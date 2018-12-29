@@ -115,7 +115,7 @@ LONG CALLBACK ExceptionHandler(LPEXCEPTION_POINTERS e)
     ss << "\n";
     SymCleanup(GetCurrentProcess());
 
-    std::cout << ss.str() << "\n";
+    bear::out << ss.str() << "\n";
 
     char dir[MAX_PATH];
     GetCurrentDirectory(sizeof(dir) - 1, dir);
