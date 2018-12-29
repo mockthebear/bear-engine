@@ -69,7 +69,7 @@ class BasicRenderData{
 
 class RenderData : public BasicRenderData{
     public:
-        RenderData():BasicRenderData(),center(0.0f,0.0f),m_clip(0.0f,0.0f,0.0f,0.0f),m_forwardClip(0.0f,1.0f,0.0f,1.0f),VertexArray(0),VertexBuffer(0),ElementBuffer(0){};
+        RenderData():BasicRenderData(),center(0.0f,0.0f),m_clip(0.0f,0.0f,1.0f,1.0f),m_forwardClip(0.0f,1.0f,0.0f,1.0f),VertexArray(0),VertexBuffer(0),ElementBuffer(0){};
 
         virtual ~RenderData();
 
@@ -131,6 +131,9 @@ class Painter{
     static void SetViewport(Point screenNow,Point offset = Point(0.0f,0.0f));
     static void SetProjection(Point size,int flipScreen = SDL_FLIP_NONE);
     static void SetProjection(Rect rproj);
+
+    static void SetEmptyTexture();
+
     static glm::mat4 Projection;
 
 
@@ -177,6 +180,8 @@ class Painter{
     static Shader polygonShader;
 
     static uint32_t UnloadedTextureId;
+    static BearTexture *UnloadedTexture;
+    static TexturePtr UnloadedTexturePtr;
 
   private:
     friend class ScreenManager;

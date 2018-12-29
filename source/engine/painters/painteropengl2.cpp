@@ -234,6 +234,12 @@ void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_da
 
 bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
 
+    if (!t_texture){
+        t_texture = Painter::UnloadedTexture;
+        if (!t_texture){
+            return false;
+        }
+    }
     DisplayGlError("Pre rendering");
     bool noShader = Shader::GetCurrentShaderId() == 0;
 
@@ -255,6 +261,7 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
     if (texId == 0){
         texId = Painter::UnloadedTextureId;
     }
+
     glBindTexture( GL_TEXTURE_2D, texId );
 
     t_data->Bind();
@@ -318,6 +325,7 @@ BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,T
     BearTexture *ret = new BearTexture(texId,size.x,size.y,pow_w,pow_h,mode);
     ret->textureMode = filter;
     DisplayGlError("MakeTexture");
+    std::cout << "maded: "<<texId<<"\n";
     return ret;
 }
 
