@@ -8,6 +8,8 @@ void RenderData::UpdateVertex(){}
 
 glm::mat4 Painter::Projection;
 
+uint32_t Painter::UnloadedTextureId = 0;
+
 
 void Painter::SetViewport(Point screenNow,Point offset){
     glViewport(offset.x, offset.y, screenNow.x, screenNow.y);
@@ -117,7 +119,11 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
 
     glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture( GL_TEXTURE_2D, t_texture->id );
+    uint32_t texId = t_texture->id;
+    if (texId == 0){
+        texId = Painter::UnloadedTextureId;
+    }
+    glBindTexture( GL_TEXTURE_2D, texId );
 
     glColor4fv(t_data->color.Get4fv());
     glScalef(t_data->m_scale.x , t_data->m_scale.y , 1.0f);

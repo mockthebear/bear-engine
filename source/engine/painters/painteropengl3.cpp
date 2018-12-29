@@ -17,6 +17,7 @@ Shader Painter::pointTextureShader;
 glm::mat4 Painter::Projection;
 VertexArrayObject Painter::m_vao;
 uint32_t Painter::Buffers[4] = {0, 0, 0, 0};
+uint32_t Painter::UnloadedTextureId = 0;
 
 
 
@@ -189,7 +190,7 @@ void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_da
 }
 
 bool Painter::RenderPointTexture(BearTexture *t_texture, RenderDataPtr t_data){
-    if (!t_texture || t_texture->id == 0){
+    if (!t_texture){
         return false;
     }
     float points[] ={
@@ -237,7 +238,7 @@ bool Painter::DrawSprites(int id){
 
 
 bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
-    if (!t_texture || t_texture->id == 0){
+    if (!t_texture){
         return false;
     }
     glEnable(GL_TEXTURE_2D);
@@ -255,7 +256,12 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
 
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture( GL_TEXTURE_2D, t_texture->id );
+
+    uint32_t texId = t_texture->id;
+    if (texId == 0){
+        texId = Painter::UnloadedTextureId;
+    }
+    glBindTexture( GL_TEXTURE_2D, texId );
 
     t_data->Bind();
 

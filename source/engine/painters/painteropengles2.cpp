@@ -202,7 +202,7 @@ void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_da
 }
 
 bool Painter::RenderPointTexture(BearTexture *t_texture, RenderDataPtr t_data){
-    if (!t_texture || t_texture->id == 0){
+    if (!t_texture){
         return false;
     }
     float points[] ={
@@ -269,7 +269,11 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
 
 
 
-    glBindTexture( GL_TEXTURE_2D, t_texture->id );
+    uint32_t texId = t_texture->id;
+    if (texId == 0){
+        texId = Painter::UnloadedTextureId;
+    }
+    glBindTexture( GL_TEXTURE_2D, texId );
 
     t_data->Bind();
 

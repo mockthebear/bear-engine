@@ -12,6 +12,7 @@ Shader Painter::textureShader;
 Shader Painter::polygonShader;
 Shader Painter::pointTextureShader;
 uint32_t Painter::Buffers[4] = {0, 0, 0, 0};
+uint32_t Painter::UnloadedTextureId = 0;
 
 uint32_t Painter::GetSharedBuffer(int id){
     return Buffers[id];
@@ -250,7 +251,11 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
 
     DisplayGlError("Activated");
 
-    glBindTexture( GL_TEXTURE_2D, t_texture->id );
+    uint32_t texId = t_texture->id;
+    if (texId == 0){
+        texId = Painter::UnloadedTextureId;
+    }
+    glBindTexture( GL_TEXTURE_2D, texId );
 
     t_data->Bind();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -352,6 +357,9 @@ bool Painter::SetupEnvoriment(ScreenManager *sm){
     bear::out << "Making buffers\n";
 	glGenBuffers(4, Painter::Buffers);
 	DisplayGlError("SetupEnvoriment");
+
+
+	UnloadedTextureId = 0; //todo
     return true;
 }
 

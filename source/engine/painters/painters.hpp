@@ -172,9 +172,11 @@ class Painter{
     }
     static uint32_t GetSharedBuffer(int id);
 
-     static Shader textureShader;
+    static Shader textureShader;
     static Shader pointTextureShader;
     static Shader polygonShader;
+
+    static uint32_t UnloadedTextureId;
 
   private:
     friend class ScreenManager;
