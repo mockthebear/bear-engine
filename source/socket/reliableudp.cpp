@@ -153,7 +153,7 @@ void ReliableUdpServer::Update(float dt){
                 event.peer->data = (void*)m_lastPid;
                 peers[m_lastPid] = event.peer;
                 peerIds.emplace_back(m_lastPid);
-                printf ("%d connect on server. = %d  from : %x\n", (int)m_lastPid,event.peer,event.peer -> address.host);
+                printf ("%d connect on server. = %d  from : %x\n", (int)m_lastPid,event.peer, (int)event.peer -> address.host);
                 m_lastPid++;
                 break;
             }
@@ -167,7 +167,7 @@ void ReliableUdpServer::Update(float dt){
             }
 
             case ENET_EVENT_TYPE_DISCONNECT:{
-                printf ("%d disconnected.\n", (uint64_t)event.peer -> data);
+                printf ("%d disconnected.\n", (int)event.peer -> data);
                 peerIds.remove(m_lastPid);
             }
         }
