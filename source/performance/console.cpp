@@ -97,9 +97,9 @@ bool Console::AddText(std::string _str,bool onlyGraphic){
         if (onlyGraphic)
             return false;
         StoredLines.emplace_back("[N.S] " + _str);
-        std::cout << "[Console:Not started] "<<_str<<"\n";
+        std::cout << _str<<"\n";
         if (logFile)
-            myfile << "[Console:Not started] "<<_str<<"\r\n";
+            myfile << _str<<"\r\n";
 
 
 
