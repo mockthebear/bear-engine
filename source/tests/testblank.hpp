@@ -13,7 +13,7 @@ class Test_: public State{
 
         };
         void Begin(){
-
+            ScreenManager::GetInstance().SetScreenName("Test");
         };
 
         void Update(float dt){
