@@ -99,6 +99,7 @@ namespace utils {
     char ReadChar(std::string &str);
 
 
+
     template<typename T> class Mat3{
         public:
             Mat3(){
@@ -164,6 +165,7 @@ namespace utils {
 			return 1;
         }
     };
+
     template<typename T,int N> class MatN{
         public:
             MatN(){
@@ -174,18 +176,46 @@ namespace utils {
                     bear::out << "wrong argument size1\n";
                     return;
                 }
-                TotalSize = expander<sizeof...(Types)>::expand(N,coordSizes,args...);
+                m_isDynamic = true;
+                m_totalSize = expander<sizeof...(Types)>::expand(N,coordSizes,args...);
 				try {
-					Data = new T[ TotalSize ];
+					Data = new T[ m_totalSize ];
 				}
 				catch (const std::bad_alloc& e) {
 					bear::out << "Allocation failed: " << e.what() << '\n';
 					getchar();
 				}
                 if (!Data){
-                    bear::out << "Cannot allocate an matrix sized with "<<(TotalSize*sizeof(T)) << " bytes\n";
+                    bear::out << "Cannot allocate an matrix sized with "<<(m_totalSize*sizeof(T)) << " bytes\n";
                 }
             };
+
+            template <typename ... Types> MatN(T * dat, Types ... args):MatN(){
+				if ((sizeof...(Types)) != N){
+                    bear::out << "wrong argument size1\n";
+                    return;
+                }
+                m_isDynamic = false;
+                m_totalSize = expander<sizeof...(Types)>::expand(N,coordSizes,args...);
+                Data = dat;
+                if (!Data){
+                    bear::out << "Passed a null data!\n";
+                }
+            };
+
+            template <typename ... Types> MatN(T **dat, Types ... args):MatN(){
+				if ((sizeof...(Types)) != N){
+                    bear::out << "wrong argument size1\n";
+                    return;
+                }
+                m_isDynamic = false;
+                m_totalSize = expander<sizeof...(Types)>::expand(N,coordSizes,args...);
+                Data = (T*)dat;
+                if (!Data){
+                    bear::out << "Passed a null data!\n";
+                }
+            };
+
             template <typename ... Types> T &at(Types ... args){
                 if ((sizeof...(Types)) != N){
                     bear::out << "wrong argument size 2. Got "<<(sizeof...(Types))<<" expected " << N <<"\n";
@@ -194,14 +224,15 @@ namespace utils {
                 return Data[ addrOffset ];
             }
             void erase(){
-                if (Data){
+                if (Data && m_isDynamic){
                     delete [] Data;
                 }
             }
 
         private:
             uint32_t coordSizes[N+1];
-            uint32_t TotalSize;
+            uint32_t m_totalSize;
+            bool m_isDynamic;
             T *Data;
     };
 
@@ -262,6 +293,8 @@ template<typename T> class GenericIterator{
         T **vector;
         int sz;
 };
+
+
 
 
 #endif
