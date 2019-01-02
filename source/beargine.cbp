@@ -289,6 +289,7 @@
 		<Unit filename="engine/text.hpp" />
 		<Unit filename="engine/tiles/buffertilemap.cpp" />
 		<Unit filename="engine/tiles/buffertilemap.hpp" />
+		<Unit filename="engine/tiles/nodetileset.hpp" />
 		<Unit filename="engine/tiles/targettexturetilemap.cpp" />
 		<Unit filename="engine/tiles/targettexturetilemap.hpp" />
 		<Unit filename="engine/tiles/tilemap.cpp" />
@@ -316,6 +317,8 @@
 		<Unit filename="framework/resourcemanager.hpp" />
 		<Unit filename="framework/schedule.cpp" />
 		<Unit filename="framework/schedule.hpp" />
+		<Unit filename="framework/segment/node.hpp" />
+		<Unit filename="framework/segment/segmenter.hpp" />
 		<Unit filename="framework/threadpool.cpp" />
 		<Unit filename="framework/threadpool.hpp" />
 		<Unit filename="framework/typechecker.cpp" />
@@ -521,6 +524,8 @@
 		<Unit filename="tests/testjoystick.hpp" />
 		<Unit filename="tests/testlight.hpp" />
 		<Unit filename="tests/testlua.hpp" />
+		<Unit filename="tests/testnode.hpp" />
+		<Unit filename="tests/testnodetileset.hpp" />
 		<Unit filename="tests/testpathfind.hpp" />
 		<Unit filename="tests/testpointtileset.hpp" />
 		<Unit filename="tests/testpool.hpp" />
