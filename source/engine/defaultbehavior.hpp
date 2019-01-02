@@ -74,6 +74,6 @@ class DefaultBehavior: public Behavior{
 
         virtual bool Begin();
 
-        virtual void DropFile(const char *c){};
+        virtual void DropFile(const char *){};
 };
 #endif // DEFBEHAVRIORH
