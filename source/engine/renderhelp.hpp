@@ -27,6 +27,8 @@ class RenderHelp{
             @param a alpha = 255
         */
 
+        static void DrawPointsColor(std::vector<Point> points,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f);
+
         static void DrawLinesColor(std::vector<Point> lines,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f);
         static void DrawSquaresColor(std::vector<Rect> rects,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false);
 

@@ -108,6 +108,28 @@ void RenderHelp::DrawSquaresColor(std::vector<Rect> rects,uint8_t r,uint8_t g,ui
     }
     DisplayGlError("DrawSquaresColor");
 }
+void RenderHelp::DrawPointsColor(std::vector<Point> points,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thickness){
+    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+    static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
+
+    if (points.size() == 0){
+        return;
+    }
+
+    renderData->color = BearColor(r,g,b,a);
+
+    vertexBuffer->clear();
+
+    bool first = true;
+    for (auto &it : points){
+        vertexBuffer->vertexes.AddVertice(it);
+    }
+    vertexBuffer->SetupVertexes();
+
+    Painter::DrawVertex(vertexBuffer,renderData,GL_POINTS,GL_IS_AUTOBOUND);
+    DisplayGlError("DrawPointsColor");
+}
+
 
 void RenderHelp::DrawLinesColor(std::vector<Point> lines,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thickness){
     static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
