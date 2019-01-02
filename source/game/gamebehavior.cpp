@@ -32,6 +32,7 @@
 #include "../tests/testfasttile.hpp"
 #include "../tests/testrectrenderspeed.hpp"
 #include "../tests/testnode.hpp"
+#include "../tests/testnodetileset.hpp"
 
 
 
@@ -111,13 +112,14 @@ bool GameBehavior::OnLoad(){
     Game::GetInstance()->AddState(new Test_RectRenderSpeed());
     Game::GetInstance()->AddState(new Test_PathFind());
     Game::GetInstance()->AddState(new Test_Text());
+    Game::GetInstance()->AddState(new Test_NodeTileset());
     Game::GetInstance()->AddState(new Test_FastTiles());
     Game::GetInstance()->AddState(new Test_Shader());
     Game::GetInstance()->AddState(new Test_Sprite());
+    Game::GetInstance()->AddState(new Test_Node());
     Game::GetInstance()->AddState(new Test_Pool());
     Game::GetInstance()->AddState(new Test_Joystick());
     Game::GetInstance()->AddState(new Test_Shapes());
-    Game::GetInstance()->AddState(new Test_Node());
     Game::GetInstance()->AddState(new Test_Files());
 
     return DefaultBehavior::GetInstance().OnLoad();
