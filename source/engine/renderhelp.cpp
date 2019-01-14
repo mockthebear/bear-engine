@@ -60,16 +60,16 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
 }
 
 
-void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline, float angle){
+void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline, float angle,const BearColor colors[4]){
     static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
     static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
 
     renderData->color = BearColor(r,g,b,a);
     vertexBuffer->clear();
     if (!outline){
-        vertexBuffer->vertexes.Generate(box, false,angle);
+        vertexBuffer->vertexes.Generate(box, angle, false, colors);
     }else{
-        vertexBuffer->vertexes.GenerateLineLoop(box, false);
+        vertexBuffer->vertexes.GenerateLineLoop(box, false, colors);
     }
 
     vertexBuffer->SetupVertexes();
@@ -93,7 +93,7 @@ void RenderHelp::DrawSquaresColor(std::vector<Rect> rects,uint8_t r,uint8_t g,ui
 
     for (auto &it : rects){
         if (!outline){
-            vertexBuffer->vertexes.Generate(it, false);
+            vertexBuffer->vertexes.Generate(it,0.0f, false);
         }else{
             vertexBuffer->vertexes.GenerateLineLoop(it, false);
         }
@@ -131,7 +131,7 @@ void RenderHelp::DrawPointsColor(std::vector<Point> points,uint8_t r,uint8_t g,u
 }
 
 
-void RenderHelp::DrawLinesColor(std::vector<Point> lines,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thickness){
+void RenderHelp::DrawLinesColor(std::vector<GameVertice> lines,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thickness){
     static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
     static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
 
@@ -146,17 +146,14 @@ void RenderHelp::DrawLinesColor(std::vector<Point> lines,uint8_t r,uint8_t g,uin
     vertexBuffer->clear();
 
     bool first = true;
-    Point lastP;
-    for (auto &it : lines){
-        if (first){
-            lastP = it;
-            first = false;
-            continue;
-        }
-        vertexBuffer->vertexes.Generate(lastP, it);
-        lastP = it;
-
+    GameVertice lastP;
+    if (lines.size()%2 == 1){
+        vertexBuffer->vertexes.AddVertice(*(lines.end()-1) );
     }
+    for (auto &it : lines){
+        vertexBuffer->vertexes.AddVertice(it);
+    }
+
     vertexBuffer->SetupVertexes();
 
 

@@ -1,10 +1,10 @@
 #pragma once
 #include "../engine/libheader.hpp"
+#include "../engine/basetypes.hpp"
 #include "geometry.hpp"
 #include <memory>
 #include <iostream>
 #include <vector>
-
 
 
 class Vertex{
@@ -20,18 +20,21 @@ class Vertex{
         void AddVertexes(int size,float *f);
         void AddIndices(int size,uint32_t *f);
 
-
-        int Generate(Rect r,bool onlyOnes = true, float theta = 0);
-        int GenerateLineLoop(Rect r,bool onlyOnes = true);
+        int Generate(Rect r,float theta = 0.0f, bool onlyOnes = true, const BearColor colors[4] = BCWhite4);
+        int GenerateLineLoop(Rect r,bool onlyOnes = true, const BearColor colors[4] = BCWhite4);
         int Generate(Circle r,int triangleAmount);
-        int Generate(Point p1, Point p2);
-        int AddVertice(Point p1);
+
+
+        int Generate(Point p1, Point p2, BearColor c1 = BearColor(),  BearColor c2 = BearColor());
+        int AddVertice(Point p1, BearColor color = BearColor());
+        int AddVertice(GameVertice vert);
         int RepeatLastIndex();
         std::vector<float> vertexData;
         std::vector<uint32_t> indexes;
         uint32_t indexCount;
 
         bool useIndexes;
+
 };
 
 

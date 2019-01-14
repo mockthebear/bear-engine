@@ -29,7 +29,7 @@ void LineGraph::Render(Point pos){
         double spread = size.x/(double)dataCount;
         int count = 0;
         lastY = data[0];
-        std::vector<Point> lines;
+        std::vector<GameVertice> lines;
         for (auto &it : data){
             double y = pos.y+size.y-1;
             double x = pos.x;
