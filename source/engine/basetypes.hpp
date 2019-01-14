@@ -1,5 +1,6 @@
 #pragma once
 #include "libheader.hpp"
+#include "../framework/geometry.hpp"
 #include "../framework/debughelper.hpp"
 #include "../framework/chainptr.hpp"
 
@@ -28,6 +29,42 @@ typedef class BearColor{
             return &r;
         }
 } BearColor;
+
+class GameVertice{
+    public:
+        GameVertice():x(0.0f),y(0.0f),r(1.0f),g(1.0f),b(1.0f),a(1.0f){};
+        GameVertice(float x_,float y_):x(x_),y(y_),r(1.0f),g(1.0f),b(1.0f),a(1.0f){};
+        GameVertice(float x_,float y_,float r_,float g_,float b_,float a_):x(x_),y(y_),r(r_),g(g_),b(b_),a(a_){};
+        GameVertice(Point p1):GameVertice(p1.x, p1.y){};
+        GameVertice(Point p1, BearColor color){
+            x = p1.x;
+            y = p1.y;
+            r = color.r;
+            g = color.g;
+            b = color.b;
+            a = color.a;
+        };
+
+
+        float *begin(){
+            return &r;
+        }
+
+        float *end(){
+            return (&r) + GetSize();
+        }
+        static inline int GetSize(){
+            return sizeof(GameVertice);
+        }
+
+
+        float x,y,r,g,b,a;
+};
+
+
+extern const BearColor BCWhite4[4];
+extern const BearColor BCWhite2[2];
+
 
 enum TextureLoadMethodEnum{
     TEXTURE_DEFAULT,

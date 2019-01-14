@@ -16,7 +16,7 @@ void Vertex::AddIndices(int size,uint32_t *f){
         }
     }
 }
-
+/*
 int Vertex::Generate(Rect r, bool onlyOnes, float ang){
     if (onlyOnes){
         r = Rect(0.0f, 0.0f, 1.0f, 1.0f);
@@ -26,18 +26,18 @@ int Vertex::Generate(Rect r, bool onlyOnes, float ang){
     float s = sin(ang);
     float c = cos(ang);
     float vertices[] = {
-        0.0f    , 0.0f,
-        0.0f    , r.h,
-        r.w     , r.h,
-        r.w     , 0.0f,
+        0.0f    , 0.0f, 1.0, 1.0, 1.0, 1.0,
+        0.0f    , r.h,  1.0, 1.0, 1.0, 1.0,
+        r.w     , r.h,  1.0, 1.0, 1.0, 1.0,
+        r.w     , 0.0f, 1.0, 1.0, 1.0, 1.0,
     };
     for (int i=0;i<4;i++){
-        float px = vertices[i * 2  + 0] -= center.x;
-        float py = vertices[i * 2  + 1] -= center.y;
-        vertices[i * 2  + 0] = (px * c - py * s) + center.x + r.x;
-        vertices[i * 2  + 1] = (px * s + py * c) + center.y + r.y;
+        float px = vertices[i * 6  + 0] -= center.x;
+        float py = vertices[i * 6  + 1] -= center.y;
+        vertices[i * 6  + 0] = (px * c - py * s) + center.x + r.x;
+        vertices[i * 6  + 1] = (px * s + py * c) + center.y + r.y;
     }
-    vertexData.insert(vertexData.end(), &vertices[0], &vertices[8]);
+    vertexData.insert(vertexData.end(), &vertices[0], &vertices[24]);
 
     if (useIndexes){
         uint32_t indices[] = {
@@ -47,20 +47,55 @@ int Vertex::Generate(Rect r, bool onlyOnes, float ang){
         indexCount += 4;
         indexes.insert(indexes.end(), &indices[0], &indices[6]);
     }
-    return 8;
+    return 4;
+}*/
+
+
+
+int Vertex::Generate(Rect r,float ang, bool onlyOnes, const BearColor colors[4]){
+    if (onlyOnes){
+        r = Rect(0.0f, 0.0f, 1.0f, 1.0f);
+    }
+    Point center(r.w/2.0f ,  r.h/2.0f);
+    ang = Geometry::toRad(ang);
+    float s = sin(ang);
+    float c = cos(ang);
+    float vertices[] = {
+        0.0f    , 0.0f, colors[0].r, colors[0].g, colors[0].b, colors[0].a,
+        0.0f    , r.h,  colors[1].r, colors[1].g, colors[1].b, colors[1].a,
+        r.w     , r.h,  colors[2].r, colors[2].g, colors[2].b, colors[2].a,
+        r.w     , 0.0f, colors[3].r, colors[3].g, colors[3].b, colors[3].a,
+    };
+    for (int i=0;i<4;i++){
+        float px = vertices[i * 6  + 0] -= center.x;
+        float py = vertices[i * 6  + 1] -= center.y;
+        vertices[i * 6  + 0] = (px * c - py * s) + center.x + r.x;
+        vertices[i * 6  + 1] = (px * s + py * c) + center.y + r.y;
+    }
+    vertexData.insert(vertexData.end(), &vertices[0], &vertices[24]);
+
+    if (useIndexes){
+        uint32_t indices[] = {
+            indexCount, indexCount+1, indexCount+3,
+            indexCount+1, indexCount+2, indexCount+3,
+        };
+        indexCount += 4;
+        indexes.insert(indexes.end(), &indices[0], &indices[6]);
+    }
+    return 4;
 }
 
-int Vertex::GenerateLineLoop(Rect r, bool onlyOnes){
+int Vertex::GenerateLineLoop(Rect r, bool onlyOnes, const BearColor colors[4]){
     if (onlyOnes){
         r = Rect(0.0f, 0.0f, 1.0f, 1.0f);
     }else{
         r.PositionSized();
     }
     uint32_t vtcs = 0;
-    vtcs += Generate(Point(r.x, r.y), Point(r.w, r.y));
-    vtcs += Generate(Point(r.w, r.y), Point(r.w, r.h));
-    vtcs += Generate(Point(r.w, r.h), Point(r.x, r.h));
-    vtcs += Generate(Point(r.x, r.h), Point(r.x, r.y));
+    vtcs += Generate(Point(r.x, r.y), Point(r.w, r.y), colors[0], colors[1]);
+    vtcs += Generate(Point(r.w, r.y), Point(r.w, r.h), colors[1], colors[2]);
+    vtcs += Generate(Point(r.w, r.h), Point(r.x, r.h), colors[2], colors[3]);
+    vtcs += Generate(Point(r.x, r.h), Point(r.x, r.y), colors[3], colors[0]);
     return vtcs;
 }
 
@@ -74,11 +109,12 @@ int Vertex::RepeatLastIndex(){
     return 0;
 }
 
-int Vertex::AddVertice(Point p1){
+int Vertex::AddVertice(GameVertice vert){
     float vertices[] = {
-        p1.x  , p1.y,
+        vert.x  , vert.y, vert.r, vert.g, vert.b, vert.a,
     };
-    vertexData.insert(vertexData.end(), &vertices[0], &vertices[2]);
+    vertexData.insert(vertexData.end(), &vertices[0], &vertices[6]);
+    //vertexData.insert(vertexData.end(), vert.begin(), vert.end());
     if (useIndexes){
         uint32_t indices[] = {
             indexCount,
@@ -89,12 +125,27 @@ int Vertex::AddVertice(Point p1){
     return 1;
 }
 
-int Vertex::Generate(Point p1,Point p2){
+int Vertex::AddVertice(Point p1, BearColor c){
     float vertices[] = {
-        p1.x  , p1.y,
-        p2.x  , p2.y,
+        p1.x  , p1.y, c.r, c.g, c.b, c.a,
     };
-    vertexData.insert(vertexData.end(), &vertices[0], &vertices[4]);
+    vertexData.insert(vertexData.end(), &vertices[0], &vertices[6]);
+    if (useIndexes){
+        uint32_t indices[] = {
+            indexCount,
+        };
+        indexCount += 1;
+        indexes.insert(indexes.end(), &indices[0], &indices[1]);
+    }
+    return 1;
+}
+
+int Vertex::Generate(Point p1,Point p2, BearColor c1,  BearColor c2){
+    float vertices[] = {
+        p1.x  , p1.y, c1.r, c1.g, c1.b, c1.a,
+        p2.x  , p2.y, c2.r, c2.g, c2.b, c2.a,
+    };
+    vertexData.insert(vertexData.end(), &vertices[0], &vertices[12]);
     if (useIndexes){
         uint32_t indices[] = {
             indexCount, indexCount+1,
@@ -228,6 +279,7 @@ void VertexArrayObject::Bind(){
 
 void VertexArrayObject::SetAttributes(){
     GLint posAttrib = 0;
+    GLint colorAttrib = 1;
 
     #ifdef NEED_SHADER_LOCATION
     uint32_t shaderId = 0;
@@ -235,10 +287,27 @@ void VertexArrayObject::SetAttributes(){
         shaderId = Painter::polygonShader.GetId();
     }
     posAttrib = glGetAttribLocation(shaderId, "vPos");
+    colorAttrib = glGetAttribLocation(shaderId, "vColor");
     #endif // NEED_SHADER_LOCATION
 
+    /*glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, elements * sizeof(float), 0); //Position
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(2 * sizeof(float))); //Vertex clip
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(6 * sizeof(float))); //image size
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(8 * sizeof(float))); //scale
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(10 * sizeof(float))); //rotation
+        */
+
     glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+
+    glEnableVertexAttribArray(colorAttrib);
+    glVertexAttribPointer(colorAttrib, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(2 * sizeof(float)) );
+
 }
 
 
@@ -303,6 +372,7 @@ bool VertexArrayObject::SetupVertexes(){
     SetElementBuffer(&vertexes.indexes[0], vertexes.indexes.size() * sizeof(uint32_t));
     SetAttributes();
     DisplayGlError("on set attr");
+
     return true;
 }
 /*

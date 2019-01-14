@@ -2,6 +2,19 @@
 #include "painters/painters.hpp"
 #include "../framework/geometry.hpp"
 
+
+const BearColor BCWhite4[4] = {
+    BearColor(),
+    BearColor(),
+    BearColor(),
+    BearColor(),
+};
+
+const BearColor BCWhite2[2] = {
+    BearColor(),
+    BearColor(),
+};
+
 void BearTexture::ApplyPixels(uint8_t *pixels){
     if (id != 0){
         Painter::SetTexturePixels(id, PointInt(size_w,size_h), mode, pixels);
