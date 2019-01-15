@@ -44,7 +44,7 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
     static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
 
 
-    Circle c(p1.x,p1.x,radius);
+    Circle c(p1.x,p1.y,radius);
     renderData->position = p1;
     renderData->size.x = radius;
     renderData->size.y = radius;
