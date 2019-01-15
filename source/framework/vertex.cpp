@@ -158,19 +158,30 @@ int Vertex::Generate(Point p1,Point p2, BearColor c1,  BearColor c2){
 
 int Vertex::Generate(Circle r, int triangleAmount){
 
-    vertexData.emplace_back(0.0f);
-    vertexData.emplace_back(0.0f);
+
+    //AddVertice(Point(r.x, r.y), BearColor());
+    vertexData.emplace_back(r.x);
+    vertexData.emplace_back(r.y);
+    vertexData.emplace_back(1.0f);
+    vertexData.emplace_back(1.0f);
+    vertexData.emplace_back(1.0f);
+    vertexData.emplace_back(1.0f);
 
     if (useIndexes){
         indexes.emplace_back(indexCount);
         indexCount ++;
     }
 
+
     float angle;
     for (int i = 0; i <= triangleAmount; i++){
         angle = i * 2.0f * Geometry::PI() / (float)triangleAmount;
-        vertexData.emplace_back(cos(angle));
-        vertexData.emplace_back(sin(angle));
+        vertexData.emplace_back(r.x + r.r * cos(angle));
+        vertexData.emplace_back(r.y + r.r * sin(angle));
+        vertexData.emplace_back(1.0f);
+        vertexData.emplace_back(1.0f);
+        vertexData.emplace_back(1.0f);
+        vertexData.emplace_back(1.0f);
         if (useIndexes){
             indexes.emplace_back(indexCount);
             indexCount ++;
