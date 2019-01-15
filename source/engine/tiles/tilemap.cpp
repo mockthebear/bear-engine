@@ -43,6 +43,15 @@ void TileMap::SetTile(PointInt3 pos, Tile t){
     m_map.get()[memOffset] = t;
 }
 
+Tile& TileMap::GetTile(PointInt3 pos){
+    static Tile EmptyTile;
+    uint32_t memOffset = CalculateOffset(pos);
+    if (pos.x >= m_size.x || pos.y >= m_size.y || pos.z >= m_size.z){
+        return EmptyTile;
+    }
+    return m_map.get()[memOffset];
+}
+
 uint32_t TileMap::CalculateOffset(PointInt3 pos){
     uint32_t ret = pos.x + (pos.y * m_size.x) + (pos.z * m_size.x * m_size.y);
     return ret;

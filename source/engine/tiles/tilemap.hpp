@@ -29,8 +29,16 @@ class TileMap: public TileSet{
 
         virtual void Render(Point offset, Rect vision=Rect(-1.0f));
         virtual void SetTile(PointInt3 pos, Tile t);
+        virtual Tile& GetTile(PointInt3 pos);
 
         virtual uint32_t CalculateOffset(PointInt3 pos);
+
+        virtual bool IsValidPosition(PointInt3 pos){
+            if (pos.x >= m_size.x || pos.y >= m_size.y || pos.z >= m_size.z || pos.x < 0 || pos.y < 0 || pos.z < 0){
+                return false;
+            }
+            return true;
+        }
 
         void SetBlankTile(uint32_t id){
             m_blankTile = id;
