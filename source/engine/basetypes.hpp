@@ -9,6 +9,7 @@ typedef class BearColor{
         BearColor():r(1.0f),g(1.0f),b(1.0f),a(1.0f){};
         BearColor(float f1):r(f1),g(f1),b(f1),a(f1){};
         BearColor(float f1,float f2,float f3,float f4):r(f1),g(f2),b(f3),a(f4){};
+        BearColor(double f1,double f2,double f3,double f4):r(f1),g(f2),b(f3),a(f4){};
         BearColor(uint8_t f1,uint8_t f2,uint8_t f3,uint8_t f4):r(f1/255.0f),g(f2/255.0f),b(f3/255.0f),a(f4/255.0f){};
         float r,g,b,a;
         float& operator[](int x){
@@ -29,6 +30,9 @@ typedef class BearColor{
             return &r;
         }
 } BearColor;
+
+extern const BearColor BCWhite4[4];
+extern const BearColor BCWhite2[2];
 
 class GameVertice{
     public:
@@ -61,9 +65,27 @@ class GameVertice{
         float x,y,r,g,b,a;
 };
 
+class RectColor{
+    public:
+        RectColor():box(),colors(BCWhite4),angle(0.0f){};
+        RectColor(Rect r,const BearColor cols[4] = BCWhite4, float ang = 0.0f):box(r),colors(BCWhite4),angle(ang){
+            for (int i=0;i<4;i++)
+                colors[i] = cols[i];
+        };
+        RectColor(Rect r,const BearColor col, float ang = 0.0f):box(r),colors(BCWhite4),angle(ang){
+            SetColor(col);
+        };
+        void SetColor(const BearColor &col){
+            for (int i=0;i<4;i++)
+                colors[i] = col;
+        }
+    Rect box;
+    BearColor colors[4];
+    float angle;
+};
 
-extern const BearColor BCWhite4[4];
-extern const BearColor BCWhite2[2];
+
+
 
 
 enum TextureLoadMethodEnum{

@@ -1,5 +1,5 @@
 #include "testthread.hpp"
-#ifdef RUN_TESTS
+#ifndef DISABLE_UNIT_TESTS
 
 #ifndef DISABLE_THREADPOOL
 int  Test_Threadpool::iterations = 0;

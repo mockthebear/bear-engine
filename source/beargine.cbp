@@ -481,6 +481,9 @@
 		<Unit filename="luasystem/luagamestate.hpp" />
 		<Unit filename="luasystem/luainterface.cpp" />
 		<Unit filename="luasystem/luainterface.hpp" />
+		<Unit filename="luasystem/luamethodregister.cpp" />
+		<Unit filename="luasystem/luamethodregisterassets.cpp" />
+		<Unit filename="luasystem/luamethodregisterengine.cpp" />
 		<Unit filename="luasystem/luaobject.cpp" />
 		<Unit filename="luasystem/luaobject.hpp" />
 		<Unit filename="luasystem/luatools.cpp" />
@@ -502,6 +505,7 @@
 		<Unit filename="settings/configmanager.cpp" />
 		<Unit filename="settings/configmanager.hpp" />
 		<Unit filename="settings/definitions.hpp" />
+		<Unit filename="settings/settings.hpp" />
 		<Unit filename="socket/reliableudp.cpp" />
 		<Unit filename="socket/reliableudp.hpp" />
 		<Unit filename="socket/socket.cpp" />
@@ -526,6 +530,7 @@
 		<Unit filename="tests/testlua.hpp" />
 		<Unit filename="tests/testnode.hpp" />
 		<Unit filename="tests/testnodetileset.hpp" />
+		<Unit filename="tests/testobject.hpp" />
 		<Unit filename="tests/testpathfind.hpp" />
 		<Unit filename="tests/testpointtileset.hpp" />
 		<Unit filename="tests/testpool.hpp" />
@@ -538,6 +543,7 @@
 		<Unit filename="tests/testsocket.hpp" />
 		<Unit filename="tests/testsound.hpp" />
 		<Unit filename="tests/testsprite.hpp" />
+		<Unit filename="tests/testsuite.hpp" />
 		<Unit filename="tests/testtargettexture.hpp" />
 		<Unit filename="tests/testtext.hpp" />
 		<Unit filename="tests/testthread.cpp" />

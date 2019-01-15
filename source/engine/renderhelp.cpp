@@ -81,7 +81,7 @@ void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t 
     }
 }
 
-void RenderHelp::DrawSquaresColor(std::vector<Rect> rects,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline){
+void RenderHelp::DrawSquaresColor(std::vector<RectColor> rects,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline){
     static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
     static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
 
@@ -93,11 +93,12 @@ void RenderHelp::DrawSquaresColor(std::vector<Rect> rects,uint8_t r,uint8_t g,ui
 
     for (auto &it : rects){
         if (!outline){
-            vertexBuffer->vertexes.Generate(it,0.0f, false);
+            vertexBuffer->vertexes.Generate(it.box, it.angle, false, it.colors );
         }else{
-            vertexBuffer->vertexes.GenerateLineLoop(it, false);
+            vertexBuffer->vertexes.GenerateLineLoop(it.box, false,  it.colors);
         }
     }
+
     vertexBuffer->SetupVertexes();
 
 
@@ -163,8 +164,8 @@ void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,u
     static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
 
     renderData->color = BearColor(r,g,b,a);
-    renderData->size.x = 1;
-    renderData->size.y = 1;
+    renderData->size.x = thicc;
+    renderData->size.y = thicc;
 
 
     vertexBuffer->clear();

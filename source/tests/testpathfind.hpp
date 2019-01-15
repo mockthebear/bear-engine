@@ -1,5 +1,5 @@
 #include "../settings/definitions.hpp"
-#ifdef RUN_TESTS
+#ifndef DISABLE_UNIT_TESTS
 
 
 
@@ -51,7 +51,7 @@ class Test_PathFind: public State{
         };
         void Render(){
             //bear::out << "B\n";
-            std::vector<Rect> recs;
+            std::vector<RectColor> recs;
             for (auto &it : Blocks){
                 int x = ((int)it.x)%16;
                 int y = ((int)it.y)%16;
@@ -80,5 +80,5 @@ class Test_PathFind: public State{
         PathFind* pf;
         Point start,finish;
 };
-#endif // RUN_TESTS
+#endif // DISABLE_UNIT_TESTS
 

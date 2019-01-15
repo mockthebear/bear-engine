@@ -11,6 +11,8 @@
 */
 
 
+
+
 class RenderHelp{
     public:
 
@@ -27,10 +29,10 @@ class RenderHelp{
             @param a alpha = 255
         */
 
-        static void DrawPointsColor(std::vector<Point> points,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f);
+        static void DrawPointsColor(std::vector<Point> points,uint8_t r=255,uint8_t g=255,uint8_t b=255,uint8_t a=255,float thickness=1.0f);
 
-        static void DrawLinesColor(std::vector<GameVertice> lines,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f);
-        static void DrawSquaresColor(std::vector<Rect> rects,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false);
+        static void DrawLinesColor(std::vector<GameVertice> lines,uint8_t r=255,uint8_t g=255,uint8_t b=255,uint8_t a=255,float thickness=1.0f);
+        static void DrawSquaresColor(std::vector<RectColor> rects,uint8_t r=255,uint8_t g=255,uint8_t b=255,uint8_t a=255,bool outline=false);
 
 
         static void DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f);

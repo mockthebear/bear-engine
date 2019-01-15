@@ -1,5 +1,5 @@
 #include "../settings/definitions.hpp"
-#ifdef RUN_TESTS
+#ifndef DISABLE_UNIT_TESTS
 
 
 
@@ -90,5 +90,5 @@ class Test_Lua: public State{
 
 #endif // LUATESTSUITE
 #endif // DISABLE_LUAINTERFACE
-#endif // RUN_TESTS
+#endif // DISABLE_UNIT_TESTS
 

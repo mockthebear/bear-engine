@@ -1,5 +1,5 @@
 #include "../settings/definitions.hpp"
-#ifdef RUN_TESTS
+#ifndef DISABLE_UNIT_TESTS
 
 
 
@@ -67,4 +67,4 @@ class Test_PostProcess: public State{
         float duration;
 };
 
-#endif // RUN_TESTS
+#endif // DISABLE_UNIT_TESTS

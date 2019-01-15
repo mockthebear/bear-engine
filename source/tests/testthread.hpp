@@ -1,5 +1,5 @@
 #include "../settings/definitions.hpp"
-#ifdef RUN_TESTS
+#ifndef DISABLE_UNIT_TESTS
 
 
 
@@ -114,4 +114,4 @@ class Test_Threadpool: public State{
 
 #endif // THREADPOOLTEST
 #endif // DISABLE_THREADPOOL
-#endif // RUN_TESTS
+#endif // DISABLE_UNIT_TESTS

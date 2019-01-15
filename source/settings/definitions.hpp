@@ -1,63 +1,26 @@
 ///Core Settings
+#include "settings.hpp"
+/*
+
+*/
+
 #define BearEngine Game::GetInstance()
-
-
-
-#define APPNAME "Bear engine"
-
 #define __BEHAVIOR_FOLDER__ "../game/gamebehavior.hpp"
-
 #define STATE_FILE "../game/state.hpp"
 #define DefinedState State
-
-#define BeginStateFile "../game/title.hpp"
-#define BeginStateClass Title
+#define LUA_INCLUDE "../luasystem/lua.hpp"
 /*
     Web porting
 */
 #ifdef __EMSCRIPTEN__
 #define ASSETS_FOLDER ""
 #define DISABLE_SOCKET
+#define DISABLE_THREADPOOL
 #else
 #define ASSETS_FOLDER ""
 #endif
 
-/*
-    Screen
-*/
 
-
-
-#define SCREEN_SIZE_W 800
-#define SCREEN_SIZE_H 600
-
-#define MAXFPS 900.0
-
-#define SILENT_GL
-
-
-#define POOL_DEFAULT_THREADS 2
-//#define RUN_TESTS
-//#define DISABLE_THREADPOOL
-/*
-    Lua
-*/
-//#define DISABLE_LUAINTERFACE
-
-#define LUA_INCLUDE "../luasystem/lua.hpp"
-
-//#define RENDER_OPENGL
-//#define RENDER_OPENGL3
-
-//#define DISABLE_SOCKET
-/*
-    Android things
-*/
-#define JNI_BASE Java
-#define JNI_COM com
-#define JNI_MODULE tutorial
-#define JNI_FROM game
-#define JNI_NAME HelloSDL2Activity
 
 /**
 *********************************************************
@@ -65,6 +28,7 @@
 *********************************************************
 
 */
+
 
 #define CAT(X,Y) X ##_## Y
 #define CAT2(X,Y) CAT(X,Y)

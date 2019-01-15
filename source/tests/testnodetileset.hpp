@@ -1,5 +1,5 @@
 #include "../settings/definitions.hpp"
-#ifdef RUN_TESTS
+#ifndef DISABLE_UNIT_TESTS
 
 
 
@@ -84,4 +84,4 @@ class Test_NodeTileset: public State{
 #undef NodeSize
 #undef NodeCount
 
-#endif // RUN_TESTS
+#endif // DISABLE_UNIT_TESTS

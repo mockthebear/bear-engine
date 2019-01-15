@@ -1,6 +1,6 @@
 #pragma once
 #include "../settings/definitions.hpp"
-#ifdef RUN_TESTS
+#ifndef DISABLE_UNIT_TESTS
 
 
 #include "../engine/gamebase.hpp"
@@ -28,11 +28,11 @@
 #include "testnode.hpp"
 #include "testnodetileset.hpp"
 #include "testblank.hpp"
-#endif // RUN_TESTS
+#endif // DISABLE_UNIT_TESTS
 
 void SetupTests(){
 
-    #ifdef RUN_TESTS
+    #ifndef DISABLE_UNIT_TESTS
     //Game::GetInstance()->AddState(new Test_Light());
 
     #ifdef THREADPOOLTEST
@@ -67,6 +67,6 @@ void SetupTests(){
     Game::GetInstance()->AddState(new Test_Joystick());
     Game::GetInstance()->AddState(new Test_Shapes());
     Game::GetInstance()->AddState(new Test_Files());
-    #endif // RUN_TESTS
+    #endif // DISABLE_UNIT_TESTS
 }
 

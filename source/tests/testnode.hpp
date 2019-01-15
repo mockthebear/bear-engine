@@ -1,5 +1,5 @@
 #include "../settings/definitions.hpp"
-#ifdef RUN_TESTS
+#ifndef DISABLE_UNIT_TESTS
 
 
 
@@ -121,4 +121,4 @@ class Test_Node: public State{
         Rect affectedArea;
         Segmenter<DummyNode, 12, 12> *segm;
 };
-#endif // RUN_TESTS
+#endif // DISABLE_UNIT_TESTS

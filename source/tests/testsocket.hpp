@@ -1,5 +1,5 @@
 #include "../settings/definitions.hpp"
-#ifdef RUN_TESTS
+#ifndef DISABLE_UNIT_TESTS
 
 
 #include "../engine/genericstate.hpp"
@@ -62,4 +62,4 @@ class Test_Socket: public State{
 
 
 #endif // DISABLE_SOCKET
-#endif // RUN_TESTS
+#endif // DISABLE_UNIT_TESTS
