@@ -120,7 +120,6 @@ void RenderHelp::DrawPointsColor(std::vector<Point> points,uint8_t r,uint8_t g,u
 
     vertexBuffer->clear();
 
-    bool first = true;
     for (auto &it : points){
         vertexBuffer->vertexes.AddVertice(it);
     }
@@ -141,11 +140,8 @@ void RenderHelp::DrawLinesColor(std::vector<GameVertice> lines,uint8_t r,uint8_t
 
     renderData->color = BearColor(r,g,b,a);
 
-
-
     vertexBuffer->clear();
 
-    bool first = true;
     GameVertice lastP;
     if (lines.size()%2 == 1){
         vertexBuffer->vertexes.AddVertice(*(lines.end()-1) );
