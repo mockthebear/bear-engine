@@ -1,9 +1,14 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 #include "../engine/shadermanager.hpp"
 #include "../framework/gamefile.hpp"
 #include "../performance/linegrap.hpp"
 #pragma once
+
 
 class Test_FastTiles: public State{
     public:
@@ -59,3 +64,4 @@ class Test_FastTiles: public State{
         float duration;
 };
 
+#endif // RUN_TESTS

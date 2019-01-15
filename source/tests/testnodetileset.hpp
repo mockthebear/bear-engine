@@ -1,4 +1,8 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 #include "../engine/renderhelp.hpp"
 #include "../framework/segment/segmenter.hpp"
@@ -80,4 +84,4 @@ class Test_NodeTileset: public State{
 #undef NodeSize
 #undef NodeCount
 
-
+#endif // RUN_TESTS

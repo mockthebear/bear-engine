@@ -1,4 +1,8 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 #pragma once
 
@@ -10,6 +14,9 @@
 #include "../framework/gamefile.hpp"
 #include "../framework/userfile.hpp"
 #include "../framework/debughelper.hpp"
+
+
+
 
 class Test_Files: public State{
     public:
@@ -139,5 +146,5 @@ class Test_Files: public State{
         float duration;
 };
 
-
+#endif // RUN_TESTS
 

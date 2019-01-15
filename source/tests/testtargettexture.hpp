@@ -1,5 +1,8 @@
-
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 #include "../engine/renderhelp.hpp"
 #pragma once
@@ -81,4 +84,4 @@ class Test_TargetTexture: public State{
         Text example;
         TargetTexture targ;
 };
-
+#endif // RUN_TESTS

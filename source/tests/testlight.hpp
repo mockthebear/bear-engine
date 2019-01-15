@@ -1,4 +1,8 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 #pragma once
 
@@ -9,6 +13,7 @@
 #include "../performance/graph.hpp"
 #include "../performance/linegrap.hpp"
 #include "../framework/threadpool.hpp"
+
 
 class Test_Light: public State{
     public:
@@ -169,4 +174,4 @@ class Test_Light: public State{
         uint32_t LightPixelSize;
 };
 
-
+#endif // RUN_TESTS

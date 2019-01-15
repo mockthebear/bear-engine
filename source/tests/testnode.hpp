@@ -1,8 +1,14 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 #include "../engine/renderhelp.hpp"
 #include "../framework/segment/segmenter.hpp"
 #pragma once
+
+
 
 class DummyNode: public SegmentNode{
     public:
@@ -115,4 +121,4 @@ class Test_Node: public State{
         Rect affectedArea;
         Segmenter<DummyNode, 12, 12> *segm;
 };
-
+#endif // RUN_TESTS

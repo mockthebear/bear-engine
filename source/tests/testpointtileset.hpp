@@ -1,5 +1,9 @@
-#pragma once
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
+#pragma once
 #include "../engine/genericstate.hpp"
 #include "../engine/pstileset.hpp"
 #include "../engine/text.hpp"
@@ -61,4 +65,4 @@ class Test_PSTILESET: public State{
         Text tilesCount;
 };
 
-
+#endif // RUN_TESTS

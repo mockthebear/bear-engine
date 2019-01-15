@@ -55,15 +55,7 @@ void Title::Update(float dt){
         Reset
     */
     if( InputManager::GetInstance().KeyPress(SDLK_t) ){
-
-        #ifdef THREADPOOLTEST
-        Game::GetInstance()->AddState(new Test_Threadpool());
-        #endif // THREADPOOLTEST
-
-        Game::GetInstance()->AddState(new Test_Files());
-
-
-        //requestDelete = true;
+        requestDelete = true;
         return;
     }
 

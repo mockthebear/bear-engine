@@ -37,6 +37,7 @@
 
 
 #define POOL_DEFAULT_THREADS 2
+//#define RUN_TESTS
 //#define DISABLE_THREADPOOL
 /*
     Lua

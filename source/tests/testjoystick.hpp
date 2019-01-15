@@ -1,8 +1,13 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 #include "../input/joystick.hpp"
 #include "../input/inputmanager.hpp"
 #pragma once
+
 
 class Test_Joystick: public State{
     public:
@@ -121,3 +126,4 @@ class Test_Joystick: public State{
 };
 
 
+#endif // RUN_TESTS

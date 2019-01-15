@@ -1,4 +1,8 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 #include "../engine/renderhelp.hpp"
 #include "../engine/tiles/targettexturetilemap.hpp"
@@ -63,3 +67,4 @@ class Test_Scrolling: public State{
 };
 
 
+#endif // RUN_TESTS

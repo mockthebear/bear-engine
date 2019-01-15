@@ -1,4 +1,7 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
 #include "../engine/genericstate.hpp"
 #include "../socket/tcp.hpp"
 #pragma once
@@ -59,3 +62,4 @@ class Test_Socket: public State{
 
 
 #endif // DISABLE_SOCKET
+#endif // RUN_TESTS

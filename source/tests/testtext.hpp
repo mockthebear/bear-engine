@@ -1,4 +1,8 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 #include "../engine/text.hpp"
 #pragma once
@@ -86,3 +90,4 @@ class Test_Text: public State{
 };
 
 
+#endif // RUN_TESTS

@@ -1,4 +1,8 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 #pragma once
 
@@ -76,5 +80,5 @@ class Test_PathFind: public State{
         PathFind* pf;
         Point start,finish;
 };
-
+#endif // RUN_TESTS
 

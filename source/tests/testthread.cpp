@@ -1,4 +1,5 @@
 #include "testthread.hpp"
+#ifdef RUN_TESTS
 
 #ifndef DISABLE_THREADPOOL
 int  Test_Threadpool::iterations = 0;
@@ -35,5 +36,6 @@ void job(int from,int to,void*){
     bear::out << S.str();
     ThreadPool::GetInstance().CriticalUnLock();
 };
+#endif
 #endif
 

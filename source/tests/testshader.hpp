@@ -1,4 +1,8 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 #include "../engine/shadermanager.hpp"
 #include "../engine/sprite.hpp"
@@ -85,3 +89,4 @@ class Test_Shader: public State{
 };
 
 
+#endif // RUN_TESTS

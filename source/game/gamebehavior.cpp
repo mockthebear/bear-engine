@@ -5,38 +5,15 @@
 #include "../engine/gamebase.hpp"
 #include "../performance/console.hpp"
 #include "../framework/resourcemanager.hpp"
-#include "../framework/threadpool.hpp"
+
+
+
+#include "../tests/testsuite.hpp"
 
 
 #include <string>
 
 
-#include "../tests/testthread.hpp"
-#include "../tests/testfiles.hpp"
-#include "../tests/testsprite.hpp"
-#include "../tests/testlua.hpp"
-#include "../tests/testlight.hpp"
-#include "../tests/testpathfind.hpp"
-#include "../tests/testpool.hpp"
-#include "../tests/testjoystick.hpp"
-#include "../tests/testtext.hpp"
-#include "../tests/testshapes.hpp"
-#include "../tests/testtargettexture.hpp"
-#include "../tests/testscrolling.hpp"
-#include "../tests/testshader.hpp"
-#include "../tests/testsocket.hpp"
-#include "../tests/testsound.hpp"
-#include "../tests/testrenderspeed.hpp"
-#include "../tests/testpointtileset.hpp"
-#include "../tests/testpostprocess.hpp"
-#include "../tests/testfasttile.hpp"
-#include "../tests/testrectrenderspeed.hpp"
-#include "../tests/testnode.hpp"
-#include "../tests/testnodetileset.hpp"
-
-
-
-#include "../tests/testblank.hpp"
 
 
 
@@ -50,8 +27,6 @@ GameBehavior& GameBehavior::GetInstance(){
 GameBehavior::GameBehavior(){
     /* Create here the default */
     DefaultBehavior::GetInstance();
-
-
 }
 
 GameBehavior::~GameBehavior(){
@@ -84,43 +59,8 @@ bool GameBehavior::OnLoad(){
     /*
     Game::GetInstance()->AddState(new Test_());
     */
-    //Game::GetInstance()->AddState(new Test_Light());
 
-    #ifdef THREADPOOLTEST
-    //Game::GetInstance()->AddState(new Test_Threadpool());
-    #endif // THREADPOOLTEST
-
-
-    #ifdef LUATESTSUITE
-    Game::GetInstance()->AddState(new Test_Lua());
-    #endif // LUATESTSUITE*/
-
-
-
-
-
-    Game::GetInstance()->AddState(new Test_Scrolling());
-
-    Game::GetInstance()->AddState(new Test_PostProcess());
-    Game::GetInstance()->AddState(new Test_TargetTexture());
-
-    if (Painter::CanSupport(SUPPORT_POINTSPRITE)){
-        Game::GetInstance()->AddState(new Test_PSTILESET());
-    }
-    Game::GetInstance()->AddState(new Test_Sound());
-    Game::GetInstance()->AddState(new Test_RenderSpeed());
-    Game::GetInstance()->AddState(new Test_RectRenderSpeed());
-    Game::GetInstance()->AddState(new Test_PathFind());
-    Game::GetInstance()->AddState(new Test_Text());
-    Game::GetInstance()->AddState(new Test_NodeTileset());
-    Game::GetInstance()->AddState(new Test_FastTiles());
-    Game::GetInstance()->AddState(new Test_Shader());
-    Game::GetInstance()->AddState(new Test_Sprite());
-    Game::GetInstance()->AddState(new Test_Node());
-    Game::GetInstance()->AddState(new Test_Pool());
-    Game::GetInstance()->AddState(new Test_Joystick());
-    Game::GetInstance()->AddState(new Test_Shapes());
-    Game::GetInstance()->AddState(new Test_Files());
+    SetupTests();
 
     return DefaultBehavior::GetInstance().OnLoad();
 }
@@ -138,7 +78,6 @@ bool GameBehavior::OnResize(int newW,int newH){
 
 
 void GameBehavior::OnFocus(bool hasFocus){
-
     DefaultBehavior::GetInstance().OnFocus(hasFocus);
 }
 

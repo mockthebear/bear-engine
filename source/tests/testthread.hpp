@@ -1,4 +1,8 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 #ifndef DISABLE_THREADPOOL
 #ifndef THREADPOOLTEST
@@ -110,3 +114,4 @@ class Test_Threadpool: public State{
 
 #endif // THREADPOOLTEST
 #endif // DISABLE_THREADPOOL
+#endif // RUN_TESTS

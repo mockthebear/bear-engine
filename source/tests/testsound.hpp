@@ -1,4 +1,8 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 #include "../sound/sound.hpp"
 #pragma once
@@ -49,4 +53,4 @@ class Test_Sound: public State{
         float duration;
 };
 
-
+#endif // RUN_TESTS

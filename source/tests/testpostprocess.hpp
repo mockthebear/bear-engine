@@ -1,4 +1,8 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 #include "../engine/screenmanager.hpp"
 #include "../engine/shadermanager.hpp"
@@ -63,4 +67,4 @@ class Test_PostProcess: public State{
         float duration;
 };
 
-
+#endif // RUN_TESTS

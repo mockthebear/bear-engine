@@ -1,6 +1,12 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 #pragma once
+
+
 
 class Test_: public State{
     public:
@@ -33,3 +39,4 @@ class Test_: public State{
         float duration;
 };
 
+#endif // RUN_TESTS

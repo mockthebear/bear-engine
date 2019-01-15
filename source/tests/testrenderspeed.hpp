@@ -1,4 +1,8 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #pragma once
 
 #include "../game/state.hpp"
@@ -109,6 +113,6 @@ class Test_RenderSpeed: public State{
 };
 
 
-
+#endif // RUN_TESTS
 
 

@@ -1,4 +1,8 @@
 #include "../settings/definitions.hpp"
+#ifdef RUN_TESTS
+
+
+
 #include "../engine/genericstate.hpp"
 
 
@@ -86,3 +90,5 @@ class Test_Lua: public State{
 
 #endif // LUATESTSUITE
 #endif // DISABLE_LUAINTERFACE
+#endif // RUN_TESTS
+
