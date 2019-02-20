@@ -326,7 +326,9 @@ void LuaInterface::RegisterClasses()
     RegisterUI();
     RegisterScreenRender();
     RegisterSpriteEffectClass();
-
+    #ifdef GENERATEDOCUMENTATION
+    NameAtlas::GetInstance().GenerateDoc();
+    #endif // GENERATEDOCUMENTATION
 }
 
 int LuaInterface::LoopEvent(lua_State *L){

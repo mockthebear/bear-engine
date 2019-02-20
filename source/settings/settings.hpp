@@ -23,6 +23,8 @@
 */
     //#define SILENT_GL
 
+    #define GENERATEDOCUMENTATION
+
     #define POOL_DEFAULT_THREADS 2
     //#define DISABLE_UNIT_TESTS
 
