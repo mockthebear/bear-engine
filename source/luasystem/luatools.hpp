@@ -25,6 +25,7 @@ enum ReturnType{
 };
 
 
+
 #ifdef GENERATEDOCUMENTATION
 
 #define SettleName(arg) Names[std::string(typeid( arg ).name())] = #arg; Names[std::string(typeid( arg* ).name())] = #arg;
@@ -45,6 +46,8 @@ class NameAtlas{
             SettleName(bool);
             SettleName(float);
             SettleName(double);
+            SettleName(uint32_t);
+            SettleName(uint32_t);
             SettleName(GameObject);
             SettleName(Sprite);
             SettleName(Rect);
@@ -56,10 +59,15 @@ class NameAtlas{
             SettleNameOther(TextureLoadMethod,"Int");
             SettleNameOther(std::string, "String");
             SettleNameOther(SDL_RendererFlip, "Int");
+            SettleNameOther(std::vector<LuaUi>, "LuaUi list");
+            SettleNameOther(std::vector<GenericPoint<int>>, "Point list");
+            SettleNameOther(std::vector<GenericPoint<float>>, "Point list");
+            SettleNameOther(std::vector<GameObject*>, "Object list");
             SettleName(Text);
 
 
         };
+
 
         void GenerateDoc();
 
@@ -77,6 +85,39 @@ class NameAtlas{
 #undef SettleName
 #undef SettleNameOther
 
+
+template<typename T1> struct GenericTypeConverter{
+    static std::string Ret(T1 &obj){
+        std::stringstream SS;
+        SS << obj;
+        return SS.str();
+    };
+};
+
+template<> struct GenericTypeConverter<Rect>{
+     static std::string Ret(Rect &obj){
+         std::stringstream SS;
+         SS << "{x = " << obj.x <<", y = " << obj.y <<", w = " << obj.w <<", h = " << obj.h <<"}";
+         return SS.str();
+    };
+};
+
+template<> struct GenericTypeConverter<Point>{
+     static std::string Ret(Point &obj){
+         std::stringstream SS;
+         SS << "{x = " << obj.x <<", y = " << obj.y <<"}";
+         return SS.str();
+    };
+};
+
+template<> struct GenericTypeConverter<PointInt>{
+     static std::string Ret(Point &obj){
+         std::stringstream SS;
+         SS << "{x = " << obj.x <<", y = " << obj.y <<"}";
+         return SS.str();
+    };
+};
+
 template<int N,int M>
     struct docExpander {
     template<typename Tuple> static void Read(std::stack<std::string> &S,Tuple& tuple) {
@@ -93,8 +134,8 @@ template<int N,int M>
         std::string nm = NameAtlas::GetInstance().GetName(typeid(ValueType).name());
         std::stringstream SS;
         if (M > 0){
-
-            SS << nm << " = "<<std::get<(M-1) < 0 ? 0 : (M-1)>(tuple2);
+            auto obj = std::get<(M-1) < 0 ? 0 : (M-1)>(tuple2);
+            SS << nm << " = "<< GenericTypeConverter<decltype(obj)>::Ret(obj);
             S.emplace( SS.str());
             docExpander<N-1,M-1>::Read(S,tuple,tuple2);
         }else{
@@ -121,12 +162,15 @@ template<int M>
 
 };
 
-
-template<typename ... Types> void DocGenerator(std::string str,std::string fnc,int opt=0){
+template<typename RType,typename ... Types> void DocGeneratorRet(bool isClass, std::string str,std::string fnc,int opt=0){
     std::stringstream S;
     std::tuple<Types...> tp;
     std::stack<std::string> args;
-    S << str << "."<<fnc<<"(";
+    if (isClass){
+        S << str << ":"<<fnc<<"(";
+    }else{
+        S << str << "."<<fnc<<"(";
+    }
     docExpander<sizeof...(Types),0>::Read(args,tp);
     while (args.size() > 0){
         S << args.top();
@@ -137,13 +181,26 @@ template<typename ... Types> void DocGenerator(std::string str,std::string fnc,i
     }
 
     S <<")";
-    NameAtlas::GetInstance().g_s << S.str() << "\r\n";
+    std::string rVal = NameAtlas::GetInstance().GetName(typeid(RType).name());
+    if (rVal != "v"){
+        NameAtlas::GetInstance().g_s << S.str() << " -> "<< rVal << "\r\n";
+    }else{
+        NameAtlas::GetInstance().g_s << S.str() << "\r\n";
+    }
+
 };
-template<typename ... Types,typename ... Opts> void DocGenerator2(std::string str,std::string fnc,int opt, std::tuple<Opts...> &tp2){
+
+
+
+template<typename RType,typename ... Types,typename ... Opts> void DocGenerator2Ret(bool isClass, std::string str,std::string fnc,int opt, std::tuple<Opts...> &tp2){
     std::stringstream S;
     std::tuple<Types...> tp;
     std::stack<std::string> args;
-    S << str << "::"<<fnc<<"(";
+    if (isClass){
+        S << str << ":"<<fnc<<"(";
+    }else{
+        S << str << "."<<fnc<<"(";
+    }
     int step = sizeof...(Types);
     docExpander<sizeof...(Types),sizeof...(Opts)>::Read(args,tp,tp2);
     while (args.size() > 0){
@@ -161,7 +218,53 @@ template<typename ... Types,typename ... Opts> void DocGenerator2(std::string st
         S << "]";
     }
     S <<")";
+    std::string rVal = NameAtlas::GetInstance().GetName(typeid(RType).name());
+    if (rVal != "v"){
+        NameAtlas::GetInstance().g_s << S.str() << " -> "<< rVal << "\r\n";
+    }else{
+        NameAtlas::GetInstance().g_s << S.str() << "\r\n";
+    }
+};
+
+template<typename ... Types> void GlobalDocGeneratorVoid(std::string fnc,int opt=0){
+    std::stringstream S;
+    std::tuple<Types...> tp;
+    std::stack<std::string> args;
+    S << fnc<<"(";
+    docExpander<sizeof...(Types),0>::Read(args,tp);
+    while (args.size() > 0){
+        S << args.top();
+        if (args.size() > 1){
+            S << ", ";
+        }
+        args.pop();
+    }
+
+    S <<")";
     NameAtlas::GetInstance().g_s << S.str() << "\r\n";
+};
+
+template<typename RType, typename ... Types> void GlobalDocGeneratorRet(std::string fnc,int opt=0){
+    std::stringstream S;
+    std::tuple<Types...> tp;
+    std::stack<std::string> args;
+    S << fnc<<"(";
+    docExpander<sizeof...(Types),0>::Read(args,tp);
+    while (args.size() > 0){
+        S << args.top();
+        if (args.size() > 1){
+            S << ", ";
+        }
+        args.pop();
+    }
+
+    S <<")";
+    std::string rVal = NameAtlas::GetInstance().GetName(typeid(RType).name());
+    if (rVal != "v"){
+        NameAtlas::GetInstance().g_s << S.str() << " -> "<< rVal << "\r\n";
+    }else{
+        NameAtlas::GetInstance().g_s << S.str() << "\r\n";
+    }
 };
 
 
@@ -1038,6 +1141,9 @@ template<typename T1,typename ... Types> void LambdaRegister(lua_State *L,std::s
     LuaManager::AddReference((*baseF));
     lua_pushcclosure(L, LuaCaller::BaseEmpty<1>,1);
     lua_setglobal(L, str.c_str());
+    #ifdef GENERATEDOCUMENTATION
+    GlobalDocGeneratorRet<T1, Types ...>(str);
+    #endif // GENERATEDOCUMENTATION
 };
 
 class MasterGC{
@@ -1238,24 +1344,38 @@ struct GlobalMethodRegister{;
 
 
     template<typename RetType,typename ... Types> static void RegisterGlobalTableMethod(lua_State *L,std::string name,std::string methodName,RetType (*FC)(Types ... args)){
+        #ifdef GENERATEDOCUMENTATION
+        DocGeneratorRet<RetType, Types ...>(false, name,methodName);
+        #endif // GENERATEDOCUMENTATION
         lua_getglobal(L, name.c_str());
         std::function<RetType(Types ... args)> func(FC);
         LambdaClassRegister(L,methodName,-2,func);
         lua_pop(L, 1);
     }
     template<typename RetType,typename ... Types,typename ... Otps> static void RegisterGlobalTableMethod(lua_State *L,std::string name,std::string methodName,RetType (*FC)(Types ... args),Otps ...optArgs){
+        #ifdef GENERATEDOCUMENTATION
+        std::tuple<Otps...> tp(optArgs...);
+        DocGenerator2Ret<RetType, Types ...>(false,name,methodName,sizeof...(Otps),tp);
+        #endif // GENERATEDOCUMENTATION
         lua_getglobal(L, name.c_str());
         std::function<RetType(Types ... args)> func(FC);
         LambdaClassRegister(L,methodName,-2,func,optArgs...);
         lua_pop(L, 1);
     }
     template<typename RetType,typename ... Types> static void RegisterGlobalTableMethod(lua_State *L,std::string name,std::string methodName,std::function<RetType(Types ... args)> func){
+        #ifdef GENERATEDOCUMENTATION
+        DocGeneratorRet<RetType, Types ...>(false, name,methodName);
+        #endif // GENERATEDOCUMENTATION
         lua_getglobal(L, name.c_str());
         LambdaClassRegister(L,methodName,-2,func);
         lua_pop(L, 1);
     }
 
     template<typename RetType,typename ... Types,typename ... Otps> static void RegisterGlobalTableMethod(lua_State *L,std::string name,std::string methodName,std::function<RetType(Types ... args)> func,Otps ...optArgs){
+        #ifdef GENERATEDOCUMENTATION
+        std::tuple<Otps...> tp(optArgs...);
+        DocGenerator2Ret<RetType, Types ...>(false,name,methodName,sizeof...(Otps),tp);
+        #endif // GENERATEDOCUMENTATION
         lua_getglobal(L, name.c_str());
         LambdaClassRegister(L,methodName,-2,func,optArgs...);
         lua_pop(L, 1);
@@ -1457,7 +1577,7 @@ template<typename T1> struct ClassRegister{
 
     template<typename RetType,typename ... Types> static void RegisterClassLambdaMethod(lua_State *L,std::string name,std::string methodName,std::function<RetType(Types ... args)> func){
         #ifdef GENERATEDOCUMENTATION
-        DocGenerator<Types ...>(name,methodName);
+        DocGeneratorRet<RetType, Types ...>(true,name,methodName);
         #endif // GENERATEDOCUMENTATION
         lua_getglobal(L, name.c_str());
         LambdaClassRegister(L,methodName,-2,func);
@@ -1468,7 +1588,7 @@ template<typename T1> struct ClassRegister{
     template<typename RetType,typename ... Types,typename ... Otps> static void RegisterClassLambdaMethod(lua_State *L,std::string name,std::string methodName,std::function<RetType(Types ... args)> func,Otps ...optArgs){
         #ifdef GENERATEDOCUMENTATION
         std::tuple<Otps...> tp(optArgs...);
-        DocGenerator2<Types ...>(name,methodName,sizeof...(Otps),tp);
+        DocGenerator2Ret<RetType, Types ...>(true,name,methodName,sizeof...(Otps),tp);
         #endif // GENERATEDOCUMENTATION
         lua_getglobal(L, name.c_str());
         LambdaClassRegister(L,methodName,-2,func,optArgs...);
@@ -1478,7 +1598,7 @@ template<typename T1> struct ClassRegister{
 
     template<typename RetType,typename ClassObj,typename ... Types> static void RegisterClassMethod(lua_State *L,std::string name,std::string methodName,RetType (ClassObj::*func)(Types ... args)){
         #ifdef GENERATEDOCUMENTATION
-        DocGenerator<Types ...>(name,methodName);
+        DocGeneratorRet<RetType, Types ...>(true,name,methodName);
         #endif // GENERATEDOCUMENTATION
         lua_getglobal(L, name.c_str());
         int top = lua_gettop (L);
@@ -1486,10 +1606,11 @@ template<typename T1> struct ClassRegister{
         lua_pop(L, 1);
     };
 
+
     template<typename RetType,typename ClassObj,typename ... Types,typename ... Otps> static void RegisterClassMethod(lua_State *L,std::string name,std::string methodName,RetType (ClassObj::*func)(Types ... args),Otps ...optArgs){
         #ifdef GENERATEDOCUMENTATION
         std::tuple<Otps...> tp(optArgs...);
-        DocGenerator2<Types ...>(name,methodName,sizeof...(Otps),tp);
+        DocGenerator2Ret<RetType, Types ...>(true, name,methodName,sizeof...(Otps),tp);
         #endif // GENERATEDOCUMENTATION
         lua_getglobal(L, name.c_str());
         int top = lua_gettop (L);
