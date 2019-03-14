@@ -6,7 +6,6 @@
 #include "../performance/console.hpp"
 #include "../performance/graph.hpp"
 #include "../engine/pathfind.hpp"
-#include "../engine/tiles/buffertilemap.hpp"
 class Title: public State{
     public:
         Title();
@@ -18,11 +17,6 @@ class Title: public State{
         void Resume(GenericState *s){std::cout << "Resumed\n\n";};
         void End(){std::cout << "End\n\n";};
         void Pause(GenericState *s){std::cout << "Paused\n\n";};
-
-        void BorderTile(PointInt3 pos,bool side);
     private:
-        BufferTileMap btset;
-        BearPolygon region;
-
 };
 #endif

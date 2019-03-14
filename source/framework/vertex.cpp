@@ -252,23 +252,8 @@ bool VertexArrayObject::SetupVertexes(){
 }
 
 void VertexArrayObject::SetAttributes(){
-    GLint posAttrib = 0;
-    GLint colorAttrib = 1;
-
-    #ifdef NEED_SHADER_LOCATION
-    uint32_t shaderId = 0;
-    if ((shaderId = Shader::GetCurrentShaderId()) == 0){
-        shaderId = Painter::polygonShader.GetId();
-    }
-    posAttrib = glGetAttribLocation(shaderId, "vPos");
-    colorAttrib = glGetAttribLocation(shaderId, "vColor");
-    #endif // NEED_SHADER_LOCATION
-
-    glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-
-    glEnableVertexAttribArray(colorAttrib);
-    glVertexAttribPointer(colorAttrib, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(2 * sizeof(float)) );
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
 }
 
 #else
@@ -315,6 +300,18 @@ void VertexArrayObject::SetAttributes(){
     posAttrib = glGetAttribLocation(shaderId, "vPos");
     colorAttrib = glGetAttribLocation(shaderId, "vColor");
     #endif // NEED_SHADER_LOCATION
+
+    /*glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, elements * sizeof(float), 0); //Position
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(2 * sizeof(float))); //Vertex clip
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(6 * sizeof(float))); //image size
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(8 * sizeof(float))); //scale
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, elements * sizeof(float), (void*)(10 * sizeof(float))); //rotation
+        */
 
     glEnableVertexAttribArray(posAttrib);
     glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
