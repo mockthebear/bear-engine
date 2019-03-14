@@ -60,6 +60,8 @@ bool GameBehavior::OnLoad(){
     Game::GetInstance()->AddState(new Test_());
     */
 
+    Game::GetInstance()->AddState(new Title());
+
     SetupTests();
 
     return DefaultBehavior::GetInstance().OnLoad();

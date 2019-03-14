@@ -1,0 +1,260 @@
+Stopwatch:Get() -> uint32_t
+Stopwatch:Reset()
+Stopwatch:Set(int)
+Timer:SetDuration(float)
+Timer:Set(float)
+Timer:Restart()
+Timer:Reset()
+Timer:Start()
+Timer:Get() -> float
+Timer:Disable()
+Timer:Enable()
+Timer:IsEnabled() -> bool
+Timer:HasFinished() -> bool
+Timer:Update(float)
+Timer:GetDuration() -> float
+g_schedule.Stop(l)
+g_schedule.SetExecutionTime(l, 11ExecTimeDef)
+Sound:Open(String) -> bool
+Sound:SetVolume(int)
+Sound:Play([bool = 0]) -> bool
+Sound:SetRepeat(bool)
+Sound:Stop()
+Sound:Kill()
+Sound:Pause()
+Sound:Resume()
+Sound:Toggle()
+Sound:GetPosition() -> float
+Sound:GetDuration() -> float
+Sound:IsOpen() -> bool
+Sound:IsPlaying() -> bool
+Sound:IsPaused() -> bool
+Sound:PrePlay()
+Sound:GetFileName() -> String
+Sound:SetClassType(int)
+Sound:GetClassType() -> int
+Sound:SetPitch(float)
+Sound:FadeOut([float = 0, [float = 1]]) -> bool
+Sound:FadeIn([float = 0, [float = 128, [bool = 1]]]) -> bool
+Text:Close()
+Text:SetText(String)
+Text:SetColor(9SDL_Color)
+Text:SetStyle(9TextStyle)
+Text:SetAlpha(int)
+Text:GetText() -> String
+Text:GetHeight() -> float
+Text:GetWidth() -> float
+Text:SetScaleX(float)
+Text:SetScaleY(float)
+Text:RemakeTexture(bool)
+Text:IsWorking() -> bool
+Text:SetRotation(float)
+Text:Render(Point)
+Text:SetAliasign(Int)
+Text:SetFont(String)
+CustomFont:Render(String, PointInt, [int = 255]) -> Point
+CustomFont:RenderCentered(String, PointInt, [int = 1, [TextCenterStyle = 255]]) -> Point
+CustomFont:GetSizes(String) -> Point
+CustomFont:SetSprite(Sprite)
+LuaObject:Destroy()
+LuaObject:Kill()
+LuaObject:SetX(float, [bool = 0])
+LuaObject:SetY(float, [bool = 0])
+LuaObject:GetY() -> float
+LuaObject:GetX() -> float
+LuaObject:GetSolid() -> bool
+LuaObject:SetSolid(bool, [bool = 0])
+LuaObject:SetWidth(float, [bool = 0])
+LuaObject:GetWidth() -> float
+LuaObject:SetHeight(float, [bool = 0])
+LuaObject:GetHeight() -> float
+LuaObject:SetBox(Rect, [bool = 0])
+LuaObject:GetBox() -> Rect
+LuaObject:GetPoolIndex() -> int
+LuaObject:GetMyRef() -> y
+LuaObject:GetMyObj() -> GameObject
+LuaObject:SetSpeed(Point, [bool = 0])
+LuaObject:GetSpeed() -> Point
+LuaObject:SetStep(Point, [bool = 0])
+LuaObject:GetStep() -> Point
+LuaObject:SetData(int, float)
+LuaObject:GetData(int) -> float
+LuaObject:NotifyDamage(GameObject, int)
+LuaObject:NotifyCollision(GameObject)
+LuaObject:Render()
+LuaObject:Update(float)
+LuaObject:IsDead() -> bool
+LuaObject:Is(int) -> bool
+LuaObject:hasPerspective() -> int
+LuaGameState:Setup()
+g_state.Signal(9SignalRef) -> bool
+GameObject:Is(int) -> bool
+GameObject:GetMyRef() -> y
+GameObject:GetHash() -> int
+GameObject:SetX(float, [bool = 0])
+GameObject:SetY(float, [bool = 0])
+GameObject:GetY() -> float
+GameObject:GetX() -> float
+GameObject:SetWidth(float, [bool = 0])
+GameObject:GetWidth() -> float
+GameObject:SetHeight(float, [bool = 0])
+GameObject:GetHeight() -> float
+GameObject:SetBox(Rect, [bool = 0])
+GameObject:GetBox() -> Rect
+GameObject:GetSolid() -> bool
+GameObject:SetSolid(bool, [bool = 0])
+GameObject:Kill()
+GameObject:SetSpeed(Point, [bool = 0])
+GameObject:GetSpeed() -> Point
+GameObject:SetStep(Point, [bool = 0])
+GameObject:GetStep() -> Point
+GameObject:SetData(int, float)
+GameObject:GetData(int) -> float
+GameObject:hasPerspective() -> int
+GameObject:canForceRender() -> bool
+GameObject:canForceUpdate() -> bool
+GameObject:NotifyDamage(GameObject, int)
+GameObject:NotifyCollision(GameObject)
+GameObject:Render()
+GameObject:Update(float)
+GameObject:IsDead() -> bool
+Typeof(String) -> int
+Typename(int) -> String
+g_collision.GetCollidingObjects(GameObject, int, bool) -> Object list
+g_collision.IsColliding(Rect, Rect) -> bool
+g_collision.AdjustCollisionIndependent(Point, float, GameObject, Object list, [float = 1, [bool = 0.2]]) -> Point3
+g_collision.AdjustCollision(Point, float, GameObject, Object list) -> Point3
+g_collision.GetNearObjects(GameObject, int, [bool = 1]) -> Object list
+g_camera.Initiate()
+g_camera.GetBox() -> Rect
+g_camera.GetPosition() -> PointInt
+g_camera.SetSpeed(float)
+g_camera.GetSpeed() -> float
+g_camera.SetSmooth(bool)
+g_camera.Resize(Point)
+g_camera.SetOffsetFollow(Point)
+g_camera.UpdateByPos(Rect, int)
+g_camera.UnlockLimits()
+g_camera.UpdateByPos(float, float, float, float)
+g_camera.SetFollowRect(float, float, float, float)
+g_camera.SetFollowRectPos(float, float)
+g_camera.SetFollowOnRect(bool)
+g_camera.SetFollowOnObject(GameObject, bool)
+ColorReplacer:clear()
+ColorReplacer:AddReplacer(uint32_t, uint32_t)
+ColorReplacer:Get(uint32_t) -> uint32_t
+AssetMannager:LoadSprite(String, [String = ]) -> bool
+g_assets.LoadResources(String, String) -> bool
+g_assets.EraseResource(String)
+g_sound.PlayOnce(String) -> int
+Animation:SetGridSize(float, float)
+Animation:Update(float)
+Animation:Pause(bool)
+Animation:IsAnimationEnd() -> bool
+Animation:IsFrameEnd() -> bool
+Animation:SetAnimation([int = -1, [int = 0, [float = 0]]])
+Animation:ResetAnimation()
+Animation:SetAnimationTime(float)
+Animation:SetRepeatTimes(int)
+Animation:Render(float, float, Sprite, int, float)
+Sprite:Open(String, Int) -> bool
+Sprite:SetClip(int, int, int, int)
+Sprite:Render(PointInt, [double = 0])
+Sprite:Update(float)
+Sprite:ResetAnimation(bool)
+Sprite:SetFrame([int = 0, [int = 0]])
+Sprite:GetFrame() -> Point
+Sprite:GetWidth() -> int
+Sprite:GetHeight() -> int
+Sprite:GetFrameWidth() -> int
+Sprite:GetFrameHeight() -> int
+Sprite:SetFrameCount(int)
+Sprite:GetFrameCount() -> int
+Sprite:SetFrameTime(float)
+Sprite:GetFrameTime() -> float
+Sprite:IsLoaded() -> bool
+Sprite:SetCenter(Point)
+Sprite:GetCenter() -> Point
+Sprite:SetRepeatTimes(int)
+Sprite:GetRepeatTimes() -> int
+Sprite:IsAnimationOver() -> bool
+Sprite:SetScaleX(float)
+Sprite:SetScaleY(float)
+Sprite:SetScale(Point)
+Sprite:GetScale() -> Point
+Sprite:ReBlend(h, h, h)
+Sprite:SetAlpha(h)
+Sprite:GetAlpha() -> h
+Sprite:SetGrid(int, int)
+Sprite:GetGrid() -> PointInt
+Sprite:SetFlip(Int)
+Sprite:GetFlip() -> Int
+Sprite:GetMe() -> Sprite
+g_input.GetKeyByName(String) -> int
+g_input.KeyPress(int) -> bool
+g_input.IsKeyDown(int) -> bool
+g_input.KeyRelease(int) -> bool
+g_input.IsKeyUp(int) -> bool
+g_input.IsAnyKeyPressed() -> bool
+g_input.GetPressedKey() -> int
+g_input.GetMouse() -> Point
+g_input.MousePress(int) -> bool
+g_input.MouseRelease(int) -> bool
+g_input.IsMousePressed(int) -> bool
+g_input.IsMouseReleased(int) -> bool
+g_input.IsMouseInside(Rect) -> bool
+g_input.GetKeyState(int) -> int
+g_input.GetClipboard() -> String
+g_input.HaltInput()
+g_ui.AddWindow(LuaUi)
+LuaUi:SetFocused(bool)
+LuaUi:SetAlpha(int)
+LuaUi:Close()
+LuaUi:SetPosition(Point)
+LuaUi:SetText(String) -> bool
+LuaUi:SetTextObj(Text)
+LuaUi:GetText() -> String
+LuaUi:IsDead() -> bool
+LuaUi:Is(int) -> bool
+LuaUi:IsInside(int, int) -> bool
+LuaUi:Hide()
+LuaUi:Show()
+LuaUi:Refresh()
+LuaUi:SetFocused(bool)
+LuaUi:AddComponent(LuaUi)
+LuaUi:GetX() -> float
+LuaUi:GetY() -> float
+LuaUi:GetTrueX() -> float
+LuaUi:GetTrueY() -> float
+LuaUi:SetX([float = 0])
+LuaUi:SetY([float = 0])
+LuaUi:SetBox(Rect, [bool = 0])
+LuaUi:GetBox() -> Rect
+LuaUi:GetScreenY() -> float
+LuaUi:GetScreenX() -> float
+LuaUi:SetWidth(float, [bool = 0])
+LuaUi:GetWidth() -> float
+LuaUi:SetHeight(float, [bool = 0])
+LuaUi:GetHeight() -> float
+LuaUi:SetId(String)
+LuaUi:GetId() -> String
+LuaUi:GetLastComponent() -> LuaUi
+LuaUi:GetChildById(String) -> LuaUi
+LuaUi:GetMother() -> LuaUi
+LuaUi:GetChilds() -> St6vectorIP5LuaUiSaIS1_EE
+LuaUi:SetAsMain(bool)
+LuaUi:Destroy()
+g_console.Print(String)
+g_render.DrawSquareColor(Rect, h, h, h, [h = 0, [bool = ÿ]])
+g_render.DrawLineColor(Point, Point, h, h, h, h, float)
+g_render.FormatARGB(int, int, int, int) -> uint32_t
+g_render.FormatRGBA(int, int, int, int) -> uint32_t
+g_render.GetR(uint32_t) -> h
+g_render.GetG(uint32_t) -> h
+g_render.GetB(uint32_t) -> h
+g_render.GetA(uint32_t) -> h
+g_screen.ScreenShake(float, float, int, float)
+g_screen.GetFps() -> float
+g_screen.GetScreenSize() -> Point
+g_SpriteEffects.CreateAnimatedSprite(Point, Point, String, [int = 0, [int = 1, [int = 1]]]) -> int
+g_SpriteEffects.SetDepth(int, int) -> bool

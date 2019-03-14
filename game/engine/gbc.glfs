@@ -1,0 +1,80 @@
+#version 120
+uniform sampler2D image;
+
+
+uniform vec4 C1;
+uniform vec4 C2;
+uniform vec4 C3;
+uniform vec4 C4;
+
+uniform vec4 OC1 = vec4(27,45,9,255);
+uniform vec4 OC2 = vec4(64,106,21,255);
+uniform vec4 OC3 = vec4(121,202,40,255);
+uniform vec4 OC4 = vec4(202,237,167,255);
+
+
+varying vec2 TexCoords;
+
+float DiffColor(vec4 given,vec4 MyCol){
+	given *= 255;
+	given -= MyCol;
+	//Quadratic calc
+	given *= given;
+	return sqrt(given.r + given.g+given.b);
+}
+
+vec4 GetFinalColorFromId(int id){
+	if (id == 0){
+		return C1;
+	}else if (id == 1){
+		return C2;
+	}else if (id == 2){
+		return C3;
+	}else{
+		return C4;
+	}
+}
+
+vec4 GetColorFromId(int id){
+	if (id == 0){
+		return OC1;
+	}else if (id == 1){
+		return OC2;
+	}else if (id == 2){
+		return OC3;
+	}else{
+		return OC4;
+	}
+}
+
+void main(void){
+  
+   	vec4 auxColor = texture2D(image, TexCoords).rgba;
+   	//vec4 auxColor = texture2D(myTexture, TexCoords).rgba;
+ 	
+ 	if (DiffColor(auxColor,OC1) <= 4){
+   		auxColor.rgba= C1.rgba;
+   	}else if (DiffColor(auxColor,OC2) <= 4){
+   		auxColor.rgba = C2.rgba;
+   	}else if (DiffColor(auxColor,OC3) <= 4){
+   		auxColor.rgba = C3.rgba;
+   	}else if (DiffColor(auxColor,OC4) <= 4){
+   		auxColor.rgba = C4.rgba; 
+   	}else{
+   		float lower = DiffColor(auxColor,GetColorFromId(0));
+   		int id = 0;
+   		for (int i=1;i<4;i++){
+   			float dif = DiffColor(auxColor,GetColorFromId(i));
+   			if (lower >= dif){
+   				lower = dif;
+   				id = i;
+   			}
+   		}
+   		auxColor.rgba = GetFinalColorFromId(id).rgba;
+   	}
+   	
+
+	gl_FragColor = auxColor;
+
+
+}

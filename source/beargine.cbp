@@ -537,6 +537,7 @@
 		<Unit filename="tests/testpostprocess.hpp" />
 		<Unit filename="tests/testrectrenderspeed.hpp" />
 		<Unit filename="tests/testrenderspeed.hpp" />
+		<Unit filename="tests/testsavetexture.hpp" />
 		<Unit filename="tests/testscrolling.hpp" />
 		<Unit filename="tests/testshader.hpp" />
 		<Unit filename="tests/testshapes.hpp" />
