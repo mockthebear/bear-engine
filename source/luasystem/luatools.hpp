@@ -1521,8 +1521,7 @@ template<typename T1> struct ClassRegister{
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetHeight"   ,&GameObject::GetHeight);
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetBox"      ,&GameObject::SetBox, false);
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetBox"      ,&GameObject::GetBox);
-        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"GetSolid"    ,&GameObject::GetSolid);
-        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"SetSolid"    ,&GameObject::SetSolid, false);
+        ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"IsSolid"      ,&GameObject::IsSolid, nullptr);
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"Kill"        ,&GameObject::Kill);
 
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"hasPerspective"        ,&GameObject::hasPerspective);
@@ -1535,10 +1534,8 @@ template<typename T1> struct ClassRegister{
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"Update"        ,&GameObject::Update);
         ClassRegister<T1>::RegisterClassMethod(LuaManager::L,name.c_str(),"IsDead"        ,&GameObject::IsDead);
 
-        TypeObserver<T1,bool>::RegisterMethod(LuaManager::L,"solid",&GameObject::solid);
-        TypeObserver<T1,Point>::RegisterMethod(LuaManager::L,"speed",&GameObject::speed);
-        TypeObserver<T1,Point>::RegisterMethod(LuaManager::L,"step",&GameObject::step);
 
+        TypeObserver<T1,Point>::RegisterMethod(LuaManager::L,"speed",&GameObject::speed);
     };
 
     static void RegisterClassVirtual(lua_State *L,std::string name,

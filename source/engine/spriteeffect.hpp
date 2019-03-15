@@ -189,7 +189,10 @@ class SpriteEffect: public GameObject{
         */
         Point createdPosition;
         Sprite &GetSprite(){ return sp;};
+        int Depth;
     private:
+        float rotation;
+
         /*
             Rotation stuff
         */

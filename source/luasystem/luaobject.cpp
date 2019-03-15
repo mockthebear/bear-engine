@@ -6,12 +6,6 @@
 LuaObject::LuaObject(){
     OBJ_REGISTER(LuaObject);
     box         = Rect(0,0,1,1);
-    ball        = Circle(0,0,1);
-    rotation    = 0;
-    Flags       = 0;
-    isround       = false;
-    solid       = false;
-    Depth       = 0;
     Active      = false;
     forceUpdate = false;
     forceRender = false;
@@ -39,6 +33,13 @@ void LuaObject::Kill(){
     Active=false;
 }
 
+bool LuaObject::IsSolid(GameObject *obj){
+    if (obj){
+        return LuaCaller::CallSelfField(LuaManager::L,this,"OnIsSolid",obj);
+    }else{
+        return LuaCaller::CallSelfField(LuaManager::L,this,"OnIsSolid");
+    }
+}
 void LuaObject::Update(float dt){
     LuaCaller::CallSelfField(LuaManager::L,this,"OnUpdate",dt);
 }

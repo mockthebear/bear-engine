@@ -154,67 +154,35 @@ class GameObject{
         *<b>DONT REPLACE THIS</b>
     */
     int GetHash() {return GetHash_internal();};
-
-    /**
-        *Can be used as an depth var. Use as you wish
-    */
-    int Depth;
     /**
         *Used to check collision.
         *Actually means the position and the size of the object
     */
     Rect box;
     /**
-        This can be used to make a round object. You set the x,y and radius
-    */
-    Circle ball;
-    /**
-        This will say to the collision manager that this object is round
-    */
-    bool isround;
-    /**
         *This will say to the collision manager that this object is solid.
         *When not solid will be ignored.
     */
-    bool solid;
+    virtual bool IsSolid(GameObject *obj = nullptr){return true;};
 
     Point speed;
 
-    Point step;
-
-    float Data[4];
-
-    /**
-        *<b>DONT REPLACE THIS</b>
-    */
-    void *_Data_;
     /**
         *<b>DONT REPLACE THIS</b>
     */
     int poolIndex;
 
-    double rotation;
-
-    virtual void NotifyInPool(void *pool){(void)pool;};
+    virtual void NotifyInPool(void *){};
 
     uint64_t GetMyRef(){return (uint64_t)this;};
 
     REGISTER_GETSETTER(Speed,Point,speed);
-    REGISTER_GETSETTER(Step,Point,step);
 
     REGISTER_GETSETTER(X,float,box.x);
     REGISTER_GETSETTER(Y,float,box.y);
     REGISTER_GETSETTER(Width,float,box.w);
     REGISTER_GETSETTER(Height,float,box.h);
     REGISTER_GETSETTER(Box,Rect,box);
-    REGISTER_GETSETTER(Solid,bool,solid);
-
-    void SetData(int id, float value){
-        Data[id%4] = value;
-    }
-    float GetData(int id){
-        return Data[id%4];
-    }
 
     protected:
         void hashIt(int var){hash = var;};

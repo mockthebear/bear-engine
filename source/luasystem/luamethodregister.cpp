@@ -29,8 +29,6 @@ void LuaInterface::RegisterObjects(){
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetY",&LuaObject::SetY, false);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetY",&LuaObject::GetY);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetX",&LuaObject::GetX);
-    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetSolid",&LuaObject::GetSolid);
-    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetSolid",&LuaObject::SetSolid, false);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetWidth",&LuaObject::SetWidth, false);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetWidth",&LuaObject::GetWidth);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetHeight",&LuaObject::SetHeight, false);
@@ -45,13 +43,6 @@ void LuaInterface::RegisterObjects(){
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetSpeed",&LuaObject::SetSpeed, false);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetSpeed",&LuaObject::GetSpeed);
 
-    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetStep",&LuaObject::SetStep, false);
-    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetStep",&LuaObject::GetStep);
-
-    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","SetData",&LuaObject::SetData);
-    ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","GetData",&LuaObject::GetData);
-
-
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","NotifyDamage"        ,&LuaObject::NotifyDamage);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","NotifyCollision"        ,&LuaObject::NotifyCollision);
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","Render"        ,&LuaObject::Render);
@@ -61,9 +52,8 @@ void LuaInterface::RegisterObjects(){
 
     ClassRegister<LuaObject>::RegisterClassMethod(LuaManager::L,"LuaObject","hasPerspective",&LuaObject::hasPerspective);
 
-    TypeObserver<LuaObject,bool>::RegisterMethod(LuaManager::L,"solid",&LuaObject::solid);
+
     TypeObserver<LuaObject,Point>::RegisterMethod(LuaManager::L,"speed",&LuaObject::speed);
-    TypeObserver<LuaObject,Point>::RegisterMethod(LuaManager::L,"step",&LuaObject::step);
     TypeObserver<LuaObject,bool>::RegisterMethod(LuaManager::L,"forceUpdate",&LuaObject::forceUpdate);
     TypeObserver<LuaObject,bool>::RegisterMethod(LuaManager::L,"active",&LuaObject::Active);
     TypeObserver<LuaObject,bool>::RegisterMethod(LuaManager::L,"forceRender",&LuaObject::forceRender);
@@ -106,18 +96,10 @@ void LuaInterface::RegisterObjects(){
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetHeight",&GameObject::GetHeight);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetBox",&GameObject::SetBox, false);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetBox",&GameObject::GetBox);
-    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetSolid",&GameObject::GetSolid);
-    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetSolid",&GameObject::SetSolid, false);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","Kill",&GameObject::Kill);
 
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetSpeed",&GameObject::SetSpeed, false);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetSpeed",&GameObject::GetSpeed);
-
-    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetStep",&GameObject::SetStep, false);
-    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetStep",&GameObject::GetStep);
-
-    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","SetData",&GameObject::SetData);
-    ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","GetData",&GameObject::GetData);
 
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","hasPerspective"        ,&GameObject::hasPerspective);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","canForceRender"        ,&GameObject::canForceRender);
@@ -130,9 +112,7 @@ void LuaInterface::RegisterObjects(){
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","Update"        ,&GameObject::Update);
     ClassRegister<GameObject>::RegisterClassMethod(LuaManager::L,"GameObject","IsDead"        ,&GameObject::IsDead);
 
-    TypeObserver<GameObject,bool>::RegisterMethod(LuaManager::L,"solid",&GameObject::solid);
-
-    TypeObserver<GameObject,Point>::RegisterMethod(LuaManager::L,"step",&GameObject::step);
+    TypeObserver<GameObject,Point>::RegisterMethod(LuaManager::L,"speed",&GameObject::speed);
 
 
     LambdaRegister(L,"Typeof",std::function<int(std::string)>([](std::string objName){

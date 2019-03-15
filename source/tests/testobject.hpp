@@ -16,8 +16,6 @@ class TestObject: public GameObject{
     TestObject():GameObject(){
         OBJ_REGISTER(TestObject);
         health = 0;
-        isround = false;
-        solid = true;
     };
     /*
         Should add OBJ_REGISTER(TestObject);, but as i called the empty constructor, there is no need.
@@ -27,9 +25,7 @@ class TestObject: public GameObject{
         box.y = pos.y;
         box.w = box.h = 16;
         health = 5;
-        ball.x = pos.x;
-        ball.y = pos.y;
-        ball.r = 8;
+
 
     };
 
@@ -119,8 +115,6 @@ class TestObject2: public GameObject{
         TestObject2():GameObject(){
             OBJ_REGISTER(TestObject2);
             health = 0;
-            isround = false;
-            solid = true;
         };
 
         TestObject2(Point pos){
@@ -129,9 +123,7 @@ class TestObject2: public GameObject{
             box.y = pos.y;
             box.w = box.h = 16;
             health = 5;
-            ball.x = pos.x;
-            ball.y = pos.y;
-            ball.r = 8;
+
 
         };
 

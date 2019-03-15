@@ -153,7 +153,7 @@ void ReliableUdpServer::Update(float dt){
                 event.peer->data = (void*)m_lastPid;
                 peers[m_lastPid] = event.peer;
                 peerIds.emplace_back(m_lastPid);
-                printf ("%d connect on server. = %d  from : %x\n", (int)m_lastPid,event.peer, (int)event.peer -> address.host);
+                printf ("%d connect on server. from : %x\n", (int)m_lastPid,event.peer, (int)event.peer -> address.host);
                 m_lastPid++;
                 break;
             }

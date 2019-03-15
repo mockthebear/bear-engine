@@ -22,6 +22,7 @@ class LuaObject: public GameObject{
         bool Is(int i);
         void NotifyDamage(GameObject *bj,int n);
         void NotifyInPool(void*);
+        bool IsSolid(GameObject *  obj = nullptr);
 
         REGISTER_GETSETTER(X,float,box.x);
         REGISTER_GETSETTER(Y,float,box.y);

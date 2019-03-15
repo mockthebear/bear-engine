@@ -9,7 +9,7 @@ int Collision::AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,Pool
         for (auto &obj : pool.ForGroup(gid))
         {
             if (obj != dis && !obj->IsDead()){
-                if (!onlySolid || obj->solid ){
+                if (!onlySolid || obj->IsSolid(dis) ){
                     if (Collision::IsColliding(obj->box,tempXY) ){
                         sy = 0;
                         sx = 0;
@@ -47,7 +47,7 @@ int Collision::AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,std:
         for (auto &obj : vec)
         {
             if (obj != dis && !obj->IsDead()){
-                if (!onlySolid || obj->solid ){
+                if (!onlySolid || obj->IsSolid(dis) ){
                     if (Collision::IsColliding(obj->box,tempXY) ){
                         sy = 0;
                         sx = 0;
@@ -75,7 +75,7 @@ std::vector<Rect> Collision::CheckCollision(std::vector<Rect> &rectArr,GameObjec
     for (auto &obj : pool.ForGroup(gid))
     {
         if (obj && obj != dis && !obj->IsDead()){
-            if (!onlySolid ||obj->solid ){
+            if (!onlySolid ||obj->IsSolid(dis) ){
                 for (i=0;i<rectArr.size();i++){
                     if (Collision::IsColliding(obj->box,rectArr[i]) ){
                         col.emplace_back(rectArr[i]);
@@ -91,7 +91,7 @@ bool Collision::CheckCollision(Rect tempXY,GameObject* dis,PoolManager &pool,Poo
         for (auto &obj : pool.ForGroup(gid))
         {
         if (obj && obj != dis && !obj->IsDead()){
-            if (!onlySolid ||obj->solid ){
+            if (!onlySolid ||obj->IsSolid(dis) ){
                 if (Collision::IsColliding(obj->box,tempXY) ){
                     return true;
                 }
@@ -105,7 +105,7 @@ bool Collision::CheckCollision(Rect tempXY,GameObject* dis,std::vector<GameObjec
         for (auto &obj : vec)
         {
         if (obj && obj != dis && !obj->IsDead()){
-            if (!onlySolid ||obj->solid ){
+            if (!onlySolid ||obj->IsSolid(dis) ){
                 if (Collision::IsColliding(obj->box,tempXY) ){
                     return true;
                 }
@@ -119,7 +119,7 @@ std::vector<GameObject*> Collision::GetCollidingObjects(GameObject* thisObject,P
     std::vector<GameObject*> data;
     for (auto &obj : pool.ForGroup(gid)){
         if (obj && obj != thisObject && !obj->IsDead()){
-            if (!onlySolid || obj->solid ){
+            if (!onlySolid || obj->IsSolid(thisObject) ){
                 if (Collision::IsColliding(obj->box,thisObject->box) ){
                     data.emplace_back(obj);
                 }
@@ -133,7 +133,7 @@ GameObject* Collision::GetCollidingObject(GameObject* thisObject,PoolManager &po
     for (auto &obj : pool.ForGroup(gid))
         {
         if (obj != thisObject && !obj->IsDead()){
-            if (!onlySolid || obj->solid ){
+            if (!onlySolid || obj->IsSolid(thisObject) ){
                 if (Collision::IsColliding(obj->box,thisObject->box) ){
                     return obj;
                 }
@@ -154,7 +154,7 @@ std::vector<GameObject*> Collision::GetNearObjects(GameObject* dis,PoolManager &
     newR.CenterRectIn(dis->box);
     for (auto &obj : pool.ForGroup(gid)){
         if (obj != dis && !obj->IsDead()){
-            if (!onlySolid || obj->solid ){
+            if (!onlySolid || obj->IsSolid(dis) ){
                 if (Collision::IsColliding(obj->box,newR)){
                     nearObjs.emplace_back(obj);
                 }
@@ -176,7 +176,7 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
     if (sx != 0 || sy !=0)
         for (auto &obj : pool.ForGroup(gid)){
             if (obj != dis && !obj->IsDead()){
-                if (!onlySolid || obj->solid ){
+                if (!onlySolid || obj->IsSolid(dis) ){
                     if (Collision::IsColliding(obj->box,tempY)){
                         float ax=0;
                         if (sy > 0){
@@ -291,7 +291,7 @@ int Collision::AdjustCollisionIndependent(float &sx,float &sy,float dt,GameObjec
     if (sx != 0 || sy !=0)
         for (auto &obj : vec){
             if (obj != dis && !obj->IsDead()){
-                if (!onlySolid || obj->solid ){
+                if (!onlySolid || obj->IsSolid(dis) ){
                     if (Collision::IsColliding(obj->box,tempY)){
                         float ax=0;
                         if (sy > 0){

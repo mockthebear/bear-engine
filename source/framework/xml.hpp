@@ -92,3 +92,5 @@ class Xml{
         static bool IsXmlString(std::string str);
         friend class XmlNode;
 };
+
+typedef std::shared_ptr<Xml> XmlPtr;
