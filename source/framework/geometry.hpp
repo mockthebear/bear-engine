@@ -211,6 +211,24 @@ typedef GenericPoint<int> PointInt;
 
 typedef GenericPoint3<int> PointInt3;
 
+template <typename T=float>class GenericPolygon{
+    public:
+        GenericPolygon(){};
+
+        void Add(GenericPoint<T> p){
+            vertices.emplace_back(p);
+        }
+
+        bool IsInside(GenericPoint<T> p);
+
+        uint32_t GetVerticesCount(){ return vertices.size(); };
+
+        std::vector<GenericPoint<T>> vertices;
+
+
+};
+
+
 
 /**
     @brief Basic rect class
@@ -336,6 +354,15 @@ template <typename T=float>class GenericRect{
             rhs.h = h;
             rhs.y = y;
             return rhs;
+        }
+
+        GenericPolygon<T> Polygon(){
+            GenericPolygon<T> p;
+            p.Add(GenericPoint<T>(x,y));
+            p.Add(GenericPoint<T>(x+w,y));
+            p.Add(GenericPoint<T>(x+w,y+h));
+            p.Add(GenericPoint<T>(x,y+h));
+            return p;
         }
 
 
@@ -476,5 +503,5 @@ class Cone : public Circle{
 };
 
 
-
+typedef GenericPolygon<float> BearPolygon;
 #endif
