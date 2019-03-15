@@ -1,5 +1,8 @@
 #pragma once
 #include "../framework/geometry.hpp"
+#include "painters/painters.hpp"
+#include "basetypes.hpp"
+#include "rendertexture.hpp"
 
 #ifndef DISABLE_THREADPOOL
 #define HAVE_STRUCT_TIMESPEC
@@ -63,8 +66,8 @@ enum LightStep{
             Light();
             static Light* GetInstance();
             static Light* Startup();
-            bool IsStarted(){return false;};
-            //bool IsStarted(){return out != nullptr;};
+            //bool IsStarted(){return false;};
+            bool IsStarted(){return out != nullptr;};
             bool Shutdown();
             bool StartLights(Point size,Point ExtraSize,uint16_t dotSize,float permissive=8.8,uint16_t maxDarkness=200);
 
@@ -114,10 +117,15 @@ enum LightStep{
             int LightPoints;
             static Light *Slight;
             int maxAlloc;
-            Point size,ExtraSize;
+            PointInt size,ExtraSize, textureSize;
             Uint32 *pix;
 
-            //SmartTexture *out;
+
+            BearTexture *out;
+            RenderTexture rt;
+            TextureLoadMethod mthd;
+            TexturePtr m_texture;
+            RenderDataPtr m_renderData;
 
             //auto things
             bool onAutomatic;

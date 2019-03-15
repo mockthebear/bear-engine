@@ -310,6 +310,8 @@ bool Light::Shutdown(){
         delete []MapMap[i];
     }
     delete []MapMap;
+    delete []pix;
+    delete out;
     MapMap = nullptr;
     Console::GetInstance().AddTextInfo("Light deleted.");
     return true;
@@ -318,6 +320,8 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float perm
     /*if (out != nullptr){
         Shutdown();
     }*/
+
+
     size = size_;
     ExtraSize = ExtraSize_;
     size.x += ExtraSize.x;
@@ -325,20 +329,42 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float perm
 
     sizeX = (size.x )/dotSize;
     sizeY = (size.y )/dotSize;
+
+    textureSize = PointInt(sizeX, sizeY);
+
     blockSize = dotSize;
     MaxDarkness = maxDarkness;
     //out = new SmartTexture(0,0,sizeX,sizeY,true,true);
     ShadeMap = new uint8_t[sizeY*sizeX];
     DataMap = new uint8_t[sizeY*sizeX];
+    pix = new Uint32[sizeY*sizeX];
+
+    //pix2 = new uint8_t[sizeY*sizeX*4];
+    mthd = TextureLoadMethod(TEXTURE_NEAREST);
 
     for (int y=0;y<sizeY;y++){
 
         for (int x=0;x<sizeX;x++){
             ShadeMap[x + y * sizeX] = MaxDarkness;
             DataMap[x + y * sizeX] = 0;
-            pix[y * (sizeX) + x] = RenderHelp::FormatRGBA(255,0,0,255);
+            pix[y * (sizeX) + x] = RenderHelp::FormatRGBA(255,255,255,255);
+
         }
     }
+
+    out = Painter::MakeTexture(textureSize, GL_RGBA, (unsigned char*)pix, mthd);
+
+    m_renderData = std::make_shared<RenderData>();
+
+    m_texture.reset(out);
+
+
+
+    //Painter::UpdateTexture(out, textureSize, GL_RGBA, (unsigned char*)pix, mthd);
+    rt.SetTexture(m_texture);
+
+
+    m_renderData->SetClip(Rect(0,0,textureSize.x,textureSize.y),textureSize);
 
 
 
@@ -381,7 +407,6 @@ void Light::AddBlockM(int x,int y,unsigned char strenght){
         if (IsInLimits(x,y) && DataMap[y * sizeX+  x] == 0){
             DataMap[y * sizeX+  x] = strenght;
         }
-
 }
 
 void Light::AddBlock(Rect r,uint8_t strenght){
@@ -533,27 +558,19 @@ void Light::Render(Point pos){
     if(!IsStarted()){
         return;
     }
-    //out->UpdateTexture();
-    //int extraX = ((int)(floor(Camera::pos.x))%blockSize);
-    //int extraY = ((int)(floor(Camera::pos.y))%blockSize);
+    Painter::UpdateTexture(out, textureSize, GL_RGBA, (unsigned char*)pix, mthd);
 
-    /*
-    double scaleRatioW = ScreenManager::GetInstance().GetScaleRatioW();
-    double scaleRatioH = ScreenManager::GetInstance().GetScaleRatioH();
+    m_renderData->SetScale(Point(blockSize, blockSize));
+    m_renderData->SetClip(Rect(0,0,textureSize.x,textureSize.y), Point(out->texture_w,out->texture_h) );
 
-    SDL_Rect dimensions2;
-    dimensions2.x = pos.x + ScreenManager::GetInstance().GetOffsetW() - (extraX + ExtraSize.x/2)*scaleRatioW;
-    dimensions2.y = pos.y -(extraY + ExtraSize.y/2  )*scaleRatioH;
-
-    dimensions2.h = size.y*scaleRatioH;
-    dimensions2.w = size.x*scaleRatioW;
-    SDL_RenderCopyEx(BearEngine->GetRenderer(),out->GetTexture(),nullptr,&dimensions2,0,nullptr,SDL_FLIP_NONE);*/
-
-    /*out->Render(Point(
+    int extraX = ((int)(floor(Camera::pos.x))%blockSize);
+    int extraY = ((int)(floor(Camera::pos.y))%blockSize);
+    m_renderData->SetPosition(Point(
         pos.x - (extraX  + blockSize*4) ,
         pos.y  -(extraY  + blockSize*4)
-                      ),0,Point(size.x/sizeX, size.y/sizeY));*/
+    ));
 
+    Painter::RenderTexture(out,m_renderData);
 }
 
 #endif

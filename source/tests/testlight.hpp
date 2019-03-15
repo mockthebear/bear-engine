@@ -26,7 +26,7 @@ class Test_Light: public State{
         };
         void Begin(){
             ScreenManager::GetInstance().SetScreenName("Test light");
-            LightPixelSize = 4;
+            LightPixelSize = 8;
 
             bear::out << "Test light. Creating threads\n";
             ThreadPool::GetInstance().KillThreads();
@@ -34,7 +34,7 @@ class Test_Light: public State{
             bear::out << "Creating camera\n";
             Camera::Initiate(Rect(0,0,SCREEN_SIZE_W,SCREEN_SIZE_H),128,200);
             bear::out << "Setup light\n";
-            Light::GetInstance()->StartLights( Point(SCREEN_SIZE_W,SCREEN_SIZE_H) ,Point(160,160) ,LightPixelSize,6.5,90);
+            Light::GetInstance()->StartLights( Point(SCREEN_SIZE_W,SCREEN_SIZE_H) ,Point(80,80) ,LightPixelSize,15.5,190);
             bear::out << "Done\n";
             Light::GetInstance()->SetLightRaysCount(220);
             bear::out << "Loading assets\n";
@@ -58,6 +58,7 @@ class Test_Light: public State{
             makeL.SetDuration(10.0);
             makeL.Enable();
             makeB.Enable();
+            bear::out << "Begin\n";
         };
 
         void Update(float dt){
@@ -68,6 +69,7 @@ class Test_Light: public State{
             /*
                 This segment reset any matrix
             */
+
             ThreadPool::GetInstance().ClearJobs();
             Light::GetInstance()->Update(dt,LIGHT_BEGIN);
             timer.UpdateBar(0,sw.Get());
@@ -101,6 +103,7 @@ class Test_Light: public State{
             /*
                 Here its just an threadpool unlock.
             */
+
             Light::GetInstance()->Update(dt,LIGHT_SHADE);
             frameRate.SetText(utils::format("fps: %d",(int)ScreenManager::GetInstance().GetFps()));
             tmr -= dt;
@@ -115,6 +118,7 @@ class Test_Light: public State{
             /*
                 Lock threads and add matrix reduction jobs
             */
+
             Light::GetInstance()->Update(0,LIGHT_REDUCE);
             timer.UpdateBar(1,sw.Get());
             /*
@@ -135,13 +139,16 @@ class Test_Light: public State{
             /*
                 Lock and spread jobs to generate the final matrix
             */
+
             Light::GetInstance()->Update(0,LIGHT_GEN);
             sw.Reset();
 
             /*
                 Should lock for rendering
             */
+
             ThreadPool::GetInstance().Lock();
+
             timer.UpdateBar(2,sw.Get());
             sw.Reset();
 
@@ -152,6 +159,7 @@ class Test_Light: public State{
             timer.UpdateBar(3,sw.Get());
             timer.Render(Point(32,64));
             lg.Render(Point(32,400));
+
         };
         void Input();
         void Resume(){};

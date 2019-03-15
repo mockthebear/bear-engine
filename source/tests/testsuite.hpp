@@ -33,11 +33,14 @@
 void SetupTests(){
 
     #ifndef DISABLE_UNIT_TESTS
-    //Game::GetInstance()->AddState(new Test_Light());
 
-    #ifdef THREADPOOLTEST
-    //Game::GetInstance()->AddState(new Test_Threadpool());
-    #endif // THREADPOOLTEST
+
+    Game::GetInstance()->AddState(new Test_Light());
+
+
+    //#ifdef THREADPOOLTEST
+    Game::GetInstance()->AddState(new Test_Threadpool());
+    //#endif // THREADPOOLTEST
 
 
     #ifdef LUATESTSUITE
@@ -57,6 +60,10 @@ void SetupTests(){
     Game::GetInstance()->AddState(new Test_RenderSpeed());
     Game::GetInstance()->AddState(new Test_RectRenderSpeed());
     Game::GetInstance()->AddState(new Test_PathFind());
+
+
+
+
     Game::GetInstance()->AddState(new Test_Text());
     Game::GetInstance()->AddState(new Test_NodeTileset());
     Game::GetInstance()->AddState(new Test_FastTiles());

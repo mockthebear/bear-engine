@@ -153,6 +153,8 @@ class Painter{
     static bool DrawSprites(int id);
 
 
+    static bool UpdateTexture(BearTexture *tex, PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter);
+
     static BearTexture * MakeTexture(PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter);
 
      static bool CanSupport(PainterSupport sup);
