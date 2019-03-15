@@ -167,7 +167,7 @@ void ReliableUdpServer::Update(float dt){
             }
 
             case ENET_EVENT_TYPE_DISCONNECT:{
-                printf ("%d disconnected.\n", (int)event.peer -> data);
+                //printf ("%d disconnected.\n", (int)event.peer -> data);
                 peerIds.remove(m_lastPid);
             }
         }
