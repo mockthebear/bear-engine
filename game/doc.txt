@@ -62,8 +62,6 @@ LuaObject:SetX(float, [bool = 0])
 LuaObject:SetY(float, [bool = 0])
 LuaObject:GetY() -> float
 LuaObject:GetX() -> float
-LuaObject:GetSolid() -> bool
-LuaObject:SetSolid(bool, [bool = 0])
 LuaObject:SetWidth(float, [bool = 0])
 LuaObject:GetWidth() -> float
 LuaObject:SetHeight(float, [bool = 0])
@@ -71,14 +69,10 @@ LuaObject:GetHeight() -> float
 LuaObject:SetBox(Rect, [bool = 0])
 LuaObject:GetBox() -> Rect
 LuaObject:GetPoolIndex() -> int
-LuaObject:GetMyRef() -> m
+LuaObject:GetMyRef() -> y
 LuaObject:GetMyObj() -> GameObject
 LuaObject:SetSpeed(Point, [bool = 0])
 LuaObject:GetSpeed() -> Point
-LuaObject:SetStep(Point, [bool = 0])
-LuaObject:GetStep() -> Point
-LuaObject:SetData(int, float)
-LuaObject:GetData(int) -> float
 LuaObject:NotifyDamage(GameObject, int)
 LuaObject:NotifyCollision(GameObject)
 LuaObject:Render()
@@ -89,7 +83,7 @@ LuaObject:hasPerspective() -> int
 LuaGameState:Setup()
 g_state.Signal(9SignalRef) -> bool
 GameObject:Is(int) -> bool
-GameObject:GetMyRef() -> m
+GameObject:GetMyRef() -> y
 GameObject:GetHash() -> int
 GameObject:SetX(float, [bool = 0])
 GameObject:SetY(float, [bool = 0])
@@ -101,15 +95,9 @@ GameObject:SetHeight(float, [bool = 0])
 GameObject:GetHeight() -> float
 GameObject:SetBox(Rect, [bool = 0])
 GameObject:GetBox() -> Rect
-GameObject:GetSolid() -> bool
-GameObject:SetSolid(bool, [bool = 0])
 GameObject:Kill()
 GameObject:SetSpeed(Point, [bool = 0])
 GameObject:GetSpeed() -> Point
-GameObject:SetStep(Point, [bool = 0])
-GameObject:GetStep() -> Point
-GameObject:SetData(int, float)
-GameObject:GetData(int) -> float
 GameObject:hasPerspective() -> int
 GameObject:canForceRender() -> bool
 GameObject:canForceUpdate() -> bool

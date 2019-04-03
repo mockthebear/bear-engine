@@ -2,11 +2,11 @@
 #include "../engine/renderhelp.hpp"
 
 
-GetTextWindow::GetTextWindow(PointInt pos,UIBase *owner,std::function<void(std::string str)> CallBack,
+GetTextWindow::GetTextWindow(PointInt pos,UIBase *owner,std::function<void(std::string str)> CallBacka,
                              std::string header,std::string buttonText,std::string defText):Window(Rect(pos.x,pos.y,200,200),owner){
    UI_REGISTER(GetTextWindow);
    close = false;
-   this->CallBack = CallBack;
+   this->CallBack = CallBacka;
    AddComponent(new Label(Point(10,2),header,this));
    TextInput *T = new TextInput(Point(10,40),defText,this);
    T->SetFocused(true);

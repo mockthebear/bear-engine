@@ -284,6 +284,18 @@ void Painter::SetTexturePixels(uint32_t texture, PointInt size,int mode,unsigned
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+bool Painter::UpdateTexture(BearTexture *tex, PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter){
+    if (size.x == 0 || size.y == 0 || tex == nullptr || tex->id == 0){
+        return false;
+    }
+    glBindTexture(GL_TEXTURE_2D, tex->id);
+    filter.ApplyFilter();
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x, size.y, mode, GL_UNSIGNED_BYTE, pixels);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    return true;
+}
+
+
 BearTexture* Painter::MakeTexture(PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter){
     if (size.x == 0 || size.y == 0){
         return nullptr;
