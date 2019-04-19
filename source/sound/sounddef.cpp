@@ -1,5 +1,7 @@
 #include "sounddef.hpp"
 #include "../engine/bear.hpp"
+#include "soundloader.hpp"
+#include "../framework/utils.hpp"
 
 std::vector<SoundFaderInstance> SoundWorker::FaderList;
 
@@ -33,10 +35,14 @@ void SoundWorker::Update(float dt){
                     it.dead = true;
                 }
             }
-
-            alSourcef(it.sourceID, AL_GAIN,  it.volume);
+			//bear::out << it.volume << "\n";
+			it.volume = std::max(0.0f, it.volume);
+			it.volume = std::min(1.0f, it.volume);
+            alSourcef(it.sourceID, AL_GAIN,  it.volume  );
+			//SoundLoader::ShowError( utils::format("Set gain as %f", it.volume) );
             if (it.volume <= 0){
                 alSourceStop(it.sourceID);
+				it.dead = true;
             }
         }else{
             it.dead = true;

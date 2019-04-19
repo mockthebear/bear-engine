@@ -17,6 +17,7 @@
     @brief Basic sound class
 */
 
+
 class Sound{
     public:
         Sound():classType(0),volume(MAX_VOL_SIZE),pitch(1.0f),pos(0.0f,0.0f,0.0f),file(""),sourceID(0),bufferId(0){
@@ -41,7 +42,7 @@ class Sound{
         bool FadeOut(float speed=1.0f,float minVol = 0.0f);
         bool FadeIn(float speed=1.0f,float maxVol = MAX_VOL_SIZE,bool repeat=false);
 
-        void SetPosition(float pos);
+        void SetOffset(float pos);
         float GetPosition();
         float GetDuration();
 
@@ -62,7 +63,7 @@ class Sound{
 
 
         static int PlayOnce(const char *s,bool useGlobalAssetManager=false,int volume=128,Point3 pos=Point3(),int classN=0);
-        static int PlayOncePiched(const char *s,int pch=1,bool useGlobalAssetManager=false,int volume=128,Point3 pos=Point3(),int classN=0);
+        static int PlayOncePiched(const char *s,float pch=1,bool useGlobalAssetManager=false,int volume=128,Point3 pos=Point3(),int classN=0);
 
         static BufferData* Preload (std::string name);
         static BufferData* Preload(SDL_RWops* file,std::string name);
