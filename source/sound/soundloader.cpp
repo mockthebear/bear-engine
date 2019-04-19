@@ -127,6 +127,7 @@ BufferData *SoundLoader::loadOggFileRW(SDL_RWops* soundFile){
     ov_clear(&oggFile);
     alGenBuffers(1, &ret->buffer);
     alBufferData(ret->buffer, ret->format, &bufferData[0], static_cast<ALsizei>(bufferData.size()), ret->freq);
+    SoundLoader::ShowError("gen ogg rw");
     bufferData.clear();
     //alSourcei(sourceID, AL_BUFFER, bufferID);
     return ret;
@@ -222,9 +223,13 @@ BufferData *SoundLoader::loadWavFileRW(SDL_RWops* soundFile){
         else if (wave_format.bitsPerSample == 16)
             ret->format = AL_FORMAT_STEREO16;
     }
+
     alGenBuffers(1, &ret->buffer);
+    SoundLoader::ShowError("gen b");
     alBufferData(ret->buffer, ret->format, (void*)data,size, ret->freq);
+    SoundLoader::ShowError("bd");
     delete []data;
+    SoundLoader::ShowError("gen wav f");
     return ret;
   } catch(const char * error) {
     if (data != nullptr)

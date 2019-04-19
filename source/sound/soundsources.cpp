@@ -16,9 +16,9 @@ SoundPool::SoundPool(bool autoQuantity){
     for (int i=0;i<count;i++){
         classes[i] = 0;
     }
-    SoundLoader::ShowError();
+    SoundLoader::ShowError("bef");
     alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
-    SoundLoader::ShowError();
+    SoundLoader::ShowError("pospool");
 
     //ALenum err = alGetError();
 }
@@ -40,14 +40,14 @@ ALuint SoundPool::GetSource(int thisClass){
         }
     }
     bear::out << "No sound sources left \n";
-    SoundLoader::ShowError();
+    SoundLoader::ShowError("get source pool");
     return 0;
 }
 void SoundPool::Close(){
     for (int i=0;i<count;i++){
         alDeleteSources(1, &sources[i]);
     }
-    SoundLoader::ShowError();
+    SoundLoader::ShowError("close");
     delete [] sources;
     sources = nullptr;
 }

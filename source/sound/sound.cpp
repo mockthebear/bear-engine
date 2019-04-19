@@ -29,10 +29,13 @@ bool Sound::SetMasterVolume(uint8_t vol,int classType_){
         }
         return true;
     }
+    //float oldValue = MasterVolume[classType_];
     for (int i=0;i<SoundPool::GetInstance().count;i++){
+        //alGetSourcei(, AL_SOURCE_STATE, &state);
         if (SoundPool::GetInstance().classes[i] == classType_){
             ALuint thiSource = SoundPool::GetInstance().sources[i];
             alSourcef(thiSource, AL_MAX_GAIN ,newValue);
+
         }
     }
     MasterVolume[classType_] = newValue;
@@ -51,19 +54,19 @@ Sound::Sound(SoundPtr snda,const char *s):Sound(){
     working = ConfigManager::GetInstance().IsWorkingAudio();
 }
 
-Sound::Sound(char *s,int _classType):Sound(){
+Sound::Sound(char *s,int classType):Sound(){
     working = ConfigManager::GetInstance().IsWorkingAudio();
     Open((const char *)s);
     file = s;
-    this->classType = _classType;
+    this->classType = classType;
 }
 
 
-Sound::Sound(const char *s,int _classType):Sound(){
+Sound::Sound(const char *s,int classType):Sound(){
     working = ConfigManager::GetInstance().IsWorkingAudio();
     Open(s);
     file = s;
-    this->classType = _classType;
+    this->classType = classType;
 }
 
 bool Sound::Open(std::string str){
@@ -75,13 +78,15 @@ bool Sound::Open(std::string str){
         snd = GlobalAssetManager::GetInstance().makeSound(false,str);
     }
     file = str;
-    return true;
+    return snd.get() != nullptr;
 }
 
 BufferData* Sound::Preload(SDL_RWops* file,std::string name){
+    SoundLoader::ShowError("Preload rwop");
     if (!ConfigManager::GetInstance().IsWorkingAudio())
         return NULL;
     if (!file){
+        bear::out << "failed to open file " << name << ". no file found\n";
         return nullptr;
     }
     char theName[4];
@@ -96,12 +101,13 @@ BufferData* Sound::Preload(SDL_RWops* file,std::string name){
     }else{
         return SoundLoader::loadWavFileRW(file);
     }
+    bear::out << "failed to open file " << name << ". unknow operation\n";
     return nullptr;
 }
 BufferData* Sound::Preload(std::string stdnamee){
     if (!ConfigManager::GetInstance().IsWorkingAudio())
         return NULL;
-
+    SoundLoader::ShowError("Preload str" + stdnamee);
     std::string aux = stdnamee;
     if (ResourceManager::IsValidResource(aux)){
         SDL_RWops* rw = ResourceManager::GetInstance().GetFile(stdnamee); //safe
@@ -127,14 +133,17 @@ BufferData* Sound::Preload(std::string stdnamee){
             return SoundLoader::loadWavFile(stdnamee.c_str());
         }
     }else{
+        bear::out << "failed to open file " << stdnamee << ". file not found\n";
         return nullptr;
     }
 }
 
 
 int Sound::PlayOnce(const char *s,bool global,int volume,Point3 pos,int classN){
+    SoundLoader::ShowError("PlayOnce before");
     if (!ConfigManager::GetInstance().IsWorkingAudio())
         return -1;
+
     std::string stdnamee(s);
     SoundPtr snd;
     std::string aux = stdnamee;
@@ -149,27 +158,28 @@ int Sound::PlayOnce(const char *s,bool global,int volume,Point3 pos,int classN){
         else
             snd = Game::GetCurrentState().Assets.makeSound(false,s);
     }
+    SoundLoader::ShowError("post");
 
     if (snd.get()){
         ALuint sourceID_ = SoundPool::GetInstance().GetSource(classN);
         if (sourceID_ != 0){
             volume = std::max(volume,0);
             volume = std::min(MAX_VOL_SIZE,(float)volume);
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("before2");
             alSourcei(sourceID_, AL_BUFFER, snd.get()->buffer);
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("buffer2");
             alSource3f(sourceID_, AL_POSITION, pos.x, pos.y, pos.z);
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("pos2");
             alSourcef(sourceID_, AL_GAIN, ((float)volume/MAX_VOL_SIZE) );
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("gain2");
             alSourcef(sourceID_, AL_MAX_GAIN, MasterVolume[classN] );
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("maxgain2");
             alSourcef(sourceID_, AL_PITCH, 1.0);
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("pitch2");
             alSourcei(sourceID_, AL_LOOPING, false);
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("looping2");
             alSourcePlay(sourceID_);
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("play2");
             return snd.get()->buffer;
         }else{
             bear::out << "No source\n";
@@ -179,7 +189,7 @@ int Sound::PlayOnce(const char *s,bool global,int volume,Point3 pos,int classN){
     }
     return -1;
 }
-int Sound::PlayOncePiched(const char *s,int ptch,bool global,int volume,Point3 pos,int classN){
+int Sound::PlayOncePiched(const char *s,float ptch,bool global,int volume,Point3 pos,int classN){
     if (!ConfigManager::GetInstance().IsWorkingAudio())
         return -1;
     std::string stdnamee(s);
@@ -202,23 +212,23 @@ int Sound::PlayOncePiched(const char *s,int ptch,bool global,int volume,Point3 p
         if (sourceID_ != 0){
             volume = std::max(volume,0);
             volume = std::min(MAX_VOL_SIZE,(float)volume);
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("before");
             alSourcei(sourceID_, AL_BUFFER, snd.get()->buffer);
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("buffer");
             alSource3f(sourceID_, AL_POSITION, pos.x, pos.y, pos.z);
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("pos");
             alSourcef(sourceID_, AL_GAIN, ((float)volume/MAX_VOL_SIZE) );
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("gain");
             alSourcef(sourceID_, AL_MAX_GAIN, MasterVolume[classN] );
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("max gain");
             alSourcef(sourceID_, AL_PITCH, 1.0);
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("pitch");
             alSourcei(sourceID_, AL_LOOPING, false);
-            SoundLoader::ShowError();
-            float addPitch = ( (ptch*100 - rand()%(ptch*200))/10000.0f );
-            alSourcef(sourceID_, AL_PITCH, 1.0f + addPitch );
+            SoundLoader::ShowError("looping");
+
+            alSourcef(sourceID_, AL_PITCH, ptch);
             alSourcePlay(sourceID_);
-            SoundLoader::ShowError();
+            SoundLoader::ShowError("play");
             return snd.get()->buffer;
         }else{
             bear::out << "No source\n";
@@ -255,14 +265,14 @@ void Sound::SetVolume(int vol){
     SoundLoader::ShowError("on volume");
 }
 
-void Sound::SetPosition(float _pos){
+void Sound::SetOffset(float pos){
      if (!working)
         return;
     if (!IsOpen())
         return;
     if (!checkSource())
         return;
-    alSourcef(sourceID,AL_SEC_OFFSET,_pos);
+    alSourcef(sourceID,AL_SEC_OFFSET,pos);
     SoundLoader::ShowError("on offset");
 }
 
@@ -273,9 +283,9 @@ float Sound::GetPosition(){
         return 0;
     if (!checkSource())
         return 0;
-    float _pos=0;
-    alGetSourcef(sourceID,AL_SEC_OFFSET,&_pos);
-    return _pos;
+    float pos=0;
+    alGetSourcef(sourceID,AL_SEC_OFFSET,&pos);
+    return pos;
 }
 void Sound::SetClassType(int n){
     classType=n;
@@ -297,22 +307,27 @@ float Sound::GetDuration(){
     ALint channels;
     ALint bits;
     alGetBufferi(snd.get()->buffer, AL_SIZE, &sizeInBytes);
+    SoundLoader::ShowError("get buffer size");
     alGetBufferi(snd.get()->buffer, AL_CHANNELS, &channels);
+    SoundLoader::ShowError("get buffer channels");
     alGetBufferi(snd.get()->buffer, AL_BITS, &bits);
+    SoundLoader::ShowError("get buffer bits");
     alGetBufferi(snd.get()->buffer, AL_FREQUENCY, &frequency);
-    SoundLoader::ShowError();
+    SoundLoader::ShowError("get buffer freq");
     ALint lengthInSamples = sizeInBytes * 8 / (channels * bits);
     float durationInSeconds = (float)lengthInSamples / (float)frequency;
     return durationInSeconds;
 }
 void Sound::SetPosition(Point3 p){
+    SoundLoader::ShowError(utils::format("on before %f, %f, %f", pos.x, pos.y, pos.z));
     pos = p;
     if (!working)
         return;
     if (!checkSource())
         return;
+
     alSource3f(sourceID, AL_POSITION, pos.x, pos.y, pos.z);
-    SoundLoader::ShowError("on position");
+    SoundLoader::ShowError(utils::format("on position %f, %f, %f", pos.x, pos.y, pos.z));
 }
 void Sound::SetRepeat(bool repeat){
     if (!working)
@@ -327,11 +342,16 @@ void Sound::PrePlay(){
     if (!snd.get()){
         return;
     }
+
     bufferId = snd.get()->buffer;
     ALint lastBuffer;
-    alGetBufferi(sourceID, AL_BUFFER, &lastBuffer);
-    if (lastBuffer != bufferId)
+    SoundLoader::ShowError("aaaa");
+    alGetSourcei(sourceID, AL_BUFFER, &lastBuffer);
+    SoundLoader::ShowError("on get AL_BUFFER");
+    if (lastBuffer != bufferId){
         alSourcei(sourceID, AL_BUFFER, bufferId);
+        SoundLoader::ShowError("on set albuffer");
+    }
     SetPitch(pitch);
     SetPosition(pos);
     SetVolume(-1);
@@ -347,6 +367,7 @@ bool Sound::Play(bool repeat){
             bear::out << "Cant find any source\n";
             return false;
         }
+        SoundLoader::ShowError("on before?");
         PrePlay();
         SetRepeat(repeat);
         alSourcePlay(sourceID);
@@ -363,7 +384,7 @@ void Sound::Resume(){
         return;
     if (!IsPlaying()){
         alSourcePlay(sourceID);
-        SoundLoader::ShowError();
+        SoundLoader::ShowError("resume");
     }
 }
 void Sound::SetPitch(float f){
@@ -371,6 +392,7 @@ void Sound::SetPitch(float f){
     if (!working|| !checkSource())
         return;
     alSourcef(sourceID, AL_PITCH, pitch);
+    SoundLoader::ShowError("on pitch");
 }
 
 void Sound::Toggle(){
@@ -416,6 +438,7 @@ bool Sound::checkSource(){
         return false;
     }
     alGetSourcei(sourceID, AL_BUFFER, &buffid);
+    SoundLoader::ShowError("on check");
     if ((ALuint)buffid != snd.get()->buffer){
         return false;
     }
@@ -441,6 +464,7 @@ void Sound::Stop(){
         return;
     alSourceStop(sourceID);
     alSourcei(sourceID, AL_BUFFER, 0);
+    SoundLoader::ShowError("on stop");
 }
 void Sound::Pause(){
     if (!working || !checkSource())
