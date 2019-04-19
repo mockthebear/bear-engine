@@ -294,6 +294,29 @@ template<typename T> class GenericIterator{
         int sz;
 };
 
+template<typename T> class GenericStaticIterator {
+public:
+    GenericStaticIterator(T **vector_, int size) {
+        T ** aux = new T*[size];
+        memcpy(aux, vector_, sizeof(T **) * size);
+
+        ptr = std::shared_ptr <T*>(aux, std::default_delete<T*[]>());
+        sz = size;
+    };
+    T** begin() {
+        return &ptr.get()[0];
+    }
+    /**
+        Used to be the iterator on c++11
+    */
+    T** end() {
+        return &ptr.get()[sz];
+    }
+private:
+    std::shared_ptr<T*> ptr;
+    int sz;
+};
+
 
 
 

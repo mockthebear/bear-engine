@@ -311,6 +311,15 @@ class PoolManager{
             return &contentList[localMaximum];
         }
 
+		GenericStaticIterator<GameObject> ForGroupStatic(PoolGroupId group) {
+			if (group == -1) {
+				GenericStaticIterator<GameObject> IteratorF(contentList, localMaximum);
+				return IteratorF;
+			}
+			GenericStaticIterator<GameObject> Iterator(Groups[group].Objects, Groups[group].Max);
+			return Iterator;
+		}
+
         GenericIterator<GameObject> ForGroup(PoolGroupId group){
             if (group == -1){
                 GenericIterator<GameObject> IteratorF(contentList,localMaximum);
@@ -321,11 +330,13 @@ class PoolManager{
         }
         void SetSilentMode(bool s){silent = s;};
     private:
+		void ClearDeprecatedLists();
         bool silent;
         bool insertUnregistered;
         PoolId nextPoolGroup;
         void RemakeGroups();
         int LuaPool;
+		std::vector <GameObject **> deprecatedContentList;
         GameObject **contentList;
         int localMaximum;
         GameObject * InternalAddInstance(GameObject *,bool deleteptr);

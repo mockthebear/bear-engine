@@ -56,6 +56,12 @@ PoolId PoolManager::RegisterPool(std::function<int(void)> maxFuncion,
     return indexCounter-1;
 }
 
+void PoolManager::ClearDeprecatedLists() {
+	for (unsigned int i = 0; i < deprecatedContentList.size(); ++i) {
+		delete[] deprecatedContentList[i];
+	}
+	deprecatedContentList.clear();
+}
 void PoolManager::EraseGroups(){
      for(unsigned int i = 0; i< Groups.size(); ++i){
         delete []Groups[i].Objects;
@@ -83,6 +89,7 @@ void PoolManager::ErasePools(){
         Pools[i].Delete();
     }
     Pools.clear();
+	ClearDeprecatedLists();
 }
 GameObject *PoolManager::InternalAddInstance(GameObject *obj,bool deleteptr){
     for(unsigned int i = 0; i< Pools.size(); ++i){
@@ -109,7 +116,7 @@ GameObject *PoolManager::InternalAddInstance(GameObject *obj,bool deleteptr){
 void PoolManager::GenerateInternalPool(){
     int localMaximum_aux = GetMaxInstancesOptimized()+Unregistered.size();
     if (localMaximum_aux > localMaximum){
-        delete []contentList;
+		deprecatedContentList.emplace_back(contentList);
         contentList = new GameObject*[localMaximum_aux+1];
         for (int i=0;i<localMaximum_aux+1;i++){
             contentList[i] = 0;
@@ -177,7 +184,7 @@ void PoolManager::RemakeGroups(){
 
         }
         if (newMax > Groups[i].Max){
-            delete []Groups[i].Objects;
+			deprecatedContentList.emplace_back(Groups[i].Objects);
             Groups[i].Objects = new GameObject*[newMax+1];
         }
         Groups[i].Max = newMax;
@@ -247,6 +254,7 @@ GameObject * PoolManager::GetInstanceGlobal(int index,PoolId pool){
 }
 
 void PoolManager::Update(float dt){
+	ClearDeprecatedLists();
     //unsigned int t = 0;
     //unsigned int id = 0;
     for(unsigned int i = 0; i< Pools.size(); ++i){
