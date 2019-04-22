@@ -63,6 +63,10 @@ namespace Collision {
             return a.x > b.x && a.x < b.x+b.w && a.y > b.y && a.y < b.y+b.h;
         }
 
+        static inline bool IsColliding( Circle a,Point b ){
+            return b.GetDistance(a.GetPoint()) <= a.r;
+        }
+
 
         static inline bool IsColliding( Rect b,Circle a ){
             float cX, cY;

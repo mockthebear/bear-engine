@@ -4,8 +4,39 @@
 #include <stdio.h>
 #include <cstdint>
 #include <algorithm>
+#include <float.h>
 #include "../settings/definitions.hpp"
 #include SDL_LIB_HEADER
+
+
+/**
+    @brief [WIP] Class to deal with angles and geometry stuff
+*/
+class Geometry{
+    public:
+        /**
+            Receive an angle in degree and convert to rad
+        */
+        static double toRad(double v){ return (v < 0 ? 360-v : v)* PI() / 180.0; };
+        /**
+            Receive an angle in rad and convert to degree
+        */
+        static double toDeg(double v){ return (v < 0 ? 2.0*PI() + v : v) * 180.0 / PI(); };
+        /**
+            PI :V
+        */
+        static inline double PI(){ return 3.14159265;};
+        static double AlignRad(double v){
+            double twoPi = 2.0*PI();
+            while (v < 0.0){
+                v = twoPi + v;
+            }
+            while (v > twoPi){
+                v = v - twoPi;
+            }
+            return v;
+        };
+};
 
 /**
     @brief Basic template Point class (2d vector)
@@ -88,11 +119,16 @@ template <typename T=float> class GenericPoint{
         T GetDistance(GenericPoint p){
              return sqrt(pow((x - p.x),(T)2) + pow((y-p.y),(T)2));
         };
+
+
+        T GetDistanceSquared(GenericPoint p){
+             return (pow((x - p.x),(T)2) + pow((y-p.y),(T)2));
+        };
         /**
             Get the direction in rads between two points
             @param return in radians the angle
         */
-        T GetDirection(GenericPoint to){
+        T GetDirection(GenericPoint& to){
             return atan2(to.y-y,to.x-x);
         };
         /**
@@ -136,6 +172,31 @@ template <typename T=float> class GenericPoint{
             x -= (int)x%gridSize;
             y -= (int)y%gridSize;
         }
+        bool IsValid(){
+            if (x == FLT_MAX || y == FLT_MAX)
+                return false;
+            return true;
+        }
+
+        GenericPoint<T> GetAgainstPosition(GenericPoint<T> other){
+            GenericPoint<T> pf;
+            if (x > other.x){
+                pf.x = 1;
+            }else if (x < other.x){
+                pf.x = -1;
+            }else{
+                pf.x = 0;
+            }
+            if (y > other.y){
+                pf.y = 1;
+            }else if (y < other.y){
+                pf.y = -1;
+            }else{
+                pf.y = 0;
+            }
+            return pf;
+        }
+
         /**
             The X codinate;
         */
@@ -155,7 +216,7 @@ template <typename T=float,typename T2=float> bool operator==(const GenericPoint
 }
 
 template <typename T=float,typename T2=float> bool operator!=(const GenericPoint<T> &a, const GenericPoint<T2> &b){
-    return a.x != b.x || a.y != b.y;
+    return !(a.x == b.x && a.y == b.y);
 }
 
 template <typename T=float,typename T2=float> GenericPoint<T2> operator/(T a,GenericPoint<T2> b){
@@ -229,6 +290,151 @@ template <typename T=float>class GenericPolygon{
 };
 
 
+template <typename T=float>class GenericLine{
+    public:
+    GenericLine(T xx,T yy ,T ww,T hh):x1(xx),y1(yy),x2(ww),y2(hh){}
+        /**
+            Empty constructor start all components with 0
+        */
+
+        GenericLine(T val){
+            x1 = val;
+            y1 = val;
+            x2 = val;
+            y2 = val;
+        };
+
+
+        template<typename K>GenericLine(GenericLine<K> reqt){
+            x1 = reqt.x1;
+            y1 = reqt.y1;
+            y2 = reqt.y2;
+            x2 = reqt.x2;
+        };
+
+        template<typename K, typename K2> GenericLine(GenericPoint<K> p1, GenericPoint<K2> p2){
+            x1 = p1.x;
+            y1 = p1.y;
+            x2 = p2.x;
+            y2 = p2.y;
+        };
+
+        template<typename K>GenericLine(GenericPoint<K> p, T _w, T _h){
+            x1 = p.x;
+            y1 = p.y;
+            x2 = _w;
+            y2 = _h;
+        };
+
+        GenericLine(const int n[4]){
+            x1 = n[0];
+            y1 = n[1];
+            x1 = n[2];
+            y2 = n[3];
+        };
+        GenericLine(const float n[4]){
+            x1 = n[0];
+            y1 = n[1];
+            x2 = n[2];
+            y2 = n[3];
+        };
+        GenericLine(const long n[4]){
+            x1 = n[0];
+            y1 = n[1];
+            x2 = n[2];
+            y2 = n[3];
+        };
+
+        GenericLine():x1(0),y1(0),x2(0),y2(0){};
+
+         GenericPoint<T> GetFirst(){
+            return GenericPoint<T>(x1, y1);
+        }
+
+        GenericPoint<T> GetSecond(){
+            return GenericPoint<T>(x2, y2);
+        };
+
+        static bool onSegment(GenericPoint<T> p, GenericPoint<T> q, GenericPoint<T> r){
+            if (q.x <= std::max(p.x, r.x) && q.x >= std::min(p.x, r.x) &&
+                    q.y <= std::max(p.y, r.y) && q.y >= std::min(p.y, r.y))
+                return true;
+            return false;
+        };
+
+        static int orientation(GenericPoint<T> p, GenericPoint<T> q, GenericPoint<T> r){
+            int val = (q.y - p.y) * (r.x - q.x) -
+                        (q.x - p.x) * (r.y - q.y);
+            if (val == 0) return 0;
+            return (val > 0)? 1: 2;
+        };
+
+        GenericPoint<T> GetIntersection(GenericLine<T> l2){
+            T s02_x, s02_y, s10_x, s10_y, s32_x, s32_y, s_numer, t_numer, denom, t;
+            s10_x = x2 - x1;
+            s10_y = y2 - y1;
+            s32_x = l2.x2 - l2.x1;
+            s32_y = l2.y2 - l2.y1;
+
+            denom = s10_x * s32_y - s32_x * s10_y;
+            if (fabs(denom) <= 0.001)
+                return GenericPoint<T>(FLT_MAX, FLT_MAX); // Collinear
+            bool denomPositive = denom > 0;
+
+            s02_x = x1 - l2.x1;
+            s02_y = y1 - l2.y1;
+            s_numer = s10_x * s02_y - s10_y * s02_x;
+            if ((s_numer < 0) == denomPositive)
+                return GenericPoint<T>(FLT_MAX, FLT_MAX); // No collision
+
+            t_numer = s32_x * s02_y - s32_y * s02_x;
+            if ((t_numer < 0) == denomPositive)
+                return GenericPoint<T>(FLT_MAX, FLT_MAX); // No collision
+
+            if (((s_numer > denom) == denomPositive) || ((t_numer > denom) == denomPositive))
+                return GenericPoint<T>(FLT_MAX, FLT_MAX); // No collision
+            // Collision detected
+            t = t_numer / denom;
+
+            return GenericPoint<T>(x1 + (t * s10_x), y1 + (t * s10_y));
+        }
+
+        bool IsIntersect(GenericLine<T> l2){
+            int o1 = orientation(GetFirst(), GetSecond(), l2.GetFirst());
+            int o2 = orientation(GetFirst(), GetSecond(), l2.GetSecond());
+            int o3 = orientation(l2.GetFirst(), l2.GetSecond(), GetFirst());
+            int o4 = orientation(l2.GetFirst(), l2.GetSecond(), GetSecond());
+
+            // General case
+            if (o1 != o2 && o3 != o4)
+                return true;
+
+            // Special Cases
+            // p1, q1 and p2 are colinear and p2 lies on segment p1q1
+            if (o1 == 0 && onSegment(GetFirst(), l2.GetFirst(), GetSecond())) return true;
+
+            // p1, q1 and p2 are colinear and q2 lies on segment p1q1
+            if (o2 == 0 && onSegment(GetFirst(), l2.GetSecond(), GetSecond())) return true;
+
+            // p2, q2 and p1 are colinear and p1 lies on segment p2q2
+            if (o3 == 0 && onSegment(l2.GetFirst(), GetFirst(), l2.GetSecond())) return true;
+
+             // p2, q2 and q1 are colinear and q1 lies on segment p2q2
+            if (o4 == 0 && onSegment(l2.GetFirst(), GetSecond(), l2.GetSecond())) return true;
+
+            return false; // Doesn't fall in any of the above cases
+        };
+
+        T x1, y1, x2, y2;
+};
+
+template <typename T=float,typename T2=float> bool operator==(const GenericLine<T> &a, const GenericLine<T2> &b){
+    return a.x1 == b.x1 && a.y1 == b.y1  && a.x2 == b.x2 && a.y2 == b.y2;
+}
+
+template <typename T=float,typename T2=float> bool operator!=(const GenericLine<T> &a, const GenericLine<T2> &b){
+    return !(a.x1 == b.x1 && a.y1 == b.y1 && a.x2 == b.x2 && a.y2 == b.y2);
+}
 
 /**
     @brief Basic rect class
@@ -365,6 +571,25 @@ template <typename T=float>class GenericRect{
             return p;
         }
 
+        std::vector<GenericLine<T>> Lines(){
+            std::vector<GenericLine<T>> l;
+            l.emplace_back( GenericLine<T>(x    ,y  ,x+w    , y     )    );
+            l.emplace_back( GenericLine<T>(x+w  ,y  ,x+w    , y+h   )    );
+            l.emplace_back( GenericLine<T>(x+w  ,y+h,x      , y+h   )    );
+            l.emplace_back( GenericLine<T>(x    ,y+h,x      , y     )    );
+            return l;
+        };
+
+        std::vector<GenericPoint<T>> Points(){
+            std::vector<GenericPoint<T>> l;
+            l.emplace_back( GenericPoint<T>(x    ,  y   ));
+            l.emplace_back( GenericPoint<T>(x+w  ,  y   ));
+            l.emplace_back( GenericPoint<T>(x+w  ,  y+h ));
+            l.emplace_back( GenericPoint<T>(x    ,  y+h ));
+
+            return l;
+        };
+
 
         /**
             Get x,y
@@ -442,24 +667,13 @@ template <typename T=float>class GenericRect{
 
 typedef GenericRect<float> Rect;
 typedef GenericRect<int> RectInt;
-/**
-    @brief [WIP] Class to deal with angles and geometry stuff
-*/
-class Geometry{
-    public:
-        /**
-            Receive an angle in degree and convert to rad
-        */
-        static double toRad(double v){ return (v < 0 ? 360-v : v)* PI() / 180.0; };
-        /**
-            Receive an angle in rad and convert to degree
-        */
-        static double toDeg(double v){ return (v < 0 ? 2.0*PI() + v : v) * 180.0 / PI(); };
-        /**
-            PI :V
-        */
-        static inline double PI(){ return 3.14159265;};
-};
+
+
+template <typename T=float,typename T2=float> bool operator==(const GenericRect<T> &a, const GenericRect<T2> &b){
+    return a.x == b.x && a.y == b.y && a.w == b.w && a.h == b.h;
+}
+
+
 /**
     @brief [WIP] Class to describe an semi circle.
 */
@@ -504,4 +718,8 @@ class Cone : public Circle{
 
 
 typedef GenericPolygon<float> BearPolygon;
+
+
+
+typedef GenericLine<float> Line;
 #endif
