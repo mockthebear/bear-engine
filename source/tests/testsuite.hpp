@@ -27,8 +27,12 @@
 #include "testrectrenderspeed.hpp"
 #include "testnode.hpp"
 #include "testnodetileset.hpp"
+#include "testnewlight.hpp"
 #include "testblank.hpp"
 #endif // DISABLE_UNIT_TESTS
+
+void SetupTests();
+
 
 void SetupTests(){
 
@@ -37,6 +41,7 @@ void SetupTests(){
 
     Game::GetInstance()->AddState(new Test_Light());
 
+    Game::GetInstance()->AddState(new Test_NewLight());
 
     //#ifdef THREADPOOLTEST
     Game::GetInstance()->AddState(new Test_Threadpool());
@@ -60,10 +65,6 @@ void SetupTests(){
     Game::GetInstance()->AddState(new Test_RenderSpeed());
     Game::GetInstance()->AddState(new Test_RectRenderSpeed());
     Game::GetInstance()->AddState(new Test_PathFind());
-
-
-
-
     Game::GetInstance()->AddState(new Test_Text());
     Game::GetInstance()->AddState(new Test_NodeTileset());
     Game::GetInstance()->AddState(new Test_FastTiles());

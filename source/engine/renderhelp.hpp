@@ -38,6 +38,9 @@ class RenderHelp{
         static void DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f);
 
 
+        static void DrawLineColor(Line l,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f);
+
+
         static void DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false, float angle =0,const BearColor colors[4] = BCWhite4);
 
         static void DrawSquareColor_lua(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false){

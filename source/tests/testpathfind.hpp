@@ -44,8 +44,7 @@ class Test_PathFind: public State{
         void Update(float dt){
             duration -= dt;
             if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
-                if (g_input.IsKeyDown(SDLK_n))
-                    requestDelete = true;
+                requestDelete = true;
             }
 
         };
