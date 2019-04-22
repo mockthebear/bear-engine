@@ -16,7 +16,14 @@ void Painter::SetViewport(Point screenNow,Point offset){
 
 }
 
-
+void Painter::SetTexturePixels(uint32_t texture, PointInt size,int mode,unsigned char* pixels ){
+    if (!pixels){
+        return;
+    }
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x, size.y, mode, GL_UNSIGNED_BYTE, pixels);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
 
 void RenderData::SetPosition(Point pos){
     position = pos;

@@ -183,7 +183,7 @@ void LuaInterface::RegisterScreenRender(){
     //g_render.DrawSquareColor(rect, red, green, blue, alpha,mode=false)
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","DrawSquareColor",&RenderHelp::DrawSquareColor_lua,false,static_cast<uint8_t>(255));
     //g_render.FormatARGB(red, green, blue, alpha)
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","DrawLineColor",&RenderHelp::DrawLineColor);
+    //GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","DrawLineColor",&RenderHelp::DrawLineColor);
     //g_render.FormatARGB(red, green, blue, alpha)
     GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_render","FormatARGB",&RenderHelp::FormatARGB);
     //g_render.FormatRGBA(red, green, blue, alpha)

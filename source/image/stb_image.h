@@ -5032,7 +5032,7 @@ errorEnd:
    stbi__rewind(s);
    return res;
 }
-
+void stbi__tga_read_rgb16(stbi__context *s, stbi_uc* out);
 // read 16bit value and convert to 24bit RGB
 void stbi__tga_read_rgb16(stbi__context *s, stbi_uc* out)
 {

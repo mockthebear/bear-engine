@@ -158,6 +158,9 @@ void RenderHelp::DrawLinesColor(std::vector<GameVertice> lines,uint8_t r,uint8_t
     DisplayGlError("DrawLinesColor");
 }
 
+void RenderHelp::DrawLineColor(Line l,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thickness){
+    DrawLineColor(l.GetFirst(), l.GetSecond(), r, g, b, a, thickness);
+}
 
 void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thicc){
     static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();

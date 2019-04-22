@@ -73,12 +73,10 @@ bool TargetTexture::Generate(int wa,int ha){
         FreeTexture();
     }
 
-    TextureLoadMethod mthd(TEXTURE_NEAREST);
-
     texture_w = size_w = wa;
     texture_h = size_h = ha;
 
-    BearTexture *tex = Painter::MakeTexture(PointInt(wa,ha), GL_RGBA, nullptr, mthd);
+    BearTexture *tex = Painter::MakeTexture(PointInt(wa,ha), GL_RGBA, nullptr, textureMode);
     id = tex->id;
     tex->DropTexture();
     texture_w = tex->texture_w;
