@@ -340,6 +340,8 @@
 		<Unit filename="framework/gamefile.hpp" />
 		<Unit filename="framework/geometry.cpp" />
 		<Unit filename="framework/geometry.hpp" />
+		<Unit filename="framework/light2d.cpp" />
+		<Unit filename="framework/light2d.hpp" />
 		<Unit filename="framework/poolmanager.cpp" />
 		<Unit filename="framework/poolmanager.hpp" />
 		<Unit filename="framework/resourcefiles.cpp" />
@@ -559,6 +561,7 @@
 		<Unit filename="tests/testjoystick.hpp" />
 		<Unit filename="tests/testlight.hpp" />
 		<Unit filename="tests/testlua.hpp" />
+		<Unit filename="tests/testnewlight.hpp" />
 		<Unit filename="tests/testnode.hpp" />
 		<Unit filename="tests/testnodetileset.hpp" />
 		<Unit filename="tests/testobject.hpp" />
