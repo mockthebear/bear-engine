@@ -305,13 +305,14 @@ bool Light::Shutdown(){
 
     delete []ShadeMap;
     delete []DataMap;
-
-    for (int i=0;i<maxAlloc;i++){
-        delete []MapMap[i];
+    if (MapMap){
+        for (int i=0;i<maxAlloc;i++){
+            delete []MapMap[i];
+        }
+        delete []MapMap;
+        delete []pix;
+        delete out;
     }
-    delete []MapMap;
-    delete []pix;
-    delete out;
     MapMap = nullptr;
     Console::GetInstance().AddTextInfo("Light deleted.");
     return true;
