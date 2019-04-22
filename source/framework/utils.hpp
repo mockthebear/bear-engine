@@ -40,6 +40,21 @@ namespace utils {
         pack(vec,tail...);
     };
 
+    template< typename T > void bsort( T *a, int n ){
+        for( int i=0 ; i<n ; ++i )
+        {
+            for( int j=i+1 ; j<n ; ++j )
+            {
+                if( a[j].rot < a[i].rot )
+                {
+                    T temp = a[i] ;
+                    a[i] = a[j] ;
+                    a[j] = temp ;
+                }
+            }
+        }
+    }
+
     template<class T,typename... arg> T choose(){return T();};
     template<class T,typename... arg> T choose(T head,const arg&... tail){
         std::vector<T> vec;
