@@ -1,0 +1,32 @@
+#version 100
+precision mediump float;
+
+uniform vec4 iColor;
+uniform vec2 center;
+uniform vec2 screenSize;
+uniform float radius;
+uniform float maxDark;
+
+
+
+
+
+varying vec4 FragColor;
+varying vec2 FragPos;
+
+float dis(){
+	vec2 a = FragPos ;
+	vec2 b = center ;
+	return ( (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) ) /  ( (radius ) * (radius ) * 0.8 )  ;
+}
+
+void main(void){
+	float alpha2 = dis();
+	float alpha = sqrt(alpha2) ;
+	vec4 outColor = iColor * (1.0 - alpha);
+	
+	
+   	vec4 auxColor = vec4(  outColor.r,   outColor.g,   outColor.b  , 1.0 - alpha2);
+
+   	gl_FragColor =  auxColor;
+}
