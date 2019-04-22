@@ -4,7 +4,6 @@
 #include <vorbis/vorbisfile.h>
 char SoundLoader::array[BUFFER_SIZE];
 
-
 size_t AR_readOgg(void* dst, size_t size1, size_t size2, void* fh)
 {
     SDL_RWops* of = reinterpret_cast<SDL_RWops*>(fh);
