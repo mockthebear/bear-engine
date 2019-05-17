@@ -22,7 +22,7 @@ class LuaGameState: public GenericState{
         void End();
         void Resume(GenericState *);
         void Pause(GenericState *);
-        PoolManager Pool;
+        //PoolManager Pool;
         bool canClose;
         uint64_t other;
 };

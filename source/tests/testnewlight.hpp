@@ -68,23 +68,23 @@ class Test_NewLight: public State{
 
             led.ReBlend(255, 0, 0);
             led.Render(Point(400,400) - Point(8,8));
-            m_light.SetLight(Point(400,400), 100, BearColor(1.0f, 0.0f, 0.0f, 1.0f)) ;
+            m_light.SetLight(Point(400,400), 100, BearColor(0.0f, 0.0f, 0.0f, 1.0f)) ;
 
             led.ReBlend(0, 0, 255);
             led.Render(Point(400,200) - Point(8,8));
-            m_light.SetLight(Point(400,200), 100, BearColor(0.0f, 0.0f, 1.0f, 1.0f)) ;
+            m_light.SetLight(Point(400,200), 100, BearColor(0.0f, 0.0f, 0.0f, 1.0f)) ;
 
             led.ReBlend(0, 255, 0);
             led.Render(Point(80,240) - Point(8,8));
-            m_light.SetLight(Point(80,240), 100, BearColor(0.0f, 1.0f, 0.0f, 1.0f)) ;
+            m_light.SetLight(Point(80,240), 100, BearColor(0.0f, 0.0f, 0.0f, 1.0f)) ;
 
             led.ReBlend(255, 255, 255);
             led.Render(Point(330,480) - Point(8,8));
-            m_light.SetLight(Point(330,480), 100, BearColor(1.0f, 1.0f, 1.0f, 1.0f)) ;
+            m_light.SetLight(Point(330,480), 100, BearColor(0.0f, 0.0f, 0.0f, 1.0f)) ;
 
             led.ReBlend(0.4f * 255, 0.4f * 255, 255);
             led.Render(Point(480,480) - Point(8,8));
-            m_light.SetLight(Point(480,480), 100, BearColor(0.4f, 0.4f, 0.0f, 1.0f)) ;
+            m_light.SetLight(Point(480,480), 100, BearColor(0.0f, 0.0f, 0.0f, 1.0f)) ;
 
             led.ReBlend( 255,  255, 255);
             led.Render(Point(580,480) - Point(8,8));
