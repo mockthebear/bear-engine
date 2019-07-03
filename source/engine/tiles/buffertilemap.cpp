@@ -9,7 +9,7 @@ bool BufferTileMap::m_madeShaders = false;
 
 
 void BufferTileVAO::SetAttributes(){
-    int posAttrib = 0;
+   /* int posAttrib = 0;
     int clipAttrib = 1;
     int transLAttrib = 2;
     #ifdef NEED_SHADER_LOCATION
@@ -30,32 +30,32 @@ void BufferTileVAO::SetAttributes(){
     DisplayGlError("on set attr 2");
     glEnableVertexAttribArray(transLAttrib);
     glVertexAttribPointer(transLAttrib, 2,    GL_FLOAT, GL_FALSE,   6 * sizeof(GLfloat), (GLvoid*)(4*sizeof(GLfloat)) );
-    DisplayGlError("on set attr 3");
+    DisplayGlError("on set attr 3");*/
 }
 
 
 void BufferTileMap::checkShaders(){
-    if (!m_madeShaders){
+    /*if (!m_madeShaders){
         m_shader.Compile(GL_VERTEX_SHADER, "data/shaders/ft_vertex.glfs");
         m_shader.CompileFromString(GL_FRAGMENT_SHADER, Shader::DefaultTextureFragmentShader);
         m_shader.Link();
         m_madeShaders = true;
-    }
+    }*/
 }
 
 BufferTileMap::BufferTileMap(PointInt tileSize,PointInt3 mapSize, Sprite set):TileMap(tileSize,mapSize,set){
-    #ifdef SUPPORT_VERTEX_BUFFER
+    /*#ifdef SUPPORT_VERTEX_BUFFER
     checkShaders();
     elemCount = 0;
     m_color = BearColor(1.0f, 1.0f, 1.0f, 1.0f);
     m_scale = Point(1.0f, 1.0f);
     UpdateModel();
-    #endif // SUPPORT_VERTEX_BUFFER
+    #endif // SUPPORT_VERTEX_BUFFER*/
 }
 
 void BufferTileMap::BindBuffer(){
-    m_vao.Bind();
-    DisplayGlError("on bind");
+  /*  m_vao.Bind();
+    DisplayGlError("on bind");*/
 }
 
 
@@ -87,7 +87,7 @@ float BufferTileMap::forwardSquares[4][8] = {
 };
 
 void BufferTileMap::InternalAddTile(uint32_t id,uint8_t rotate, SDL_RendererFlip flip, Point pos){
-    if (id == m_blankTile){
+   /* if (id == m_blankTile){
         return;
     }
     Rect clip(
@@ -132,11 +132,11 @@ void BufferTileMap::InternalAddTile(uint32_t id,uint8_t rotate, SDL_RendererFlip
     elemCount += 4;
 
     m_vao.vertexes.indexes.insert(m_vao.vertexes.indexes.end(), &indices[0], &indices[6]);
-    m_vao.vertexes.vertexData.insert(m_vao.vertexes.vertexData.end() , &vertices[0], &vertices[24]);
+    m_vao.vertexes.vertexData.insert(m_vao.vertexes.vertexData.end() , &vertices[0], &vertices[24]);*/
 }
 
 void BufferTileMap::UpdateBuffers(){
-    #ifdef SUPPORT_VERTEX_BUFFER
+   /* #ifdef SUPPORT_VERTEX_BUFFER
     m_vao.clear();
     elemCount = 0;
     int l,y,x;
@@ -151,19 +151,19 @@ void BufferTileMap::UpdateBuffers(){
         }
     }
     m_vao.SetupVertexes();
-    #endif // SUPPORT_VERTEX_BUFFER
+    #endif // SUPPORT_VERTEX_BUFFER*/
 }
 
 void BufferTileMap::UpdateModel(){
-    m_tileModel = glm::mat4(1.0f);
+    /*m_tileModel = glm::mat4(1.0f);
     m_tileModel[0][0] = m_tileModel[0][0] * (m_scale.x * m_tileSize.x);
     m_tileModel[1][0] = m_tileModel[1][0] * (m_scale.y * m_tileSize.y);
     m_tileModel[0][1] = m_tileModel[0][1] * (m_scale.x * m_tileSize.x);
-    m_tileModel[1][1] = m_tileModel[1][1] * (m_scale.y * m_tileSize.y);
+    m_tileModel[1][1] = m_tileModel[1][1] * (m_scale.y * m_tileSize.y);*/
 }
 
 void BufferTileMap::Render(Point offset, Rect vision){
-    #ifdef SUPPORT_VERTEX_BUFFER
+  /*  #ifdef SUPPORT_VERTEX_BUFFER
     if (elemCount == 0){
         return;
     }
@@ -197,7 +197,7 @@ void BufferTileMap::Render(Point offset, Rect vision){
     Text T("[BufferTileMap]No support!",35);
     T.Render(offset);
 
-    #endif
+    #endif*/
 
 }
 

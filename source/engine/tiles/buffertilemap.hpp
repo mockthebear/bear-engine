@@ -37,7 +37,8 @@ class BufferTileMap: public TileMap{
         void InternalAddTile(uint32_t id, uint8_t rotate, SDL_RendererFlip flip, Point pos);
         uint32_t elemCount;
         BufferTileVAO m_vao;
-        BasicRenderData m_renderData;
+
+        AdvancedTransformations m_renderData;
         BearColor m_color;
         Point m_scale;
         glm::mat4 m_tileModel;

@@ -171,7 +171,7 @@ Text::Text(std::string fontfilep, int fontsize,TextStyle stylep, std::string tex
     InternalSetFont(ftnm);
     //Not resource tweaks
 
-    m_renderData->color[3] = 1.0f;
+    //m_renderData->color[3] = 1.0f;
 
     RemakeTexture();
 
@@ -231,9 +231,8 @@ Text::Text(std::string fontfilep, std::string textp,int x,int y):Text(){
         isWorking = true;
     }
     Point p = texturespr->GetSizes(text);
-    m_renderData->position = Point(x,y);
-    m_renderData->SetClip(Rect(0.0f,0.0f,p.x,p.y), p);
-    m_renderData->color[3] = 1.0f;
+    m_renderData.translation = Point(x,y);
+    m_renderData.SetClip(Rect(0.0f,0.0f,p.x,p.y), p);
 }
 
 Text::~Text(){}
@@ -280,17 +279,16 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
             }
         }
 
-        m_renderData->SetPosition(Point(cameraX,cameraY));
+        m_renderData.SetPosition(Point(cameraX,cameraY));
+        m_vertexes->AddRect(m_renderData);
 
-
-
-        Painter::RenderTexture(texture.get(),m_renderData);
+        Painter::RenderTexture(texture.get(),m_vertexes);
 
         DisplayGlError("Text::Render");
 
     }else if (texturespr){
-        Point p = texturespr->Render(text,m_renderData->position.x,m_renderData->position.y,m_renderData->color[3]*255);
-        m_renderData->SetClip(Rect(0.0f,0.0f,p.x,p.y), p);
+        Point p = texturespr->Render(text,m_renderData.translation.x,m_renderData.translation.y, 255); //todo: alpha
+        m_renderData.SetClip(Rect(0.0f,0.0f,p.x,p.y), p);
     }
 }
 
@@ -299,14 +297,15 @@ void Text::SetText(std::string str){
     if (!font && texturespr){
         text = str;
         Point p =  texturespr->GetSizes(str);
-        m_renderData->SetClip(Rect(0.0f,0.0f,p.x,p.y), p);
+        m_renderData.SetClip(Rect(0.0f,0.0f,p.x,p.y), p);
         return;
     }
     text = str;
     RemakeTexture();
 }
 void Text::SetAlpha(int alpha_p){
-    m_renderData->color[3] = alpha_p/255.0f;
+    //todo: alpha
+    //m_renderData->color[3] = alpha_p/255.0f;
 }
 void Text::SetColor(SDL_Color col ){
     if (!isWorking)
@@ -368,7 +367,7 @@ void Text::RemakeTexture(bool Destory){
     if (!isWorking)
         return;
     if (text == ""){
-        m_renderData->GetClip().w = 0.0f;
+        m_renderData.GetClip().w = 0.0f;
         emptyText = true;
         return;
     }else{
@@ -378,7 +377,7 @@ void Text::RemakeTexture(bool Destory){
         return;
     if (!font && texturespr){
         Point p =  texturespr->GetSizes(text);
-        m_renderData->SetClip(Rect(0.0f,0.0f,p.x,p.y), p);
+        m_renderData.SetClip(Rect(0.0f,0.0f,p.x,p.y), p);
         return;
     }
 
@@ -406,7 +405,7 @@ void Text::RemakeTexture(bool Destory){
                 bher->ClearTexture();
                 delete bher;
             });
-            m_renderData->SetClip(Rect(0.0f,0.0f,texture->size_w,texture->size_h), Point(texture->texture_w,texture->texture_h));
+            m_renderData.SetClip(Rect(0.0f,0.0f,texture->size_w,texture->size_h), Point(texture->texture_w,texture->texture_h));
         }
 
     }else{

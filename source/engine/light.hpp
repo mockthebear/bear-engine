@@ -125,7 +125,7 @@ enum LightStep{
             RenderTexture rt;
             TextureLoadMethod mthd;
             TexturePtr m_texture;
-            RenderDataPtr m_renderData;
+            AdvancedTransformations m_renderData;
 
             //auto things
             bool onAutomatic;

@@ -5,7 +5,11 @@
 class TargetTexture : public BearTexture{
     public:
     TargetTexture():BearTexture(){
-        m_renderData = std::make_shared<RenderData>();
+        std::cout << "11\n";
+        m_renderData = AdvancedTransformations();
+        std::cout << "22\n";
+        m_vertexes = std::make_shared<VertexArrayObject>();
+        std::cout << "33\n";
         m_valid = false;
     };
 
@@ -16,17 +20,18 @@ class TargetTexture : public BearTexture{
     static bool UnBind();
     void Render(Point pos);
     bool FreeTexture();
-    void SetScale(Point p){m_renderData->SetScale(p);};
+    void SetScale(Point p){m_renderData.SetScale(p);};
     bool IsValid(){
         return m_valid;
     }
     void Clear(BearColor c = BearColor(0.0f, 0.0f, 0.0f, 0.0f));
 
-    RenderDataPtr GetRenderData(){ return m_renderData;};
+    AdvancedTransformations GetRenderData(){ return m_renderData;};
 
     private:
         unsigned int m_frameBuffer;
         unsigned int m_renderBuffer;
-        RenderDataPtr m_renderData;
+        VertexArrayObjectPtr m_vertexes;
+        AdvancedTransformations m_renderData;
         bool m_valid;
 };

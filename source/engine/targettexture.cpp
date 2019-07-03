@@ -8,8 +8,8 @@
 
 
 void TargetTexture::Render(Point pos){
-    m_renderData->SetPosition(pos);
-    Painter::RenderTexture(this,m_renderData);
+    m_renderData.SetPosition(pos);
+    Painter::RenderTexture(this,m_vertexes);
 }
 
 bool TargetTexture::BindTexture(bool s_bind){
@@ -83,7 +83,7 @@ bool TargetTexture::Generate(int wa,int ha){
     texture_h = tex->texture_h;
     delete tex;
     //m_renderData->flip = SDL_FLIP_VERTICAL;
-    m_renderData->SetClip(Rect(0,0,size_w,size_h),Point(texture_w,texture_h));
+    m_renderData.SetClip(Rect(0,0,size_w,size_h),Point(texture_w,texture_h));
 
     glGenFramebuffers(1, &m_frameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);

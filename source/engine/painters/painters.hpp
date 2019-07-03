@@ -24,107 +24,10 @@ class ScreenManager;
 class Vertex;
 class Painter;
 
-class BasicRenderData{
-     public:
-        BasicRenderData():position(0.0f,0.0f),size(0.0f,0.0f),center(0.0f,0.0f),color(1.0f,1.0f,1.0f,1.0f),flip(0),m_scale(1.0f,1.0f),m_angle(0.0f),m_needUpdate(true){}
-
-        void SetAngle(float p_angle){
-            if (m_angle != p_angle){
-                m_angle = p_angle;
-                m_needUpdate = true;
-            }
-        }
-
-
-        void SetScale(Point p_scale){
-            if (m_scale != p_scale){
-                m_scale = p_scale;
-                center = Point(size.x * m_scale.x * 0.5f, size.y * m_scale.y * 0.5f);
-                m_needUpdate = true;
-            }
-        }
-
-        Point& GetScale(){return m_scale;};
-        float& GetAngle(){return m_angle;};
-
-        virtual void SetPosition(Point pos){
-            position = pos;
-            m_needUpdate = true;
-        }
-
-        Point position;
-        Point size;
-        Point center;
-
-        BearColor color;
-        uint8_t flip;
-
-    protected:
-        friend class Painter;
-        Point m_scale;
-        float m_angle;
-        bool m_needUpdate;
-};
-
-
-class RenderData : public BasicRenderData{
-    public:
-        RenderData():BasicRenderData(),center(0.0f,0.0f),m_clip(0.0f,0.0f,0.0f,0.0f),m_forwardClip(0.0f,1.0f,0.0f,1.0f),VertexArray(0),VertexBuffer(0),ElementBuffer(0){};
-
-        virtual ~RenderData();
-
-
-        virtual void SetClip(Rect r, Point textureSize){
-            m_clip = r;
-            size.x = m_clip.w;
-            size.y = m_clip.h;
-            if (textureSize.x == 0 || textureSize.y == 0){
-                m_forwardClip = Rect(0.0f,1.0f,0.0f,1.0f);
-                return;
-            }
-            m_forwardClip.x = m_clip.x / textureSize.x;
-            m_forwardClip.y =  ( m_clip.x + m_clip.w ) / textureSize.x;
-            m_forwardClip.w = m_clip.y / textureSize.y;
-            m_forwardClip.h = ( m_clip.y + m_clip.h ) / textureSize.y;
-            center = Point(size.x * m_scale.x * 0.5f, size.y * m_scale.y * 0.5f);
-            m_needUpdate = true;
-        }
-
-        virtual void SetPosition(Point pos);
-
-
-        Rect& GetClip(){return m_clip;};
-
-        Point center;
-
-        void Bind();
-
-        void EnableVertexTranslation(){m_sumPos = true;};
-
-    private:
-        friend class Painter;
-
-
-        Rect m_clip;
-        Rect m_forwardClip;
-
-        void UpdateVertex();
-        void SetVertexAtribLocations();
-
-        GLuint VertexArray;
-        GLuint VertexBuffer;
-        GLuint ElementBuffer;
-        bool m_sumPos;
-
-};
-
-typedef std::shared_ptr<RenderData> RenderDataPtr;
-typedef std::shared_ptr<BasicRenderData> BasicRenderDataPtr;
-
 
 class Painter{
   public:
-    static glm::mat4 CalculateModel(BasicRenderDataPtr );
+    //static glm::mat4 CalculateModel(BasicRenderDataPtr );
 
     static void SetTexturePixels(uint32_t texture, PointInt size,int mode,unsigned char* pixels = nullptr );
 
@@ -137,7 +40,7 @@ class Painter{
     static glm::mat4 Projection;
 
 
-    static bool RenderTexture(BearTexture *ptr,RenderDataPtr data);
+    static bool RenderTexture(BearTexture *ptr,VertexArrayObjectPtr vertexData);
     /**
         *Make a render call.
         @param vertexes A reference to a VertexArrayObject. It carry all the vertexes informations
@@ -145,11 +48,9 @@ class Painter{
         @param drawMode Base is GL_TRIANGLES. But do your thing
         @param isBound this avoid double bound of a vertexes param. Use as true in case of you bound previously.
     */
-    static void DrawVertex(VertexArrayObjectPtr vertexes,BasicRenderDataPtr renderInfo,int drawMode = GL_TRIANGLES,bool isBound = false);
+    static void DrawVertex(VertexArrayObjectPtr vertexes,int drawMode = GL_TRIANGLES,bool isBound = false);
 
 
-
-    static bool RenderPointTexture(BearTexture *ptr,RenderDataPtr data);
     static bool DrawSprites(int id);
 
 

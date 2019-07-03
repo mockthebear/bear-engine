@@ -107,7 +107,7 @@ void Light2D::ClearCanvas(){
 }
 
 void Light2D::RenderLineData(std::vector<LineData> &ld, Point pos, float radius, BearColor color){
-    m_targetTexture.Bind();
+   /* m_targetTexture.Bind();
         //glBlendEquation(GL_FUNC_ADD);
         glBlendEquation(GL_MAX);
         m_haloShader.Bind();
@@ -125,26 +125,26 @@ void Light2D::RenderLineData(std::vector<LineData> &ld, Point pos, float radius,
             renderData->size.x = radius;
             renderData->size.y = radius;
             vertexBuffer->clear();
-            GameVertice lastP;
-            vertexBuffer->vertexes.AddVertice(GameVertice(pos, BearColor(1.0f, 1.0f, 0.0f, 1.0f) ));
+            Vertex lastP;
+            vertexBuffer->AddVertice(Vertex(pos, BearColor(1.0f, 1.0f, 0.0f, 1.0f) ));
             bool first = true;
             Point fir;
             for (auto &it : ld){
                 Point p2 = it.line.GetSecond();
-                vertexBuffer->vertexes.AddVertice(GameVertice(p2, BearColor(1.0f, 1.0f, 0.0f, 1.0f) ));
+                vertexBuffer->AddVertice(Vertex(p2, BearColor(1.0f, 1.0f, 0.0f, 1.0f) ));
                 if (first){
                     fir = p2;
                     first = false;
                 }
             }
-            vertexBuffer->vertexes.AddVertice(GameVertice(fir, BearColor(1.0f, 1.0f, 0.0f, 1.0f) ));
+            vertexBuffer->AddVertice(Vertex(fir, BearColor(1.0f, 1.0f, 0.0f, 1.0f) ));
             vertexBuffer->SetupVertexes();
 
             Painter::DrawVertex(vertexBuffer,renderData,GL_TRIANGLE_FAN, GL_IS_AUTOBOUND);
         m_haloShader.Unbind();
     m_targetTexture.UnBind();
     glBlendEquation(GL_FUNC_ADD);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
 }
 
 void Light2D::Render(Point pos){

@@ -31,7 +31,7 @@ class RenderHelp{
 
         static void DrawPointsColor(std::vector<Point> points,uint8_t r=255,uint8_t g=255,uint8_t b=255,uint8_t a=255,float thickness=1.0f);
 
-        static void DrawLinesColor(std::vector<GameVertice> lines,uint8_t r=255,uint8_t g=255,uint8_t b=255,uint8_t a=255,float thickness=1.0f);
+        static void DrawLinesColor(std::vector<Vertex> lines,uint8_t r=255,uint8_t g=255,uint8_t b=255,uint8_t a=255,float thickness=1.0f);
         static void DrawSquaresColor(std::vector<RectColor> rects,uint8_t r=255,uint8_t g=255,uint8_t b=255,uint8_t a=255,bool outline=false);
 
 

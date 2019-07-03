@@ -8,7 +8,7 @@
 
 class RenderTexture{
     public:
-        RenderTexture():aliasing(TEXTURE_LINEAR),m_renderData(std::make_shared<RenderData>()),size(1.0f, 1.0f),TextureSize(1.0f, 1.0f){};
+        RenderTexture():aliasing(TEXTURE_LINEAR),m_renderData(),m_vertexes(std::make_shared<VertexArrayObject>()),size(1.0f, 1.0f),TextureSize(1.0f, 1.0f){};
 
         void LoadEmpty(){
             m_texture = Painter::UnloadedTexturePtr;
@@ -16,8 +16,8 @@ class RenderTexture{
 
         bool HasTexture();
         void SetTexture(TexturePtr t);
-        RenderDataPtr GetRenderData();
-        void SetRenderData(RenderDataPtr rd){m_renderData = rd;};
+        AdvancedTransformations& GetRenderData();
+        void SetRenderData(AdvancedTransformations& rd){m_renderData = rd;};
         void SetFlip(SDL_RendererFlip flipState);
         SDL_RendererFlip GetFlip();
         /**
@@ -66,7 +66,8 @@ class RenderTexture{
         void RenderAll();
     protected:
         TextureLoadMethod aliasing;
-        RenderDataPtr m_renderData;
+        AdvancedTransformations m_renderData;
+        VertexArrayObjectPtr m_vertexes;
         Point size;
         Point TextureSize;
 

@@ -79,6 +79,7 @@ bool Shader::Link(){
     glLinkProgram( m_shaderId );
 	glGetProgramiv( m_shaderId, GL_LINK_STATUS, &status );
 	if(!status){
+        std::cout << "ERROR BANOLO\n";
 		ProgramError( m_shaderId );
         return false;
     };

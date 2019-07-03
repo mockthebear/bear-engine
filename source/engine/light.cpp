@@ -355,7 +355,7 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float perm
 
     out = Painter::MakeTexture(textureSize, GL_RGBA, (unsigned char*)pix, mthd);
 
-    m_renderData = std::make_shared<RenderData>();
+    //m_renderData = std::make_shared<RenderData>();
 
     m_texture.reset(out);
 
@@ -365,7 +365,7 @@ bool Light::StartLights(Point size_,Point ExtraSize_,uint16_t dotSize,float perm
     rt.SetTexture(m_texture);
 
 
-    m_renderData->SetClip(Rect(0,0,textureSize.x,textureSize.y),textureSize);
+    m_renderData.SetClip(Rect(0,0,textureSize.x,textureSize.y),textureSize);
 
 
 
@@ -556,13 +556,13 @@ void Light::Update(float dt,LightStep step){
 }
 
 void Light::Render(Point pos){
-    if(!IsStarted()){
+    /*if(!IsStarted()){
         return;
     }
     Painter::UpdateTexture(out, textureSize, GL_RGBA, (unsigned char*)pix, mthd);
 
-    m_renderData->SetScale(Point(blockSize, blockSize));
-    m_renderData->SetClip(Rect(0,0,textureSize.x,textureSize.y), Point(out->texture_w,out->texture_h) );
+    m_renderData.SetScale(Point(blockSize, blockSize));
+    m_renderData.SetClip(Rect(0,0,textureSize.x,textureSize.y), Point(out->texture_w,out->texture_h) );
 
     int extraX = ((int)(floor(Camera::pos.x))%blockSize);
     int extraY = ((int)(floor(Camera::pos.y))%blockSize);
@@ -571,7 +571,7 @@ void Light::Render(Point pos){
         pos.y  -(extraY  + blockSize*4)
     ));
 
-    Painter::RenderTexture(out,m_renderData);
+    Painter::RenderTexture(out,m_renderData);*/
 }
 
 #endif

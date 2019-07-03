@@ -28,7 +28,7 @@ class Test_Shapes: public State{
 
         };
         void Render(){
-            RenderHelp::DrawLineColor(Point(32,32),g_input.GetMouse(),255,255,255,255,2);
+            /*RenderHelp::DrawLineColor(Point(32,32),g_input.GetMouse(),255,255,255,255,2);
 
             RenderHelp::DrawSquareColor(Rect(32,32,64,64),255,255,100,255 *(1.0f - (duration/130.0)),false, 360.f * (duration/130.0) );
             RenderHelp::DrawSquareColor(Rect(32,32,64,64),255,0,0,255,true);
@@ -50,7 +50,7 @@ class Test_Shapes: public State{
 
 
 
-            std::vector<GameVertice> lines;
+            std::vector<Vertex> lines;
             std::vector<RectColor> squares;
             std::vector<RectColor> OutlineSquares;
 
@@ -73,8 +73,8 @@ class Test_Shapes: public State{
                     OldC.g = gColor;
                     OldC.b = bColor;
                 }
-                lines.emplace_back(GameVertice(OldP.x   ,   OldP.y  , OldC.r, OldC.b, OldC.g, 1.0f));
-                lines.emplace_back(GameVertice(x        ,   y       , rColor, gColor, bColor, 1.0f));
+                lines.emplace_back(Vertex(OldP.x   ,   OldP.y  , OldC.r, OldC.b, OldC.g, 1.0f));
+                lines.emplace_back(Vertex(x        ,   y       , rColor, gColor, bColor, 1.0f));
 
                 OutlineSquares.emplace_back(Rect(x-16,y-16,32,32));
 
@@ -98,7 +98,7 @@ class Test_Shapes: public State{
 
 
 
-            RenderHelp::DrawCircleColor(Point(98,220),32,100,100,255,100);
+            RenderHelp::DrawCircleColor(Point(98,220),32,100,100,255,100);*/
         };
         void Input();
         void Resume(){};

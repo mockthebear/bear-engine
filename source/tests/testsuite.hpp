@@ -36,7 +36,7 @@ void SetupTests();
 
 void SetupTests(){
 
-    #ifndef DISABLE_UNIT_TESTS
+    /*#ifndef DISABLE_UNIT_TESTS
 
 
     Game::GetInstance()->AddState(new Test_Light());
@@ -50,7 +50,7 @@ void SetupTests(){
 
     #ifdef LUATESTSUITE
     Game::GetInstance()->AddState(new Test_Lua());
-    #endif // LUATESTSUITE*/
+    #endif // LUATESTSUITE
 
 
     Game::GetInstance()->AddState(new Test_Scrolling());
@@ -76,5 +76,8 @@ void SetupTests(){
     Game::GetInstance()->AddState(new Test_Shapes());
     Game::GetInstance()->AddState(new Test_Files());
     #endif // DISABLE_UNIT_TESTS
+    */
+
+    Game::GetInstance()->AddState(new Test_Sprite());
 }
 

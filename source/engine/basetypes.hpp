@@ -34,36 +34,32 @@ typedef class BearColor{
 extern const BearColor BCWhite4[4];
 extern const BearColor BCWhite2[2];
 
-class GameVertice{
-    public:
-        GameVertice():x(0.0f),y(0.0f),r(1.0f),g(1.0f),b(1.0f),a(1.0f){};
-        GameVertice(float x_,float y_):x(x_),y(y_),r(1.0f),g(1.0f),b(1.0f),a(1.0f){};
-        GameVertice(float x_,float y_,float r_,float g_,float b_,float a_):x(x_),y(y_),r(r_),g(g_),b(b_),a(a_){};
-        GameVertice(Point p1):GameVertice(p1.x, p1.y){};
-        GameVertice(Point p1, BearColor color){
-            x = p1.x;
-            y = p1.y;
-            r = color.r;
-            g = color.g;
-            b = color.b;
-            a = color.a;
-        };
 
+class Vertex{
+    public:
+        Vertex():x(0.0f),y(0.0f),clx(0.0f),cly(0.0f),r(1.0f),g(1.0f),b(1.0f),a(1.0f){};
+        Vertex(Point pos):x(pos.x),y(pos.y),clx(0.0f),cly(0.0f),r(1.0f),g(1.0f),b(1.0f),a(1.0f){};
+        Vertex(Point pos, BearColor bc):x(pos.x),y(pos.y),clx(0.0f),cly(0.0f),r(bc.r),g(bc.g),b(bc.b),a(bc.a){};
+        Vertex(Point pos, Point clip):x(pos.x),y(pos.y),clx(clip.x),cly(clip.y),r(1.0f),g(1.0f),b(1.0f),a(1.0f){};
+        Vertex(Point pos, Point clip, BearColor bc):x(pos.x),y(pos.y),clx(clip.x),cly(clip.y),r(bc.r),g(bc.g),b(bc.b),a(bc.a){};
+
+
+        static void SetAttributes();
 
         float *begin(){
-            return &r;
+            return &x;
         }
 
         float *end(){
-            return (&r) + GetSize();
+            return (&x) + GetSize();
         }
         static inline int GetSize(){
-            return sizeof(GameVertice);
+            return sizeof(Vertex);
         }
 
-
-        float x,y,r,g,b,a;
+        float x,y,clx,cly,r,g,b,a;
 };
+
 
 class RectColor{
     public:

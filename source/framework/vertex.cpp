@@ -3,55 +3,238 @@
 #include "../engine/painters/painters.hpp"
 #include "debughelper.hpp"
 
-void Vertex::AddVertexes(int size,float *f){
-    for (int i=0;i<size;i++){
-        vertexData.emplace_back(f[i]);
-        indexCount++;
+
+void VertexArrayObject::AquireBufferIds(){
+    #ifndef SUPPORT_SINGLE_BUFFER
+    if (m_vertexBuffer == 0){
+        glGenBuffers(1, &m_vertexBuffer);
+        DisplayGlError("on gen vertex buffers");
+        glGenBuffers(1, &m_elementBuffer);
+        DisplayGlError("on gen element buffers");
+    }
+    #else
+    m_vertexBuffer = Painter::GetSharedBuffer(0);
+    m_elementBuffer = Painter::GetSharedBuffer(1);
+    #endif
+}
+
+
+
+VertexArrayObject::~VertexArrayObject(){
+    #ifndef SUPPORT_SINGLE_BUFFER
+    if (m_vertexBuffer != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
+        glDeleteBuffers(1, &m_vertexBuffer);
+        if (m_elementBuffer != 0)
+            glDeleteBuffers(1, &m_elementBuffer);
+    }
+    #endif // SUPPORT_SINGLE_BUFFER
+}
+
+void VertexArrayObject::Bind(){
+    AquireBufferIds();
+    if (m_vertexBuffer != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
+        #ifdef REMAKE_VETEX_ON_BIND
+        //SetupVertexes(); necessary?
+        #else
+        glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+        if (m_useElementBuffer)
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
+        #endif // REMAKE_VETEX_ON_BIND
+    }else{
+        std::cout << "Failed to bind?\n";
     }
 }
-void Vertex::AddIndices(int size,uint32_t *f){
-    if (useIndexes){
-        for (int i=0;i<size;i++){
-            indexes.emplace_back(f[i]);
-        }
-    }
+
+
+void VertexArrayObject::UnBind(){
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
-/*
-int Vertex::Generate(Rect r, bool onlyOnes, float ang){
-    if (onlyOnes){
-        r = Rect(0.0f, 0.0f, 1.0f, 1.0f);
+
+bool VertexArrayObject::SetVertexBuffer(){
+    glBufferData(GL_ARRAY_BUFFER,  m_vertexData.size() * sizeof(Vertex), 0, GL_DYNAMIC_DRAW);
+    DisplayGlError("now the buffer is located");
+
+    glBufferSubData(GL_ARRAY_BUFFER, 0, m_vertexData.size() * sizeof(Vertex), &m_vertexData[0]);
+    DisplayGlError("on set subdata");
+
+    return true;
+}
+
+bool VertexArrayObject::SetElementBuffer(){
+    if (!m_useElementBuffer){
+        return false;
     }
-    Point center(r.w/2.0f ,  r.h/2.0f);
-    ang = Geometry::toRad(ang);
-    float s = sin(ang);
-    float c = cos(ang);
-    float vertices[] = {
-        0.0f    , 0.0f, 1.0, 1.0, 1.0, 1.0,
-        0.0f    , r.h,  1.0, 1.0, 1.0, 1.0,
-        r.w     , r.h,  1.0, 1.0, 1.0, 1.0,
-        r.w     , 0.0f, 1.0, 1.0, 1.0, 1.0,
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,  m_indexes.size() * sizeof(uint32_t), 0, GL_DYNAMIC_DRAW);
+    DisplayGlError("now the buffer is located");
+
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, m_indexes.size() * sizeof(uint32_t), &m_indexes[0]);
+    DisplayGlError("on set elems");
+    return true;
+}
+
+
+
+bool VertexArrayObject::SetupVertexes(){
+    if (!Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
+        return false;
+    }
+    DisplayGlError("pre bind");
+    SetVertexBuffer();
+    SetElementBuffer();
+    DisplayGlError("on set attr");
+    return true;
+}
+
+
+void VertexArrayObject::AddVertexes(int size,Vertex *vertices){
+    m_vertexData.insert(m_vertexData.end(), &vertices[0], &vertices[size]);
+}
+
+void VertexArrayObject::AddIndices(int size,uint32_t *indices){
+    m_indexCount += size;
+    m_indexes.insert(m_indexes.end(), &indices[0], &indices[size]);
+}
+
+
+int VertexArrayObject::AddRect(Rect& box, BearColor&& color){
+
+    Vertex vertices[4] = {
+        Vertex(Point(box.x       , box.y), color),
+        Vertex(Point(box.x       , box.y+box.h),  color),
+        Vertex(Point(box.x+box.w , box.y+box.h),  color),
+        Vertex(Point(box.x+box.w , box.y), color),
     };
-    for (int i=0;i<4;i++){
-        float px = vertices[i * 6  + 0] -= center.x;
-        float py = vertices[i * 6  + 1] -= center.y;
-        vertices[i * 6  + 0] = (px * c - py * s) + center.x + r.x;
-        vertices[i * 6  + 1] = (px * s + py * c) + center.y + r.y;
-    }
-    vertexData.insert(vertexData.end(), &vertices[0], &vertices[24]);
+    AddVertexes(4,vertices);
 
-    if (useIndexes){
+    if (m_useElementBuffer){
         uint32_t indices[] = {
-            indexCount, indexCount+1, indexCount+3,
-            indexCount+1, indexCount+2, indexCount+3,
+            m_indexCount, m_indexCount+1, m_indexCount+3,
+            m_indexCount+1, m_indexCount+2, m_indexCount+3,
         };
-        indexCount += 4;
-        indexes.insert(indexes.end(), &indices[0], &indices[6]);
+        m_indexCount += 6;
+        AddIndices(6,indices);
     }
-    return 4;
-}*/
+    return 6;
+}
+
+
+int VertexArrayObject::AddRect(AdvancedTransformations &adt){
+
+    float texLeft = adt.forwardClip.x;
+    float texRight =  adt.forwardClip.y;
+    float texTop = adt.forwardClip.w;
+    float texBottom = adt.forwardClip.h;
 
 
 
+
+    if ((adt.flip&SDL_FLIP_HORIZONTAL) != 0){
+        float holder =  texLeft;
+        texLeft = texRight;
+        texRight = holder;
+    }
+    if ((adt.flip&SDL_FLIP_VERTICAL) != 0){
+        float holder =  texTop;
+        texTop = texBottom;
+        texBottom = holder;
+    }
+
+
+    Vertex vertices[4] = {
+        // Pos      // Tex
+        Vertex(Point(0.0f                      , 0.0f                       ),  Point(texLeft   , texTop), adt.defaultColor),
+        Vertex(Point(0.0f                      , adt.scale.y * adt.size.y   ),  Point(texLeft   , texBottom), adt.defaultColor),
+        Vertex(Point(adt.scale.x * adt.size.x  , adt.scale.y * adt.size.y   ),  Point(texRight  , texBottom), adt.defaultColor),
+        Vertex(Point(adt.scale.x * adt.size.x  , 0.0f                       ),  Point(texRight  , texTop), adt.defaultColor),
+
+    };
+
+    float auxa = Geometry::toRad(adt.angle);
+
+    float s = sin(auxa);
+    float c = cos(auxa);
+
+    for (int i=0;i<4;i++){
+        float px = vertices[i].x - adt.center.x;
+        float py = vertices[i].y - adt.center.y;
+        vertices[i].x = (px * c - py * s) + adt.center.x + adt.translation.x;
+        vertices[i].y = (px * s + py * c) + adt.center.y + adt.translation.y;
+    }
+
+    AddVertexes(4,vertices);
+
+    if (m_useElementBuffer){
+        uint32_t indices[] = {
+            m_indexCount, m_indexCount+1, m_indexCount+3,
+            m_indexCount+1, m_indexCount+2, m_indexCount+3,
+        };
+        AddIndices(6,indices);
+    }
+
+    return 6;
+}
+
+int VertexArrayObject::AddOutlineRect(AdvancedTransformations &adt){
+
+    float texLeft = adt.forwardClip.x;
+    float texRight =  adt.forwardClip.y;
+    float texTop = adt.forwardClip.w;
+    float texBottom = adt.forwardClip.h;
+
+
+
+
+    if ((adt.flip&SDL_FLIP_HORIZONTAL) != 0){
+        float holder =  texLeft;
+        texLeft = texRight;
+        texRight = holder;
+    }
+    if ((adt.flip&SDL_FLIP_VERTICAL) != 0){
+        float holder =  texTop;
+        texTop = texBottom;
+        texBottom = holder;
+    }
+
+
+    Vertex vertices[4] = {
+        // Pos      // Tex
+        Vertex(Point(0.0f                      , 0.0f                       ),  Point(texLeft   , texTop), adt.defaultColor),
+        Vertex(Point(0.0f                      , adt.scale.y * adt.size.y   ),  Point(texLeft   , texBottom), adt.defaultColor),
+        Vertex(Point(adt.scale.x * adt.size.x  , adt.scale.y * adt.size.y   ),  Point(texRight  , texBottom), adt.defaultColor),
+        Vertex(Point(adt.scale.x * adt.size.x  , 0.0f                       ),  Point(texRight  , texTop), adt.defaultColor),
+
+    };
+
+    float auxa = Geometry::toRad(adt.angle);
+
+    float s = sin(auxa);
+    float c = cos(auxa);
+
+    for (int i=0;i<4;i++){
+        float px = vertices[i].x - adt.center.x;
+        float py = vertices[i].y - adt.center.y;
+        vertices[i].x = (px * c - py * s) + adt.center.x + adt.translation.x;
+        vertices[i].y = (px * s + py * c) + adt.center.y + adt.translation.y;
+    }
+
+    AddVertexes(4,vertices);
+
+    if (m_useElementBuffer){
+        uint32_t indices[] = {
+            m_indexCount, m_indexCount+1,
+            m_indexCount+1, m_indexCount+2,
+            m_indexCount+2, m_indexCount+3,
+            m_indexCount+3, m_indexCount,
+        };
+        AddIndices(8,indices);
+    }
+
+    return 6;
+}
+
+
+/*
 int Vertex::Generate(Rect r,float ang, bool onlyOnes, const BearColor colors[4]){
     if (onlyOnes){
         r = Rect(0.0f, 0.0f, 1.0f, 1.0f);
@@ -188,214 +371,5 @@ int Vertex::Generate(Circle r, int triangleAmount){
         }
     }
     return 8;
-}
-
-#if defined(SUPPORT_VERTEX_ARRAY)
-
-VertexArrayObject::~VertexArrayObject(){
-    if (m_vertexArray != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
-        glDeleteBuffers(1, &m_vertexBuffer);
-        if (m_elementBuffer != 0)
-            glDeleteBuffers(1, &m_elementBuffer);
-        glDeleteVertexArrays(1, &m_vertexArray);
-        m_vertexArray = 0;
-    }
-}
-
-void VertexArrayObject::Bind(){
-    if (m_vertexArray != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
-        glBindVertexArray(m_vertexArray);
-        glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-        if (m_useElementBuffer)
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
-    }
-}
-
-void VertexArrayObject::UnBind(){
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-bool VertexArrayObject::SetupVertexes(){
-    if (!Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
-        return false;
-    }
-    bool generatedBuffers = false;
-    if (m_vertexArray == 0){
-        glGenVertexArrays(1, &m_vertexArray);
-        glGenBuffers(1, &m_vertexBuffer);
-        if (m_useElementBuffer)
-            glGenBuffers(1, &m_elementBuffer);
-
-
-        generatedBuffers = true;
-    }
-    glBindVertexArray(m_vertexArray);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER,  vertexes.vertexData.size() * sizeof(float), &vertexes.vertexData[0], GL_DYNAMIC_DRAW);
-    if (m_useElementBuffer){
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER,  vertexes.indexes.size() * sizeof(uint32_t), &vertexes.indexes[0], GL_STATIC_DRAW);
-    }
-
-
-
-    if (generatedBuffers){
-        SetAttributes();
-    }
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    if (m_useElementBuffer)
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    return true;
-}
-
-void VertexArrayObject::SetAttributes(){
-    GLint posAttrib = 0;
-    GLint colorAttrib = 1;
-
-    #ifdef NEED_SHADER_LOCATION
-    uint32_t shaderId = 0;
-    if ((shaderId = Shader::GetCurrentShaderId()) == 0){
-        shaderId = Painter::polygonShader.GetId();
-    }
-    posAttrib = glGetAttribLocation(shaderId, "vPos");
-    colorAttrib = glGetAttribLocation(shaderId, "vColor");
-    #endif // NEED_SHADER_LOCATION
-
-    glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-
-    glEnableVertexAttribArray(colorAttrib);
-    glVertexAttribPointer(colorAttrib, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(2 * sizeof(float)) );
-}
-
-#else
-
-
-
-
-VertexArrayObject::~VertexArrayObject(){
-    #ifndef SUPPORT_SINGLE_BUFFER
-    if (m_vertexBuffer != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
-        glDeleteBuffers(1, &m_vertexBuffer);
-        if (m_elementBuffer != 0)
-            glDeleteBuffers(1, &m_elementBuffer);
-    }
-    #endif // SUPPORT_SINGLE_BUFFER
-}
-
-void VertexArrayObject::Bind(){
-    #ifdef SUPPORT_SINGLE_BUFFER
-    m_vertexBuffer = Painter::GetSharedBuffer(0);
-    m_elementBuffer = Painter::GetSharedBuffer(1);
-    #endif
-    if (m_vertexBuffer != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
-        #ifdef REMAKE_VETEX_ON_BIND
-        SetupVertexes();
-        #else
-        glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-        if (m_useElementBuffer)
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
-        SetAttributes();
-        #endif // REMAKE_VETEX_ON_BIND
-    }
-}
-
-void VertexArrayObject::SetAttributes(){
-    GLint posAttrib = 0;
-    GLint colorAttrib = 1;
-
-    #ifdef NEED_SHADER_LOCATION
-    uint32_t shaderId = 0;
-    if ((shaderId = Shader::GetCurrentShaderId()) == 0){
-        shaderId = Painter::polygonShader.GetId();
-    }
-    posAttrib = glGetAttribLocation(shaderId, "vPos");
-    colorAttrib = glGetAttribLocation(shaderId, "vColor");
-    #endif // NEED_SHADER_LOCATION
-
-    glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-
-    glEnableVertexAttribArray(colorAttrib);
-    glVertexAttribPointer(colorAttrib, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(2 * sizeof(float)) );
-
-}
-
-
-void VertexArrayObject::UnBind(){
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-bool VertexArrayObject::SetVertexBuffer(float * data,uint32_t size){
-    #ifndef SUPPORT_SINGLE_BUFFER
-    if (m_vertexBuffer == 0){
-        glGenBuffers(1, &m_vertexBuffer);
-        DisplayGlError("on gen buffers");
-    }
-    #else
-    m_vertexBuffer = Painter::GetSharedBuffer(0);
-    #endif
-
-    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-
-    DisplayGlError("afterbind");
-    if (m_vboSize != size){
-        glBufferData(GL_ARRAY_BUFFER,  size, 0, GL_DYNAMIC_DRAW);
-        DisplayGlError("now the buffer is located");
-        m_vboSize = size;
-    }
-    glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
-    DisplayGlError("on set subdata");
-    return true;
-}
-
-bool VertexArrayObject::SetElementBuffer(uint32_t * data,uint32_t size){
-    if (!m_useElementBuffer){
-        return false;
-    }
-    #ifndef SUPPORT_SINGLE_BUFFER
-    if (m_elementBuffer == 0){
-        glGenBuffers(1, &m_elementBuffer);
-        DisplayGlError("on gen buffers");
-    }
-    #else
-    m_elementBuffer = Painter::GetSharedBuffer(1);
-    #endif
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
-    if (m_eboSize != size){
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER,  size, 0, GL_DYNAMIC_DRAW);
-        m_eboSize = size;
-    }
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, size, data);
-    DisplayGlError("on set elems");
-    return true;
-}
-
-
-
-bool VertexArrayObject::SetupVertexes(){
-    if (!Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
-        return false;
-    }
-    DisplayGlError("pre bind");
-    SetVertexBuffer(&vertexes.vertexData[0], vertexes.vertexData.size() * sizeof(float));
-    SetElementBuffer(&vertexes.indexes[0], vertexes.indexes.size() * sizeof(uint32_t));
-    SetAttributes();
-    DisplayGlError("on set attr");
-
-    return true;
-}
-/*
-#else
-c
-VertexArrayObject::~VertexArrayObject(){};
-
-
-bool VertexArrayObject::SetupVertexes(bool){
-    return false;
 }*/
-#endif
+

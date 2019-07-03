@@ -6,7 +6,7 @@
 #define VERTEX_ELEMENTCOUNT 3
 
 PointSpriteTileset::PointSpriteTileset(){
-    if (Painter::CanSupport(SUPPORT_POINTSPRITE)){
+    /*if (Painter::CanSupport(SUPPORT_POINTSPRITE)){
         #ifdef SUPPORT_GEOMETRY_SHADER
         m_vao.DisableElements();
 
@@ -29,21 +29,21 @@ PointSpriteTileset::PointSpriteTileset(){
         #endif // SUPPORT_GEOMETRY_SHADER
     }else{
         bear::out << "Point sprite is not supported!\n";
-    }
+    }*/
 }
 
 void PointSpriteTileset::AddTile(Point pos, int id){
-    if (Painter::CanSupport(SUPPORT_POINTSPRITE)){
+    /*if (Painter::CanSupport(SUPPORT_POINTSPRITE)){
         float points[] ={
             pos.x,  pos.y,  float(id),
         };
         m_vao.vertexes.AddVertexes( sizeof(points) / sizeof(float) ,points);
         m_needBufferUpdate = true;
-    }
+    }*/
 }
 
 void PointSpriteTileset::Render(){
-    if (Painter::CanSupport(SUPPORT_POINTSPRITE)){
+   /* if (Painter::CanSupport(SUPPORT_POINTSPRITE)){
         if (m_needBufferUpdate){
             m_vao.SetupVertexes();
             m_needBufferUpdate = false;
@@ -64,5 +64,5 @@ void PointSpriteTileset::Render(){
         m_vao.UnBind();
     }else{
         bear::out << "Point sprite is not supported!\n";
-    }
+    }*/
 }

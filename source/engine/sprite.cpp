@@ -385,14 +385,16 @@ bool Sprite::Open(SDL_RWops* file,std::string name,TextureLoadMethod HasAliasing
 }
 
 void Sprite::SetClip(int x, int y,int w,int h){
-    m_renderData->SetClip(Rect(x,y,w,h),TextureSize);
+    m_renderData.SetClip(Rect(x,y,w,h),TextureSize);
 }
 
 void Sprite::Render(PointInt pos,double angle){
     if (IsLoaded()){
-        m_renderData->SetPosition(pos);
-        m_renderData->SetAngle(angle);
+        m_renderData.SetPosition(pos);
+        m_renderData.SetAngle(angle);
+        m_vertexes->AddRect(m_renderData);
         RenderAll();
+        m_vertexes->clear();
     }
 }
 void Sprite::Renderxy(int x,int y,double angle){
@@ -419,17 +421,17 @@ void  Sprite::Format(Animation anim,int dir){
 }
 
 int Sprite::GetWidth(){
-    return size.x*m_renderData->GetScale().x;
+    return size.x*m_renderData.GetScale().x;
 }
 
 int Sprite::GetHeight(){
-    return size.y*m_renderData->GetScale().y;
+    return size.y*m_renderData.GetScale().y;
 }
 int Sprite::GetFrameHeight(){
-    return m_renderData->GetClip().h*m_renderData->GetScale().y;
+    return m_renderData.GetClip().h*m_renderData.GetScale().y;
 }
 
 int Sprite::GetFrameWidth(){
-    return m_renderData->GetClip().w*m_renderData->GetScale().x;
+    return m_renderData.GetClip().w*m_renderData.GetScale().x;
 }
 

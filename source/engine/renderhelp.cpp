@@ -40,7 +40,7 @@ BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod
 void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8_t b,uint8_t a,int sides){
 
 
-    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+   /* static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
     static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
 
 
@@ -56,33 +56,36 @@ void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8
     vertexBuffer->SetupVertexes();
 
 
-    Painter::DrawVertex(vertexBuffer,renderData,GL_TRIANGLE_FAN, GL_IS_AUTOBOUND);
+    Painter::DrawVertex(vertexBuffer,renderData,GL_TRIANGLE_FAN, GL_IS_AUTOBOUND);*/
 }
 
 
 void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline, float angle,const BearColor colors[4]){
-    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
-    static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
+     static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+    static AdvancedTransformations transformations;
 
-    renderData->color = BearColor(r,g,b,a);
+    transformations.defaultColor = BearColor(r,g,b,a);
+
+
+    transformations.size = box.GetSize();
+    transformations.translation = box.GetPos();
+    transformations.angle = angle;
+    if (!outline){
+        vertexBuffer->AddRect(transformations);
+    }else{
+        vertexBuffer->AddOutlineRect(transformations);
+    }
+
+    if (!outline){
+        Painter::DrawVertex(vertexBuffer,GL_TRIANGLES,   GL_IS_AUTOBOUND);
+    }else{
+        Painter::DrawVertex(vertexBuffer,GL_LINES,   GL_IS_AUTOBOUND);
+    }
     vertexBuffer->clear();
-    if (!outline){
-        vertexBuffer->vertexes.Generate(box, angle, false, colors);
-    }else{
-        vertexBuffer->vertexes.GenerateLineLoop(box, false, colors);
-    }
-
-    vertexBuffer->SetupVertexes();
-
-    if (!outline){
-        Painter::DrawVertex(vertexBuffer,renderData,GL_TRIANGLES,   GL_IS_AUTOBOUND);
-    }else{
-        Painter::DrawVertex(vertexBuffer,renderData,GL_LINES,   GL_IS_AUTOBOUND);
-    }
 }
 
 void RenderHelp::DrawSquaresColor(std::vector<RectColor> rects,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline){
-    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+    /*static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
     static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
 
     if (rects.size() == 0){
@@ -107,10 +110,10 @@ void RenderHelp::DrawSquaresColor(std::vector<RectColor> rects,uint8_t r,uint8_t
     }else{
         Painter::DrawVertex(vertexBuffer,renderData,GL_LINES,GL_IS_AUTOBOUND);
     }
-    DisplayGlError("DrawSquaresColor");
+    DisplayGlError("DrawSquaresColor");*/
 }
 void RenderHelp::DrawPointsColor(std::vector<Point> points,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thickness){
-    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+    /*static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
     static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
 
     if (points.size() == 0){
@@ -127,12 +130,12 @@ void RenderHelp::DrawPointsColor(std::vector<Point> points,uint8_t r,uint8_t g,u
     vertexBuffer->SetupVertexes();
 
     Painter::DrawVertex(vertexBuffer,renderData,GL_POINTS,GL_IS_AUTOBOUND);
-    DisplayGlError("DrawPointsColor");
+    DisplayGlError("DrawPointsColor");*/
 }
 
 
-void RenderHelp::DrawLinesColor(std::vector<GameVertice> lines,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thickness){
-    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+void RenderHelp::DrawLinesColor(std::vector<Vertex> lines,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thickness){
+    /*static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
     static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
 
     if (lines.size() == 0){
@@ -155,15 +158,15 @@ void RenderHelp::DrawLinesColor(std::vector<GameVertice> lines,uint8_t r,uint8_t
 
 
     Painter::DrawVertex(vertexBuffer,renderData,GL_LINES,GL_IS_AUTOBOUND);
-    DisplayGlError("DrawLinesColor");
+    DisplayGlError("DrawLinesColor");*/
 }
 
 void RenderHelp::DrawLineColor(Line l,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thickness){
-    DrawLineColor(l.GetFirst(), l.GetSecond(), r, g, b, a, thickness);
+   // DrawLineColor(l.GetFirst(), l.GetSecond(), r, g, b, a, thickness);
 }
 
 void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thicc){
-    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+    /*static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
     static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
 
     renderData->color = BearColor(r,g,b,a);
@@ -178,7 +181,7 @@ void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,u
 
 
     Painter::DrawVertex(vertexBuffer,renderData,GL_LINES,GL_IS_AUTOBOUND);
-    DisplayGlError("DrawLineColor");
+    DisplayGlError("DrawLineColor");*/
 
 
 }
