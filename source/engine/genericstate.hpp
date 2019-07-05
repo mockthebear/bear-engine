@@ -210,11 +210,6 @@ class GenericState{
         bool RequestedQuit(){return requestQuit;};
 
         /**
-            *Its an basic GameObject pool. SPP<T>
-            *Its used by the class SpriteEffectCreator
-        */
-        SPP<SpriteEffect> *SpriteEffectPool;
-        /**
             *Render map. It is used to make an "depth" inside the 2D world.
             *Its an map to order the rendering.
             *Lets say, you are in a topdown perspective, you can use the default
