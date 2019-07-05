@@ -3,7 +3,11 @@
 
 
 void RenderTexture::RenderAll(){
-    Painter::RenderTexture(m_texture.get(),m_vertexes);
+    m_vertexes->AddRect(m_renderData);
+    if (!renderCycle){
+        Painter::RenderTexture(m_texture.get(),m_vertexes);
+        m_vertexes->clear();
+    }
 }
 
 
@@ -79,3 +83,13 @@ void RenderTexture::SetScale(Point t_scale){
 Point RenderTexture::GetScale(){
     return m_renderData.GetScale();
 };
+
+void RenderTexture::BeginRender(){
+    renderCycle = true;
+}
+void RenderTexture::EndRender(){
+    renderCycle = false;
+    RenderAll();
+    m_vertexes->clear();
+
+}

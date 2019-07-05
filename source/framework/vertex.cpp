@@ -89,10 +89,10 @@ bool VertexArrayObject::SetupVertexes(){
 
 void VertexArrayObject::AddVertexes(int size,Vertex *vertices){
     m_vertexData.insert(m_vertexData.end(), &vertices[0], &vertices[size]);
+    m_indexCount += size;
 }
 
 void VertexArrayObject::AddIndices(int size,uint32_t *indices){
-    m_indexCount += size;
     m_indexes.insert(m_indexes.end(), &indices[0], &indices[size]);
 }
 
@@ -105,18 +105,20 @@ int VertexArrayObject::AddRect(Rect& box, BearColor&& color){
         Vertex(Point(box.x+box.w , box.y+box.h),  color),
         Vertex(Point(box.x+box.w , box.y), color),
     };
-    AddVertexes(4,vertices);
-
     if (m_useElementBuffer){
         uint32_t indices[] = {
             m_indexCount, m_indexCount+1, m_indexCount+3,
             m_indexCount+1, m_indexCount+2, m_indexCount+3,
         };
-        m_indexCount += 6;
         AddIndices(6,indices);
     }
-    return 6;
+    AddVertexes(4,vertices);
+    return m_indexCount;
 }
+
+
+
+
 
 
 int VertexArrayObject::AddRect(AdvancedTransformations &adt){
@@ -150,19 +152,7 @@ int VertexArrayObject::AddRect(AdvancedTransformations &adt){
 
     };
 
-    float auxa = Geometry::toRad(adt.angle);
-
-    float s = sin(auxa);
-    float c = cos(auxa);
-
-    for (int i=0;i<4;i++){
-        float px = vertices[i].x - adt.center.x;
-        float py = vertices[i].y - adt.center.y;
-        vertices[i].x = (px * c - py * s) + adt.center.x + adt.translation.x;
-        vertices[i].y = (px * s + py * c) + adt.center.y + adt.translation.y;
-    }
-
-    AddVertexes(4,vertices);
+    RotateRect(vertices,adt);
 
     if (m_useElementBuffer){
         uint32_t indices[] = {
@@ -171,54 +161,22 @@ int VertexArrayObject::AddRect(AdvancedTransformations &adt){
         };
         AddIndices(6,indices);
     }
+    AddVertexes(4,vertices);
 
-    return 6;
+    return m_indexCount;
 }
 
 int VertexArrayObject::AddOutlineRect(AdvancedTransformations &adt){
 
-    float texLeft = adt.forwardClip.x;
-    float texRight =  adt.forwardClip.y;
-    float texTop = adt.forwardClip.w;
-    float texBottom = adt.forwardClip.h;
-
-
-
-
-    if ((adt.flip&SDL_FLIP_HORIZONTAL) != 0){
-        float holder =  texLeft;
-        texLeft = texRight;
-        texRight = holder;
-    }
-    if ((adt.flip&SDL_FLIP_VERTICAL) != 0){
-        float holder =  texTop;
-        texTop = texBottom;
-        texBottom = holder;
-    }
-
-
     Vertex vertices[4] = {
         // Pos      // Tex
-        Vertex(Point(0.0f                      , 0.0f                       ),  Point(texLeft   , texTop), adt.defaultColor),
-        Vertex(Point(0.0f                      , adt.scale.y * adt.size.y   ),  Point(texLeft   , texBottom), adt.defaultColor),
-        Vertex(Point(adt.scale.x * adt.size.x  , adt.scale.y * adt.size.y   ),  Point(texRight  , texBottom), adt.defaultColor),
-        Vertex(Point(adt.scale.x * adt.size.x  , 0.0f                       ),  Point(texRight  , texTop), adt.defaultColor),
-
+        Vertex(Point(0.0f                      , 0.0f                       ),  adt.defaultColor),
+        Vertex(Point(0.0f                      , adt.scale.y * adt.size.y   ),  adt.defaultColor),
+        Vertex(Point(adt.scale.x * adt.size.x  , adt.scale.y * adt.size.y   ),  adt.defaultColor),
+        Vertex(Point(adt.scale.x * adt.size.x  , 0.0f                       ),  adt.defaultColor),
     };
 
-    float auxa = Geometry::toRad(adt.angle);
-
-    float s = sin(auxa);
-    float c = cos(auxa);
-
-    for (int i=0;i<4;i++){
-        float px = vertices[i].x - adt.center.x;
-        float py = vertices[i].y - adt.center.y;
-        vertices[i].x = (px * c - py * s) + adt.center.x + adt.translation.x;
-        vertices[i].y = (px * s + py * c) + adt.center.y + adt.translation.y;
-    }
-
-    AddVertexes(4,vertices);
+    RotateRect(vertices,adt);
 
     if (m_useElementBuffer){
         uint32_t indices[] = {
@@ -229,10 +187,32 @@ int VertexArrayObject::AddOutlineRect(AdvancedTransformations &adt){
         };
         AddIndices(8,indices);
     }
+    AddVertexes(4,vertices);
 
-    return 6;
+    return m_indexCount;
 }
 
+
+void VertexArrayObject::RotateRect(Vertex *vertices, AdvancedTransformations &adt){
+    if (adt.angle == 0){
+        for (int i=0;i<4;i++){
+            vertices[i].x += adt.translation.x;
+            vertices[i].y += adt.translation.y;
+        }
+    }else{
+        float auxa = Geometry::toRad(adt.angle);
+
+        float s = sin(auxa);
+        float c = cos(auxa);
+
+        for (int i=0;i<4;i++){
+            float px = vertices[i].x - adt.center.x;
+            float py = vertices[i].y - adt.center.y;
+            vertices[i].x = (px * c - py * s) + adt.center.x + adt.translation.x;
+            vertices[i].y = (px * s + py * c) + adt.center.y + adt.translation.y;
+        }
+    }
+}
 
 /*
 int Vertex::Generate(Rect r,float ang, bool onlyOnes, const BearColor colors[4]){

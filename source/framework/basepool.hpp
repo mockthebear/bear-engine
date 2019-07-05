@@ -7,7 +7,6 @@
 #include "../engine/bear.hpp"
 #include "../engine/object.hpp"
 #include "../engine/camera.hpp"
-#include "../engine/spriteeffectcreator.hpp"
 /**
  * @brief Object pool
  *

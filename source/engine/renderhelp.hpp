@@ -3,6 +3,7 @@
 #include "collision.hpp"
 #include "../framework/geometry.hpp"
 #include "../framework/typechecker.hpp"
+#include "../framework/vertex.hpp"
 #include <functional>
 
 

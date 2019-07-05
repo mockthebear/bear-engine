@@ -125,6 +125,7 @@ class VertexArrayObject{
     int AddRect(Rect& box, BearColor&& color = BearColor());
     //int AddRect(Rect&& box, BasicTransformations &&bt, BearColor&& color = BearColor());
     int AddRect(AdvancedTransformations &adt);
+    int AddRect(AdvancedTransformations &subTransform, AdvancedTransformations &adt);
     int AddOutlineRect(AdvancedTransformations &adt);
 
 
@@ -145,17 +146,21 @@ class VertexArrayObject{
     }
 
     uint32_t GetDrawElementsCount() const{
-        return m_indexCount;
+        return m_indexes.size();
     }
 
     bool SetupVertexes();
 
-    std::vector<Vertex> m_vertexData;
-    std::vector<uint32_t> m_indexes;
+
     bool HasElementBuffer(){
         return m_useElementBuffer;
     }
+
+    void RotateRect(Vertex *vertices, AdvancedTransformations &adt);
   private:
+    std::vector<Vertex> m_vertexData;
+    std::vector<uint32_t> m_indexes;
+
     void AquireBufferIds();
     bool SetVertexBuffer();
     bool SetElementBuffer();
