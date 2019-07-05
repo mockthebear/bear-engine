@@ -79,7 +79,7 @@ void Painter::DrawVertex(VertexArrayObjectPtr vertexData,int drawMode, bool isBo
     #endif // SILENT_GL
 
     if (noShader){
-        polygonShader.Bind();
+        textureShader.Bind();
     }
 
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Projection);
@@ -97,7 +97,7 @@ void Painter::DrawVertex(VertexArrayObjectPtr vertexData,int drawMode, bool isBo
     vertexData->UnBind();
 
     if (noShader){
-        polygonShader.Unbind();
+        textureShader.Unbind();
     }
 }
 

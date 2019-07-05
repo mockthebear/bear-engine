@@ -99,7 +99,11 @@ const char *Shader::DefaultTextureFragmentShader = "\n"
 "\n"
 "void main()\n"
 "{\n"
-"    gl_FragColor  =  texture2D(image, TexCoords) * TexColor;\n"
+"   if (TexCoords.x >= 0.0){\n"
+"       gl_FragColor  =  texture2D(image, TexCoords) * TexColor;\n"
+"   }else{\n"
+"       gl_FragColor  = TexColor;\n"
+"   }\n"
 "\n"
 "}\n";
 
