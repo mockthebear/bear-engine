@@ -100,11 +100,16 @@ void Game::init(const char *name){
         DisplayBearInfo();
 
         if (startFlags&BEAR_FLAG_START_SDL){
+            Console::GetInstance().AddTextInfo("Starting SDL");
             if (SDL_Init(BEAR_SDL_CONST_INIT) != 0){
                 Console::GetInstance().AddTextInfo( utils::format("SDL may nor work because [%s]",SDL_GetError()) );
             }else{
                 Console::GetInstance().AddTextInfo("SDL is on!");
             }
+            Console::GetInstance().AddTextInfo("Starting SDL events");
+            SDL_InitSubSystem(SDL_INIT_EVENTS);
+            Console::GetInstance().AddTextInfo("Starting SDL joystick");
+            SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER);
         }
 
         if (startFlags&BEAR_FLAG_START_TTF){
