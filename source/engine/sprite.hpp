@@ -62,6 +62,8 @@ class ColorReplacer{
 
 class AssetMannager;
 class Animation;
+class SpriteAtlas;
+class AnimatedSprite;
 
 
 /**
@@ -75,7 +77,7 @@ class Animation;
 class Sprite: public RenderTexture{
     public:
 
-        Sprite():RenderTexture(),fname(""),timeElapsed(0.0f),frameTime(0.0f),over(0),repeat(0),frameCount(1),m_lf(0),currentFrame(0.0f, 0.0f),grid(1.0f, 1.0f){};
+        Sprite():RenderTexture(),m_trueVirtualSize(0.0f, 0.0f){};
         /**
             *This constructor its a bit special, and need a bit more attention
             *You start the sprite and pass only an SDL_Texture. There is no mapping
@@ -83,25 +85,22 @@ class Sprite: public RenderTexture{
             *in the class.
             @param texture An sdl texture
         */
-
-
         Sprite(TexturePtr texture):Sprite(){m_texture = texture;};
+
         Sprite(TexturePtr texture,std::string name,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
         Sprite(TexturePtr texture,std::string name,std::string alias,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
 
-        Sprite(TexturePtr texture,std::string name,int fcount,float ftime,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
-        Sprite(TexturePtr texture,std::string name,std::string alias,int fcount,float ftime,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
+        Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
 
-        Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
-
-        Sprite(SDL_RWops* rw,std::string name,int fcount,float ftime,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
+        Sprite(SDL_RWops* rw,std::string name,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
 
 
-        Sprite(std::string file,int fcount=1.0f,float ftime=1.0f,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
-        Sprite(std::string file,TextureLoadMethod);
+        Sprite(std::string file,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
 
-        Sprite(std::string file,ColorReplacer &r,bool replaceOnAssets=true,int fcount=1,float ftime = 1,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT);
 
+        void SetVirtualData(Point virtualId){
+            m_trueVirtualSize = virtualId;
+        }
 
 
         /**
@@ -150,7 +149,7 @@ class Sprite: public RenderTexture{
         /**
             *This dont destroy the texture!!!
         */
-        ~Sprite();
+        virtual ~Sprite(){};
         /**
             *Can be used when you create an sprite with empty constructor.
             @param rw The rwops
@@ -182,6 +181,7 @@ class Sprite: public RenderTexture{
             @param h Height
         */
         void SetClip (int x,int y,int w,int h);
+        void SetRotation(float angle);
         /**
             *The render function will render on the game at the position x,y.
             *When screne is streched or full screen, this function will take care of anything
@@ -191,10 +191,7 @@ class Sprite: public RenderTexture{
             @param x The y
             @param angle When you need rotate the sprite
         */
-
-        void Render (int x,int y,double angle=0);
-
-        void Renderxy(int x,int y,double angle=0);
+        void Renderxy(int x,int y);
 
         /**
             *The render function will render on the game at the position x,y.
@@ -204,7 +201,7 @@ class Sprite: public RenderTexture{
             @param pos is a Point (x,y)
             @param angle When you need rotate the sprite
         */
-        void Render(PointInt pos,double angle=0);
+        virtual void Render(PointInt pos);
         /**
             *The render function will render on the game at the position PointInt(x,y).
             *When screne is streched or full screen, this function will take care of anything
@@ -213,8 +210,8 @@ class Sprite: public RenderTexture{
             @param pos is a PointInt (x,y)
             @param angle When you need rotate the sprite
         */
-        void Renderpoint(PointInt pos,double angle=0){
-            Render(pos,angle);
+        void Renderpoint(PointInt pos){
+            Render(pos);
         }
 
         /**
@@ -223,26 +220,7 @@ class Sprite: public RenderTexture{
         */
         void Update(float dt);
         /**
-            *Just reset the animation to the fame 0. As you can use an grid you can
-            *also reset the y axis by setting the parameter as true.
-            *
-            *This will reset only the internal counter of the repeat. See Sprite::IsAnimationOver
-        */
-        void ResetAnimation(bool changeYaxis=false){
-            over = 0;
-            currentFrame.x = 0;
-            timeElapsed = 0;
-            if (changeYaxis)
-                currentFrame.y = 0;
-        }
-        /**
-            *You can force an frame.
-            *As the class only changes the X axis, you can set the yFrame parameter
-            *by your own. When set -1 will be the default or last set yFrame.
-        */
-        void SetFrame(int xFrame,int yFrame=-1);
-        /**
-            *Get the Sprite width
+            *Get the Sprite Width
             *
             *<b>Is affected by scaling</b>
             @return The size
@@ -258,114 +236,26 @@ class Sprite: public RenderTexture{
         */
         int GetHeight();
         /**
-            *Get the Frame width
-            *
-            *<b>Is affected by scaling</b>
-            @return The size
-        */
-        int GetFrameWidth();
-        /**
-            *Get the Frame height
-            *
-            *<b>Is affected by scaling</b>
-            @return The size
-        */
-        int GetFrameHeight();
-        /**
-            *Change the frame amount
-            @param fc The new frame count
-        */
-        void SetFrameCount(int fc){
-            frameCount  =   std::max(1, fc);
-            over        =   false;
-        };
-        /**
-            *Return the frame count
-            @return Return the frame count
-        */
-        int GetFrameCount(){
-            return frameCount;
-        };
-        /**
-            *Change the frame time
-            *This also will <b>reset the current timer</b> of the current frame.
-            @param ft The new frame time
-        */
-        void SetFrameTime(float ft){
-            frameTime=ft;
-            timeElapsed = 0;
-        };
-        /**
-            *Get the remeaining time to the next frame
-            @return the time left
-        */
-        float GetFrameTime(){
-            return frameTime;
-        };
-        /**
-            *Change the frame amount
             @return true if the sprite is loaded
         */
         bool IsLoaded(){
             return HasTexture();
         };
-
-
-        void SetStayLastFrame(int lf){
-            m_lf = lf;
-        }
-
-        /**
-            *Set the amount of times the animation will repeat until Sprite::IsAnimationOver could return true
-            *Say you set repeat to 2, then every time it finishes the animation cycle an counter will be incremented
-            *once it reaches the same value as you set on Sprite::SetRepeatTimes it will be able to return true.
-            *This is not a trigger.
-            @param t repeat times
-        */
-        void SetRepeatTimes(int t){
-            repeat = t;
-        }
-        int GetRepeatTimes(){
-            return repeat;
-        }
-        /**
-            *Check if the animation has finished
-            @param if the animation is over
-        */
-        bool IsAnimationOver(){
-            return over >= repeat;
-        };
-
-        /**
-            *Set a grid for animation frames
-            @param gx The grid size in x axis
-            @param gy The grid size in y axis
-        */
-        void SetGrid(int gx,int gy);
-
-        PointInt GetGrid(){
-            return grid;
-        };
-        /**
-            Get the current frame in the grid
-            @return the frame on x,y position
-        */
-        Point GetFrame(){ return currentFrame; };
         /**
             Used to load texture settings from the given pointer
             @param ptr The pointer
         */
-        void Query(TexturePtr ptr);
-        void Format(Animation a,int dir);
+        virtual void Query(TexturePtr ptr);
+        void Format(Animation& a);
+
+        AnimatedSprite Animate(int fcount=1,float ftime=5.0,int repeat=1);
+
+
     private:
         friend class AssetMannager;
-        std::string fname;
-        float timeElapsed,frameTime;
-        int over;
-        int repeat;
-        int frameCount,m_lf;
-        PointInt currentFrame;
-        PointInt grid;
+        friend class SpriteAtlas;
+        friend class AnimatedSprite;
+        Point m_trueVirtualSize;
 };
 
 
@@ -374,7 +264,7 @@ class Animation{
     public:
 
         Animation():Loops(0),RepeatTimes(0),sprX(0),sprY(0),sprW(0),sprH(0),MaxFrames(01),SprDelay(1.0f),SprMaxDelay(1.0f),CanRepeat(true),LastFrame(0),LastRepeatCount(0),
-        pause(false),finishedFrame(false),finishedSingleFrame(false),isFormated(false),LockedFinished(true){};
+        pause(false),finishedAnimation(false),finishedSingleFrame(false),isFormated(false),LockedFinished(true){};
         Animation(float w,float h):Animation(){
            SetGridSize(w,h);
            ResetAnimation();
@@ -383,100 +273,31 @@ class Animation{
            sprW = w;
            sprH = h;
         };
-        void Update(float dt){
-            if (pause){
-                return;
-            }
-            if (LockedFinished)
-                finishedFrame = false;
-            finishedSingleFrame = false;
-            SprDelay -= dt;
-            if (SprDelay <= 0){
-                isFormated = false;
-                finishedSingleFrame = true;
-                LastFrame = sprX;
-                sprX++;
-                SprDelay = SprMaxDelay;
-                if (sprX >= MaxFrames){
-                    if (CanRepeat){
-                        Loops++;
-                        sprX = 0;
-                        RepeatTimes--;
-                    }else{
-                        sprX--;
-                        LockedFinished = false;
-                        finishedSingleFrame = false;
-                    }
-                    if (RepeatTimes <= 0)
-                        finishedFrame = true;
-                }
-            }
-        }
+        void Update(float dt);
         void Pause(bool p){
             pause = p;
         }
         bool IsAnimationEnd(){
-            return finishedFrame;
+            return finishedAnimation;
         }
         bool IsFrameEnd(){
             return finishedSingleFrame;
         }
-        void SetAnimation(int y=0,int maxFrames=0,float timer=-1){
-            if (timer >= 0){
-                SetAnimationTime(timer);
-            }
-            isFormated = false;
-            sprY = y;
-            MaxFrames = maxFrames;
-            ResetAnimation();
-        }
-        void ResetAnimation(){
-            LockedFinished = true;
-            sprX = 0;
-            SprDelay = SprMaxDelay;
-            finishedFrame = false;
-            finishedSingleFrame = false;
-            isFormated = false;
-            Loops = 0;
-            RepeatTimes = LastRepeatCount;
-        }
-        void SetAnimationTime(float time){
-            SprDelay = SprMaxDelay = time;
-        }
+        void SetAnimation(int y=0,int maxFrames=0,float timer=-1);
+        void ResetAnimation();
+        void SetAnimationTime(float time);
+        void FormatSprite(Sprite& sp);
+        void RenderL(float x,float y,Sprite sp);
+        void Render(float x,float y,Sprite& sp);
+        void SetFrame(int x,int y=-1);
+        PointInt GetFrame();
+        void SetFrameCount(int fc);
+        int GetFrameCount();
+        void SetFrameTime(float ft);
+        float GetFrameTime();
+        void SetRepeatTimes(int t);
+        int GetRepeatTimes();
 
-        void SetRepeatTimes(int n){
-            LastRepeatCount = RepeatTimes = n;
-        }
-
-        void FormatSprite(Sprite& sp,int dir){
-            if (!sp.IsLoaded()){
-                return;
-            }
-            if (dir == 0){
-                sp.SetFlip(SDL_FLIP_NONE);
-            }else if (dir == 1){
-                sp.SetFlip(SDL_FLIP_HORIZONTAL);
-            }else if (dir == 2){
-                sp.SetFlip(SDL_FLIP_VERTICAL);
-            }
-            sp.SetClip(sprX * sprW, sprY * sprH,sprW,sprH);
-            isFormated = true;
-        }
-        void RenderL(float x,float y,Sprite sp,int dir,float angle=0){
-            if (!isFormated){
-                FormatSprite(sp,dir);
-            }
-            sp.Render(PointInt(x,y),angle);
-            isFormated = false;
-        }
-
-        void Render(float x,float y,Sprite& sp,int dir,float angle=0){
-            if (!isFormated){
-                FormatSprite(sp,dir);
-            }
-            sp.Render(PointInt(x,y),angle);
-            isFormated = false;
-        }
         uint32_t Loops;
         int32_t RepeatTimes;
         uint32_t sprX;
@@ -491,12 +312,59 @@ class Animation{
         uint32_t LastRepeatCount;
     private:
         friend class Sprite;
+        friend class AnimatedSprite;
         bool pause;
-        bool finishedFrame;
+        bool finishedAnimation;
         bool finishedSingleFrame;
         bool isFormated;
         bool LockedFinished;
 };
 
+
+class AnimatedSprite: public Sprite, public Animation{
+    public:
+
+        virtual ~AnimatedSprite(){};
+
+        AnimatedSprite():Sprite(),Animation(){};
+        AnimatedSprite(TexturePtr texture):Sprite(texture),Animation(){
+            Query(m_texture);
+        };
+        AnimatedSprite(TexturePtr texture,std::string name,int fcount=1,float ftime=5.0,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT):Sprite(texture,name,hasAliasing),Animation(){
+            SetAnimation(0,fcount,ftime);
+            SetRepeatTimes(repeat);
+            Query(m_texture);
+        };
+        AnimatedSprite(TexturePtr texture,std::string name,std::string alias,int fcount=1,float ftime=5.0,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT):Sprite(texture,name,hasAliasing),Animation(){
+            SetAnimation(0,fcount,ftime);
+            SetRepeatTimes(repeat);
+            Query(m_texture);
+        };
+        AnimatedSprite(TexturePtr texture,std::string name,ColorReplacer &r,int fcount=1,float ftime=5.0,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT):Sprite(texture,name,hasAliasing),Animation(){
+            SetAnimation(0,fcount,ftime);
+            SetRepeatTimes(repeat);
+            Query(m_texture);
+        };
+        AnimatedSprite(SDL_RWops* rw,std::string name,int fcount=1,float ftime=5.0,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT):Sprite(rw,name,hasAliasing),Animation(){
+            SetAnimation(0,fcount,ftime);
+            SetRepeatTimes(repeat);
+            Query(m_texture);
+        };
+        AnimatedSprite(std::string file,int fcount=1,float ftime=5.0,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT):Sprite(file,hasAliasing),Animation(){
+            SetAnimation(0,fcount,ftime);
+            SetRepeatTimes(repeat);
+            Query(m_texture);
+        };
+        AnimatedSprite(Sprite&& sp);
+
+        void Update(float dt);
+
+        int GetFrameWidth();
+        int GetFrameHeight();
+
+        void Render(PointInt pos);
+
+        void Query(TexturePtr ptr);
+};
 
 #endif

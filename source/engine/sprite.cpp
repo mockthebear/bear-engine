@@ -33,111 +33,39 @@ Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,TextureLoa
         hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
     }
     m_texture = texture_;
-    fname = alias;
     aliasing = hasAliasing;
     if (m_texture.get()){
         Query(m_texture);
     }
-    SetGrid(GetWidth()/frameCount,GetHeight());
-    SetFrame(0);
 }
-
 
 Sprite::Sprite(TexturePtr texture_,std::string name,TextureLoadMethod hasAliasing):Sprite(){
     if (hasAliasing.mode == TEXTURE_DEFAULT){
         hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
     }
     m_texture = texture_;
-    fname = name;
     aliasing = hasAliasing;
     if (m_texture.get()){
         Query(m_texture);
     }
-    SetGrid(GetWidth()/frameCount,GetHeight());
-    SetFrame(0);
 }
 
-Sprite::Sprite(TexturePtr texture_,std::string name,std::string alias,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
-    if (hasAliasing.mode == TEXTURE_DEFAULT){
-        hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
-    }
-    m_texture = texture_;
-    frameCount = fcount;
-    repeat = rep;
-    frameTime = ftime;
-    fname = alias;
-    aliasing = hasAliasing;
-    if (m_texture.get()){
-        Query(m_texture);
-    }
-    SetGrid(GetWidth()/frameCount,GetHeight());
-    SetFrame(0);
-}
-
-Sprite::Sprite(TexturePtr texture_,std::string name,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
-    if (hasAliasing.mode == TEXTURE_DEFAULT){
-        hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
-    }
-    m_texture = texture_;
-     frameCount = fcount;
-    repeat = rep;
-    frameTime = ftime;
-    fname = name;
-    aliasing = hasAliasing;
-    if (m_texture.get()){
-        Query(m_texture);
-    }
-    SetGrid(GetWidth()/frameCount,GetHeight());
-    SetFrame(0);
-}
-
-Sprite::Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
+Sprite::Sprite(TexturePtr texture_,std::string name,ColorReplacer &r,TextureLoadMethod hasAliasing):Sprite(){
     if (hasAliasing.mode == TEXTURE_DEFAULT){
         hasAliasing.mode= TextureLoadMethod::DefaultLoadingMethod.mode;
     }
-    frameCount = fcount;
-    repeat = rep;
-    frameTime = ftime;
-    fname = name;
     aliasing = hasAliasing;
     m_texture = texture_;
     Query(m_texture);
-    SetGrid(GetWidth()/frameCount,GetHeight());
-    SetFrame(0);
-    SetAlpha(255);
-}
-
-Sprite::Sprite(std::string file,ColorReplacer &r,bool replacer,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
-    if (hasAliasing.mode == TEXTURE_DEFAULT){
-        hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
-    }
-    frameCount = fcount;
-    repeat = rep;
-    frameTime = ftime;
-    fname = file;
-    aliasing = hasAliasing;
-    m_texture = GlobalAssetManager::GetInstance().makeTexture(false,file,r,hasAliasing);
-    if (m_texture.get()){
-        Query(m_texture);
-    }
-    SetGrid(GetWidth()/frameCount,GetHeight());
-    SetFrame(0);
-    SetAlpha(255);
 
 }
 
 
-Sprite::Sprite(SDL_RWops* file,std::string name,int fcount,float ftime,int rep,TextureLoadMethod hasAliasingg):Sprite(){
+Sprite::Sprite(SDL_RWops* file,std::string name,TextureLoadMethod hasAliasingg):Sprite(){
     if (hasAliasingg.mode == TEXTURE_DEFAULT){
         hasAliasingg.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
     }
-    frameCount = fcount;
-    repeat = rep;
-    frameTime = ftime;
-    fname = name;
     Open(file,name,hasAliasingg);
-    SetGrid(GetWidth()/frameCount,GetHeight());
-    SetFrame(0);
     SetAlpha(255);
 }
 
@@ -145,69 +73,12 @@ Sprite::Sprite(std::string file,TextureLoadMethod hasAliasing):Sprite(){
     if (hasAliasing.mode == TEXTURE_DEFAULT){
         hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
     }
-    fname = file;
     Open(file,hasAliasing);
-    SetGrid(GetWidth()/frameCount,GetHeight());
-    SetFrame(0);
     SetAlpha(255);
 }
 
-Sprite::Sprite(std::string file,int fcount,float ftime,int rep,TextureLoadMethod hasAliasing):Sprite(){
-    if (hasAliasing.mode == TEXTURE_DEFAULT){
-        hasAliasing.mode = TextureLoadMethod::DefaultLoadingMethod.mode;
-    }
-    frameCount = fcount;
-    fname = file;
-    frameTime = ftime;
-    repeat = rep;
-    Open(file,hasAliasing);
-    frameCount = std::max(1,frameCount);
-    SetGrid(GetWidth()/frameCount,GetHeight());
-    SetFrame(0);
-    SetAlpha(255);
-}
 
-void Sprite::Update(float dt){
-    timeElapsed = timeElapsed+dt;
-    if (timeElapsed >= frameTime){
-        timeElapsed = 0;
-        currentFrame.x++;
-        if (currentFrame.x >= frameCount){
-            currentFrame.x = 0;
-            over++;
-        }
-        SetFrame(currentFrame.x);
-    }
-    if (IsAnimationOver() && m_lf > 0){
-        currentFrame.x = m_lf;
-        SetFrame(currentFrame.x);
-        return;
-    }
-}
-
-void Sprite::SetGrid(int gx,int gy){
-    gx = std::min(gx,GetWidth());
-    grid.x = gx;
-    gy = std::min(gy,GetHeight());
-    grid.y = gy;
-    if (gx != 0){
-        SetFrameCount(GetWidth()/gx);
-    }
-
-}
-
-void Sprite::SetFrame(int xFrame,int yFrame){
-    if (yFrame != -1)
-        currentFrame.y = yFrame;
-    currentFrame.x = xFrame;
-    if (currentFrame.x >= frameCount){
-        currentFrame.x = 0;
-    }
-    SetClip(currentFrame.x*(grid.x), currentFrame.y * (grid.y) ,grid.x,grid.y);
-}
-
-Sprite::~Sprite(){}
-
+void Sprite::Update(float dt){}
 
 
 BearTexture *Sprite::Preload(const char *file,bool adjustDir,TextureLoadMethod HasAliasing){
@@ -385,36 +256,34 @@ bool Sprite::Open(SDL_RWops* file,std::string name,TextureLoadMethod HasAliasing
 }
 
 void Sprite::SetClip(int x, int y,int w,int h){
-    m_renderData.SetClip(Rect(x,y,w,h),TextureSize);
+    if (m_trueVirtualSize.x != 0){
+        m_renderData.SetClip(Rect(x,y,w,h),m_trueVirtualSize);
+    }else{
+        m_renderData.SetClip(Rect(x,y,w,h),TextureSize);
+    }
 }
 
-void Sprite::Render(PointInt pos,double angle){
+void Sprite::SetRotation(float angle){
+    m_renderData.SetAngle(angle);
+}
+
+
+void Sprite::Render(PointInt pos){
     if (IsLoaded()){
         m_renderData.SetPosition(pos);
-        m_renderData.SetAngle(angle);
-        m_vertexes->AddRect(m_renderData);
         RenderAll();
-        m_vertexes->clear();
+    }else if(m_trueVirtualSize.x >= 0){
+        m_renderData.SetPosition(pos);
+        m_vertexes->AddRect(m_renderData);
     }
 }
-void Sprite::Renderxy(int x,int y,double angle){
-    Render(x-Camera::pos.x,y-Camera::pos.y,angle);
-}
-void Sprite::Render(int x,int y,double angle){
-    Render(PointInt(x,y),angle);
+void Sprite::Renderxy(int x,int y){
+    Render(PointInt(x,y));
 }
 
-
-void  Sprite::Format(Animation anim,int dir){
+void Sprite::Format(Animation& anim){
     if (IsLoaded()){
-            return;
-    }
-    if (dir == 0){
-        SetFlip(SDL_FLIP_NONE);
-    }else if (dir == 1){
-        SetFlip(SDL_FLIP_HORIZONTAL);
-    }else if (dir == 2){
-        SetFlip(SDL_FLIP_VERTICAL);
+        return;
     }
     SetClip(anim.sprX * anim.sprW, anim.sprY * anim.sprH,anim.sprW,anim.sprH);
     anim.isFormated = true;
@@ -427,11 +296,171 @@ int Sprite::GetWidth(){
 int Sprite::GetHeight(){
     return size.y*m_renderData.GetScale().y;
 }
-int Sprite::GetFrameHeight(){
-    return m_renderData.GetClip().h*m_renderData.GetScale().y;
+void Animation::Update(float dt){
+    if (pause){
+        return;
+    }
+    if (LockedFinished)
+        finishedAnimation = false;
+    finishedSingleFrame = false;
+    SprDelay -= dt;
+    if (SprDelay <= 0){
+        isFormated = false;
+        finishedSingleFrame = true;
+        LastFrame = sprX;
+        sprX++;
+        SprDelay = SprMaxDelay;
+        if (sprX >= MaxFrames){
+            if (CanRepeat){
+                Loops++;
+                sprX = 0;
+                RepeatTimes--;
+            }else{
+                sprX--;
+                LockedFinished = false;
+                finishedSingleFrame = false;
+            }
+            if (RepeatTimes <= 0)
+                finishedAnimation = true;
+        }
+    }
 }
 
-int Sprite::GetFrameWidth(){
-    return m_renderData.GetClip().w*m_renderData.GetScale().x;
+void Animation::SetFrame(int x,int y){
+    if (y != -1){
+        sprY = y;
+    }
+    sprX = x;
+    if (sprX >= MaxFrames){
+        sprX = 0;
+    }
+    isFormated = false;
 }
 
+PointInt Animation::GetFrame(){
+    return PointInt(sprX, sprY);
+}
+
+
+void Animation::SetFrameCount(int fc){
+    MaxFrames     =   std::max(1, fc);
+    finishedAnimation =   false;
+};
+
+int Animation::GetFrameCount(){
+    return MaxFrames;
+};
+
+void Animation::SetFrameTime(float ft){
+    SprMaxDelay = ft;
+    SprDelay = 0;
+};
+
+float Animation::GetFrameTime(){
+    return SprMaxDelay;
+};
+
+void Animation::SetRepeatTimes(int t){
+    LastRepeatCount = RepeatTimes = t;
+}
+
+int Animation::GetRepeatTimes(){
+    return RepeatTimes;
+}
+
+
+
+void Animation::SetAnimation(int y,int maxFrames,float timer){
+    if (timer >= 0){
+        SetAnimationTime(timer);
+    }
+    isFormated = false;
+    sprY = y;
+    MaxFrames = maxFrames;
+    ResetAnimation();
+}
+
+void Animation::ResetAnimation(){
+    LockedFinished = true;
+    sprX = 0;
+    SprDelay = SprMaxDelay;
+    finishedAnimation = false;
+    finishedSingleFrame = false;
+    isFormated = false;
+    Loops = 0;
+    RepeatTimes = LastRepeatCount;
+}
+
+void Animation::SetAnimationTime(float time){
+    SprDelay = SprMaxDelay = time;
+}
+
+void Animation::FormatSprite(Sprite& sp){
+    sp.SetClip(sprX * sprW, sprY * sprH,sprW,sprH);
+    isFormated = true;
+}
+
+void Animation::RenderL(float x,float y,Sprite sp){
+    if (!isFormated){
+        FormatSprite(sp);
+    }
+    sp.Render(PointInt(x,y));
+    isFormated = false;
+}
+
+void Animation::Render(float x,float y,Sprite& sp){
+    if (!isFormated){
+        FormatSprite(sp);
+    }
+    sp.Render(PointInt(x,y));
+    isFormated = false;
+}
+
+
+int AnimatedSprite::GetFrameHeight(){
+    return sprH*m_renderData.GetScale().y;
+}
+
+int AnimatedSprite::GetFrameWidth(){
+    return sprH*m_renderData.GetScale().y;
+}
+
+void AnimatedSprite::Update(float dt){
+    Animation::Update(dt);
+    FormatSprite(*this);
+}
+
+void AnimatedSprite::Render(PointInt pos){
+    if (!isFormated){
+        FormatSprite(*this);
+    }
+    Sprite::Render(pos);
+    isFormated = false;
+}
+
+AnimatedSprite::AnimatedSprite(Sprite&& sp):Sprite(),Animation(){
+    m_trueVirtualSize = sp.m_trueVirtualSize;
+    aliasing = sp.aliasing;
+    m_renderData = sp.m_renderData;
+    size = sp.size;
+    TextureSize = sp.TextureSize;
+    renderCycle = sp.renderCycle;
+    m_texture.reset(sp.m_texture.get());
+}
+
+AnimatedSprite Sprite::Animate(int fcount,float ftime,int repeat){
+    AnimatedSprite as(std::move(*this));
+    return as;
+}
+
+void AnimatedSprite::Query(TexturePtr ptr){
+    BearTexture *texturee = ptr.get();
+    if (texturee != NULL){
+        size.x = sprW = texturee->size_w;
+        size.y = sprH = texturee->size_h;
+
+        TextureSize.x = texturee->texture_w;
+        TextureSize.y = texturee->texture_h;
+        SetClip(0,0,texturee->texture_w,texturee->texture_h);
+    }
+}
