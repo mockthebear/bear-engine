@@ -2,18 +2,30 @@
 
 
 #include "targettexture.hpp"
+#include "sprite.hpp"
 
 
 class SpriteAtlas{
     public:
+
         bool Generate(PointInt&& size);
 
+        bool RenderWholeAtlas(PointInt pos);
+        bool RenderAll();
 
-        bool RenderSprite(PointInt&& position,uint32_t spriteId);
-        bool RenderCall();
+        int StichSprite(RenderTexture &rt);
+
+        void OpenStich();
+        void CloseStich();
+
+        Sprite SummonSprite(uint32_t spriteId);
 
     private:
-        bool BeginRenderCall();
-        std::vector<Rect> m_sprites;
+        bool checkValidSpot(RectInt &guessPosition,PointInt &maxLocations);
+        std::vector<RectInt> m_sprites;
         TargetTexture m_atlas;
+        VertexArrayObjectPtr m_vertexes;
+        PointInt m_size;
+        uint32_t m_LowestY,m_GridSize;
+
 };

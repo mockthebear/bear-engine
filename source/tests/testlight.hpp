@@ -125,7 +125,7 @@ class Test_Light: public State{
                 Render scenario
             */
 
-            background.Render(0,0);
+            background.Render(PointInt(0,0));
             RenderInstances();
             frameRate.Render(32,32);
 

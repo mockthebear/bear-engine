@@ -174,14 +174,14 @@
 				<Option object_output="../obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option use_console_runner="0" />
 				<Compiler>
-					<Add option="-O3" />
 					<Add option="-std=c++0x" />
+					<Add option="-pg" />
+					<Add option="-g" />
 					<Add option="-DRENDER_OPENGL2" />
 				</Compiler>
 				<Linker>
-					<Add option="-O3" />
+					<Add option="-pg -lgmon" />
 					<Add option="-Wl,-Bstatic" />
 					<Add option="-lenet" />
 					<Add option="-pthread" />
@@ -310,10 +310,8 @@
 		<Unit filename="engine/shadermanager.hpp" />
 		<Unit filename="engine/sprite.cpp" />
 		<Unit filename="engine/sprite.hpp" />
-		<Unit filename="engine/spriteeffect.cpp" />
-		<Unit filename="engine/spriteeffect.hpp" />
-		<Unit filename="engine/spriteeffectcreator.cpp" />
-		<Unit filename="engine/spriteeffectcreator.hpp" />
+		<Unit filename="engine/spriteatlas.cpp" />
+		<Unit filename="engine/spriteatlas.hpp" />
 		<Unit filename="engine/targettexture.cpp" />
 		<Unit filename="engine/targettexture.hpp" />
 		<Unit filename="engine/text.cpp" />
@@ -555,6 +553,7 @@
 		<Unit filename="sound/soundloader.hpp" />
 		<Unit filename="sound/soundsources.cpp" />
 		<Unit filename="sound/soundsources.hpp" />
+		<Unit filename="tests/testatlas.hpp" />
 		<Unit filename="tests/testblank.hpp" />
 		<Unit filename="tests/testfasttile.hpp" />
 		<Unit filename="tests/testfiles.hpp" />
