@@ -37,9 +37,9 @@ extern const BearColor BCWhite2[2];
 
 class Vertex{
     public:
-        Vertex():x(0.0f),y(0.0f),clx(0.0f),cly(0.0f),r(1.0f),g(1.0f),b(1.0f),a(1.0f){};
-        Vertex(Point pos):x(pos.x),y(pos.y),clx(0.0f),cly(0.0f),r(1.0f),g(1.0f),b(1.0f),a(1.0f){};
-        Vertex(Point pos, BearColor bc):x(pos.x),y(pos.y),clx(0.0f),cly(0.0f),r(bc.r),g(bc.g),b(bc.b),a(bc.a){};
+        Vertex():x(0.0f),y(0.0f),clx(-1.0f),cly(-1.0f),r(1.0f),g(1.0f),b(1.0f),a(1.0f){};
+        Vertex(Point pos):x(pos.x),y(pos.y),clx(-1.0f),cly(-1.0f),r(1.0f),g(1.0f),b(1.0f),a(1.0f){};
+        Vertex(Point pos, BearColor bc):x(pos.x),y(pos.y),clx(-1.0f),cly(-1.0f),r(bc.r),g(bc.g),b(bc.b),a(bc.a){};
         Vertex(Point pos, Point clip):x(pos.x),y(pos.y),clx(clip.x),cly(clip.y),r(1.0f),g(1.0f),b(1.0f),a(1.0f){};
         Vertex(Point pos, Point clip, BearColor bc):x(pos.x),y(pos.y),clx(clip.x),cly(clip.y),r(bc.r),g(bc.g),b(bc.b),a(bc.a){};
 

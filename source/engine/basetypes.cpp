@@ -33,8 +33,6 @@ uint32_t BearTexture::DropTexture(){
     return ret;
 }
 
-
-
 void Vertex::SetAttributes(){
     GLint posAttrib = 0;
     GLint clipAttrib = 1;
