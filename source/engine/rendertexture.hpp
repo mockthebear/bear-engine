@@ -8,7 +8,7 @@
 
 class RenderTexture{
     public:
-        RenderTexture():aliasing(TEXTURE_LINEAR),m_renderData(),m_vertexes(std::make_shared<VertexArrayObject>()),size(1.0f, 1.0f),TextureSize(1.0f, 1.0f){};
+        RenderTexture():aliasing(TEXTURE_LINEAR),m_renderData(),m_vertexes(std::make_shared<VertexArrayObject>()),size(1.0f, 1.0f),TextureSize(1.0f, 1.0f),renderCycle(false){};
 
         void LoadEmpty(){
             m_texture = Painter::UnloadedTexturePtr;
@@ -64,6 +64,14 @@ class RenderTexture{
         Point GetSize(){ return size;};
         Point GetTextureSize(){ return TextureSize;};
         void RenderAll();
+
+
+        void BeginRender();
+        void EndRender();
+
+        void SetPosition(Point pos){
+            m_renderData.SetPosition(pos);
+        }
     protected:
         TextureLoadMethod aliasing;
         AdvancedTransformations m_renderData;
@@ -72,4 +80,5 @@ class RenderTexture{
         Point TextureSize;
 
         TexturePtr m_texture;
+        bool renderCycle;
 };
