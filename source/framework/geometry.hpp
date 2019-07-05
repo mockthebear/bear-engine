@@ -17,7 +17,7 @@ class Geometry{
         /**
             Receive an angle in degree and convert to rad
         */
-        static double toRad(double v){ return (v < 0 ? 360-v : v)* PI() / 180.0; };
+        static double toRad(double v){ return v* PI() / 180.0; };
         /**
             Receive an angle in rad and convert to degree
         */

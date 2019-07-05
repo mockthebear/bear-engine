@@ -32,7 +32,8 @@ void TileSet::RenderTile(int index,Point pos,uint8_t rotate,SDL_RendererFlip fli
             int cy = index/m_columns;
             tileset.SetClip(m_tileSize.x*cx,m_tileSize.y*cy,m_tileSize.x,m_tileSize.y);
             tileset.SetFlip(flip);
-            tileset.Render(pos,rotate * 90);
+            tileset.SetRotation(rotate * 90);
+            tileset.Render(pos);
         }
     }
 }

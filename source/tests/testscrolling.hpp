@@ -49,7 +49,7 @@ class Test_Scrolling: public State{
             Camera::Update(dt);
         };
         void Render(){
-            background.Render(0,0,0);
+            background.Render(PointInt(0,0));
 
             tset.RenderLayer(0, Point(), Camera::pos);
             tset.RenderLayer(1, Point(), Camera::pos);

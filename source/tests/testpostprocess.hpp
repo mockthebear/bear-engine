@@ -53,7 +53,8 @@ class Test_PostProcess: public State{
             background.Render(Point(0,0));
             mainShader.Unbind();
             example.Render(Point(32,32));
-            bearHead.Render(g_input.GetMouse(), duration * 10.0f );
+            bearHead.SetRotation(duration * 10.0f);
+            bearHead.Render(g_input.GetMouse());
         };
         void Input();
         void Resume(){};

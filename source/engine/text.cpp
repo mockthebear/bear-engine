@@ -134,7 +134,7 @@ Point CustomFont::Render(std::string str_,int x_,int y_,int alpha){
 
             sp.SetClip(l.x,l.y,l.w,l.h);
             lineY = std::max(lineY,l.h);
-            sp.Render(beginx+x+l.xoffset,beginy+y+l.yoffset);
+            sp.Render(PointInt(beginx+x+l.xoffset,beginy+y+l.yoffset));
             x += l.w + l.padx;
             y += l.pady;
             if (l.resetX){
@@ -304,8 +304,8 @@ void Text::SetText(std::string str){
     RemakeTexture();
 }
 void Text::SetAlpha(int alpha_p){
-    //todo: alpha
-    //m_renderData->color[3] = alpha_p/255.0f;
+
+    m_renderData.defaultColor[3] = alpha_p/255.0f;
 }
 void Text::SetColor(SDL_Color col ){
     if (!isWorking)

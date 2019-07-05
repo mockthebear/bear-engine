@@ -1,15 +1,13 @@
 #pragma once
 #include "painters/painters.hpp"
 
+class SpriteAtlas;
 
 class TargetTexture : public BearTexture{
     public:
     TargetTexture():BearTexture(){
-        std::cout << "11\n";
         m_renderData = AdvancedTransformations();
-        std::cout << "22\n";
         m_vertexes = std::make_shared<VertexArrayObject>();
-        std::cout << "33\n";
         m_valid = false;
     };
 
@@ -29,6 +27,7 @@ class TargetTexture : public BearTexture{
     AdvancedTransformations GetRenderData(){ return m_renderData;};
 
     private:
+        friend class SpriteAtlas;
         unsigned int m_frameBuffer;
         unsigned int m_renderBuffer;
         VertexArrayObjectPtr m_vertexes;

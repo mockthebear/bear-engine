@@ -9,23 +9,7 @@
 
 
 void LuaInterface::RegisterSpriteEffectClass(){
-    GlobalMethodRegister::RegisterGlobalTable(LuaManager::L,"g_SpriteEffects");
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_SpriteEffects","CreateAnimatedSprite",std::function< int (Point,Point,std::string,int,int,int)>([](Point pos,Point speed,std::string spritePath,int amount,int delay,int repeat){
-        SpriteEffect *p = SpriteEffectCreator::CreateAnimatedSprite(pos.x,pos.y,speed.x,speed.y,spritePath,amount,delay,repeat);
-        if (!p){
-            return -1;
-        }
-        return p->poolIndex;
-    }),0,1.0,1);
 
-    GlobalMethodRegister::RegisterGlobalTableMethod(LuaManager::L,"g_SpriteEffects","SetDepth",std::function<bool(int,int)>([](int part,int deph){
-        SpriteEffect* p = (SpriteEffect*)Game::GetCurrentState().SpriteEffectPool->GetInstance(part);
-        if (!p){
-            return false;
-        }
-        p->Depth = deph;
-        return true;
-    }));
 }
 
 
@@ -196,7 +180,8 @@ void LuaInterface::RegisterSprite(){
     ClassRegister<Animation>::RegisterClassMethod(L,"Animation","IsFrameEnd",&Animation::IsFrameEnd);
     ClassRegister<Animation>::RegisterClassMethod(L,"Animation","SetAnimation",&Animation::SetAnimation,-1.0f,0,0);
     ClassRegister<Animation>::RegisterClassMethod(L,"Animation","ResetAnimation",&Animation::ResetAnimation);
-    ClassRegister<Animation>::RegisterClassMethod(L,"Animation","SetAnimationTime",&Animation::SetAnimationTime);
+    ClassRegister<Animation>::RegisterClassMethod(L,"Animation","SetFrameTime",&Animation::SetFrameTime);
+    ClassRegister<Animation>::RegisterClassMethod(L,"Animation","GetFrameTime",&Animation::GetFrameTime);
     ClassRegister<Animation>::RegisterClassMethod(L,"Animation","SetRepeatTimes",&Animation::SetRepeatTimes);
     ClassRegister<Animation>::RegisterClassMethod(L,"Animation","Render",&Animation::RenderL);
 
@@ -237,23 +222,11 @@ void LuaInterface::RegisterSprite(){
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetClip",&Sprite::SetClip);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","Render",&Sprite::Renderpoint,0.0);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","Update",&Sprite::Update);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","ResetAnimation",&Sprite::ResetAnimation);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetFrame",&Sprite::SetFrame,0,0);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetFrame",&Sprite::GetFrame);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetWidth",&Sprite::GetWidth);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetHeight",&Sprite::GetHeight);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetFrameWidth",&Sprite::GetFrameWidth);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetFrameHeight",&Sprite::GetFrameHeight);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetFrameCount",&Sprite::SetFrameCount);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetFrameCount",&Sprite::GetFrameCount);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetFrameTime",&Sprite::SetFrameTime);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetFrameTime",&Sprite::GetFrameTime);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","IsLoaded",&Sprite::IsLoaded);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetCenter",&Sprite::SetCenter);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetCenter",&Sprite::GetCenter);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetRepeatTimes",&Sprite::SetRepeatTimes);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetRepeatTimes",&Sprite::GetRepeatTimes);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","IsAnimationOver",&Sprite::IsAnimationOver);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetScaleX",&Sprite::SetScaleX);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetScaleY",&Sprite::SetScaleY);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetScale",&Sprite::SetScale);
@@ -261,11 +234,57 @@ void LuaInterface::RegisterSprite(){
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","ReBlend",&Sprite::ReBlend);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetAlpha",&Sprite::SetAlpha);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetAlpha",&Sprite::GetAlpha);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetGrid",&Sprite::SetGrid);
-    ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetGrid",&Sprite::GetGrid);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","SetFlip",&Sprite::SetFlip);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetFlip",&Sprite::GetFlip);
     ClassRegister<Sprite>::RegisterClassMethod(L,"Sprite","GetMe",&Sprite::GetMe);
+
+
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","Open",&AnimatedSprite::Openf);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","SetClip",&AnimatedSprite::SetClip);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","Render",&AnimatedSprite::Renderpoint,0.0);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","Update",&AnimatedSprite::Update);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","SetFrame",&AnimatedSprite::SetFrame,-1,0);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","GetFrame",&AnimatedSprite::GetFrame);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","GetWidth",&AnimatedSprite::GetWidth);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","GetHeight",&AnimatedSprite::GetHeight);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","GetFrameWidth",&AnimatedSprite::GetFrameWidth);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","GetFrameHeight",&AnimatedSprite::GetFrameHeight);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","SetFrameCount",&AnimatedSprite::SetFrameCount);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","GetFrameCount",&AnimatedSprite::GetFrameCount);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","SetFrameTime",&AnimatedSprite::SetFrameTime);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","GetFrameTime",&AnimatedSprite::GetFrameTime);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","IsLoaded",&AnimatedSprite::IsLoaded);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","SetCenter",&AnimatedSprite::SetCenter);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","GetCenter",&AnimatedSprite::GetCenter);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","SetRepeatTimes",&AnimatedSprite::SetRepeatTimes);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","GetRepeatTimes",&AnimatedSprite::GetRepeatTimes);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","SetScaleX",&AnimatedSprite::SetScaleX);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","SetScaleY",&AnimatedSprite::SetScaleY);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","SetScale",&AnimatedSprite::SetScale);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","GetScale",&AnimatedSprite::GetScale);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","ReBlend",&AnimatedSprite::ReBlend);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","SetAlpha",&AnimatedSprite::SetAlpha);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","GetAlpha",&AnimatedSprite::GetAlpha);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","SetFlip",&AnimatedSprite::SetFlip);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","GetFlip",&AnimatedSprite::GetFlip);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","GetMe",&AnimatedSprite::GetMe);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","SetGridSize",&AnimatedSprite::SetGridSize);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","Pause",&AnimatedSprite::Pause);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","IsAnimationEnd",&AnimatedSprite::IsAnimationEnd);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","IsFrameEnd",&AnimatedSprite::IsFrameEnd);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","SetAnimation",&AnimatedSprite::SetAnimation,-1.0f,0,0);
+    ClassRegister<AnimatedSprite>::RegisterClassMethod(L,"AnimatedSprite","ResetAnimation",&Animation::ResetAnimation);
+
+    TypeObserver<AnimatedSprite,bool>::RegisterMethod(LuaManager::L,"CanRepeat",&AnimatedSprite::CanRepeat);
+    TypeObserver<AnimatedSprite,uint32_t>::RegisterMethod(LuaManager::L,"Loops",&AnimatedSprite::Loops);
+    TypeObserver<AnimatedSprite,uint32_t>::RegisterMethod(LuaManager::L,"sprX",&AnimatedSprite::sprX);
+    TypeObserver<AnimatedSprite,uint32_t>::RegisterMethod(LuaManager::L,"sprY",&AnimatedSprite::sprY);
+    TypeObserver<AnimatedSprite,uint32_t>::RegisterMethod(LuaManager::L,"sprW",&AnimatedSprite::sprW);
+    TypeObserver<AnimatedSprite,uint32_t>::RegisterMethod(LuaManager::L,"sprH",&AnimatedSprite::sprH);
+    TypeObserver<AnimatedSprite,uint32_t>::RegisterMethod(LuaManager::L,"MaxFrames",&AnimatedSprite::MaxFrames);
+    TypeObserver<AnimatedSprite,uint32_t>::RegisterMethod(LuaManager::L,"LastFrame",&AnimatedSprite::LastFrame);
+    TypeObserver<AnimatedSprite,float>::RegisterMethod(LuaManager::L,"SprDelay",&AnimatedSprite::SprDelay);
+    TypeObserver<AnimatedSprite,float>::RegisterMethod(LuaManager::L,"SprMaxDelay",&AnimatedSprite::SprMaxDelay);
 }
 
 

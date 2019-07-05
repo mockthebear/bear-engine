@@ -35,9 +35,7 @@ class Test_Sprite: public State{
             Assets.load<Sprite>("data/raccoon.png","someFancyName");
             ColorReplacer r;
 
-            /*
-                Replace all WHITE with pure red without aliasing
-            */
+
             bear::out << "Testing Load with color replacing\n";
             r.AddReplacer(RenderHelp::FormatRGBA(255,255,255,255),RenderHelp::FormatRGBA(255,0,0,255));
             Assets.load<Sprite>("data/raccoon.png","otherRaccoon",r,TEXTURE_TRILINEAR);
@@ -46,14 +44,14 @@ class Test_Sprite: public State{
             bear::out << "Loading from alias\n";
             raccoonHead = Assets.make<Sprite>("someFancyName");
             cursor = Assets.make<Sprite>("otherRaccoon");
-            sheet = Assets.make<Sprite>("data/totem.png");
+            sheet = Assets.make<AnimatedSprite>("data/totem.png");
 
-            sheet2 = Assets.make<Sprite>("data/totem.png",4,0.2);
+            sheet2 = Assets.make<AnimatedSprite>("data/totem.png",4,0.2);
 
             smol = Assets.make<Sprite>("data/doge death.png");
             smol.SetScale(Point(8,8));
 
-            sheet.SetGrid(32,64);
+            sheet.SetGridSize(32,64);
             sheet.SetFrame(0,0);
             sheet.SetFrameCount(4);
             sheet.SetFrameTime(0.2);
@@ -62,8 +60,6 @@ class Test_Sprite: public State{
                 raccoonHead = Assets.make<Sprite>("someFancyName");
                 raccoonHead = Assets.make<Sprite>("otherRaccoon");
                 raccoonHead = Assets.make<Sprite>("data/raccoon.png");
-
-
             */
 
             failedSprite = Assets.make<Sprite>("nofile.png");
@@ -77,6 +73,7 @@ class Test_Sprite: public State{
             background = Assets.make<Sprite>("test:wall.jpg");
             bearHead = Assets.make<Sprite>("test:bear.png",TEXTURE_TRILINEAR);
             bear::out << "Sprites loaded.\n";
+
 
         };
 
@@ -93,18 +90,31 @@ class Test_Sprite: public State{
         };
         void Render(){
 
-            background.Render(0,0,0);
+            background.Render(PointInt(0,0));
 
 
             bearHead.SetAlpha(120);
-            bearHead.Render(Point(64,64),duration * 3.6f * 2.0f);
-            raccoonHead.SetScale(Point(2.0f,1.0f));
-            raccoonHead.Render(Point(120,64),0);
-            sheet.Render(200,200);
-            sheet2.Render(232,200);
 
-            smol.Render(300,300,0);
-            cursor.Render(g_input.GetMouse());
+            bearHead.SetRotation(duration * 3.6f * 2.0f);
+            bearHead.Render(Point(64,64));
+
+            raccoonHead.BeginRender();
+                raccoonHead.SetScale(Point(2.0f,1.0f));
+                raccoonHead.Render(Point(120,64));
+
+                raccoonHead.SetScale(Point(2.0f,2.0f));
+                raccoonHead.Render(Point(120,80));
+
+                raccoonHead.SetScale(Point(0.5f,0.5f));
+                raccoonHead.Render(Point(120,330));
+            raccoonHead.EndRender();
+
+            sheet.Render(PointInt(300,100) );
+            sheet2.Render({332,100});
+
+            smol.Render({300,300});
+            cursor.SetRotation(-duration * 3.6f * 2.0f);
+            cursor.Render(g_input.GetMouse() - cursor.GetSize()/2);
 
 
 
@@ -128,7 +138,7 @@ class Test_Sprite: public State{
         Sprite bearHead;
         Sprite raccoonHead;
         Sprite cursor;
-        Sprite sheet,sheet2;
+        AnimatedSprite sheet,sheet2;
         Sprite smol;
         Sprite failedSprite;
         float duration;

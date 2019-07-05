@@ -33,7 +33,7 @@ void UIBase::Render(Point where){
         }
     }
     if (sp.IsLoaded()){
-        sp.Render(box.x,box.y,0);
+        sp.Render(PointInt(box.x,box.y));
     }
     if (txt.IsWorking()){
         txt.Render(box.x,box.y);

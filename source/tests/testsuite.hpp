@@ -5,6 +5,7 @@
 
 #include "../engine/gamebase.hpp"
 
+#include "testatlas.hpp"
 #include "testthread.hpp"
 #include "testfiles.hpp"
 #include "testsprite.hpp"
@@ -77,7 +78,8 @@ void SetupTests(){
     Game::GetInstance()->AddState(new Test_Files());
     #endif // DISABLE_UNIT_TESTS
     */
-
+    Game::GetInstance()->AddState(new Test_Atlas());
+    Game::GetInstance()->AddState(new Test_TargetTexture());
     Game::GetInstance()->AddState(new Test_Sprite());
 }
 

@@ -36,8 +36,8 @@ class Test_RenderSpeed: public State{
 
 
 
-            tiles = Assets.make<Sprite>("data/tiles.png");
-            tiles.SetGrid(16,16);
+            tiles = Assets.make<AnimatedSprite>("data/tiles.png");
+            tiles.SetGridSize(16,16);
 
 
         };
@@ -106,7 +106,7 @@ class Test_RenderSpeed: public State{
         Stopwatch sw;
         LineGraph lg;
         LineGraph m_renderTimer;
-        Sprite tiles;
+        AnimatedSprite tiles;
         Text tilesCount;
         int state;
         float duration;

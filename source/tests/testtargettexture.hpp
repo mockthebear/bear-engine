@@ -49,16 +49,18 @@ class Test_TargetTexture: public State{
 
         };
         void Render(){
-            background.Render(0,0,0);
+            background.SetRotation(0);
+            background.Render(PointInt(0,0));
 
 
             targ.Bind();
                 targ.Clear();
-                background.Render(Point(0,0),45);
+                background.SetRotation(45);
+                background.Render(Point(0,0));
                 RenderHelp::DrawCircleColor(Point(2,2),32,255,0,255,255);
                 RenderHelp::DrawSquareColor(Rect(g_input.GetMouse().x, g_input.GetMouse().y, 32,32),255,0,0,255,true);
                 RenderHelp::DrawCircleColor(Point(400-32,400-32),32,255,255,255,255);
-                bear.Render(Point(150,150),0);
+                bear.Render(Point(150,150));
                 example.Render(Point(16,16));
             targ.UnBind();
 

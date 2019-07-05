@@ -59,13 +59,13 @@ class Test_Shader: public State{
 
             shdr.Bind();
             shdr.SetUniform<float>("dt", 0.3f + fabs(sin(sinner))*0.2f );
-            background.Render(0,0,0);
+            background.Render(PointInt(0,0));
             shdr.Unbind();
 
             shdr2.Bind();
             ShaderSetter<BearTexture>::SetUniform(Shader::GetCurrentShaderId(),"image2",(*noise),1);
             ShaderSetter<float>::SetUniform(Shader::GetCurrentShaderId(),"offsetNoise",sinner/31.4f);
-            bear.Render(PointInt(120,120),0);
+            bear.Render(PointInt(120,120));
             ShaderSetter<TexturePtr>::DisableTexture(1);
             shdr2.Unbind();
 
