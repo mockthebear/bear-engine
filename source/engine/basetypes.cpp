@@ -64,3 +64,8 @@ void Vertex::SetAttributes(){
     DisplayGlError("Error on set attribute locations/sizes");
 }
 
+void BearException::Show(){
+    std::cout << "Exception: "<< Error << "\n";
+    std::cout << "Press any key to continue\n";
+    getchar();
+}

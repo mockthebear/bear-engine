@@ -11,6 +11,7 @@ typedef class BearColor{
         BearColor(float f1,float f2,float f3,float f4):r(f1),g(f2),b(f3),a(f4){};
         BearColor(double f1,double f2,double f3,double f4):r(f1),g(f2),b(f3),a(f4){};
         BearColor(uint8_t f1,uint8_t f2,uint8_t f3,uint8_t f4):r(f1/255.0f),g(f2/255.0f),b(f3/255.0f),a(f4/255.0f){};
+        BearColor(int f1,int f2,int f3,int f4):r(f1/255.0f),g(f2/255.0f),b(f3/255.0f),a(f4/255.0f){};
         float r,g,b,a;
         float& operator[](int x){
             switch (x){
@@ -61,23 +62,77 @@ class Vertex{
 };
 
 
-class RectColor{
+class RectColor : public Rect{
     public:
-        RectColor():box(),colors(BCWhite4),angle(0.0f){};
-        RectColor(Rect r,const BearColor cols[4] = BCWhite4, float ang = 0.0f):box(r),colors(BCWhite4),angle(ang){
+        RectColor():Rect(),colors(BCWhite4),angle(0.0f){};
+        RectColor(Rect r,const BearColor cols[4] = BCWhite4, float ang = 0.0f):Rect(r),colors(BCWhite4),angle(ang){
             for (int i=0;i<4;i++)
                 colors[i] = cols[i];
         };
-        RectColor(Rect r,const BearColor col, float ang = 0.0f):box(r),colors(BCWhite4),angle(ang){
+        RectColor(Rect r,const BearColor col, float ang = 0.0f):Rect(r),colors(BCWhite4),angle(ang){
             SetColor(col);
         };
+
+        RectColor(float _x, float _y, float _w, float _h, int r, int g, int b, int a = 255,float ang = 0.0f):Rect(_x,_y,_w,_h),colors(BCWhite4),angle(ang){
+            colors[0] = colors[1] = colors[2] = colors[3] = BearColor(r,g,b,a);
+        };
+
+        RectColor(float _x, float _y, float _w, float _h, BearColor co ,float ang = 0.0f):Rect(_x,_y,_w,_h),colors(BCWhite4),angle(ang){
+            colors[0] = colors[1] = colors[2] = colors[3] = co;
+        };
+
         void SetColor(const BearColor &col){
             for (int i=0;i<4;i++)
                 colors[i] = col;
         }
-    Rect box;
     BearColor colors[4];
     float angle;
+};
+
+class PointColor : public Point{
+    public:
+        PointColor():Point(),color(){};
+        PointColor(float _x, float _y):Point(_x,_y),color(){};
+        PointColor(Point p):Point(p),color(){};
+        PointColor(Point p, BearColor c):Point(p),color(c){};
+        PointColor(float _x, float _y, BearColor c):Point(_x,_y),color(c){};
+        PointColor(float _x, float _y, uint8_t r, uint8_t g, uint8_t b, uint8_t a=255):Point(_x,_y),color(r,g,b,a){};
+        PointColor(Point p, uint8_t r, uint8_t g, uint8_t b, uint8_t a=255):Point(p),color(r,g,b,a){};
+
+        BearColor color;
+};
+
+class LineColor : public Line{
+    public:
+        LineColor():Line(),color1(),color2(){};
+        LineColor(Point p1, Point p2):Line(p1,p2),color1(),color2(){};
+        LineColor(Point p1, Point p2, BearColor c):Line(p1,p2),color1(c),color2(c){};
+        LineColor(Point p1, Point p2, BearColor c1, BearColor c2):Line(p1,p2),color1(c1),color2(c2){};
+        LineColor(float _x1, float _y1, float _x2, float _y2):Line(_x1, _y1, _x2, _y2),color1(),color2(){};
+        LineColor(float _x1, float _y1, float _x2, float _y2, BearColor c):Line(_x1, _y1,_x2, _y2),color1(c),color2(c){};
+        LineColor(float _x1, float _y1, float _x2, float _y2, BearColor c1, BearColor c2):Line(_x1, _y1, _x2, _y2),color1(c1),color2(c2){};
+        LineColor(float _x1, float _y1, float _x2, float _y2, uint8_t r,uint8_t g, uint8_t b, uint8_t a):Line(_x1, _y1, _x2, _y2),color1(r,g,b,a),color2(r,g,b,a){};
+        BearColor color1;
+        BearColor color2;
+};
+
+class CircleColor : public Circle{
+    public:
+        CircleColor():Circle(),color1(),color2(){};
+        CircleColor(Circle c):Circle(c),color1(),color2(){};
+        CircleColor(Point p, float radius):Circle(p.x, p.y, radius),color1(),color2(){};
+        CircleColor(Circle c,BearColor c1):Circle(c),color1(c1),color2(c1){};
+        CircleColor(Point p, float radius,BearColor c1):Circle(p.x, p.y, radius),color1(c1),color2(c1){};
+        CircleColor(Circle c,BearColor c1,BearColor c2):Circle(c),color1(c1),color2(c2){};
+        CircleColor(Point p, float radius,BearColor c1,BearColor c2):Circle(p.x, p.y, radius),color1(c1),color2(c2){};
+
+
+        CircleColor(float _x, float _y, float rad, uint8_t red,uint8_t g, uint8_t b, uint8_t a=255):Circle(_x,_y,rad),color1(red,g,b,a),color2(red,g,b,a){};
+        CircleColor(int _x, int _y, int rad, uint8_t red,uint8_t g, uint8_t b, uint8_t a=255):Circle(_x,_y,rad),color1(red,g,b,a),color2(red,g,b,a){};
+
+
+        BearColor color1;
+        BearColor color2;
 };
 
 
@@ -158,6 +213,18 @@ class BearTexture{
         uint32_t GLimageId;
 
 };
+
+class BearException{
+    public:
+        BearException():type(0),severity(0),Error(""){};
+        BearException(std::string what):type(1),severity(0),Error(what){};
+
+        void Show();
+        uint32_t type;
+        uint32_t severity;
+        std::string Error;
+};
+
 
 enum PainterSupport{
     SUPPORT_SHADERS = 0,
