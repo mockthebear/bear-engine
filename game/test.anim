@@ -1,0 +1,38 @@
+############################################################################################################################################
+#	Structure:
+#
+#	header:number
+#
+#	(name) : (sequence)
+#	(name) : (sequence)
+#	(name) : (sequence)
+#
+###################################dsfdfsdfsdfsdfssdfa#########################################################################################################
+#
+#	name ->
+#		Can be just a number (but cannot be repeated), or a text without blankspaces. Just letters and numbers 
+#		This will identify the animation
+#		
+#	sequence ->
+#		Series of instructions to manipulate the animation
+#		0..5	->	Means the animation will run from frame 0 to frame 5 at the specified animation speed before
+#		0...	->	The animation will start on frame 0 and will run until the maximum number of frames allowed
+#
+#
+#
+#
+############################################################################################################################################
+
+#Header
+
+#ftime:1.0						#if not defined, frame time is 1.0 seconds
+
+#Animations
+
+BEGIN	:	line0,		0...	#owo bolos					
+UWU		:	0..4								
+KEK		:	l2,		t2.33, 	0..5				
+CYCLE	:	L0, 	0,		callback{checkrise}:{BEGIN}, 		1..4
+RISE	:	L1, 	0..4,	w10.1, 	jump{BOOM}
+BOOM	:	L3,		T0.25,	0..4, 	callback{attack}, 	T0.5,	L0, jump CYCLE
+OWO		:	0..4

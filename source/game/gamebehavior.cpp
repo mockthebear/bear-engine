@@ -9,6 +9,7 @@
 
 
 #include "../tests/testsuite.hpp"
+#include "../engine/animation/scriptloader.hpp"
 
 
 #include <string>
@@ -59,8 +60,17 @@ bool GameBehavior::OnLoad(){
     /*
     Game::GetInstance()->AddState(new Test_());
     */
+    AnimationLoader anim;
+    try {
+        ScriptLoader::LoadScript("test.anim",anim);
 
-    SetupTests();
+    } catch(BearException &e){
+        e.Show();
+    }
+    bear::out << "End!\n";
+    getchar();
+
+    //SetupTests();
 
     return DefaultBehavior::GetInstance().OnLoad();
 }

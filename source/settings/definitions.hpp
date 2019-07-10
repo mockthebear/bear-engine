@@ -20,6 +20,9 @@
 #define ASSETS_FOLDER ""
 #endif
 
+#define DISABLE_SOCKET
+#define DISABLE_THREADPOOL
+#define DISABLE_LUAINTERFACE
 
 
 /**

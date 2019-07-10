@@ -268,6 +268,11 @@
 		<Unit filename="crashhandler/crashhandler.hpp" />
 		<Unit filename="crashhandler/crashhandlerlinux.cpp" />
 		<Unit filename="crashhandler/crashhandlerwin32.cpp" />
+		<Unit filename="engine/animation/animationscript.cpp" />
+		<Unit filename="engine/animation/animationscript.hpp" />
+		<Unit filename="engine/animation/basetypes.hpp" />
+		<Unit filename="engine/animation/scriptloader.cpp" />
+		<Unit filename="engine/animation/scriptloader.hpp" />
 		<Unit filename="engine/assetmanager.cpp" />
 		<Unit filename="engine/assetmanager.hpp" />
 		<Unit filename="engine/basetypes.cpp" />
