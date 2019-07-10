@@ -57,9 +57,9 @@ class Test_TargetTexture: public State{
                 targ.Clear();
                 background.SetRotation(45);
                 background.Render(Point(0,0));
-                RenderHelp::DrawCircleColor(Point(2,2),32,255,0,255,255);
+                RenderHelp::DrawCircleColor(CircleColor(2,2,32,255,0,255,255));
                 RenderHelp::DrawSquareColor(Rect(g_input.GetMouse().x, g_input.GetMouse().y, 32,32),255,0,0,255,true);
-                RenderHelp::DrawCircleColor(Point(400-32,400-32),32,255,255,255,255);
+                RenderHelp::DrawCircleColor(CircleColor(400-32,400-32,32,255,255,255,255));
                 bear.Render(Point(150,150));
                 example.Render(Point(16,16));
             targ.UnBind();

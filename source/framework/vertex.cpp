@@ -96,32 +96,113 @@ void VertexArrayObject::AddIndices(int size,uint32_t *indices){
     m_indexes.insert(m_indexes.end(), &indices[0], &indices[size]);
 }
 
-
-int VertexArrayObject::AddRect(Rect& box, BearColor&& color){
-
-    Vertex vertices[4] = {
-        Vertex(Point(box.x       , box.y), color),
-        Vertex(Point(box.x       , box.y+box.h),  color),
-        Vertex(Point(box.x+box.w , box.y+box.h),  color),
-        Vertex(Point(box.x+box.w , box.y), color),
-    };
+int VertexArrayObject::AddVertice(Vertex&& vert){
     if (m_useElementBuffer){
         uint32_t indices[] = {
-            m_indexCount, m_indexCount+1, m_indexCount+3,
-            m_indexCount+1, m_indexCount+2, m_indexCount+3,
+            m_indexCount,
         };
-        AddIndices(6,indices);
+        AddIndices(1,indices);
     }
-    AddVertexes(4,vertices);
-    return m_indexCount;
+    AddVertexes(1,&vert);
+    return 1;
 }
 
 
 
+int VertexArrayObject::AddLine(LineColor& line){
+    Vertex vertices[4] = {
+        // Pos      // Tex
+        Vertex(line.GetFirst(),  line.color1),
+        Vertex(line.GetSecond(), line.color2),
+    };
+    if (m_useElementBuffer){
+        uint32_t indices[] = {
+            m_indexCount, m_indexCount+1
+        };
+        AddIndices(2,indices);
+    }
+    AddVertexes(2,vertices);
+    return m_indexCount;
+}
+
+void VertexArrayObject::AddRectIndexes(bool outline){
+    if (m_useElementBuffer){
+        if (outline){
+            uint32_t indices[] = {
+                m_indexCount, m_indexCount+1,
+                m_indexCount+1, m_indexCount+2,
+                m_indexCount+2, m_indexCount+3,
+                m_indexCount+3, m_indexCount,
+            };
+            AddIndices(8,indices);
+        }else{
+            uint32_t indices[] = {
+                m_indexCount, m_indexCount+1, m_indexCount+3,
+                m_indexCount+1, m_indexCount+2, m_indexCount+3,
+            };
+            AddIndices(6,indices);
+        }
+    }
+}
+
+int VertexArrayObject::AddRect(RectColor& box, bool outline){
+
+    Vertex vertices[4] = {
+        // Pos      // Tex
+        Vertex(Point(0.0f        , 0.0f   ), box.colors[0]),
+        Vertex(Point(0.0f       , box.h   ), box.colors[1]),
+        Vertex(Point(box.w  , box.h       ), box.colors[2]),
+        Vertex(Point(box.w  , 0.0f        ), box.colors[3]),
+
+    };
+
+    RotateRect(vertices, box.angle, box.GetPos(), box.GetCenter());
+
+    AddRectIndexes(outline);
+    AddVertexes(4,vertices);
+
+    return m_indexCount;
+}
+
+int VertexArrayObject::AddRect(AdvancedTransformations &adt,const BearColor color[4], bool outline){
+    float texLeft = adt.forwardClip.x;
+    float texRight =  adt.forwardClip.y;
+    float texTop = adt.forwardClip.w;
+    float texBottom = adt.forwardClip.h;
 
 
 
-int VertexArrayObject::AddRect(AdvancedTransformations &adt){
+
+    if ((adt.flip&SDL_FLIP_HORIZONTAL) != 0){
+        float holder =  texLeft;
+        texLeft = texRight;
+        texRight = holder;
+    }
+    if ((adt.flip&SDL_FLIP_VERTICAL) != 0){
+        float holder =  texTop;
+        texTop = texBottom;
+        texBottom = holder;
+    }
+
+
+    Vertex vertices[4] = {
+        // Pos      // Tex
+        Vertex(Point(0.0f                      , 0.0f                       ),  Point(texLeft   , texTop), color[0]),
+        Vertex(Point(0.0f                      , adt.scale.y * adt.size.y   ),  Point(texLeft   , texBottom), color[1]),
+        Vertex(Point(adt.scale.x * adt.size.x  , adt.scale.y * adt.size.y   ),  Point(texRight  , texBottom), color[2]),
+        Vertex(Point(adt.scale.x * adt.size.x  , 0.0f                       ),  Point(texRight  , texTop), color[3]),
+
+    };
+
+    RotateRect(vertices,adt);
+
+    AddRectIndexes(outline);
+    AddVertexes(4,vertices);
+
+    return m_indexCount;
+}
+
+int VertexArrayObject::AddRect(AdvancedTransformations &adt, bool outline){
 
     float texLeft = adt.forwardClip.x;
     float texRight =  adt.forwardClip.y;
@@ -145,53 +226,41 @@ int VertexArrayObject::AddRect(AdvancedTransformations &adt){
 
     Vertex vertices[4] = {
         // Pos      // Tex
-        Vertex(Point(0.0f                      , 0.0f                       ),  Point(texLeft   , texTop), adt.defaultColor),
-        Vertex(Point(0.0f                      , adt.scale.y * adt.size.y   ),  Point(texLeft   , texBottom), adt.defaultColor),
-        Vertex(Point(adt.scale.x * adt.size.x  , adt.scale.y * adt.size.y   ),  Point(texRight  , texBottom), adt.defaultColor),
-        Vertex(Point(adt.scale.x * adt.size.x  , 0.0f                       ),  Point(texRight  , texTop), adt.defaultColor),
+        Vertex(Point(0.0f                      , 0.0f                       ),  Point(texLeft   , texTop),      adt.defaultColor),
+        Vertex(Point(0.0f                      , adt.scale.y * adt.size.y   ),  Point(texLeft   , texBottom),   adt.defaultColor),
+        Vertex(Point(adt.scale.x * adt.size.x  , adt.scale.y * adt.size.y   ),  Point(texRight  , texBottom),   adt.defaultColor),
+        Vertex(Point(adt.scale.x * adt.size.x  , 0.0f                       ),  Point(texRight  , texTop),      adt.defaultColor),
 
     };
 
     RotateRect(vertices,adt);
 
-    if (m_useElementBuffer){
-        uint32_t indices[] = {
-            m_indexCount, m_indexCount+1, m_indexCount+3,
-            m_indexCount+1, m_indexCount+2, m_indexCount+3,
-        };
-        AddIndices(6,indices);
-    }
+    AddRectIndexes(outline);
     AddVertexes(4,vertices);
 
     return m_indexCount;
 }
 
-int VertexArrayObject::AddOutlineRect(AdvancedTransformations &adt){
+void VertexArrayObject::RotateRect(Vertex *vertices, float &angle,Point &&position, Point &&center){
+    if (angle == 0){
+        for (int i=0;i<4;i++){
+            vertices[i].x += position.x;
+            vertices[i].y += position.y;
+        }
+    }else{
+        float auxa = Geometry::toRad(angle);
 
-    Vertex vertices[4] = {
-        // Pos      // Tex
-        Vertex(Point(0.0f                      , 0.0f                       ),  adt.defaultColor),
-        Vertex(Point(0.0f                      , adt.scale.y * adt.size.y   ),  adt.defaultColor),
-        Vertex(Point(adt.scale.x * adt.size.x  , adt.scale.y * adt.size.y   ),  adt.defaultColor),
-        Vertex(Point(adt.scale.x * adt.size.x  , 0.0f                       ),  adt.defaultColor),
-    };
+        float s = sin(auxa);
+        float c = cos(auxa);
 
-    RotateRect(vertices,adt);
-
-    if (m_useElementBuffer){
-        uint32_t indices[] = {
-            m_indexCount, m_indexCount+1,
-            m_indexCount+1, m_indexCount+2,
-            m_indexCount+2, m_indexCount+3,
-            m_indexCount+3, m_indexCount,
-        };
-        AddIndices(8,indices);
+        for (int i=0;i<4;i++){
+            float px = vertices[i].x - center.x;
+            float py = vertices[i].y - center.y;
+            vertices[i].x = (px * c - py * s) + center.x + position.x;
+            vertices[i].y = (px * s + py * c) + center.y + position.y;
+        }
     }
-    AddVertexes(4,vertices);
-
-    return m_indexCount;
 }
-
 
 void VertexArrayObject::RotateRect(Vertex *vertices, AdvancedTransformations &adt){
     if (adt.angle == 0){
@@ -212,6 +281,20 @@ void VertexArrayObject::RotateRect(Vertex *vertices, AdvancedTransformations &ad
             vertices[i].y = (px * s + py * c) + adt.center.y + adt.translation.y;
         }
     }
+}
+
+int VertexArrayObject::AddCircle(CircleColor& circle, int sides){
+
+    AddVertice(Vertex(Point(circle.x, circle.y), circle.color1));
+
+    float angle,i;
+    for (i = 0; i <= sides; i++){
+        angle = i * 2.0f * Geometry::PI() / (float)sides;
+
+
+        AddVertice(Vertex(Point(circle.x + circle.r * cos(angle), circle.y + circle.r * sin(angle)), circle.color2));
+    }
+    return sides+1;
 }
 
 /*

@@ -263,7 +263,7 @@ class Sprite: public RenderTexture{
 class Animation{
     public:
 
-        Animation():Loops(0),RepeatTimes(0),sprX(0),sprY(0),sprW(0),sprH(0),MaxFrames(01),SprDelay(1.0f),SprMaxDelay(1.0f),CanRepeat(true),LastFrame(0),LastRepeatCount(0),
+        Animation():Loops(0),RepeatTimes(0),sprX(0),sprY(0),sprW(0),sprH(0),MaxFrames(1),SprDelay(1.0f),SprMaxDelay(1.0f),CanRepeat(true),LastFrame(0),LastRepeatCount(0),
         pause(false),finishedAnimation(false),finishedSingleFrame(false),isFormated(false),LockedFinished(true){};
         Animation(float w,float h):Animation(){
            SetGridSize(w,h);
@@ -328,34 +328,42 @@ class AnimatedSprite: public Sprite, public Animation{
 
         AnimatedSprite():Sprite(),Animation(){};
         AnimatedSprite(TexturePtr texture):Sprite(texture),Animation(){
-            Query(m_texture);
+            SetAnimation(0,1,5.0);
+            SetRepeatTimes(1);
+            QueryFrames();
         };
         AnimatedSprite(TexturePtr texture,std::string name,int fcount=1,float ftime=5.0,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT):Sprite(texture,name,hasAliasing),Animation(){
             SetAnimation(0,fcount,ftime);
             SetRepeatTimes(repeat);
-            Query(m_texture);
+            QueryFrames();
         };
         AnimatedSprite(TexturePtr texture,std::string name,std::string alias,int fcount=1,float ftime=5.0,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT):Sprite(texture,name,hasAliasing),Animation(){
             SetAnimation(0,fcount,ftime);
             SetRepeatTimes(repeat);
-            Query(m_texture);
+            QueryFrames();
         };
         AnimatedSprite(TexturePtr texture,std::string name,ColorReplacer &r,int fcount=1,float ftime=5.0,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT):Sprite(texture,name,hasAliasing),Animation(){
             SetAnimation(0,fcount,ftime);
             SetRepeatTimes(repeat);
-            Query(m_texture);
+            QueryFrames();
         };
         AnimatedSprite(SDL_RWops* rw,std::string name,int fcount=1,float ftime=5.0,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT):Sprite(rw,name,hasAliasing),Animation(){
             SetAnimation(0,fcount,ftime);
             SetRepeatTimes(repeat);
-            Query(m_texture);
+            QueryFrames();
         };
         AnimatedSprite(std::string file,int fcount=1,float ftime=5.0,int repeat=1,TextureLoadMethod hasAliasing=TEXTURE_DEFAULT):Sprite(file,hasAliasing),Animation(){
             SetAnimation(0,fcount,ftime);
             SetRepeatTimes(repeat);
-            Query(m_texture);
+            QueryFrames();
         };
         AnimatedSprite(Sprite&& sp);
+        AnimatedSprite(Sprite& sp);
+
+        /*AnimatedSprite& operator=(Sprite const &T){
+            ::AnimatedSprite(T);
+            return *this;
+        }*/
 
         void Update(float dt);
 
@@ -364,7 +372,9 @@ class AnimatedSprite: public Sprite, public Animation{
 
         void Render(PointInt pos);
 
-        void Query(TexturePtr ptr);
+        void QueryFrames();
+    private:
+        void InnerCopy(Sprite& sp);
 };
 
 #endif

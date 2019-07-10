@@ -296,6 +296,12 @@ int Sprite::GetWidth(){
 int Sprite::GetHeight(){
     return size.y*m_renderData.GetScale().y;
 }
+
+AnimatedSprite Sprite::Animate(int fcount,float ftime,int repeat){
+    AnimatedSprite as(std::move(*this));
+    return as;
+}
+
 void Animation::Update(float dt){
     if (pause){
         return;
@@ -438,23 +444,28 @@ void AnimatedSprite::Render(PointInt pos){
     isFormated = false;
 }
 
-AnimatedSprite::AnimatedSprite(Sprite&& sp):Sprite(),Animation(){
-    m_trueVirtualSize = sp.m_trueVirtualSize;
-    aliasing = sp.aliasing;
-    m_renderData = sp.m_renderData;
-    size = sp.size;
-    TextureSize = sp.TextureSize;
-    renderCycle = sp.renderCycle;
+AnimatedSprite::AnimatedSprite(Sprite&& sp):Sprite(sp),Animation(){
+    InnerCopy(sp);
+    bear::out << "fez&&\n";
+}
+
+AnimatedSprite::AnimatedSprite(Sprite& sp):Sprite(sp),Animation(){
+    InnerCopy(sp);
+    bear::out << "fez&\n";
+}
+
+
+void AnimatedSprite::InnerCopy(Sprite& sp){
+    m_vertexes = sp.m_vertexes;
     m_texture.reset(sp.m_texture.get());
+    QueryFrames();
 }
 
-AnimatedSprite Sprite::Animate(int fcount,float ftime,int repeat){
-    AnimatedSprite as(std::move(*this));
-    return as;
-}
 
-void AnimatedSprite::Query(TexturePtr ptr){
-    BearTexture *texturee = ptr.get();
+
+
+void AnimatedSprite::QueryFrames(){
+    BearTexture *texturee = m_texture.get();
     if (texturee != NULL){
         size.x = sprW = texturee->size_w;
         size.y = sprH = texturee->size_h;
@@ -463,4 +474,5 @@ void AnimatedSprite::Query(TexturePtr ptr){
         TextureSize.y = texturee->texture_h;
         SetClip(0,0,texturee->texture_w,texturee->texture_h);
     }
+    SetGridSize(size.x / MaxFrames, size.y);
 }

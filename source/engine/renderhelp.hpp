@@ -30,29 +30,23 @@ class RenderHelp{
             @param a alpha = 255
         */
 
-        static void DrawPointsColor(std::vector<Point> points,uint8_t r=255,uint8_t g=255,uint8_t b=255,uint8_t a=255,float thickness=1.0f);
+        static void DrawPointsColor(std::vector<PointColor> points);
 
-        static void DrawLinesColor(std::vector<Vertex> lines,uint8_t r=255,uint8_t g=255,uint8_t b=255,uint8_t a=255,float thickness=1.0f);
-        static void DrawSquaresColor(std::vector<RectColor> rects,uint8_t r=255,uint8_t g=255,uint8_t b=255,uint8_t a=255,bool outline=false);
+        static void DrawLinesColor(std::vector<LineColor> lines,float thickness=1.0f);
 
+        static void DrawSquaresColor(std::vector<RectColor> rects,bool outline=false);
+        static void DrawLineColor(LineColor l, float width = 1.0f);
+        static void DrawSquareColor(RectColor box,bool outline=false);
 
-        static void DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f);
-
-
-        static void DrawLineColor(Line l,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,float thickness=1.0f);
-
-
-        static void DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false, float angle =0,const BearColor colors[4] = BCWhite4);
-
-        static void DrawSquareColor_lua(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false){
-            DrawSquareColor(box,r,g,b,a,outline);
+        static void DrawSquareColor(int x,int y,int w,int h,uint8_t r,uint8_t g,uint8_t b, uint8_t a,bool outline=false,float ang = 0.0f){
+            DrawSquareColor(RectColor(Rect(x,y,w,h), BearColor(r,g,b,a),ang),outline);
         }
 
-        static void DrawSquareColor(int x,int y,int w,int h,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,bool outline=false){
-            DrawSquareColor(Rect(x,y,w,h),r,g,b,a,outline);
+        static void DrawSquareColor(Rect box ,uint8_t r,uint8_t g,uint8_t b, uint8_t a,bool outline=false,float ang = 0.0f){
+            DrawSquareColor(RectColor(box, BearColor(r,g,b,a), ang),outline);
         }
 
-        static void DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8_t b,uint8_t a=255,int sides = 16);
+        static void DrawCircleColor(CircleColor &&circle,int sides = 16);
 
 
         static BearTexture* SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod aliasing=TEXTURE_LINEAR);

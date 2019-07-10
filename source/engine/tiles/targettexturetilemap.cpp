@@ -220,7 +220,7 @@ void TargetTextureTileMap::SetTileDirect(PointInt3 pos, Tile t){
         PointInt tileOffset = PointInt( int(pos.x * m_tileSize.x)%m_maxTextureSize.x, int(pos.y * m_tileSize.y)%m_maxTextureSize.y);
         m_textureMap.get()[memOffset2].Bind();
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
-        RenderHelp::DrawSquareColor(Rect(tileOffset.x, tileOffset.y, m_tileSize.x, m_tileSize.y), 0, 0, 0, 0);
+        RenderHelp::DrawSquareColor(RectColor(tileOffset.x, tileOffset.y, m_tileSize.x, m_tileSize.y, 0, 0, 0, 0));
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         RenderTile(t.id,  tileOffset, t.rotate, t.flip );
         TargetTexture::UnBind();
@@ -275,7 +275,7 @@ void TargetTextureTileMap::RenderLayer(int layer,Point offset, Rect vision, bool
                 int memOffset2 = CalculateSmallOffset(PointInt3(x, y, layer));
                 if (memOffset2 < m_size.z * m_size.x * m_size.y){
                     m_textureMap.get()[memOffset2].Render(Point(canvasArea.x - vision.x + offset.x,canvasArea.y - vision.y + offset.y));
-                    RenderHelp::DrawSquareColor(Rect(canvasArea.x - vision.x + offset.x,canvasArea.y - vision.y + offset.y,canvasArea.w,canvasArea.h),0,0,255,255,true);
+                    RenderHelp::DrawSquareColor(RectColor(canvasArea.x - vision.x + offset.x,canvasArea.y - vision.y + offset.y,canvasArea.w,canvasArea.h,0,0,255,255),true);
                 }
             }
         }

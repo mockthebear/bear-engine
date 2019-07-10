@@ -56,11 +56,11 @@ class Test_PathFind: public State{
                 int y = ((int)it.y)%16;
                 recs.emplace_back(Rect(it.x-x,it.y-y,16,16));
             }
-            RenderHelp::DrawSquaresColor(recs,255,255,255,255);
+            RenderHelp::DrawSquaresColor(recs);
             Point first = finish;
             int iter = 0;
             for (auto &it : Path){
-                RenderHelp::DrawLineColor(Point(first.x+8,first.y+8),Point(it.x+8,it.y+8),255,(iter/(float)Path.size())*255,0,255);
+                RenderHelp::DrawLineColor(LineColor(first.x+8,first.y+8,it.x+8,it.y+8)); //255,(iter/(float)Path.size())*255,0,255
                 first = it;
                 iter++;
             }

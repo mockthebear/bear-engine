@@ -101,7 +101,7 @@ void Light2D::ClearCanvas(){
     m_targetTexture.Bind();
         m_targetTexture.Clear();
         glBlendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
-        RenderHelp::DrawSquareColor(Rect(0,0, m_size.x, m_size.y), 0, 0, 0, (1.0f - m_maxDark) * 255.0f );
+        RenderHelp::DrawSquareColor(RectColor(0,0, m_size.x, m_size.y, 0, 0, 0), (1.0f - m_maxDark) * 255.0f );
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     m_targetTexture.UnBind();
 }

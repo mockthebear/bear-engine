@@ -45,8 +45,17 @@ class Test_Sprite: public State{
             raccoonHead = Assets.make<Sprite>("someFancyName");
             cursor = Assets.make<Sprite>("otherRaccoon");
             sheet = Assets.make<AnimatedSprite>("data/totem.png");
+            bear::out << "faz ai\n";
+            sheet2 = AnimatedSprite(Assets.make<Sprite>("data/totem.png"));
+            bear::out << "feito\n";
+            bear::out << sheet2.GetWidth() << "\n";
+            bear::out << sheet2.GetHeight() << "\n";
 
-            sheet2 = Assets.make<AnimatedSprite>("data/totem.png",4,0.2);
+
+            sheet2.SetGridSize(32,64);
+            sheet2.SetFrame(0,2);
+            sheet2.SetFrameCount(4);
+            sheet2.SetFrameTime(0.2);
 
             smol = Assets.make<Sprite>("data/doge death.png");
             smol.SetScale(Point(8,8));
@@ -110,7 +119,7 @@ class Test_Sprite: public State{
             raccoonHead.EndRender();
 
             sheet.Render(PointInt(300,100) );
-            sheet2.Render({332,100});
+            sheet2.Render(PointInt(332,100));
 
             smol.Render({300,300});
             cursor.SetRotation(-duration * 3.6f * 2.0f);
@@ -119,7 +128,7 @@ class Test_Sprite: public State{
 
 
             RenderHelp::DrawSquareColor(Rect(10,10,SCREEN_SIZE_W-20,SCREEN_SIZE_H-20),255,0,255,255,true);
-            RenderHelp::DrawCircleColor(Point(400,400),86,255,0,100,100);
+            RenderHelp::DrawCircleColor(CircleColor(Circle(400,400,86),BearColor(255,0,100,100)) );
 
 
 

@@ -29,7 +29,7 @@ void LineGraph::Render(Point pos){
         double spread = size.x/(double)dataCount;
         int count = 0;
         lastY = data[0];
-        std::vector<Vertex> lines;
+        std::vector<LineColor> lines;
         for (auto &it : data){
             double y = pos.y+size.y-1;
             double x = pos.x;
@@ -42,11 +42,9 @@ void LineGraph::Render(Point pos){
             x += count * spread;
 
             count++;
-            lines.emplace_back(Point(x, bY));
-            lines.emplace_back(Point(x + spread,y));
-
+            lines.emplace_back(LineColor(x, bY, x + spread,y));
         }
-        RenderHelp::DrawLinesColor(lines,255,255,255,255);
+        RenderHelp::DrawLinesColor(lines);
     }
     tmax.Render(pos.x+size.x,pos.y,TEXT_RENDER_TOPLEFT);
     tmin.Render(pos.x+size.x,pos.y+size.y,TEXT_RENDER_TOPLEFT);

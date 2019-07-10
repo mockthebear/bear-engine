@@ -20,7 +20,14 @@ class DummyNode: public SegmentNode{
             color[1] = rand()%255;
             color[2] = rand()%255;
             for (int i=0;i<10;i++){
-                AddPoint(Point(m_nodeSize.x*m_location.x  + m_offset.x + rand()%m_nodeSize.x, m_nodeSize.y*m_location.y + m_offset.y + rand()%m_nodeSize.y));
+                AddPoint(PointColor(
+                        m_nodeSize.x*m_location.x  + m_offset.x + rand()%m_nodeSize.x,
+                        m_nodeSize.y*m_location.y + m_offset.y + rand()%m_nodeSize.y,
+                        color[0],
+                        color[1],
+                        color[2]
+                        )
+                );
             }
         };
 
@@ -39,12 +46,12 @@ class DummyNode: public SegmentNode{
         bool Call(uint32_t mode, int owo){
             //bear::out << "Called: " << m_location << " ["<<m_id<<"] with mode "<<mode<<"\n";
             RenderHelp::DrawSquareColor(GetBox(), owo,255,255,80, !doin);
-            RenderHelp::DrawPointsColor(points,color[0],color[1],color[2],255);
+            RenderHelp::DrawPointsColor(points);
 
             return true;
         }
 
-        void AddPoint(Point p){
+        void AddPoint(PointColor p){
             points.emplace_back(p);
         }
 
@@ -72,7 +79,7 @@ class DummyNode: public SegmentNode{
 
     private:
         uint8_t color[3];
-        std::vector<Point> points;
+        std::vector<PointColor> points;
         bool doin;
 };
 

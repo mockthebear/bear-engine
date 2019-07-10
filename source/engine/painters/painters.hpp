@@ -50,10 +50,6 @@ class Painter{
     */
     static void DrawVertex(VertexArrayObjectPtr vertexes,int drawMode = GL_TRIANGLES,bool isBound = false);
 
-
-    static bool DrawSprites(int id);
-
-
     static bool UpdateTexture(BearTexture *tex, PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter);
 
     static BearTexture * MakeTexture(PointInt size,int mode,unsigned char* pixels,TextureLoadMethod &filter);
@@ -79,7 +75,6 @@ class Painter{
     static uint32_t GetSharedBuffer(int id);
 
     static Shader textureShader;
-    static Shader pointTextureShader;
     static Shader polygonShader;
 
     static uint32_t UnloadedTextureId;

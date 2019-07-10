@@ -46,7 +46,7 @@ bool TargetTexture::Bind(){
 }
 void TargetTexture::Clear(BearColor c){
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
-    RenderHelp::DrawSquareColor(Rect(0 ,0 , size_w, size_w), c.r, c.g, c.b, c.a);
+    RenderHelp::DrawSquareColor(RectColor(0 ,0 , size_w, size_w, c));
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 

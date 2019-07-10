@@ -183,7 +183,7 @@ void Painter::DrawVertex(VertexArrayObjectPtr vertexData,BasicRenderDataPtr t_da
         polygonShader.Bind();
     }
 
-    ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Projection);
+    ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"g_projection",Projection);
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"model",model);
     ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"iColor",t_data->color);
     ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image",0);
@@ -262,7 +262,7 @@ bool Painter::RenderTexture(BearTexture *t_texture, RenderDataPtr t_data){
         textureShader.Bind();
     }
 
-    ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Projection);
+    ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"g_projection",Projection);
     ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"model",model);
     ShaderSetter<BearColor>::SetUniform(Shader::GetCurrentShaderId(),"iColor",t_data->color);
     ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image",0);

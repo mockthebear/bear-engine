@@ -74,8 +74,8 @@ class BasicTransformations{
 class AdvancedTransformations : public BasicTransformations{
     public:
 
-        AdvancedTransformations():BasicTransformations(),center(0.0f,0.0f),angle(0.0f){};
-        AdvancedTransformations(PointInt pos):BasicTransformations(pos),center(0.0f,0.0f),angle(0.0f){};
+        AdvancedTransformations():BasicTransformations(),clipOffset(0.0f, 0.0f),center(0.0f,0.0f),angle(0.0f){};
+        AdvancedTransformations(PointInt pos):BasicTransformations(pos),clipOffset(0.0f, 0.0f),center(0.0f,0.0f),angle(0.0f){};
 
          void SetAngle(float p_angle){
             angle = p_angle;
@@ -92,10 +92,10 @@ class AdvancedTransformations : public BasicTransformations{
                 forwardClip = Rect(0.0f,1.0f,0.0f,1.0f);
                 return;
             }
-            forwardClip.x = clip.x / textureSize.x;
-            forwardClip.y =  ( clip.x + clip.w ) / textureSize.x;
-            forwardClip.w = clip.y / textureSize.y;
-            forwardClip.h = ( clip.y + clip.h ) / textureSize.y;
+            forwardClip.x = (clipOffset.x+clip.x) / textureSize.x;
+            forwardClip.y =  ( clipOffset.x+clip.x + clip.w ) / textureSize.x;
+            forwardClip.w = (clipOffset.y+clip.y) / textureSize.y;
+            forwardClip.h = ( clipOffset.y+clip.y + clip.h ) / textureSize.y;
             center = Point(size.x * scale.x * 0.5f, size.y * scale.y * 0.5f);
         }
 
@@ -106,7 +106,7 @@ class AdvancedTransformations : public BasicTransformations{
             scale = p_scale;
             center = Point(size.x * scale.x * 0.5f, size.y * scale.y * 0.5f);
         }
-
+        Point clipOffset;
         Point center;
         float angle;
 };
@@ -122,11 +122,16 @@ class VertexArrayObject{
         return m_indexes.size();
     }
 
-    int AddRect(Rect& box, BearColor&& color = BearColor());
-    //int AddRect(Rect&& box, BasicTransformations &&bt, BearColor&& color = BearColor());
-    int AddRect(AdvancedTransformations &adt);
+    int AddRect(RectColor &rec, bool outline = false);
+    int AddRect(AdvancedTransformations &adt, bool outline = false);
+    int AddRect(AdvancedTransformations &adt,const BearColor color[4], bool outline = false);
     int AddRect(AdvancedTransformations &subTransform, AdvancedTransformations &adt);
-    int AddOutlineRect(AdvancedTransformations &adt);
+
+
+
+    int AddVertice(Vertex&& vert);
+    int AddLine(LineColor& line);
+    int AddCircle(CircleColor& circle, int sides = 16);
 
 
     void AddIndices(int size,uint32_t *indices);
@@ -156,8 +161,12 @@ class VertexArrayObject{
         return m_useElementBuffer;
     }
 
-    void RotateRect(Vertex *vertices, AdvancedTransformations &adt);
+    void AddRectIndexes(bool outline);
   private:
+
+    void RotateRect(Vertex *vertices, AdvancedTransformations &adt);
+    void RotateRect(Vertex *vertices, float& angle,Point&& position, Point&& center);
+
     std::vector<Vertex> m_vertexData;
     std::vector<uint32_t> m_indexes;
 

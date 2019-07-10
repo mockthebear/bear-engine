@@ -37,153 +37,107 @@ BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod
     return ret;
 }
 
-void RenderHelp::DrawCircleColor(Point p1,float radius,uint8_t r,uint8_t g,uint8_t b,uint8_t a,int sides){
+void RenderHelp::DrawCircleColor(CircleColor &&circle,int sides){
+    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
 
+    vertexBuffer->AddCircle(circle, sides);
 
-   /* static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
-    static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
-
-
-    Circle c(p1.x,p1.y,radius);
-    renderData->position = p1;
-    renderData->size.x = radius;
-    renderData->size.y = radius;
-    renderData->color = BearColor(r,g,b,a);
-
+    Painter::DrawVertex(vertexBuffer,GL_TRIANGLE_FAN,   GL_IS_AUTOBOUND);
     vertexBuffer->clear();
-
-    vertexBuffer->vertexes.Generate(c,sides);
-    vertexBuffer->SetupVertexes();
-
-
-    Painter::DrawVertex(vertexBuffer,renderData,GL_TRIANGLE_FAN, GL_IS_AUTOBOUND);*/
 }
 
 
-void RenderHelp::DrawSquareColor(Rect box,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline, float angle,const BearColor colors[4]){
-     static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+void RenderHelp::DrawSquareColor(RectColor box,bool outline){
+    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
     static AdvancedTransformations transformations;
-
-    transformations.defaultColor = BearColor(r,g,b,a);
-
 
     transformations.size = box.GetSize();
     transformations.translation = box.GetPos();
-    transformations.angle = angle;
-    if (!outline){
-        vertexBuffer->AddRect(transformations);
-    }else{
-        vertexBuffer->AddOutlineRect(transformations);
-    }
+    transformations.SetAngle(box.angle);
+    transformations.center = Point(box.w/2.0f, box.h/2.0f);
 
-    if (!outline){
-        Painter::DrawVertex(vertexBuffer,GL_TRIANGLES,   GL_IS_AUTOBOUND);
-    }else{
-        Painter::DrawVertex(vertexBuffer,GL_LINES,   GL_IS_AUTOBOUND);
-    }
+    transformations.forwardClip = Rect(-1, -1, -1, -1);
+
+
+    vertexBuffer->AddRect(transformations, box.colors, outline);
+
+    Painter::DrawVertex(vertexBuffer,outline ? GL_LINES : GL_TRIANGLES,   GL_IS_AUTOBOUND);
     vertexBuffer->clear();
 }
 
-void RenderHelp::DrawSquaresColor(std::vector<RectColor> rects,uint8_t r,uint8_t g,uint8_t b,uint8_t a,bool outline){
-    /*static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
-    static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
+void RenderHelp::DrawSquaresColor(std::vector<RectColor> rects,bool outline){
+    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+    static AdvancedTransformations transformations;
 
     if (rects.size() == 0){
         return;
     }
-    renderData->color = BearColor(r,g,b,a);
-    vertexBuffer->clear();
+
+    transformations.forwardClip = Rect(-1, -1, -1, -1);
 
     for (auto &it : rects){
-        if (!outline){
-            vertexBuffer->vertexes.Generate(it.box, it.angle, false, it.colors );
-        }else{
-            vertexBuffer->vertexes.GenerateLineLoop(it.box, false,  it.colors);
-        }
+        vertexBuffer->AddRect(it, outline);
     }
 
-    vertexBuffer->SetupVertexes();
 
+    Painter::DrawVertex(vertexBuffer,outline ? GL_LINES : GL_TRIANGLES,   GL_IS_AUTOBOUND);
 
-    if (!outline){
-        Painter::DrawVertex(vertexBuffer,renderData,GL_TRIANGLES,GL_IS_AUTOBOUND);
-    }else{
-        Painter::DrawVertex(vertexBuffer,renderData,GL_LINES,GL_IS_AUTOBOUND);
-    }
-    DisplayGlError("DrawSquaresColor");*/
+    vertexBuffer->clear();
+
+    DisplayGlError("DrawSquaresColor");
 }
-void RenderHelp::DrawPointsColor(std::vector<Point> points,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thickness){
-    /*static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
-    static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
+void RenderHelp::DrawPointsColor(std::vector<PointColor> points){
+    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+    static AdvancedTransformations transformations;
 
     if (points.size() == 0){
         return;
     }
 
-    renderData->color = BearColor(r,g,b,a);
+    transformations.forwardClip = Rect(-1, -1, -1, -1);
 
-    vertexBuffer->clear();
+
 
     for (auto &it : points){
-        vertexBuffer->vertexes.AddVertice(it);
+        vertexBuffer->AddVertice(Vertex(it, it.color));
     }
-    vertexBuffer->SetupVertexes();
 
-    Painter::DrawVertex(vertexBuffer,renderData,GL_POINTS,GL_IS_AUTOBOUND);
-    DisplayGlError("DrawPointsColor");*/
+    Painter::DrawVertex(vertexBuffer,GL_POINTS,GL_IS_AUTOBOUND);
+
+    vertexBuffer->clear();
 }
 
 
-void RenderHelp::DrawLinesColor(std::vector<Vertex> lines,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thickness){
-    /*static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
-    static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
+void RenderHelp::DrawLinesColor(std::vector<LineColor> lines,float thickness){
+    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+    static AdvancedTransformations transformations;
+
+    transformations.forwardClip = Rect(-1, -1, -1, -1);
 
     if (lines.size() == 0){
         return;
     }
 
-    renderData->color = BearColor(r,g,b,a);
-
-    vertexBuffer->clear();
-
-    GameVertice lastP;
-    if (lines.size()%2 == 1){
-        vertexBuffer->vertexes.AddVertice(*(lines.end()-1) );
-    }
     for (auto &it : lines){
-        vertexBuffer->vertexes.AddVertice(it);
+        vertexBuffer->AddLine(it);
     }
 
-    vertexBuffer->SetupVertexes();
-
-
-    Painter::DrawVertex(vertexBuffer,renderData,GL_LINES,GL_IS_AUTOBOUND);
-    DisplayGlError("DrawLinesColor");*/
-}
-
-void RenderHelp::DrawLineColor(Line l,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thickness){
-   // DrawLineColor(l.GetFirst(), l.GetSecond(), r, g, b, a, thickness);
-}
-
-void RenderHelp::DrawLineColor(Point p1,Point p2,uint8_t r,uint8_t g,uint8_t b,uint8_t a,float thicc){
-    /*static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
-    static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
-
-    renderData->color = BearColor(r,g,b,a);
-    renderData->size.x = thicc;
-    renderData->size.y = thicc;
-
-
+    Painter::DrawVertex(vertexBuffer,GL_LINES,GL_IS_AUTOBOUND);
     vertexBuffer->clear();
+}
 
-    vertexBuffer->vertexes.Generate(p1,p2);
-    vertexBuffer->SetupVertexes();
+void RenderHelp::DrawLineColor(LineColor l, float width){
+    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+    static AdvancedTransformations transformations;
+
+    transformations.forwardClip = Rect(-1, -1, -1, -1);
 
 
-    Painter::DrawVertex(vertexBuffer,renderData,GL_LINES,GL_IS_AUTOBOUND);
-    DisplayGlError("DrawLineColor");*/
-
-
+    vertexBuffer->AddLine(l);
+    glLineWidth(width);
+    Painter::DrawVertex(vertexBuffer,GL_LINES,GL_IS_AUTOBOUND);
+    glLineWidth(1.0f);
+    vertexBuffer->clear();
 }
 
 

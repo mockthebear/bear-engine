@@ -283,6 +283,7 @@ void Text::Render(int cameraX,int cameraY,TextRenderStyle renderStyle){
         m_vertexes->AddRect(m_renderData);
 
         Painter::RenderTexture(texture.get(),m_vertexes);
+        m_vertexes->clear();
 
         DisplayGlError("Text::Render");
 

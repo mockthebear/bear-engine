@@ -10,7 +10,6 @@ glm::mat4 Painter::Projection;
 bool Painter::m_shaderBuilt = false;
 Shader Painter::textureShader;
 Shader Painter::polygonShader;
-Shader Painter::pointTextureShader;
 uint32_t Painter::Buffers[4] = {0, 0, 0, 0};
 uint32_t Painter::UnloadedTextureId = 0;
 
@@ -34,7 +33,8 @@ bool Painter::RenderTexture(BearTexture *t_texture, VertexArrayObjectPtr vertexD
     }
 
     DisplayGlError("Bound");
-    ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Projection);
+    ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"g_projection",Projection);
+
     ShaderSetter<int>::SetUniform(Shader::GetCurrentShaderId(),"image", 0);
 
     DisplayGlError("Set uniforms");
@@ -82,7 +82,7 @@ void Painter::DrawVertex(VertexArrayObjectPtr vertexData,int drawMode, bool isBo
         textureShader.Bind();
     }
 
-    ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Projection);
+    ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"g_projection",Projection);
 
     vertexData->Bind();
     vertexData->SetupVertexes();
@@ -100,11 +100,6 @@ void Painter::DrawVertex(VertexArrayObjectPtr vertexData,int drawMode, bool isBo
         textureShader.Unbind();
     }
 }
-
-
-
-
-
 
 
 void Painter::SetViewport(Point screenNow,Point offset){
@@ -263,10 +258,12 @@ void Painter::SetupShaders(){
 
 
         polygonShader.Bind();
-        ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Painter::Projection);
+        ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"g_projection",Painter::Projection);
+        ShaderSetter<Point>::SetUniform(Shader::GetCurrentShaderId(),"g_offset",Point(0.0f,0.0f));
         polygonShader.Unbind();
         textureShader.Bind();
-        ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"projection",Painter::Projection);
+        ShaderSetter<glm::mat4>::SetUniform(Shader::GetCurrentShaderId(),"g_projection",Painter::Projection);
+        ShaderSetter<Point>::SetUniform(Shader::GetCurrentShaderId(),"g_offset",Point(0.0f,0.0f));
         textureShader.Unbind();
     }
 }
