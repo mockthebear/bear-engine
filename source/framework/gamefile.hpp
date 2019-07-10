@@ -4,6 +4,7 @@
 
 
 #include <string>
+#include <vector>
 #include "../settings/definitions.hpp"
 #include SDL_LIB_HEADER
 
@@ -146,8 +147,10 @@ class GameFile{
             Get one line per time
         */
         bool GetLine(std::string &line);
+        uint32_t GetLineNumber(uint32_t position);
 
         std::string ReadUntil(char c);
+        std::string ReadUntil(std::vector<char> c);
         std::string ReadWord(int count=0,char separator=' ');
 
         /**
@@ -155,6 +158,7 @@ class GameFile{
             @param ignoreUntilFind When set to true, it will read all the file from the current point until find any number.
         */
         int GetNumber(bool ignoreUntilFind=false);
+        float GetFloat(bool ignoreUntilFind=false);
         /**
             * Get file size
             @return an number

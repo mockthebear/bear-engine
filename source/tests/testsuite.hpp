@@ -63,6 +63,12 @@ void SetupTests(){
         Game::GetInstance()->AddState(new Test_PSTILESET());
     }
     Game::GetInstance()->AddState(new Test_Sound());
+
+    Game::GetInstance()->AddState(new Test_Joystick());
+
+    #endif // DISABLE_UNIT_TESTS
+    */
+
     Game::GetInstance()->AddState(new Test_RenderSpeed());
     Game::GetInstance()->AddState(new Test_RectRenderSpeed());
     Game::GetInstance()->AddState(new Test_PathFind());
@@ -73,13 +79,11 @@ void SetupTests(){
     Game::GetInstance()->AddState(new Test_Sprite());
     Game::GetInstance()->AddState(new Test_Node());
     Game::GetInstance()->AddState(new Test_Pool());
-    Game::GetInstance()->AddState(new Test_Joystick());
-    Game::GetInstance()->AddState(new Test_Shapes());
-    Game::GetInstance()->AddState(new Test_Files());
-    #endif // DISABLE_UNIT_TESTS
-    */
+
     Game::GetInstance()->AddState(new Test_Atlas());
     Game::GetInstance()->AddState(new Test_TargetTexture());
     Game::GetInstance()->AddState(new Test_Sprite());
+    Game::GetInstance()->AddState(new Test_Shapes());
+    Game::GetInstance()->AddState(new Test_Files());
 }
 

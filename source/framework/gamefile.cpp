@@ -206,6 +206,52 @@ int GameFile::GetNumber(bool ignoreUntilFind){
     }
     return ret;
 }
+
+uint32_t GameFile::GetLineNumber(uint32_t position){
+    uint32_t now = Tell();
+    Seek(0);
+    uint32_t lc = 0;
+    for (uint32_t i=0;i<m_size;i++){
+        char c = ReadByte();
+        if (c == '\n')
+            lc++;
+    }
+    Seek(now);
+    return lc;
+}
+
+float GameFile::GetFloat(bool ignoreUntilFind){
+    if (!IsReading()){
+        return -1;
+    }
+    float ret = 0;
+    int frac = 0;
+    bool found = false;
+    while (true){
+        if (m_filePos > m_size)
+            return -1;
+        char c = ReadByte();
+        if (c >= '0' && c <= '9'){
+            if (frac){
+                ret = ret + (c-'0')/pow(10.0,frac);
+                frac++;
+            }else{
+                ret *= 10;
+                ret += c-'0';
+                found = true;
+            }
+        }else if (c == '.'){
+            frac = 1;
+        }else{
+            if (ignoreUntilFind){
+                if (!found)
+                    continue;
+            }
+            break;
+        }
+    }
+    return ret;
+}
 std::string GameFile::ReadWord(int n,char separator){
     if (!IsReading()){
         return "";
@@ -219,6 +265,24 @@ std::string GameFile::ReadWord(int n,char separator){
     }
     return buffer;
 }
+
+std::string GameFile::ReadUntil(std::vector<char> rd){
+    if (!IsReading()){
+        return "";
+    }
+    std::string buffer = "";
+    while (m_filePos < m_size){
+        char c = ReadByte();
+        for (auto &it : rd){
+            if (c == it){
+                return buffer;
+            }
+        }
+        buffer += c;
+    }
+    return buffer;
+}
+
 std::string GameFile::ReadUntil(char rd){
     if (!IsReading()){
         return "";

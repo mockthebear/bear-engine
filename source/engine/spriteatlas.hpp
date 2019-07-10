@@ -14,11 +14,14 @@ class SpriteAtlas{
         bool RenderAll();
 
         int StichSprite(RenderTexture &rt);
+        int StichSprite(std::string name);
+        int StichSprite(const char *name);
 
         void OpenStich();
         void CloseStich();
 
         Sprite SummonSprite(uint32_t spriteId);
+
 
     private:
         bool checkValidSpot(RectInt &guessPosition,PointInt &maxLocations);

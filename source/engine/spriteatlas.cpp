@@ -37,6 +37,9 @@ int SpriteAtlas::StichSprite(RenderTexture &rt){
     if (size.x == 0 || size.y == 0){
         return -1;
     }
+    if (!rt.IsLoaded()){
+        return -1;
+    }
     size.x -= 1;
     size.y -= 1;
 
@@ -108,6 +111,15 @@ void SpriteAtlas::CloseStich(){
 
 
 
+int SpriteAtlas::StichSprite(std::string name){
+    Sprite tmp(name);
+    return StichSprite(tmp);
+}
+int SpriteAtlas::StichSprite(const char *name){
+    Sprite tmp(name);
+    return StichSprite(tmp);
+}
+
 
 Sprite SpriteAtlas::SummonSprite(uint32_t spriteId){
 
@@ -115,12 +127,14 @@ Sprite SpriteAtlas::SummonSprite(uint32_t spriteId){
 
     Rect spr = m_sprites[spriteId];
     ret.SetVirtualData(m_size);
-    ret.m_renderData.SetClip(Rect(0,0, spr.w + 1, spr.h + 1), m_size );
+    ret.size = Point(spr.w+1, spr.h+1);
+    ret.m_renderData.clipOffset.x = spr.x;
+    ret.m_renderData.clipOffset.x = spr.x;
+    ret.m_renderData.SetClip(Rect(0.0f, 0.0f , spr.w + 1, spr.h + 1), m_size );
     ret.m_vertexes = m_vertexes;
 
     return ret;
 }
-
 
 bool SpriteAtlas::RenderAll(){
     Painter::RenderTexture(&m_atlas,m_vertexes);
