@@ -9,19 +9,15 @@
 #include "../engine/renderhelp.hpp"
 
 
-#include "../tests/testthread.hpp"
-#include "../tests/testfiles.hpp"
-
-
 Title::Title(){
     requestQuit = requestDelete = false;
     /*
         Loading main lua script
     */
-    #ifndef __EMSCRIPTEN__
+    #ifndef DISABLE_LUAINTERFACE
     LuaCaller::LoadFile(LuaManager::L,"lua/test.lua");
     LuaCaller::Pcall(LuaManager::L);
-    #endif // __EMSCRIPTEN__
+    #endif // DISABLE_LUAINTERFACE
 
     /*
         Starting camera
@@ -37,9 +33,9 @@ void Title::Begin(){
     /*
         Callin an lua function
     */
-    #ifndef __EMSCRIPTEN__
+    #ifndef DISABLE_LUAINTERFACE
     LuaCaller::CallGlobalField(LuaManager::L,"onLoad");
-    #endif // __EMSCRIPTEN__
+    #endif // DISABLE_LUAINTERFACE
 
 
 

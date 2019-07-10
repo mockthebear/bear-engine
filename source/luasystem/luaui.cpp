@@ -9,19 +9,28 @@ LuaUi::LuaUi():UIBase(){
     MainWidget = false;
 
    OnMouseRelease = [=](UIBase* obj,int i,Point p){
+        #ifndef DISABLE_LUAINTERFACE
         LuaCaller::CallSelfField(LuaManager::L,obj,"OnMouseRelease",i,p);
+        #endif // DISABLE_LUAINTERFACE
    };
 
    OnMouseEnter = [=](UIBase* obj,Point p){
+        #ifndef DISABLE_LUAINTERFACE
         LuaCaller::CallSelfField(LuaManager::L,obj,"OnMouseEnter",p);
+        #endif // DISABLE_LUAINTERFACE
+
    };
 
    OnMouseLeave = [=](UIBase* obj,Point p){
+        #ifndef DISABLE_LUAINTERFACE
         LuaCaller::CallSelfField(LuaManager::L,obj,"OnMouseLeave",p);
+        #endif // DISABLE_LUAINTERFACE
    };
 
    OnMousePress = [=](UIBase* obj,int i,Point p){
+        #ifndef DISABLE_LUAINTERFACE
         LuaCaller::CallSelfField(LuaManager::L,obj,"OnMousePress",i,p);
+        #endif // DISABLE_LUAINTERFACE
    };
 
 }
@@ -33,7 +42,9 @@ void LuaUi::Input(){
 void LuaUi::Render(Point where){
     if (GetHidden())
         return;
+    #ifndef DISABLE_LUAINTERFACE
     LuaCaller::CallSelfField(LuaManager::L,this,"OnRender",where);
+    #endif // DISABLE_LUAINTERFACE
     UIBase::Render(where);
 
 }
@@ -41,7 +52,9 @@ void LuaUi::Update(float dt){
     if (GetHidden())
         return;
     UIBase::Update(dt);
+    #ifndef DISABLE_LUAINTERFACE
     LuaCaller::CallSelfField(LuaManager::L,this,"OnUpdate",dt);
+    #endif // DISABLE_LUAINTERFACE
 }
 
 void LuaUi::ClearChildrens(){
