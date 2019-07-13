@@ -15,7 +15,9 @@ enum AnimInstructionOpcode{
     OPCODE_REPEAT,
     OPCODE_JUMP,
     OPCODE_CONDITIONCALLBACK,
+    OPCODE_CONDITIONJUMP,
     OPCODE_CALL,
+    OPCODE_LOOP,
 };
 
 typedef struct _AnimInstruction{
@@ -30,6 +32,9 @@ typedef struct _AnimInstruction{
         opcode = 0;
         data.labelId = 0;
     };
+
+    _AnimInstruction(AnimInstructionOpcode op):opcode(static_cast<uint8_t>(op)){
+    }
 
     _AnimInstruction(AnimInstructionOpcode op, float time):opcode(static_cast<uint8_t>(op)){
         data.time = time;
