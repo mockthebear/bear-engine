@@ -57,20 +57,9 @@ bool GameBehavior::OnLoad(){
     bear::out << "Started with screen "<< P2.x << " x "<< P2.y << "\n";
 
     bear::out << "Starting state.\n";
-    /*
-    Game::GetInstance()->AddState(new Test_());
-    */
-    AnimationLoader anim;
-    try {
-        ScriptLoader::LoadScript("test.anim",anim);
 
-    } catch(BearException &e){
-        e.Show();
-    }
-    bear::out << "End!\n";
-    getchar();
 
-    //SetupTests();
+    SetupTests();
 
     return DefaultBehavior::GetInstance().OnLoad();
 }
