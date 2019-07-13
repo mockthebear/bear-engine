@@ -40,6 +40,8 @@ bool LuaObject::IsSolid(GameObject *obj){
     }else{
         return LuaCaller::CallSelfField(LuaManager::L,this,"OnIsSolid");
     }
+    #else
+    return true;
     #endif // DISABLE_LUAINTERFACE
 }
 void LuaObject::Update(float dt){
