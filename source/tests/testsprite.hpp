@@ -44,7 +44,7 @@ class Test_Sprite: public State{
             bear::out << "Loading from alias\n";
             raccoonHead = Assets.make<Sprite>("someFancyName");
             cursor = Assets.make<Sprite>("otherRaccoon");
-            sheet = Assets.make<AnimatedSprite>("data/totem.png");
+
             bear::out << "faz ai\n";
             sheet2 = AnimatedSprite(Assets.make<Sprite>("data/totem.png"));
             bear::out << "feito\n";
@@ -60,10 +60,15 @@ class Test_Sprite: public State{
             smol = Assets.make<Sprite>("data/doge death.png");
             smol.SetScale(Point(8,8));
 
-            sheet.SetGridSize(32,64);
-            sheet.SetFrame(0,0);
-            sheet.SetFrameCount(4);
-            sheet.SetFrameTime(0.2);
+            //sheet.SetGridSize(32,64);
+
+            sheet = Assets.make<AnimatedSprite>("data/totem.png");
+            sheet.LoadAnimationScript("test.anim");
+            sheet.RunAnimationSegment("SETUP");
+            sheet.AddCallback("check",std::function<bool()>( []()->bool{
+                std::cout << "HXCGJKLDFGHKJLDF\n";
+                return false;
+            }));
             /*
                 Would give the same result.
                 raccoonHead = Assets.make<Sprite>("someFancyName");
