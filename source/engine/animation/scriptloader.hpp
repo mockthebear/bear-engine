@@ -7,9 +7,9 @@ class GameFile;
 class ScriptLoader{
     public:
         static bool LoadScript(std::string scriptFile, AnimationScript &anim);
+        static bool LoadCompiledScript(std::string scriptFile, AnimationScript &anim);
         static bool CompileScript(std::string scriptFile, std::vector<uint8_t> &bytecode);
         static bool CompileScriptToFile(std::string scriptFile, std::string out);
-
         static bool LoadBytecode(AnimationScript &anim, std::vector<uint8_t> &bytecode);
 
     private:
@@ -35,6 +35,10 @@ class ScriptLoader{
 
         static void checkSymbols(std::map<std::string, int> &labelList);
         static void skipSpaces(GameFile &script);
+
+        static bool IsHeader(std::string str);
+        static void ParseSymbols(GameFile &script, std::map<std::string, int> &labelList);
+        static std::string FormatIdentifier(std::string identifier);
 };
 /*
 

@@ -11,10 +11,10 @@ void Light2D::Start(PointInt size, float maxDark){
     m_maxDark = maxDark;
     m_sizeMultiplier = 1.0f;
     m_size = size / m_sizeMultiplier;
-    m_targetTexture.textureMode = TEXTURE_TRILINEAR;
+    m_targetTexture.textureMode = TEXTURE_NEAREST;
     m_targetTexture.Generate(size.x / m_sizeMultiplier, size.y / m_sizeMultiplier);
 
-    m_haloShader.CompileFromString(GL_VERTEX_SHADER, Shader::DefaultQuadVertexShader);
+    m_haloShader.CompileFromString(GL_VERTEX_SHADER, Shader::DefaultTextureVertexShader);
     m_haloShader.Compile(GL_FRAGMENT_SHADER, "engine/shadow.glfs");
     m_haloShader.Link();
 
@@ -69,9 +69,9 @@ void Light2D::SetLight(Point pos, float radius, BearColor color, float minRays){
             float dir1 = squareVert.GetDirection(pos);
             dir1 = Geometry::AlignRad(dir1);
             actualLines.emplace_back( LineData( Line(pos.x   ,   pos.y, pos.x - dis1 * cos(dir1) ,   pos.y - dis1 * sin(dir1)), dir1) );
-            dir1 = Geometry::AlignRad(dir1 + 0.001f);
+            dir1 = Geometry::AlignRad(dir1 + 0.0001f);
             actualLines.emplace_back( LineData( Line(pos.x   ,   pos.y, pos.x - radius * cos(dir1) ,   pos.y - radius * sin(dir1)), dir1) );
-            dir1 = Geometry::AlignRad(dir1 - 0.002f);
+            dir1 = Geometry::AlignRad(dir1 - 0.0002f);
             actualLines.emplace_back( LineData( Line(pos.x   ,   pos.y, pos.x - radius * cos(dir1) ,   pos.y - radius * sin(dir1)), dir1) );
         }
     }
@@ -101,57 +101,53 @@ void Light2D::ClearCanvas(){
     m_targetTexture.Bind();
         m_targetTexture.Clear();
         glBlendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
-        RenderHelp::DrawSquareColor(RectColor(0,0, m_size.x, m_size.y, 0, 0, 0), (1.0f - m_maxDark) * 255.0f );
+        RenderHelp::DrawSquareColor(RectColor(0,0, m_size.x, m_size.y, 0, 0, 0, (1.0f - m_maxDark) * 255.0f) );
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     m_targetTexture.UnBind();
 }
 
-void Light2D::RenderLineData(std::vector<LineData> &ld, Point pos, float radius, BearColor color){
-   /* m_targetTexture.Bind();
+void Light2D::RenderLineData(std::vector<LineData> &ld, Point pos, float radius, BearColor& color){
+    m_targetTexture.Bind();
+        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
         //glBlendEquation(GL_FUNC_ADD);
         glBlendEquation(GL_MAX);
+
+
         m_haloShader.Bind();
             m_haloShader.SetUniform<Point>("center", pos );
             m_haloShader.SetUniform<float>("maxDark", m_maxDark );
-            m_haloShader.SetUniform<Point>("screenSize", ScreenManager::GetInstance().GetGameSize() );
             m_haloShader.SetUniform<float>("radius", radius );
 
             static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
-            static BasicRenderDataPtr renderData         = std::make_shared<BasicRenderData>();
-            renderData->color = color;
+            static AdvancedTransformations transformations;
 
-            Circle c(pos.x,pos.y,radius);
-            renderData->position = pos;
-            renderData->size.x = radius;
-            renderData->size.y = radius;
-            vertexBuffer->clear();
-            Vertex lastP;
-            vertexBuffer->AddVertice(Vertex(pos, BearColor(1.0f, 1.0f, 0.0f, 1.0f) ));
+            color.a = 1-color.a;
+
+            vertexBuffer->AddVertice(Vertex(pos, color ));
             bool first = true;
             Point fir;
             for (auto &it : ld){
                 Point p2 = it.line.GetSecond();
-                vertexBuffer->AddVertice(Vertex(p2, BearColor(1.0f, 1.0f, 0.0f, 1.0f) ));
+                vertexBuffer->AddVertice(Vertex(it.line.GetSecond(), color)  );
                 if (first){
                     fir = p2;
                     first = false;
                 }
             }
-            vertexBuffer->AddVertice(Vertex(fir, BearColor(1.0f, 1.0f, 0.0f, 1.0f) ));
-            vertexBuffer->SetupVertexes();
+            vertexBuffer->AddVertice(Vertex(fir, color ));
+            Painter::DrawVertex(vertexBuffer,GL_TRIANGLE_FAN,GL_IS_AUTOBOUND);
 
-            Painter::DrawVertex(vertexBuffer,renderData,GL_TRIANGLE_FAN, GL_IS_AUTOBOUND);
+            vertexBuffer->clear();
         m_haloShader.Unbind();
     m_targetTexture.UnBind();
     glBlendEquation(GL_FUNC_ADD);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Light2D::Render(Point pos){
     m_invertShader.Bind();
         m_invertShader.SetUniform<float>("maxDark", m_maxDark );
-
-        m_targetTexture.SetScale(Point(m_sizeMultiplier, m_sizeMultiplier));
+       m_targetTexture.SetScale(Point(m_sizeMultiplier, m_sizeMultiplier));
         m_targetTexture.Render(pos);
     m_invertShader.Unbind();
 }

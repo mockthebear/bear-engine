@@ -29,12 +29,12 @@ class Light2D{
         void ClearOpaque();
 
         void ClearCanvas();
-        void SetLight(Point pos, float radius, BearColor color = BearColor(1.0, 1.0, 1.0, 1.0), float minRays = 8.0f);
+        void SetLight(Point pos, float radius, BearColor color = BearColor(1.0f, 1.0f, 1.0f, 1.0f), float minRays = 8.0f);
         void Render(Point pos = Point(0.0f, 0.0f));
 
     private:
 
-        void RenderLineData(std::vector<LineData> &ld, Point pos, float radius, BearColor color);
+        void RenderLineData(std::vector<LineData> &ld, Point pos, float radius, BearColor& color);
         float m_sizeMultiplier;
         float m_maxDark;
         PointInt m_size;

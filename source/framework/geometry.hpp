@@ -384,11 +384,11 @@ template <typename T=float>class GenericLine{
             s02_x = x1 - l2.x1;
             s02_y = y1 - l2.y1;
             s_numer = s10_x * s02_y - s10_y * s02_x;
-            if ((s_numer < 0) == denomPositive)
+            if ((s_numer <= 0) == denomPositive)
                 return GenericPoint<T>(FLT_MAX, FLT_MAX); // No collision
 
             t_numer = s32_x * s02_y - s32_y * s02_x;
-            if ((t_numer < 0) == denomPositive)
+            if ((t_numer <= 0) == denomPositive)
                 return GenericPoint<T>(FLT_MAX, FLT_MAX); // No collision
 
             if (((s_numer > denom) == denomPositive) || ((t_numer > denom) == denomPositive))
