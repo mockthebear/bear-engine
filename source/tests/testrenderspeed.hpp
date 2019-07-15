@@ -7,6 +7,7 @@
 
 #include "../game/state.hpp"
 #include "../performance/console.hpp"
+#include "../performance/linegrap.hpp"
 #include "../engine/sprite.hpp"
 #include "../engine/text.hpp"
 #include "../engine/renderhelp.hpp"

@@ -1,3 +1,4 @@
+/*
 #pragma once
 #include "../framework/geometry.hpp"
 #include "painters/painters.hpp"
@@ -135,3 +136,4 @@ enum LightStep{
 
 
 #endif // LIGHTH
+*/

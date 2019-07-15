@@ -45,12 +45,8 @@ class Test_Sprite: public State{
             raccoonHead = Assets.make<Sprite>("someFancyName");
             cursor = Assets.make<Sprite>("otherRaccoon");
 
-            bear::out << "faz ai\n";
-            sheet2 = AnimatedSprite(Assets.make<Sprite>("data/totem.png"));
-            bear::out << "feito\n";
-            bear::out << sheet2.GetWidth() << "\n";
-            bear::out << sheet2.GetHeight() << "\n";
 
+            sheet2 = AnimatedSprite(Assets.make<Sprite>("data/totem.png"));
 
             sheet2.SetGridSize(32,64);
             sheet2.SetFrame(0,2);
@@ -66,8 +62,14 @@ class Test_Sprite: public State{
             sheet.LoadAnimationScript("test.anim");
             sheet.RunAnimationSegment("SETUP");
             sheet.AddCallback("check",std::function<bool()>( []()->bool{
-                std::cout << "HXCGJKLDFGHKJLDF\n";
-                return false;
+                int r = rand()%100;
+                std::cout << "Attack is: "<<(r<20) << "\n";
+                return (r<20);
+            }));
+
+            sheet.AddCallback("oi",std::function<bool()>( []()->bool{
+                std::cout << "ATTACKED\n";
+                return true;
             }));
             /*
                 Would give the same result.

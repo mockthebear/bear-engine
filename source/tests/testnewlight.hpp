@@ -17,7 +17,7 @@ class Test_NewLight: public State{
         Test_NewLight(){
             requestQuit = requestDelete = false;
             bear::out << "Test new light\n";
-            duration = 130.0f;
+            duration = 630.0f;
 
 
             opaqueObjs.emplace_back(Rect(200, 200,  50, 50));
@@ -45,7 +45,7 @@ class Test_NewLight: public State{
 
 
 
-            m_light.Start(ScreenManager::GetInstance().GetGameSize(), 1.0f);
+            m_light.Start(ScreenManager::GetInstance().GetGameSize(), 0.6f);
 
             for (auto &it : opaqueObjs){
                 m_light.StoreOpaque(it);
@@ -68,7 +68,7 @@ class Test_NewLight: public State{
 
             led.ReBlend(255, 0, 0);
             led.Render(Point(400,400) - Point(8,8));
-            m_light.SetLight(Point(400,400), 100, BearColor(0.0f, 0.0f, 0.0f, 1.0f)) ;
+            m_light.SetLight(Point(400,400), 100, BearColor(1.0f, 0.0f, 0.0f, 1.0f)) ;
 
             led.ReBlend(0, 0, 255);
             led.Render(Point(400,200) - Point(8,8));
@@ -76,19 +76,19 @@ class Test_NewLight: public State{
 
             led.ReBlend(0, 255, 0);
             led.Render(Point(80,240) - Point(8,8));
-            m_light.SetLight(Point(80,240), 100, BearColor(0.0f, 0.0f, 0.0f, 1.0f)) ;
+            m_light.SetLight(Point(80,240), 100, BearColor(0.0f, 1.0f, 0.0f, 1.0f)) ;
 
             led.ReBlend(255, 255, 255);
             led.Render(Point(330,480) - Point(8,8));
-            m_light.SetLight(Point(330,480), 100, BearColor(0.0f, 0.0f, 0.0f, 1.0f)) ;
+            m_light.SetLight(Point(330,480), 100, BearColor(1.0f, 1.0f, 1.0f, 1.0f)) ;
 
             led.ReBlend(0.4f * 255, 0.4f * 255, 255);
             led.Render(Point(480,480) - Point(8,8));
-            m_light.SetLight(Point(480,480), 100, BearColor(0.0f, 0.0f, 0.0f, 1.0f)) ;
+            m_light.SetLight(Point(480,480), 100, BearColor(0.4f, 0.4f, 1.0f, 1.0f)) ;
 
             led.ReBlend( 255,  255, 255);
             led.Render(Point(580,480) - Point(8,8));
-            m_light.SetLight(Point(580,480), 100, BearColor(0.0f, 0.0f, 0.0f, 1.0f)) ;
+            m_light.SetLight(Point(580,480), 100, BearColor(1.0f, 1.0f, 1.0f, 1.0f)) ;
 
             led.ReBlend(255, 255, 255);
             led.Render(mpos - Point(8,8));
