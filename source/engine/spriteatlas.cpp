@@ -84,9 +84,10 @@ int SpriteAtlas::StichSprite(RenderTexture &rt){
     m_atlas.Bind();
     int mainId = m_sprites.size();
     m_sprites.emplace_back(guessPosition);
-    bear::out << "Added on " << guessPosition << "\n";
     rt.SetPosition(guessPosition.GetPos());
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
     rt.RenderAll();
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     m_atlas.UnBind();
 
     //Calculate the lowest Y

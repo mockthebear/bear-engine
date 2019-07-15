@@ -59,15 +59,15 @@ class Test_Sprite: public State{
             //sheet.SetGridSize(32,64);
 
             sheet = Assets.make<AnimatedSprite>("data/totem.png");
-            sheet.LoadAnimationScript("test.anim");
+            sheet.LoadAnimationScript("data/test.anim");
             sheet.RunAnimationSegment("SETUP");
-            sheet.AddCallback("check",std::function<bool()>( []()->bool{
+            sheet.AddCallback("check",std::function<bool()>([](){
                 int r = rand()%100;
                 std::cout << "Attack is: "<<(r<20) << "\n";
                 return (r<20);
             }));
 
-            sheet.AddCallback("oi",std::function<bool()>( []()->bool{
+            sheet.AddCallback("oi",std::function<bool()>( [](){
                 std::cout << "ATTACKED\n";
                 return true;
             }));

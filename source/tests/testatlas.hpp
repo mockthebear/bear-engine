@@ -15,6 +15,13 @@ class Test_Atlas: public State{
             requestQuit = requestDelete = false;
             bear::out << "Test sprite atlas\n";
             duration = 1000.0f;
+
+        };
+        ~Test_Atlas(){
+
+        };
+        void Begin(){
+            ScreenManager::GetInstance().SetScreenName("Test sprite atlas");
             m_atlas.Generate(PointInt(512,512));
 
 
@@ -24,7 +31,7 @@ class Test_Atlas: public State{
             m_atlas.StichSprite("data/bear.png");
             m_atlas.StichSprite("data/raio.png");
             m_atlas.StichSprite("data/gosma besouro chao.png");
-            uint32_t tileId =m_atlas.StichSprite("data/super fire.png");
+            uint32_t tileId =m_atlas.StichSprite("data/led.png");
 
 
             no_a_arc = m_atlas.SummonSprite(BLight);
@@ -48,19 +55,6 @@ class Test_Atlas: public State{
 
 
             arc = m_atlas.SummonSprite(arcc);
-
-
-
-
-
-
-
-        };
-        ~Test_Atlas(){
-
-        };
-        void Begin(){
-            ScreenManager::GetInstance().SetScreenName("Test sprite atlas");
         };
 
         void Update(float dt){

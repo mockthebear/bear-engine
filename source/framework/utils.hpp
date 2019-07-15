@@ -198,7 +198,6 @@ namespace utils {
 				}
 				catch (const std::bad_alloc& e) {
 					bear::out << "Allocation failed: " << e.what() << '\n';
-					getchar();
 				}
                 if (!Data){
                     bear::out << "Cannot allocate an matrix sized with "<<(m_totalSize*sizeof(T)) << " bytes\n";

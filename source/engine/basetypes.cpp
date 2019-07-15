@@ -65,7 +65,6 @@ void Vertex::SetAttributes(){
 }
 
 void BearException::Show(){
-    std::cout << "Exception: "<< Error << "\n";
-    std::cout << "Press any key to continue\n";
-    getchar();
+    bear::out << "Exception: "<< Error << "\n";
+    bear::out << "Press any key to continue\n";
 }
