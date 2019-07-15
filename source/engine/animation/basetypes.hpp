@@ -18,6 +18,7 @@ enum AnimInstructionOpcode{
     OPCODE_CONDITIONJUMP,
     OPCODE_CALL,
     OPCODE_LOOP,
+    OPCODE_SINGLEFRAME,
 };
 
 typedef struct _AnimInstruction{

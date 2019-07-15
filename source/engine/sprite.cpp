@@ -313,11 +313,9 @@ int AnimatedSprite::GetFrameWidth(){
 }
 
 void AnimatedSprite::Update(float dt){
-    if (m_scriptedAnimation.get()){
+    if (m_scriptedAnimation.get() && m_scriptedAnimation->IsRunning() ){
         m_scriptedAnimation->Update(dt);
-
         m_scriptedAnimation->UpdateSprite(*this);
-
         return;
     }
     Animation::Update(dt);
@@ -332,6 +330,13 @@ void AnimatedSprite::AddCallback(std::string labelName,std::function<bool()> &&c
     return;
 }
 
+bool AnimatedSprite::StopSegment(){
+    if (m_scriptedAnimation.get()){
+        m_scriptedAnimation->Kill();
+        return true;
+    }
+    return false;
+}
 
 bool AnimatedSprite::RunAnimationSegment(std::string&& seg){
     if (m_scriptedAnimation.get()){
@@ -341,10 +346,14 @@ bool AnimatedSprite::RunAnimationSegment(std::string&& seg){
     return false;
 }
 
-bool AnimatedSprite::LoadAnimationScript(std::string&& filepath){
+bool AnimatedSprite::LoadAnimationScript(std::string&& filepath,bool compiled){
     m_scriptedAnimation = std::make_shared<AnimationScript>();
     try {
-        ScriptLoader::LoadScript(filepath, *m_scriptedAnimation.get());
+        if (compiled){
+            ScriptLoader::LoadCompiledScript(filepath, *m_scriptedAnimation.get());
+        }else{
+            ScriptLoader::LoadScript(filepath, *m_scriptedAnimation.get());
+        }
     } catch(BearException &e){
         e.Show();
         m_scriptedAnimation.reset();

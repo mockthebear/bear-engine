@@ -3,10 +3,38 @@
 #include "../../framework/userfile.hpp"
 #include <iostream>
 
+
 void ScriptLoader::PullError(std::string err, GameFile &script){
     uint32_t line = script.GetLineNumber(script.Tell());
     throw BearException(utils::format("Syntax error at line %d: %s", line, err.c_str()));
 }
+
+bool ScriptLoader::LoadScript(std::string scriptFile, AnimationScript &anim){
+    std::vector<uint8_t> bytecode;
+    if (!CompileScript(scriptFile,bytecode) || bytecode.size() == 0){
+        return false;
+    }
+    return LoadBytecode(anim, bytecode);
+}
+
+bool ScriptLoader::LoadCompiledScript(std::string scriptFile, AnimationScript &anim){
+    std::vector<uint8_t> bytecode;
+    GameFile script;
+    if (!script.Open(scriptFile)){
+        throw BearException("File not found.");
+        return false;
+    }
+    script.Cache();
+    char *s = script.GetCache();
+
+    bytecode.insert(bytecode.begin(), s, s+script.GetSize());
+
+    delete []s;
+    script.Close();
+
+    return LoadBytecode(anim, bytecode);
+}
+
 
 bool ScriptLoader::CompileScript(std::string scriptFile, std::vector<uint8_t> &bytecode){
     GameFile script;
@@ -16,7 +44,7 @@ bool ScriptLoader::CompileScript(std::string scriptFile, std::vector<uint8_t> &b
     }
     std::map<std::string, int> labelList;
     script.Cache();
-
+    ParseSymbols(script,labelList);
     while (script.Tell() < script.GetSize()){
         char c = script.ReadByte();
         ParseFirstCharacter(c, script, bytecode, labelList);
@@ -38,6 +66,7 @@ bool ScriptLoader::CompileScriptToFile(std::string scriptFile, std::string out){
     }
     script.Cache();
     std::map<std::string, int> labelList;
+    ParseSymbols(script,labelList);
     while (script.Tell() < script.GetSize()){
         char c = script.ReadByte();
         ParseFirstCharacter(c, script, bytecode,labelList);
@@ -104,7 +133,7 @@ bool ScriptLoader::LoadBytecode(AnimationScript &anim, std::vector<uint8_t> &byt
                     case 'n':{
                         char mode = bytecode[++i];
                         if (mode == 0x01){
-                            iset.emplace_back(AnimInstruction(OPCODE_LINE, static_cast<uint32_t>(bytecode[++i]) ));
+                            iset.emplace_back(AnimInstruction(OPCODE_SINGLEFRAME, static_cast<uint32_t>(bytecode[++i]) ));
                         }else if (mode == 0x02){
                             iset.emplace_back(AnimInstruction(OPCODE_RANGE,  bytecode[i+1], bytecode[i+2] ) );
                             i+=2;
@@ -257,13 +286,7 @@ bool ScriptLoader::LoadBytecode(AnimationScript &anim, std::vector<uint8_t> &byt
     return true;
 }
 
-bool ScriptLoader::LoadScript(std::string scriptFile, AnimationScript &anim){
-    std::vector<uint8_t> bytecode;
-    if (!CompileScript(scriptFile,bytecode) || bytecode.size() == 0){
-        return false;
-    }
-    return LoadBytecode(anim, bytecode);
-}
+
 
 void ScriptLoader::checkSymbols(std::map<std::string, int> &labelList){
     for (auto &it : labelList){
@@ -554,14 +577,23 @@ bool ScriptLoader::SeekInstructions(GameFile &script, std::vector<uint8_t> &byte
                 labelList[identifier] = -1;
             }
             bytecode.insert(bytecode.end(), identifier.begin(), identifier.end());
-            //script.Seek(script.Tell()-1);
-            //std::cout << "ew\n";
             return CheckNextInstruction(script, labelList);
         }
         default:{
             script.Seek(script.Tell()-1);
             std::string identifier = script.ReadUntil({' ', '\n', '\t', ':', '\r', ','});
-            PullError(std::string("Unknow operator [") + identifier + "]:"+op, script);
+            if (labelList.find(identifier) == labelList.end()){
+                PullError(std::string("Unknow operator [") + identifier + "]:"+op, script);
+            }else{
+                CheckKeyword(identifier, script);
+                bytecode.emplace_back('j');
+                bytecode.emplace_back(identifier.size());
+                if (labelList.find(identifier) == labelList.end()){
+                    labelList[identifier] = -1;
+                }
+                bytecode.insert(bytecode.end(), identifier.begin(), identifier.end());
+                return CheckNextInstruction(script, labelList);
+            }
             break;
         }
     }
@@ -648,6 +680,9 @@ void ScriptLoader::ParseJump(GameFile &script, std::vector<uint8_t> &bytecode, s
 
 bool ScriptLoader::CheckNextInstruction(GameFile &script, std::map<std::string, int> &labelList){
     uint16_t start = script.Tell();
+    if (start == script.GetSize()){
+        return false;
+    }
 
     std::string untilNext = script.ReadUntil(',');
     uint32_t commentaryEnd = 0;
@@ -687,12 +722,67 @@ bool ScriptLoader::CheckKeyword(const char *check, GameFile &script){
     }
     return true;
 }
-//
+bool ScriptLoader::IsHeader(std::string str){
+    return str == "frametime" || str == "gridsize" || str == "grid" || str == "maxframes" || str == "begin";
+}
+
+std::string ScriptLoader::FormatIdentifier(std::string identifier){
+    std::string newId = "";
+    bool beginer = true;
+    for (int i = (int)identifier.size()-1; i >= 0; --i){
+        char c = identifier[i];
+        if (IsLetter(c) || IsNumber(c) ||  c == '_'){
+            beginer = false;
+            newId = c + newId;
+        }else if (IsSpacing(c)){
+            if (!beginer)
+                break;
+        }
+    }
+
+    return newId;
+}
+
+void ScriptLoader::ParseSymbols(GameFile &script, std::map<std::string, int> &labelList){
+    while (script.Tell() < script.GetSize()){
+        char c = script.ReadByte();
+        if (c == '#'){
+            script.ReadUntil('\n');
+        }else if (IsLetter(c)) {
+            script.Seek(script.Tell()-1);
+            skipSpaces(script);
+            std::string identifier = script.ReadUntil({':'});
+            c = script.ReadByte();
+            if (c != '{'){
+                identifier = FormatIdentifier(identifier);
+
+                if (!IsHeader(identifier)){
+                    if (labelList.find(identifier) == labelList.end()){
+                        labelList[identifier] = 1;
+                    }else{
+                        if (labelList[identifier] == -1){
+                           labelList[identifier] = 1;
+                        }else{
+                            PullError(std::string("Double declaration of identifier: [")+identifier+"]", script);
+                        }
+                    }
+                    while (CheckNextInstruction(script, labelList)){};
+                }else{
+                    script.ReadUntil('\n');
+                    script.Seek(script.Tell()-1);
+                }
+            }else{
+                script.ReadUntil({','});
+            }
+        }
+    }
+    script.Seek(0);
+}
+
 void ScriptLoader::ParseFirstCharacter(char c,GameFile &script, std::vector<uint8_t> &bytecode, std::map<std::string, int> &labelList){
     if (c == '#'){
         //Comentary
         script.ReadUntil('\n');
-        //std::cout << "Next is["<<script.ReadByte()<<"]";
     }else if ( (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
         script.Seek(script.Tell()-1);
 
@@ -702,21 +792,13 @@ void ScriptLoader::ParseFirstCharacter(char c,GameFile &script, std::vector<uint
         script.Seek(script.Tell()-1);
         std::string emptyData = script.ReadUntil(':');
         CheckEmptyness(emptyData, script);
-
+        CheckKeyword(identifier, script);
         if (FoundHeader(script, identifier, bytecode)){
             return;
         }
         bytecode.emplace_back(0xba);
         bytecode.emplace_back(identifier.size());
-        if (labelList.find(identifier) == labelList.end()){
-            labelList[identifier] = 1;
-        }else{
-            if (labelList[identifier] == -1){
-                labelList[identifier] = 1;
-            }else{
-                PullError(std::string("Double declaration of identifier: [")+identifier+"]", script);
-            }
-        }
+
         bytecode.insert(bytecode.end(), identifier.begin(), identifier.end());
 
         while (SeekInstructions(script, bytecode,labelList)){}

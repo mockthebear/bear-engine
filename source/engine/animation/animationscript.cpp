@@ -6,25 +6,31 @@
 #include <iostream>
 
 
+void AnimationScript::FormatSprite(AnimatedSprite &sp){
+    sp.SetGridSize(m_spriteGrid.x, m_spriteGrid.y);
+    sp.SetAnimation(m_LineCounter,m_MaxFrames,m_BaseAnimationTime);
+}
+
 void AnimationScript::UpdateSprite(Sprite &sp){
     sp.SetClip(m_spriteGrid.x * m_FrameCounter, m_spriteGrid.y * m_LineCounter, m_spriteGrid.x, m_spriteGrid.y);
 }
 
 void AnimationScript::UpdateSprite(AnimatedSprite &sp){
-
-        sp.sprW = m_spriteGrid.x;
-        sp.sprH = m_spriteGrid.y;
-
-    sp.SetClip(sp.sprW * m_FrameCounter, sp.sprH * m_LineCounter, sp.sprW, sp.sprH);
+    sp.SetClip(m_spriteGrid.x * m_FrameCounter, m_spriteGrid.y * m_LineCounter, m_spriteGrid.x, m_spriteGrid.y);
+    if (m_persistenSettings){
+        FormatSprite(sp);
+    }
 }
 
+bool AnimationScript::IsRunning(){
+    return m_context.size() > 0;
+}
 
 bool AnimationScript::Run(std::string Label){
     if (m_symbolSTI.find(Label) != m_symbolSTI.end()){
         executionContext ec;
         ec.programCounter = 0;
         ec.sequenceRunner = m_symbolSTI[Label];
-        std::cout << "Added sequence " << ec.sequenceRunner << " : "<<Label<<"\n";
         if (m_context.size() > 0)
             m_context.pop();
         currentInstruction = nullptr;
@@ -35,7 +41,16 @@ bool AnimationScript::Run(std::string Label){
 }
 
 void AnimationScript::RunInstruction(executionContext &ec){
-    //std::cout << "Instruction on:  " << m_symbolITS[ec.sequenceRunner] << "\n";
+
+    if (m_instructionsOnFrame >= 32){
+        return;
+    }
+    m_instructionsOnFrame++;
+
+    if (m_context.size() == 0){
+        return;
+    }
+
 
     m_justSwitchedCode = false;
     m_animationOver = false;
@@ -47,7 +62,6 @@ void AnimationScript::RunInstruction(executionContext &ec){
         ResetLocalValues();
         ec.programCounter--;
         currentInstruction = nullptr;
-       // std::cout << "Bigger context asked to yeld to "<<m_symbolITS[m_context.top().sequenceRunner]<<".\n";
         RunInstruction(m_context.top());
         return;
     }
@@ -58,29 +72,31 @@ void AnimationScript::RunInstruction(executionContext &ec){
                 currentInstruction = &it->second[ec.programCounter];
                 ++ec.programCounter;
                 m_justSwitchedCode = true;
-                //std::cout << "Increased PC to "<< ec.programCounter << "\n";
             }else{
-                //std::cout << "End of run procedure\n";
                 ResetLocalValues();
                 m_context.pop();
                 if (m_context.size() > 0){
-                  //  std::cout << "Previous procedure!\n";
-                   // std::cout << "Goback to  " << m_symbolITS[m_context.top().sequenceRunner] << "\n";
                     m_justSwitchedContext = true;
                     RunInstruction(m_context.top());
                 }
                 return;
             }
         }else{
-            std::cout << "Erro no sequence "<<m_symbolITS[ec.sequenceRunner]<<"\n";
+            bear::out << "[Animation script] Erro no sequence "<<m_symbolITS[ec.sequenceRunner]<<"\n";
+            Kill();
         }
     }
 
     if (ParseInstruction()){
         RunInstruction(ec);
     }
-    m_justSwitchedContext = false;
 
+}
+
+void AnimationScript::Kill(){
+    while (m_context.size() > 0){
+        m_context.pop();
+    }
 }
 
 void AnimationScript::ResetLocalValues(){
@@ -100,21 +116,19 @@ void AnimationScript::ParseRange(bool &terminate, bool &nextInstruction){
     terminate = false;
     if (m_justSwitchedCode){
         m_FrameCounter = currentInstruction->GetBegin();
-        //std::cout << "Initiated animation on frame: " << m_FrameCounter << " with animation time "<<m_BaseAnimationTime<<"\n";
     }
+
     m_internalTimer += m_currentDt;
-    while (m_internalTimer >= m_BaseAnimationTime){
-        m_internalTimer -= m_BaseAnimationTime;
-        if (m_FrameCounter >= currentInstruction->GetEnd() || m_FrameCounter >= m_MaxFrames){
+    if (m_internalTimer >= m_BaseAnimationTime){
+        m_internalTimer = 0;
+        if (m_FrameCounter >= currentInstruction->GetEnd() || m_FrameCounter >= (m_MaxFrames-1) ){
             terminate = true;
             nextInstruction = true;
             m_internalTimer = 0;
             m_animationOver = true;
-            //std::cout << "End of animation due: "<<(m_FrameCounter >= currentInstruction->GetEnd())<<" : "<<(m_FrameCounter >= m_MaxFrames)<< "\n";
         }else{
             ++m_FrameCounter;
             m_canUpdateFrames = true;
-            //std::cout << "New frame: " << m_FrameCounter << " and remaining counter: "<<m_internalTimer<<"\n";
         }
     }
 }
@@ -146,9 +160,12 @@ void AnimationScript::ParseJump(bool &terminate, bool &nextInstruction){
             m_context.push(ec);
             m_yieldToTop = true;
         }else{
-            std::cout << "Error on instruction sequence "<<m_symbolITS[label]<<"\n";
+            bear::out << "[Animation script] Error no instruction sequence found named as ["<<m_symbolITS[label]<<"]\n";
+            Kill();
         }
         m_innerCounter--;
+    }else{
+        m_justSwitchedContext = false;
     }
 
 
@@ -177,7 +194,9 @@ void AnimationScript::ParseCallback(bool &terminate /* true*/, bool &nextInstruc
     uint32_t cbId = currentInstruction->data.labelId;
     auto it = m_callbacks.find(cbId);
     if (it == m_callbacks.end()){
-        std::cout << "Unknow callback\n";
+        bear::out << "[Animation script] Unknow callback "<<m_symbolITS[cbId]<<"\n";
+        Kill();
+
     }else{
         m_lastCallbackValue = m_callbacks[cbId]();
     }
@@ -186,19 +205,26 @@ void AnimationScript::ParseCallback(bool &terminate /* true*/, bool &nextInstruc
 void AnimationScript::ParseConditionJump(bool &terminate /* true*/, bool &nextInstruction /*false*/){
     nextInstruction = true;
     terminate = true;
-    if (m_lastCallbackValue){
-        m_context.pop();
-        uint32_t label = currentInstruction->data.labelId;
+    if (!m_justSwitchedContext){
+        if (m_lastCallbackValue){
+            uint32_t label = currentInstruction->data.labelId;
 
-        if (m_instructions.find(label) != m_instructions.end()){
-            executionContext ec;
-            ec.programCounter = 0;
-            ec.sequenceRunner = label;
-            m_context.push(ec);
-        }else{
-            std::cout << "Error no instruction sequence "<<m_symbolITS[label]<<"\n";
+            if (m_instructions.find(label) != m_instructions.end()){
+                executionContext ec;
+                ec.programCounter = 0;
+                ec.sequenceRunner = label;
+                m_context.push(ec);
+                m_yieldToTop = true;
+            }else{
+                bear::out << "[Animation script] Error no instruction sequence "<<m_symbolITS[label]<<"\n";
+                Kill();
+            }
+            //m_innerCounter--;
         }
+    }else{
+        m_justSwitchedContext = false;
     }
+
 }
 
 //OPCODE_CONDITIONJUMP
@@ -225,11 +251,24 @@ void AnimationScript::ParseAuxiliar(bool &terminate /* true*/, bool &nextInstruc
 void AnimationScript::ParseWait(bool &terminate /* true*/, bool &nextInstruction /*false*/){
     terminate = false;
     if (m_justSwitchedCode){
-        m_internalTimer = currentInstruction->data.time;
-        //std::cout << "Initiated animation on frame: " << m_FrameCounter << " with animation time "<<m_BaseAnimationTime<<"\n";
+        m_internalTimer = 0;
     }
-    m_internalTimer -= m_currentDt;
-    if (m_internalTimer <= 0){
+    m_internalTimer += m_currentDt;
+    if (m_internalTimer >= currentInstruction->data.time){
+        terminate = true;
+        nextInstruction = true;
+    }
+}
+
+void AnimationScript::ParseSingleFrame(bool &terminate /* true*/, bool &nextInstruction /*false*/){
+    terminate = false;
+    nextInstruction = false;
+    if (m_justSwitchedCode){
+        m_internalTimer = 0;
+        m_FrameCounter = currentInstruction->data.labelId;
+    }
+    m_internalTimer += m_currentDt;
+    if (m_internalTimer >= m_BaseAnimationTime){
         terminate = true;
         nextInstruction = true;
     }
@@ -239,70 +278,55 @@ void AnimationScript::ParseRepeat(bool &terminate /* true*/, bool &nextInstructi
     terminate = true;
     nextInstruction = true;
     m_innerCounter = currentInstruction->data.labelId;
-    /*
-
-    executionContext ec;
-    ec.programCounter = 0;
-    ec.sequenceRunner = label;
-    m_context.push(ec);*/
 }
 
 bool AnimationScript::ParseInstruction(){
     bool terminate = true;
     bool nextInstruction = false;
-    //std::cout <<"--Ins--\n";
     switch (static_cast<AnimInstructionOpcode>(currentInstruction->opcode)){
         case OPCODE_NOP:
-            //std::cout << "[opcode]NOP\n";
             nextInstruction = true;
             break;
         case OPCODE_LINE:
-            //std::cout << "[opcode]LINE\n";
             ParseLine(terminate, nextInstruction);
             break;
         case OPCODE_TIME:
-            //std::cout << "[opcode]TIME\n";
             ParseTime(terminate, nextInstruction);
             break;
         case OPCODE_RANGE:
-            //std::cout << "[opcode]OPCODE_RANGE\n";
             ParseRange(terminate, nextInstruction);
             break;
+        case OPCODE_SINGLEFRAME:
+            ParseSingleFrame(terminate, nextInstruction);
+            break;
         case OPCODE_JUMP:
-            //std::cout << "[opcode]OPCODE_JUMP\n";
             ParseJump(terminate, nextInstruction);
             break;
         case OPCODE_LOOP:
-            //std::cout << "[opcode]OPCODE_LOOP\n";
             ParseLoop(terminate, nextInstruction);
             break;
         case OPCODE_REPEAT:
-            //std::cout << "[opcode]OPCODE_REPEAT\n";
             ParseRepeat(terminate, nextInstruction);
             break;
         case OPCODE_TOEND:
-            //std::cout << "[opcode]OPCODE_TOEND\n";
             ParseAuxiliar(terminate, nextInstruction);
             break;
         case OPCODE_WAIT:
-            //std::cout << "[opcode]OPCODE_TOEND\n";
             ParseWait(terminate, nextInstruction);
             break;
         case OPCODE_CONDITIONJUMP:
-            //std::cout << "[opcode]OPCODE_TOEND\n";
             ParseConditionJump(terminate, nextInstruction);
             break;
         case OPCODE_CALLBACK:
         case OPCODE_CONDITIONCALLBACK:
-            //std::cout << "[opcode]OPCODE_TOEND\n";
             ParseCallback(terminate, nextInstruction);
             break;
         default:
-            std::cout << "Unknow opcode: "<<(int)currentInstruction->opcode<<"\n";
+            bear::out << "[Animation script]Unknow opcode: "<<(int)currentInstruction->opcode<<"\n";
+            Kill();
             nextInstruction = false;
             break;
     }
-   // std::cout <<"--done--\n";
     if (terminate){
         currentInstruction = nullptr;
     }
@@ -310,12 +334,11 @@ bool AnimationScript::ParseInstruction(){
 }
 
 void AnimationScript::Update(float dt){
-    //bear::out << "Frame.\n";
+    m_instructionsOnFrame = 0;
     if (m_context.size() > 0){
         m_currentDt = dt;
         RunInstruction(m_context.top());
     }
-    //std::cout << "----------end-----------\n";
 }
 
 uint32_t AnimationScript::QuerySymbol(std::string& symb){
@@ -329,43 +352,15 @@ uint32_t AnimationScript::AddSymbol(std::string&& symb){
     ++m_symbolCounter;
     m_symbolSTI[symb] = m_symbolCounter;
     m_symbolITS[m_symbolCounter] = symb;
-    std::cout << "Added symbol " << symb << " as " << m_symbolCounter << "\n";
     return m_symbolCounter;
 }
 
 
 void AnimationScript::AddInstructionSet(uint32_t id,InstructionSet &instructions){
     if (m_instructions.find(id) != m_instructions.end()){
-        throw BearException(utils::format("Double reference for '%s'",m_symbolITS[id] ) );
+        throw BearException(utils::format("Double referencea for '%s'",m_symbolITS[id] ) );
         return;
     }
     m_instructions[id] = instructions;
 }
 
-bool AnimationScript::LoadFile(std::string path){
-
-/*
-    //std::string fdata = "UWU		:	t4.0,	0..4, UWU";
-    uint32_t symb = AddSymbol("UWU");
-
-    InstructionSet iset;
-    iset.emplace_back(AnimInstruction(OPCODE_TIME, 0.15f));
-    iset.emplace_back(AnimInstruction(OPCODE_RANGE, 0, 4));
-    iset.emplace_back(AnimInstruction(OPCODE_JUMP, symb));
-
-    m_instructions[symb] = iset;
-
-    //SEQ		:	L2,		t1.0,	0..4, l3, 0...
-    symb = AddSymbol("owo");
-
-    InstructionSet iset2;
-    iset2.emplace_back(AnimInstruction(OPCODE_LINE, (uint32_t)2));
-    iset2.emplace_back(AnimInstruction(OPCODE_TIME, 0.1f));
-    iset2.emplace_back(AnimInstruction(OPCODE_RANGE, 0, 4));
-    iset2.emplace_back(AnimInstruction(OPCODE_LINE, (uint32_t)3));
-    iset2.emplace_back(AnimInstruction(OPCODE_TOEND, (uint32_t)0));
-
-    m_instructions[symb] = iset2;*/
-
-    return true;
-}

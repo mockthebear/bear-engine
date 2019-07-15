@@ -305,8 +305,9 @@ class AnimatedSprite: public Sprite, public Animation{
         }*/
 
 
-        bool LoadAnimationScript(std::string&& filepath);
+        bool LoadAnimationScript(std::string&& filepath,bool compiled = false);
         bool RunAnimationSegment(std::string&& seg);
+        bool StopSegment();
         void AddCallback(std::string labelName,std::function<bool()> &&cb);
 
         void Update(float dt);
