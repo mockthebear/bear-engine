@@ -12,7 +12,6 @@
 #include "../framework/debughelper.hpp"
 #include "../framework/resourcemanager.hpp"
 #include "../framework/schedule.hpp"
-#include "parallelcollisionmanager.hpp"
 #include "../settings/definitions.hpp"
 #include "../performance/console.hpp"
 #include "../sound/soundsources.hpp"
@@ -211,11 +210,9 @@ void Game::init(const char *name){
         nextUpdate =  1000;
 
         srand(time(nullptr));
-        if (startFlags&BEAR_FLAG_START_THREADS){
-            Console::GetInstance().AddText("Starting threads");
-            ThreadPool::GetInstance();
-            ThreadPool::GetInstance().Begin(POOL_DEFAULT_THREADS);
-        }
+        #ifndef DISABLE_THREADPOOL
+        ThreadPool::GetInstance();
+        #endif
         if (startFlags&BEAR_FLAG_START_CONSOLEGRAPHICAL){
             Console::GetInstance().AddText("Opening console graphical");
             Console::GetInstance().Begin();
@@ -263,12 +260,12 @@ void Game::Close(){
 
     #ifndef DISABLE_THREADPOOL
 
-    if (startFlags&BEAR_FLAG_START_THREADS){
+    if (ThreadPool::GetInstance().IsStarted()){
         Console::GetInstance().AddTextInfo("Closing threads...");
-        if (Started)
-            ThreadPool::GetInstance().KillThreads();
+        ThreadPool::GetInstance().Stop();
         Console::GetInstance().AddTextInfo("Threads closed...");
     }
+
     #endif
     if (startFlags&BEAR_FLAG_LOAD_BASEFILES){
         Console::GetInstance().AddTextInfo("Closing engine assets");
