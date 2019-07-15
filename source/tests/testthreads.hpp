@@ -24,6 +24,8 @@ class Test_Thread: public State{
             ScreenManager::GetInstance().SetScreenName("Test threads");
             bear::out << "Starting four threads\n";
             ThreadPool::GetInstance().Start(4);
+            info = Text("Test info: press T to add a heavy job. Press R to add a visual heavy job.",19,{255, 255, 220});
+            fpsInfo = Text("FPS: 000",24,{255, 255, 220});
         };
 
         void End(){
@@ -34,29 +36,28 @@ class Test_Thread: public State{
 
         void Update(float dt){
             duration -= dt;
-            /*if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
-                requestDelete = true;
-            }*/
+            /**/
             if (g_input.KeyPress(SDLK_t)){
                 ThreadPool::GetInstance().enqueue([](){
                     uint32_t cnt = 0;
-                    std::cout << "Begin\n";
-                    for (long int i=0;i<100000000;i++){
+                    for (long int i=0;i<500000000;i++){
                         ++cnt;
                     }
-                    std::cout << "end\n";
                     return cnt;
                 });
-            }
-            if (g_input.KeyPress(SDLK_r)){
+            }else if (g_input.KeyPress(SDLK_r)){
                 ThreadPool::GetInstance().enqueue([this](int uwu){
                     this->perc = 1.0f;
-                    long int imax = 100000000;
+                    long int imax = 500000000;
                     for (long int i=0;i<imax;i++){
                         this->perc = i / (float)imax;
                     }
                 },2);
+            }else if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
+                requestDelete = true;
             }
+
+            fpsInfo.SetText(utils::format("FPS %3f", ScreenManager::GetInstance().GetFps()));
 
         };
         void Render(){
@@ -64,11 +65,15 @@ class Test_Thread: public State{
             float usage = cnt / 4.0f;
             RenderHelp::DrawCircleColor(CircleColor(98,220,32,255 * usage,(1.0f-usage) * 255,0,100) );
             RenderHelp::DrawCircleColor(CircleColor(100,100,int(100 * perc) ,255,  255,255,255) );
+
+            info.Render(PointInt(32,280));
+            fpsInfo.Render(PointInt(32,320));
         };
         void Input();
         void Resume(){};
 
     private:
+        Text info, fpsInfo;
         float perc;
         float duration;
 };

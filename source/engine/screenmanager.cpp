@@ -134,7 +134,6 @@ SDL_Renderer* ScreenManager::StartRenderer(){
 void ScreenManager::RenderPresent(){
 
     if (postProcess){
-        std::cout << "ewe\n";
         if (storedShader.IsLoaded()){
             storedShader.Bind();
         }

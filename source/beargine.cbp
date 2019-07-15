@@ -563,7 +563,6 @@
 		<Unit filename="tests/testfasttile.hpp" />
 		<Unit filename="tests/testfiles.hpp" />
 		<Unit filename="tests/testjoystick.hpp" />
-		<Unit filename="tests/testlight.hpp" />
 		<Unit filename="tests/testlua.hpp" />
 		<Unit filename="tests/testnewlight.hpp" />
 		<Unit filename="tests/testnode.hpp" />
@@ -583,8 +582,7 @@
 		<Unit filename="tests/testsuite.hpp" />
 		<Unit filename="tests/testtargettexture.hpp" />
 		<Unit filename="tests/testtext.hpp" />
-		<Unit filename="tests/testthread.cpp" />
-		<Unit filename="tests/testthread.hpp" />
+		<Unit filename="tests/testthreads.hpp" />
 		<Unit filename="ui/base.cpp" />
 		<Unit filename="ui/base.hpp" />
 		<Unit filename="ui/button.cpp" />
