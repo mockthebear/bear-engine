@@ -10,6 +10,16 @@
 #include <map>
 #include <memory>
 
+class RandomEngine{
+    public:
+        static std::default_random_engine  GameRandom;
+
+
+        static int UniformRandomInt(int a, int b);
+        static float UniformRandomReal(float a, float b);
+
+        static void SetSeed(int s);
+};
 
 namespace utils {
 

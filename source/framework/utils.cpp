@@ -212,3 +212,20 @@ std::string utils::ReadUntil(std::string &str,char rd){
 std::string utils::GetLine(std::string &str){
     return ReadUntil(str,'\n');
 }
+
+
+std::default_random_engine  RandomEngine::GameRandom;
+
+
+
+void RandomEngine::SetSeed(int s){
+    GameRandom =  std::default_random_engine(s);
+}
+int RandomEngine::UniformRandomInt(int a, int b){
+    std::uniform_int_distribution<> distr(a, b);
+    return distr(GameRandom);
+}
+float RandomEngine::UniformRandomReal(float a, float b){
+    std::uniform_real_distribution<> distr(a, b);
+    return distr(GameRandom);
+}
