@@ -25,7 +25,7 @@ class ConfigManager{
         int GetScreenW(){return m_screenSize.x;};
         PointInt GetScreenSize(){return m_screenSize;};
 
-        void SetScreenSize(int w,int h);
+        void SetScreenSize(int w,int h,bool callCore = true);
         void SetWindowIcon(std::string icon,ColorReplacer &r);
         void SetWindowIcon(std::string icon);
 

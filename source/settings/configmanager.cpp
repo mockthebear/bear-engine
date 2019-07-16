@@ -92,10 +92,10 @@ ConfigManager& ConfigManager::GetInstance(){
     return teste;
 }
 
-void ConfigManager::SetScreenSize(int w,int h){
+void ConfigManager::SetScreenSize(int w,int h,bool callCore){
     m_screenSize.x=w;
     m_screenSize.y=h;
-    if (Game::GetInstance()->IsGameBegin()){
+    if (Game::GetInstance()->IsGameBegin() && callCore){
         ScreenManager::GetInstance().NotifyResized();
     }
 };

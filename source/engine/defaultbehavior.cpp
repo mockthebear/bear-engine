@@ -57,6 +57,7 @@ bool DefaultBehavior::OnResize(int newW,int newH){
             break;
         case RESIZE_BEHAVIOR_INCREASE:
             Camera::Resize(Point(newW,newH));
+            ScreenManager::GetInstance().SetWindowSize(newW,newH, false);
             break;
     }
 
