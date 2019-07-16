@@ -178,6 +178,14 @@ class PoolManager{
             @endcode
 
         */
+        GameObject *GetObjectFromPool(int poolId, int objId){
+            return Pools[poolId].Get(objId);
+        }
+
+        int GetMaxObjectsFromPool(int poolId){
+            return Pools[poolId].Max();
+        }
+
         template<typename T> int Register(int size){
             SPP<T>* r_pool = new SPP<T>(size);
             return RegisterPool(POOL_CAST(r_pool,T));
@@ -235,6 +243,8 @@ class PoolManager{
         */
         void ErasePools();
         void KillAll();
+        void KillGroup(PoolGroupId gid);
+        void KillPool(PoolId pid);
         /**
             Update all the instances in all pools
         */

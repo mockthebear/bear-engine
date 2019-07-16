@@ -69,6 +69,21 @@ void PoolManager::EraseGroups(){
     Groups.clear();
 }
 
+void PoolManager::KillGroup(PoolGroupId gid){
+    for (auto &mid : Groups[gid].Pools){
+        for (int a=0;a<Pools[mid].Max();a++){
+            GameObject *obj = Pools[mid].Get(a);
+            if (obj != nullptr){
+                obj->Kill();
+            }
+        }
+    }
+}
+void PoolManager::KillPool(PoolId pid){
+
+}
+
+
 void PoolManager::KillAll(){
     for(unsigned int i = 0; i< Pools.size(); ++i){
         for (int a=0;a<Pools[i].Max();a++){
