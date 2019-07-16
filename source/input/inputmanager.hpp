@@ -278,10 +278,13 @@ class InputManager{
         float GetAccelerometerY(){return m_acceletometer.GetXPercent();};
         float GetAccelerometerZ(){return m_acceletometer.GetXPercent();};
         Point3 GetAccelerometerForces(){return m_acceletometer.GetPercent();};
+		bool HasRemovedJoy() {
+			return joyRemoved;
+		};
     private:
         friend class Game;
         void init();
-        bool HasAccelerometer;
+        bool HasAccelerometer,joyRemoved;
         int AccelerometerJoystick;
         Accelerometer m_acceletometer;
         int NumJoysticks;

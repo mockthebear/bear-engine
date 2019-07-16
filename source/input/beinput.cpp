@@ -28,8 +28,6 @@ InputMethod::InputMethod(std::string str,int n,int auxId):InputMethod(){
         Key = n;
         DeviceId = auxId;
     }
-
-
 }
 
 
@@ -63,23 +61,32 @@ void BEInput::Update(float dt){
 }
 
 
+void BEInput::RegisterKeyAlias(BEKeyBinds key, InputMethod method){
+    aliasMap[key] = method;
+}
+
 
 void BEInput::clear(){
     keyData.clear();
+    aliasMap.clear();
+    ResetForcedKeys();
 }
 
 void BEInput::clearMethod(InputMethodIdentifier method){
     for (auto &it : keyData){
-        auto fnd = std::find(it.second.begin(), it.second.end(), IM_JOYSTICK);
-        if (fnd != it.second.end()){
-            it.second.erase(fnd);
+        auto fnd = std::find(it.second.begin(), it.second.end(), method);
+        while(fnd != it.second.end()){
+            if (fnd != it.second.end()){
+                it.second.erase(fnd);
+            }
+            fnd = std::find(it.second.begin(), it.second.end(), method);
         }
     }
 }
 
 InputMethodIdentifier BEInput::GetPressedKeyMode(BEKeyBinds key){
+    InputState state;
     for (auto &it : keyData[key]){
-        InputState state;
         if (forcedData[key].dur > 0){
             state = forcedData[key].key;
         }else{
@@ -89,16 +96,29 @@ InputMethodIdentifier BEInput::GetPressedKeyMode(BEKeyBinds key){
             return it.method;
         }
     }
+    if (aliasMap.find(key) != aliasMap.end()){
+        state = GetKeyStatus(aliasMap[key]);
+        if (state == JUST_PRESSED || state == PRESSED){
+            return aliasMap[key].method;
+        }
+    }
     return IM_NONE;
 }
 bool BEInput::IsKeyDown(BEKeyBinds key){
+    InputState state;
     for (auto &it : keyData[key]){
-        InputState state;
         if (forcedData[key].dur > 0){
             state = forcedData[key].key;
         }else{
             state = GetKeyStatus(it);
         }
+        if (state == JUST_PRESSED || state == PRESSED){
+            return true;
+        }
+    }
+
+    if (aliasMap.find(key) != aliasMap.end()){
+        state = GetKeyStatus(aliasMap[key]);
         if (state == JUST_PRESSED || state == PRESSED){
             return true;
         }
@@ -111,8 +131,9 @@ void BEInput::ForceKeyUp(BEKeyBinds key,float duration){
 }
 
 bool BEInput::IsKeyUp(BEKeyBinds key){
+    InputState state;
     for (auto &it : keyData[key]){
-        InputState state;
+
         if (forcedData[key].dur > 0){
             state = forcedData[key].key;
         }else{
@@ -122,6 +143,14 @@ bool BEInput::IsKeyUp(BEKeyBinds key){
             return true;
         }
     }
+    if (aliasMap.find(key) != aliasMap.end()){
+        state = GetKeyStatus(aliasMap[key]);
+        if (state == JUST_RELEASED || state == RELEASED){
+                return true;
+        }
+    }
+
+
     return false;
 }
 bool BEInput::KeyPress(BEKeyBinds key){
@@ -139,8 +168,37 @@ bool BEInput::KeyPress(BEKeyBinds key){
             return true;
         }
     }
+
+    if (aliasMap.find(key) != aliasMap.end()){
+        state = GetKeyStatus(aliasMap[key]);
+        if (state == JUST_PRESSED){
+            return true;
+        }
+    }
     return false;
 }
+
+bool BEInput::KeyRelease(BEKeyBinds key){
+    InputState state;
+    for (auto &it : keyData[key]){
+        if (forcedData[key].dur > 0){
+            state = forcedData[key].key;
+        }else{
+            state = GetKeyStatus(it);
+        }
+        if (state == JUST_RELEASED){
+            return true;
+        }
+    }
+    if (aliasMap.find(key) != aliasMap.end()){
+        state = GetKeyStatus(aliasMap[key]);
+        if (state == JUST_RELEASED){
+            return true;
+        }
+    }
+    return false;
+}
+
 int BEInput::GetKeyBind(BEKeyBinds key,InputMethodIdentifier method){
     for (auto &it : keyData[key]){
         if (it.method == method){
@@ -156,7 +214,7 @@ int BEInput::GetKeyBind(BEKeyBinds key,InputMethodIdentifier method){
     return -1;
 }
 
-bool BEInput::IsBound(int key,InputMethodIdentifier method){
+bool BEInput::IsBound(int key,InputMethodIdentifier method, BEKeyBinds keychoose){
     for (auto &vec : keyData){
         for (auto &it : vec.second){
             if (it.method == method){
@@ -173,19 +231,16 @@ bool BEInput::IsBound(int key,InputMethodIdentifier method){
             }
         }
     }
-    return false;
-}
-
-bool BEInput::KeyRelease(BEKeyBinds key){
-    for (auto &it : keyData[key]){
-        InputState state;
-        if (forcedData[key].dur > 0){
-            state = forcedData[key].key;
-        }else{
-            state = GetKeyStatus(it);
-        }
-        if (state == JUST_RELEASED){
-            return true;
+    for (auto &it_tuple : aliasMap){
+        auto &it = it_tuple.second;
+        if (it.method == method && keychoose != it_tuple.first){
+            if (it.type == IT_HAT && it.Key+1000 == key){
+                return true;
+            }else if (it.type == IT_BUTTON && it.Key == key){
+                return true;
+            }else if (it.type == IT_AXIS && it.Key+2000 == key){
+                return true;
+            }
         }
     }
     return false;

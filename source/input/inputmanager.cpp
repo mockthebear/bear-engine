@@ -20,6 +20,7 @@ void InputManager::init(){
     #ifdef __ANDROID__
     SDL_SetHint(SDL_HINT_ACCELEROMETER_AS_JOYSTICK,"1");
     #endif
+	joyRemoved = true;
     quitGame = false;
     NumJoysticks = SDL_NumJoysticks();
     AccelerometerJoystick=-1;
@@ -147,6 +148,7 @@ void InputManager::Update(float dt){
             it.second->Update(dt);
     }
     onResize = false;
+	joyRemoved = false;
     while (SDL_PollEvent(&event)) {
 
         if(event.type == SDL_WINDOWEVENT){
@@ -251,6 +253,7 @@ void InputManager::Update(float dt){
                     break;
                 }
             }
+			joyRemoved = true;
         }else if (event.type == SDL_JOYBUTTONDOWN || event.type == SDL_JOYBUTTONUP ){
             if (Joysticks[event.jbutton.which])
                 Joysticks[event.jbutton.which]->Button(event.jbutton.button,event.jbutton.state);

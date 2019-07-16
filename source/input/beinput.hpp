@@ -5,16 +5,17 @@
 #include <vector>
 
 enum BEKeyBinds{
+    BE_KEY_NONE=-1,
     BE_KEY_UP=0,
     BE_KEY_DOWN=1,
     BE_KEY_LEFT=2,
     BE_KEY_RIGHT=3,
-    BE_KEY_A=4,
-    BE_KEY_B=5,
-    BE_KEY_X=6,
-    BE_KEY_Y=7,
-    BE_KEY_PAUSE=8,
-    BE_KEY_SELECT=9,
+    BE_KEY_A=4, // jump
+    BE_KEY_X=5, //attack
+    BE_KEY_PAUSE=6,
+    BE_KEY_SELECT=7,
+    BE_KEY_B=8, //dash
+
 };
 enum InputMethodIdentifier{
     IM_NONE,
@@ -42,6 +43,9 @@ class InputMethod{
 
     bool operator==(const InputMethodIdentifier p2){
         return this->method == p2;
+    }
+    bool IsValid(){
+        return method != IM_NONE;
     }
     InputMethodIdentifier method;
     IM_InputType type;
@@ -74,7 +78,10 @@ class BEInput{
         bool KeyPress(BEKeyBinds key);
         bool KeyRelease(BEKeyBinds key);
         int GetKeyBind(BEKeyBinds key,InputMethodIdentifier method=IM_KEYBOARD);
-        bool IsBound(int key,InputMethodIdentifier method=IM_KEYBOARD);
+        /**
+            IF kb is set to UP, it check on alias to see the avaliability.
+        */
+        bool IsBound(int key,InputMethodIdentifier method=IM_KEYBOARD, BEKeyBinds kb=BE_KEY_NONE);
 
 
         void Update(float dt);
@@ -82,10 +89,12 @@ class BEInput{
         void ForceKeyUp(BEKeyBinds key,float duration);
         void ForceKeyPress(BEKeyBinds key,float duration);
         void ResetForcedKeys();
+        void RegisterKeyAlias(BEKeyBinds key, InputMethod method);
     private:
         InputState GetKeyStatus(InputMethod& method);
         std::map<BEKeyBinds,std::vector<InputMethod>> keyData;
         std::map<BEKeyBinds,TempKey> forcedData;
+        std::map<BEKeyBinds, InputMethod> aliasMap;
 };
 
 extern BEInput g_beinput;
