@@ -230,6 +230,10 @@ namespace utils {
                 }
             };
 
+            void Set(T&& v){
+                std::memset(Data, v, m_totalSize);
+            }
+
             template <typename ... Types> T &at(Types ... args){
                 if ((sizeof...(Types)) != N){
                     bear::out << "wrong argument size 2. Got "<<(sizeof...(Types))<<" expected " << N <<"\n";
