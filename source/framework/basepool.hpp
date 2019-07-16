@@ -7,6 +7,7 @@
 #include "../engine/bear.hpp"
 #include "../engine/object.hpp"
 #include "../engine/camera.hpp"
+#include "../engine/primitivecollision.hpp"
 /**
  * @brief Object pool
  *
@@ -75,7 +76,7 @@ template <typename T> class SPP{
         void PreRender(std::map<int,std::vector<GameObject*>> &Map){
             for (int i=0;i<GetMaxInstances();i++){
                 if (!pool[i].IsDead()){
-                    if ( Camera::EffectArea.IsInside(pool[i].box) || pool[i].canForceRender()  ){
+                    if ( Collision::IsColliding(Camera::EffectArea,pool[i].box) || pool[i].canForceRender()  ){
                         if (pool[i].hasPerspective() == 0){
                             int posy = pool[i].box.y;
                             Map[posy].emplace_back( &pool[i]);
@@ -169,7 +170,7 @@ template <typename T> class SPP{
             for (int i=0;i<GetMaxInstances();i++){ //Maximo adcionado
                 if (!pool[i].IsDead()){
 
-                   if (pool[i].canForceUpdate() || Camera::UpdateArea.IsInside(pool[i].box)){
+                   if (pool[i].canForceUpdate() || Collision::IsColliding(Camera::UpdateArea,pool[i].box)){
                         pool[i].Update(dt);
                    }
                 }

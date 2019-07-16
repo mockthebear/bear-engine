@@ -238,6 +238,13 @@ template <typename T=float> class GenericPoint3{
 
         virtual ~GenericPoint3() = default;
 
+        template <typename T2> GenericPoint3(GenericPoint<T2> obj1, T a){
+            x = obj1.x;
+            y = obj1.y;
+            z = a;
+        };
+
+
         GenericPoint3(const int n[3]){
             x = n[0];
             y = n[1];
