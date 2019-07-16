@@ -42,7 +42,7 @@ class ScreenManager{
         Point GetMinimumScale(){ return MinimumScale;};
         void Resize(int w,int h);
         void SetScreenName(std::string name);
-        void SetWindowSize(int w,int h);
+        void SetWindowSize(int w,int h,bool callCore=true);
 
         void Update(float dt);
 

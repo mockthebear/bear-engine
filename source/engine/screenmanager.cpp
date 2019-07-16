@@ -209,10 +209,21 @@ void ScreenManager::NotifyResized(){
 
 }
 
-void ScreenManager::SetWindowSize(int w,int h){
+void ScreenManager::SetWindowSize(int w,int h, bool callCore){
+    if (callCore){
+        Resize(w,h);
+    }else{
+        m_originalScreen.x=w;
+        m_originalScreen.y=h;
+        m_screen.x = w;
+        m_screen.y = h;
+        if (postProcess){
+            m_targetScreen.FreeTexture();
+            StartPostProcessing();
+        }
+    }
 
-    Resize(w,h);
-    ConfigManager::GetInstance().SetScreenSize(w,h);
+    ConfigManager::GetInstance().SetScreenSize(w,h, callCore);
 
     m_originalScreen.x=w;
     m_originalScreen.y=h;
