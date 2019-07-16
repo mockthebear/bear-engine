@@ -12,6 +12,7 @@ class TileSet{
         TileSet(PointInt tileSize,Sprite set);
 
         virtual void SetSprite(Sprite sp);
+        virtual Sprite &GetSprite(){return tileset;};
 
         virtual void RenderTile(int index,Point pos,uint8_t rotate=0,SDL_RendererFlip fliping = SDL_FLIP_NONE);
 

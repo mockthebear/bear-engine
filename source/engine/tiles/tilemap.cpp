@@ -21,9 +21,18 @@ void TileMap::Render(Point offset, Rect vision){
     /*
         todo vision camp
     */
+    PointInt start(
+        std::max<int>(vision.x / m_tileSize.x, 0),
+        std::max<int>(vision.y / m_tileSize.y, 0)
+    );
+    PointInt finish(
+        std::min<int>((vision.x+vision.w) / m_tileSize.x +1, m_size.x),
+        std::min<int>((vision.y+vision.h) / m_tileSize.y +1, m_size.y)
+    );
+    tileset.BeginRender();
     for (l = 0; l < m_size.z; l++){
-        for (y = 0; y < m_size.y; y++){
-            for (x = 0; x < m_size.x; x++){
+        for (y = start.y; y < finish.y; y++){
+            for (x = start.x; x < finish.x; x++){
                 Tile &t = m_map.get()[CalculateOffset(PointInt3(x,y,l))];
                 if (t.id != m_blankTile){
                     Point pos( x * m_tileSize.x + offset.x, y * m_tileSize.y + offset.y );
@@ -32,6 +41,7 @@ void TileMap::Render(Point offset, Rect vision){
             }
         }
     }
+    tileset.EndRender();
 }
 
 
