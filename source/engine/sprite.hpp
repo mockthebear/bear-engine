@@ -102,6 +102,11 @@ class Sprite: public RenderTexture{
         void SetVirtualData(Point virtualId){
             m_trueVirtualSize = virtualId;
         }
+        inline bool IsVirtual(){
+            return m_trueVirtualSize.x != 0;
+        }
+        virtual void BeginRender();
+        virtual void EndRender();
 
 
         /**

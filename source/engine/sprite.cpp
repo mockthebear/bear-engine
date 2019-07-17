@@ -268,12 +268,23 @@ void Sprite::SetRotation(float angle){
     m_renderData.SetAngle(angle);
 }
 
+void Sprite::BeginRender(){
+    renderCycle = true;
+}
+
+void Sprite::EndRender(){
+    renderCycle = false;
+    if (!IsVirtual()){
+        RenderAll();
+        m_vertexes->clear();
+    }
+}
 
 void Sprite::Render(PointInt pos){
     if (IsLoaded()){
         m_renderData.SetPosition(pos);
         RenderAll();
-    }else if(m_trueVirtualSize.x >= 0){
+    }else if(IsVirtual()){
         m_renderData.SetPosition(pos);
         m_vertexes->AddRect(m_renderData);
     }

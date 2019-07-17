@@ -66,8 +66,8 @@ class RenderTexture{
         void RenderAll();
 
 
-        void BeginRender();
-        void EndRender();
+        virtual void BeginRender();
+        virtual void EndRender();
 
         void SetPosition(Point pos){
             m_renderData.SetPosition(pos);
