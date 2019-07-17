@@ -122,7 +122,9 @@ void RenderHelp::DrawLinesColor(std::vector<LineColor> lines,float thickness){
         vertexBuffer->AddLine(it);
     }
 
+    glLineWidth(thickness);
     Painter::DrawVertex(vertexBuffer,GL_LINES,GL_IS_AUTOBOUND);
+    glLineWidth(1.0f);
     vertexBuffer->clear();
 }
 
