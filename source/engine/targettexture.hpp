@@ -19,6 +19,8 @@ class TargetTexture : public BearTexture{
     void Render(Point pos);
     bool FreeTexture();
     void SetScale(Point p){m_renderData.SetScale(p);};
+    void SetAlpha(uint8_t alpha){m_renderData.defaultColor.a = alpha/255.0f;};
+    void SetAlpha(float alpha){m_renderData.defaultColor.a = alpha;};
     bool IsValid(){
         return m_valid;
     }
