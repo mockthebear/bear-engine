@@ -195,6 +195,7 @@ namespace utils {
         public:
             MatN(){
                 Data = nullptr;
+                m_isDynamic = true;
             };
             template <typename ... Types> MatN(Types ... args):MatN(){
 				if ((sizeof...(Types)) != N){
@@ -254,6 +255,7 @@ namespace utils {
             void erase(){
                 if (Data && m_isDynamic){
                     delete [] Data;
+                    Data = nullptr;
                 }
             }
 
