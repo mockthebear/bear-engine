@@ -27,6 +27,7 @@
 #include "testnodetileset.hpp"
 #include "testnewlight.hpp"
 #include "testblank.hpp"
+#include "testnoise.hpp"
 #endif // DISABLE_UNIT_TESTS
 
 void SetupTests();
@@ -71,6 +72,7 @@ void SetupTests(){
     Game::GetInstance()->AddState(new Test_Node());
     Game::GetInstance()->AddState(new Test_Pool());
     Game::GetInstance()->AddState(new Test_Shapes());
+    Game::GetInstance()->AddState(new Test_Perlin());
     Game::GetInstance()->AddState(new Test_Files());
 
     #endif // DISABLE_UNIT_TESTS

@@ -345,6 +345,7 @@
 		<Unit filename="framework/geometry.hpp" />
 		<Unit filename="framework/light2d.cpp" />
 		<Unit filename="framework/light2d.hpp" />
+		<Unit filename="framework/perlinnoise.hpp" />
 		<Unit filename="framework/poolmanager.cpp" />
 		<Unit filename="framework/poolmanager.hpp" />
 		<Unit filename="framework/resourcefiles.cpp" />
@@ -567,13 +568,13 @@
 		<Unit filename="tests/testnewlight.hpp" />
 		<Unit filename="tests/testnode.hpp" />
 		<Unit filename="tests/testnodetileset.hpp" />
+		<Unit filename="tests/testnoise.hpp" />
 		<Unit filename="tests/testobject.hpp" />
 		<Unit filename="tests/testpathfind.hpp" />
 		<Unit filename="tests/testpool.hpp" />
 		<Unit filename="tests/testpostprocess.hpp" />
 		<Unit filename="tests/testrectrenderspeed.hpp" />
 		<Unit filename="tests/testrenderspeed.hpp" />
-		<Unit filename="tests/testscrolling.hpp" />
 		<Unit filename="tests/testshader.hpp" />
 		<Unit filename="tests/testshapes.hpp" />
 		<Unit filename="tests/testsocket.hpp" />
