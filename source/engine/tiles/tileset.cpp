@@ -1,4 +1,5 @@
 #include "tileset.hpp"
+#include "../bear.hpp"
 
 
 TileSet::TileSet(){
@@ -14,7 +15,7 @@ TileSet::TileSet(PointInt tileSize,Sprite tset):TileSet(){
 
 void TileSet::SetSprite(Sprite sp){
     tileset = sp;
-    if (tileset.IsLoaded()){
+    if (tileset.IsLoaded() || tileset.IsVirtual()){
         m_sheetSize = tileset.GetSize();
 
         m_columns = m_sheetSize.x/m_tileSize.x;
@@ -26,7 +27,7 @@ void TileSet::SetSprite(Sprite sp){
 }
 
 void TileSet::RenderTile(int index,Point pos,uint8_t rotate,SDL_RendererFlip flip){
-    if (tileset.IsLoaded()){
+    if (tileset.IsLoaded() || tileset.IsVirtual()){
         if (index <= m_columns*m_rows && index != -1){
             int cx = index%m_columns;
             int cy = index/m_columns;
