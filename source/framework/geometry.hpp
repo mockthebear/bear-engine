@@ -128,6 +128,9 @@ template <typename T=float> class GenericPoint{
             Get the direction in rads between two points
             @param return in radians the angle
         */
+        T GetDirection(GenericPoint&& to){
+            return atan2(to.y-y,to.x-x);
+        };
         T GetDirection(GenericPoint& to){
             return atan2(to.y-y,to.x-x);
         };
