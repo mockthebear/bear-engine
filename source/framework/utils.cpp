@@ -213,6 +213,21 @@ std::string utils::GetLine(std::string &str){
     return ReadUntil(str,'\n');
 }
 
+#if defined(_WIN32)
+#include <windows.h>
+#endif // defined
+void utils::ShowMessageBox(std::string str, std::string title){
+    #if defined(_WIN32)
+
+
+    //std::wstring wsTmp(str.begin(), str.end());
+    //std::wstring ws2Tmp(title.begin(), title.end());
+
+
+    MessageBox(NULL, str.c_str(), title.c_str(), 0);
+    #endif
+}
+
 
 std::default_random_engine  RandomEngine::GameRandom;
 

@@ -23,6 +23,7 @@ class RandomEngine{
 
 namespace utils {
 
+    void ShowMessageBox(std::string str, std::string title="info");
 
     template<typename... arg> inline std::string format() { return ""; }
 
