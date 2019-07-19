@@ -31,6 +31,7 @@ class RenderHelp{
         */
 
         static void DrawPointsColor(std::vector<PointColor> points);
+        static void DrawPointColor(PointColor points);
 
         static void DrawLinesColor(std::vector<LineColor> lines,float thickness=1.0f);
 

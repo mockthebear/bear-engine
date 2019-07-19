@@ -86,6 +86,16 @@ void RenderHelp::DrawSquaresColor(std::vector<RectColor> rects,bool outline){
 
     DisplayGlError("DrawSquaresColor");
 }
+
+void RenderHelp::DrawPointColor(PointColor point){
+    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+    static AdvancedTransformations transformations;
+    transformations.forwardClip = Rect(-1, -1, -1, -1);
+    vertexBuffer->AddVertice(Vertex(point, point.color));
+    Painter::DrawVertex(vertexBuffer,GL_POINTS,GL_IS_AUTOBOUND);
+    vertexBuffer->clear();
+}
+
 void RenderHelp::DrawPointsColor(std::vector<PointColor> points){
     static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
     static AdvancedTransformations transformations;
