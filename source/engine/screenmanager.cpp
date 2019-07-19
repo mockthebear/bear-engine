@@ -187,8 +187,9 @@ void ScreenManager::ForceProjection(Point screenSize,int flipScreen){
 
 void ScreenManager::ResetProjection(int flipScreen){
     //Painter::Projection = glm::ortho(0.0f, (float)m_originalScreen.x, 0.0f, (float)m_originalScreen.y, -1.0f, 1.0f);
-    Painter::SetProjection(m_originalScreen, flipScreen);
-    Painter::SetViewport(m_screen,m_offsetScreen);
+    //bear::out << "rst projeej\n";
+    Painter::SetProjection(m_originalScreen+ m_extraSidedResolution, flipScreen);
+    Painter::SetViewport(m_screen+ m_extraSidedResolution,m_offsetScreen);
     screenProjection = true;
 }
 
@@ -272,10 +273,37 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
 
     m_scaleRatio.x =  ( (double)w / (double)m_originalScreen.x);
     m_scaleRatio.y =  ( (double)h / (double)m_originalScreen.y);
+
     m_trueScaleRatio = m_scaleRatio;
 
-    if (behave == RESIZE_KEEP_ASPECT){
-        float lowestScale = std::min(m_scaleRatio.x, m_scaleRatio.y);
+
+
+
+    if (behave == RESIZE_KEEP_ASPECT || behave == RESIZE_KEEP_ASPECT_INCREASING){
+
+        if (m_allowedResolutions.size() > 0){
+            float nearestx = 100.0f;
+            float nearesty = 100.0f;
+            for (auto &it : m_allowedResolutions){
+                if (m_scaleRatio.x > it){
+                    nearestx = it;
+                }else if (m_scaleRatio.x == it){
+                    nearestx = it;
+                }
+                if (m_scaleRatio.y > it){
+                    nearesty = it;
+                }else if (m_scaleRatio.y == it){
+                    nearesty = it;
+                }
+            }
+            m_scaleRatio.y = nearesty;
+            m_scaleRatio.x = nearestx;
+        }else{
+            m_scaleRatio.x = floor(m_scaleRatio.x*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
+            m_scaleRatio.y = floor(m_scaleRatio.y*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
+        }
+
+        float lowestScale = std::max(m_scaleRatio.x, m_scaleRatio.y);
 
         m_scaleRatio.x = lowestScale;
         m_scaleRatio.y = lowestScale;
@@ -283,19 +311,45 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
         m_screen.x = m_originalScreen.x * lowestScale;
         m_screen.y = m_originalScreen.y * lowestScale;
 
-        m_offsetScreen.x = m_originalScreen.x == w ? 0 : w/2 - m_screen.x/2;
-        m_offsetScreen.y = m_originalScreen.y == h ? 0 : h/2 - m_screen.y/2;
+        if (behave != RESIZE_KEEP_ASPECT_INCREASING){
+
+            m_offsetScreen.x = m_originalScreen.x == w ? 0 : w/2 - m_screen.x/2;
+            m_offsetScreen.y = m_originalScreen.y == h ? 0 : h/2 - m_screen.y/2;
+        }else{
+
+            //m_offsetScreen.x = m_originalScreen.x == w ? 0 : w/2 - m_screen.x/2;
+            //m_offsetScreen.y = m_originalScreen.y == h ? 0 : h/2 - m_screen.y/2;
+
+            //m_offsetScreen.x = m_originalScreen.x == w ? 0 : w/2 - m_screen.x/2;
+            //m_offsetScreen.y = m_originalScreen.y == h ? 0 : h/2 - m_screen.y/2;
+
+            m_extraSidedResolution = PointInt(w - m_screen.x , h - m_screen.y );
+            //
+            //ScreenManager::GetInstance().SetWindowSize(newW,newH, false);
+           // m_offsetScreen.x = m_originalScreen.x == w ? 0 : w/2 - m_screen.x/2;
+            //m_offsetScreen.y = m_originalScreen.y == h ? 0 : h/2 - m_screen.y/2;
+
+            Camera::Resize(Point(m_originalScreen.x + m_extraSidedResolution.x,m_originalScreen.y + m_extraSidedResolution.y));
+
+            bear::out << "Left to the sides: " << m_extraSidedResolution << " : "<<m_screen<<" : "<<w<<","<<h<<" OFF: "<<m_offsetScreen<<"\n";
+
+        }
+
+
 
     }else{
 
-        if (behave != RESIZE_FREE_SCALE){
+
+
+        /*if (behave != RESIZE_FREE_SCALE){
             m_scaleRatio.x = floor(m_scaleRatio.x*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
             m_scaleRatio.y = floor(m_scaleRatio.y*m_ScreenRationMultiplier)/m_ScreenRationMultiplier;
             m_scaleRatio.x = std::max(1.0f,m_scaleRatio.x);
             m_scaleRatio.y = std::max(1.0f,m_scaleRatio.y);
         }
+        m_trueScaleRatio = m_scaleRatio;*/
 
-        m_trueScaleRatio = m_scaleRatio;
+
         if (behave == RESIZE_SCALE ){
             /*
                 Strech screen to maintain an scale ratio
@@ -339,6 +393,8 @@ void ScreenManager::ResizeToScale(int w,int h,ResizeAction behave){
         }
     }
 
+    bear::out << "New: "<< m_screen << " and scale is " << m_scaleRatio << "\n";
+
 }
 
 void ScreenManager::SetScreenName(std::string name){
@@ -369,7 +425,7 @@ void ScreenManager::Update(float dt){
     if (m_frameDelay <= 0){
         m_frameDelay = 10.0f;
         m_fps = m_frames;
-        bear::out << m_fps << "\n";
+        //bear::out << m_fps << "\n";
         m_frames = 0;
 
     }

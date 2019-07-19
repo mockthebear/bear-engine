@@ -16,6 +16,7 @@ enum ResizeAction{
     RESIZE_SCALE,
     RESIZE_FREE_SCALE,
     RESIZE_KEEP_ASPECT,
+    RESIZE_KEEP_ASPECT_INCREASING,
 };
 
 class ScreenManager{
@@ -87,6 +88,13 @@ class ScreenManager{
             m_targetScreen.FreeTexture();
             ResetProjection();
         }
+        void SetScaleRatioMultiplier(float f){
+            m_ScreenRationMultiplier = f;
+        }
+        void AddFixedScaledRatio(float f){
+            m_allowedResolutions.emplace_back(f);
+            std::sort(m_allowedResolutions.begin(), m_allowedResolutions.end());
+        }
 
     private:
         friend class Painter;
@@ -122,6 +130,9 @@ class ScreenManager{
         SDL_DisplayMode m_displayMode;
         uint32_t m_vertexArrayID;
         bool screenProjection;
+
+        std::vector<float> m_allowedResolutions;
+        PointInt m_extraSidedResolution;
 
 };
 #endif // SCREENMANAGEH
