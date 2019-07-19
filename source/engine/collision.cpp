@@ -31,7 +31,7 @@ int Collision::AdjustCollision(float &sx,float &sy,float dt,GameObject* dis,Pool
 }
 
 Rect Collision::GetIntersectRect(Rect& a,  Rect& b){
-    if (!IsColliding(a,b)){
+    if (!Collision::IsColliding(a,b)){
         return Rect(0,0,0,0);
     }
     float c1 = std::max(a.x, b.x);
@@ -450,7 +450,7 @@ bool Collision::SoftWarpAway(GameObject* thisObject,GameObject* otherObject){
 
 
 bool Collision::WarpAway(Rect &obj1,Rect obj2){
-    int direction = GetCollidingSide(obj1,obj2);
+    int direction = Collision::GetCollidingSide(obj1,obj2);
     switch (direction){
         case 0:{
             obj1.x = obj2.x - obj1.w;

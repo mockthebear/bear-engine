@@ -1,14 +1,18 @@
+#pragma once
 #include <algorithm>
 #include <ctgmath>
 #include "object.hpp"
 #include "../framework/poolmanager.hpp"
 
+
 #include "primitivecollision.hpp"
 
-#pragma once
+
+
 namespace Collision {
 
     std::vector<GameObject*> GetNearObjects(GameObject* dis,PoolManager &pool,PoolGroupId gid,float scale=4,bool onlySolid=true);
+
 
     bool WarpAway(Rect &obj1,Rect obj2);
     bool SoftWarpAway(GameObject* thisObject,GameObject* otherObject);
