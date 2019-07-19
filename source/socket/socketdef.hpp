@@ -94,6 +94,16 @@ template <int MsgSize=1024> class SocketMessage_{
             return true;
         };
 
+        std::string GetString(){
+            std::string c;
+            char rd = 0;
+            do{
+                rd = ReadByte();
+                c += rd;
+            } while (rd != 0);
+            return c;
+        };
+
         bool AddByte(char b){
             if (m_pointer >= MsgSize){
                 return false;

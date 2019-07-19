@@ -1,11 +1,13 @@
+#pragma once
 #include "socketdef.hpp"
 #include "../settings/definitions.hpp"
-#if !defined(DISABLE_SOCKET)
+#ifndef DISABLE_SOCKET
 
-#pragma once
+
 #include <enet/enet.h>
 #include <queue>
 #include <list>
+#include <functional>
 
 class ReliableUdpClient: public SocketClient{
     public:
@@ -50,10 +52,15 @@ class ReliableUdpServer: public SocketHost{
         bool Receive(SocketMessage *msg,int pid);
         bool Send(SocketMessage *msg,int pid);
         void Close();
+        void ClosePeer(int i);
         std::list<int> GetPeers(){ return peerIds;};
         int GetPeersOnline(){ return peerIds.size();};
         void SetSendMode(ENetPacketFlag mode){ sendMode = mode;};
+        void SetOnConnect(std::function<void(int)> f){m_connectionCallback = f;};
+        void SetOnDisconnect(std::function<void(int)> f){m_disconnectCallback = f;};
     private:
+        std::function<void(int)> m_connectionCallback;
+        std::function<void(int)> m_disconnectCallback;
         ENetPacketFlag sendMode;
         std::list<int> peerIds;
         ENetHost *server;

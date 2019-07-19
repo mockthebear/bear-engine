@@ -107,6 +107,15 @@ bool ReliableUdpClient::Connect(std::string addr,uint16_t port,int waitTime){
     return event.type == ENET_EVENT_TYPE_CONNECT;
 }
 
+void ReliableUdpServer::ClosePeer(int i){
+    if (peers[i]){
+        enet_peer_disconnect(peers[i],0);
+        enet_peer_reset(peers[i]);
+        peers[i] = nullptr;
+    }
+
+}
+
 void ReliableUdpServer::Close(){
     for (uint64_t i=0;i<m_lastPid;i++){
         if (peers[i]){
@@ -153,7 +162,9 @@ void ReliableUdpServer::Update(float dt){
                 event.peer->data = (void*)m_lastPid;
                 peers[m_lastPid] = event.peer;
                 peerIds.emplace_back(m_lastPid);
-                //printf ("%d connect on server. from : %x\n", (int)m_lastPid,event.peer, (int)event.peer -> address.host);
+                if (m_connectionCallback){
+                    m_connectionCallback(m_lastPid);
+                }
                 m_lastPid++;
                 break;
             }
@@ -167,7 +178,9 @@ void ReliableUdpServer::Update(float dt){
             }
 
             case ENET_EVENT_TYPE_DISCONNECT:{
-                //printf ("%d disconnected.\n", (int)event.peer -> data);
+                if (m_disconnectCallback){
+                    m_disconnectCallback(m_lastPid);
+                }
                 peerIds.remove(m_lastPid);
             }
         }
