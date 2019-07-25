@@ -253,6 +253,22 @@ namespace utils {
                 int addrOffset = expander<sizeof...(Types)>::expandAdderess(coordSizes,args...);
                 return Data[ addrOffset ];
             }
+
+            template <typename AT> T &at(GenericPoint<AT> adr){
+                if (2 != N){
+                    bear::out << "wrong argument size  GenericPoint2. expected " << N <<"\n";
+                }
+                int addrOffset = adr.y * coordSizes[1] + adr.x;
+                return Data[ addrOffset ];
+            }
+
+            template <typename AT> T &at(GenericPoint3<AT> adr){
+                if (3 != N){
+                    bear::out << "wrong argument size GenericPoint3. expected " << N <<"\n";
+                }
+                int addrOffset = adr.z * coordSizes[2]*coordSizes[1] + adr.y * coordSizes[1] + adr.x;
+                return Data[ addrOffset ];
+            }
             void erase(){
                 if (Data && m_isDynamic){
                     delete [] Data;
