@@ -196,6 +196,16 @@ bool ReliableUdpServer::Receive(SocketMessage *msg,int pid){
     return false;
 }
 
+
+bool ReliableUdpServer::SendIgnore(SocketMessage *msg,int pid){
+    for (uint64_t i=0;i<m_lastPid;i++){
+        bear::out << (int)i << " ! " << pid << "\n";
+        if (i != pid)
+            Send(msg,i);
+    }
+    return true;
+}
+
 bool ReliableUdpServer::Send(SocketMessage *msg,int pid){
     if (pid == -1){
         for (uint64_t i=0;i<m_lastPid;i++){

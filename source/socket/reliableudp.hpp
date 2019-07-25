@@ -51,6 +51,7 @@ class ReliableUdpServer: public SocketHost{
         void Update(float dt);
         bool Receive(SocketMessage *msg,int pid);
         bool Send(SocketMessage *msg,int pid);
+        bool SendIgnore(SocketMessage *msg,int pid);
         void Close();
         void ClosePeer(int i);
         std::list<int> GetPeers(){ return peerIds;};
