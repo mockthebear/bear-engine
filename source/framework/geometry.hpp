@@ -120,6 +120,10 @@ template <typename T=float> class GenericPoint{
              return sqrt(pow((x - p.x),(T)2) + pow((y-p.y),(T)2));
         };
 
+        GenericPoint<T> GetMiddlePoint(GenericPoint<T> p){
+            return GenericPoint<T>( (x+p.x)/2, (y+p.y)/2 );
+        }
+
 
         T GetDistanceSquared(GenericPoint p){
              return (pow((x - p.x),(T)2) + pow((y-p.y),(T)2));
@@ -407,6 +411,9 @@ template <typename T=float>class GenericLine{
             t = t_numer / denom;
 
             return GenericPoint<T>(x1 + (t * s10_x), y1 + (t * s10_y));
+        }
+        float getInclination(){
+            return (y2-y1)/(x2-x1);
         }
 
         bool IsIntersect(GenericLine<T> l2){

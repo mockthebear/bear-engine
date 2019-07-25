@@ -35,7 +35,7 @@ class TilesetNode: public SegmentNode{
             }else if(mode == 2){
                 m_tset.UpdateBuffers();
             }else if(mode == 3){
-                RenderHelp::DrawSquareColor(GetBox(), 255,255,255,80, true);
+                //RenderHelp::DrawSquareColor(GetBox(), 255,255,255,80, true);
             }
             return true;
         }
