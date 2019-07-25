@@ -21,11 +21,15 @@ class SpriteAtlas{
         void CloseStich();
 
         Sprite SummonSprite(uint32_t spriteId);
+        Sprite SummonSprite(std::string name);
+
+        int GetId(std::string name);
 
 
     private:
         bool checkValidSpot(RectInt &guessPosition,PointInt &maxLocations);
         std::vector<RectInt> m_sprites;
+        std::map<std::string, int> m_spritIdsName;
         TargetTexture m_atlas;
         VertexArrayObjectPtr m_vertexes;
         PointInt m_size;

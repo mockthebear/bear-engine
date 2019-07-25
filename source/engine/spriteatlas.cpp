@@ -114,13 +114,37 @@ void SpriteAtlas::CloseStich(){
 
 int SpriteAtlas::StichSprite(std::string name){
     Sprite tmp(name);
-    return StichSprite(tmp);
+    return m_spritIdsName[name] = StichSprite(tmp);
 }
 int SpriteAtlas::StichSprite(const char *name){
     Sprite tmp(name);
-    return StichSprite(tmp);
+    return m_spritIdsName[std::string(name)] = StichSprite(tmp);
 }
 
+int SpriteAtlas::GetId(std::string spriteName){
+    if (m_spritIdsName.find(spriteName) == m_spritIdsName.end()){
+        return -1;
+    }
+    return m_spritIdsName[spriteName];
+}
+
+Sprite SpriteAtlas::SummonSprite(std::string spriteName){
+    Sprite ret;
+    if (m_spritIdsName.find(spriteName) == m_spritIdsName.end()){
+        return ret;
+    }
+    int spriteId = m_spritIdsName[spriteName];
+
+    Rect spr = m_sprites[spriteId];
+    ret.SetVirtualData(m_size);
+    ret.size = Point(spr.w+1, spr.h+1);
+    ret.m_renderData.clipOffset.x = spr.x;
+    ret.m_renderData.clipOffset.x = spr.x;
+    ret.m_renderData.SetClip(Rect(0.0f, 0.0f , spr.w + 1, spr.h + 1), m_size );
+    ret.m_vertexes = m_vertexes;
+
+    return ret;
+}
 
 Sprite SpriteAtlas::SummonSprite(uint32_t spriteId){
 
