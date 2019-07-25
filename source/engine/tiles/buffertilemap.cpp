@@ -4,7 +4,7 @@
 #include "../text.hpp"
 #endif // SUPPORT_VERTEX_BUFFER
 
-BufferTileMap::BufferTileMap(PointInt tileSize,PointInt3 mapSize, Sprite set):TileMap(tileSize,mapSize,set){
+BufferTileMap::BufferTileMap(PointInt tileSize,PointInt3 mapSize, Sprite set):TileMap(tileSize,mapSize,std::move(set) ){
     m_vertexes = std::make_shared<VertexArrayObject>();
 }
 
