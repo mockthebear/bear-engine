@@ -139,7 +139,7 @@ template <int MsgSize=1024> class SocketMessage_{
         uint16_t Seek(uint16_t pos = 0){
             uint16_t myPos = m_readPointer;
             m_readPointer = pos;
-            return Seek;
+            return myPos;
         }
     private:
         uint16_t m_pointer,m_readPointer;
