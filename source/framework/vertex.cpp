@@ -152,7 +152,7 @@ int VertexArrayObject::AddRect(RectColor& box, bool outline){
         Vertex(Point(0.0f        , 0.0f   ), box.colors[0]),
         Vertex(Point(0.0f       , box.h   ), box.colors[1]),
         Vertex(Point(box.w  , box.h       ), box.colors[2]),
-        Vertex(Point(box.w  , 0.0f        ), box.colors[3]),
+        Vertex(Point(box.w  , outline ? 1.0f : 0.0f        ), box.colors[3]),
 
     };
 
