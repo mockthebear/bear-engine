@@ -37,12 +37,32 @@ BearTexture* RenderHelp::SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod
     return ret;
 }
 
+void RenderHelp::DrawCirclesColor(std::vector<CircleColor> circles,int sides){
+    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+
+    for (auto &it : circles){
+        vertexBuffer->AddCircle(it, sides);
+    }
+    Painter::DrawVertex(vertexBuffer,GL_TRIANGLES, GL_IS_AUTOBOUND);
+    vertexBuffer->clear();
+}
+
+
+void RenderHelp::DrawCircleColor(CircleColor &circle,int sides){
+    static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
+
+    vertexBuffer->AddCircle(circle, sides);
+
+    Painter::DrawVertex(vertexBuffer,GL_TRIANGLES,   GL_IS_AUTOBOUND);
+    vertexBuffer->clear();
+}
+
 void RenderHelp::DrawCircleColor(CircleColor &&circle,int sides){
     static VertexArrayObjectPtr vertexBuffer     = std::make_shared<VertexArrayObject>();
 
     vertexBuffer->AddCircle(circle, sides);
 
-    Painter::DrawVertex(vertexBuffer,GL_TRIANGLE_FAN,   GL_IS_AUTOBOUND);
+    Painter::DrawVertex(vertexBuffer,GL_TRIANGLES,   GL_IS_AUTOBOUND);
     vertexBuffer->clear();
 }
 
@@ -61,7 +81,7 @@ void RenderHelp::DrawSquareColor(RectColor box,bool outline){
 
     vertexBuffer->AddRect(transformations, box.colors, outline);
 
-    Painter::DrawVertex(vertexBuffer,outline ? GL_LINES : GL_TRIANGLES,   GL_IS_AUTOBOUND);
+    Painter::DrawVertex(vertexBuffer,outline ? GL_LINE_LOOP : GL_TRIANGLES,   GL_IS_AUTOBOUND);
     vertexBuffer->clear();
 }
 
@@ -80,7 +100,7 @@ void RenderHelp::DrawSquaresColor(std::vector<RectColor> rects,bool outline){
     }
 
 
-    Painter::DrawVertex(vertexBuffer,outline ? GL_LINES : GL_TRIANGLES,   GL_IS_AUTOBOUND);
+    Painter::DrawVertex(vertexBuffer,outline ? GL_LINE_LOOP : GL_TRIANGLES,   GL_IS_AUTOBOUND);
 
     vertexBuffer->clear();
 

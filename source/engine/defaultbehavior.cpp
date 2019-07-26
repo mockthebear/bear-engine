@@ -55,10 +55,7 @@ bool DefaultBehavior::OnResize(int newW,int newH){
         case RESIZE_BEHAVIOR_KEEP_ASPECT_RATIO:
             ScreenManager::GetInstance().ResizeToScale(newW,newH,RESIZE_KEEP_ASPECT);
             break;
-        case RESIZE_BEHAVIOR_KEEP_ASPECT_RATIO_INCREASE:
-            ScreenManager::GetInstance().ResizeToScale(newW,newH,RESIZE_KEEP_ASPECT_INCREASING);
 
-            break;
         case RESIZE_BEHAVIOR_INCREASE:
             ScreenManager::GetInstance().SetWindowSize(newW,newH, false);
             Camera::Resize(Point(newW,newH));

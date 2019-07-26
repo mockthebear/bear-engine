@@ -59,9 +59,17 @@ class Test_Shapes: public State{
             std::vector<RectColor> squares;
             std::vector<RectColor> OutlineSquares;
             std::vector<PointColor> PointsRandom;
+            std::vector<CircleColor> CircleRandom;
 
             Point OldP(0, 0);
             BearColor OldC(1.0f, 1.0f, 1.0f, 1.0f);
+
+
+            CircleRandom.emplace_back( CircleColor( Circle(220,320,16), BearColor(1.0f, 1.0f, 1.0f, 0.0f), BearColor(1.0f, 1.0f, 1.0f, 1.0f) ) );
+            CircleRandom.emplace_back( CircleColor( Circle(260,320,6), BearColor(0.0f, 1.0f, 1.0f, 1.0f), BearColor(1.0f, 0.0f, 1.0f, 1.0f) ) );
+            CircleRandom.emplace_back( CircleColor( Circle(260,360,26), BearColor(0.0f, 1.0f, 0.0f, 1.0f), BearColor(1.0f, 0.0f, 0.0f, 0.0f) ) );
+
+
 
 
             for (int i=0;i<20;i++){
@@ -119,6 +127,7 @@ class Test_Shapes: public State{
 
 
             RenderHelp::DrawPointsColor(PointsRandom);
+            RenderHelp::DrawCirclesColor(CircleRandom);
 
 
             RenderHelp::DrawCircleColor(CircleColor(98,220,32,100,100,255,100) );

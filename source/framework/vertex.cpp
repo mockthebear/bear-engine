@@ -152,7 +152,7 @@ int VertexArrayObject::AddRect(RectColor& box, bool outline){
         Vertex(Point(0.0f        , 0.0f   ), box.colors[0]),
         Vertex(Point(0.0f       , box.h   ), box.colors[1]),
         Vertex(Point(box.w  , box.h       ), box.colors[2]),
-        Vertex(Point(box.w  , outline ? 1.0f : 0.0f        ), box.colors[3]),
+        Vertex(Point(box.w  ,  0.0f        ), box.colors[3]),
 
     };
 
@@ -285,15 +285,35 @@ void VertexArrayObject::RotateRect(Vertex *vertices, AdvancedTransformations &ad
 
 int VertexArrayObject::AddCircle(CircleColor& circle, int sides){
 
-    AddVertice(Vertex(Point(circle.x, circle.y), circle.color1));
+    std::vector<Vertex> verts;
+    verts.emplace_back(Vertex(Point(circle.x, circle.y), circle.color1));
+    std::vector<uint32_t> inds;
+    uint32_t indies = m_indexCount;
+    float angle,i=0;
+    angle = 0.0f;
+    inds.emplace_back(m_indexCount);
+    verts.emplace_back(Vertex(Point(circle.x + circle.r * cos(angle), circle.y + circle.r * sin(angle)), circle.color2));
+    ++indies;
+    inds.emplace_back(indies);
+    angle =  2.0f * Geometry::PI() / (float)sides;
+    verts.emplace_back(Vertex(Point(circle.x + circle.r * cos(angle), circle.y + circle.r * sin(angle)), circle.color2));
+    ++indies;
+    inds.emplace_back(indies);
 
-    float angle,i;
-    for (i = 0; i <= sides; i++){
+
+    for (i = 2; i <= sides; i++){
         angle = i * 2.0f * Geometry::PI() / (float)sides;
-
-
-        AddVertice(Vertex(Point(circle.x + circle.r * cos(angle), circle.y + circle.r * sin(angle)), circle.color2));
+        inds.emplace_back(m_indexCount);
+        inds.emplace_back(indies);
+        verts.emplace_back(Vertex(Point(circle.x + circle.r * cos(angle), circle.y + circle.r * sin(angle)), circle.color2));
+        ++indies;
+        inds.emplace_back(indies);
     }
+
+    if (m_useElementBuffer){
+        AddIndices(inds.size(),&inds[0]);
+    }
+    AddVertexes(verts.size(),&verts[0]);
     return sides+1;
 }
 

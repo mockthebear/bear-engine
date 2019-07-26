@@ -66,13 +66,13 @@ void SetupTests(){
     Game::GetInstance()->AddState(new Test_FastTiles());
     Game::GetInstance()->AddState(new Test_Thread());
     Game::GetInstance()->AddState(new Test_Atlas());
+    Game::GetInstance()->AddState(new Test_Perlin());
     Game::GetInstance()->AddState(new Test_TargetTexture());
     Game::GetInstance()->AddState(new Test_Shader());
     Game::GetInstance()->AddState(new Test_Sprite());
     Game::GetInstance()->AddState(new Test_Node());
     Game::GetInstance()->AddState(new Test_Pool());
     Game::GetInstance()->AddState(new Test_Shapes());
-    Game::GetInstance()->AddState(new Test_Perlin());
     Game::GetInstance()->AddState(new Test_Files());
 
     #endif // DISABLE_UNIT_TESTS

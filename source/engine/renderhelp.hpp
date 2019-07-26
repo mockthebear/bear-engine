@@ -48,6 +48,8 @@ class RenderHelp{
         }
 
         static void DrawCircleColor(CircleColor &&circle,int sides = 16);
+        static void DrawCircleColor(CircleColor &circle,int sides = 16);
+        static void DrawCirclesColor(std::vector<CircleColor> circles,int sides=16);
 
 
         static BearTexture* SurfaceToTexture(SDL_Surface *surface,TextureLoadMethod aliasing=TEXTURE_LINEAR);
