@@ -16,11 +16,12 @@ local ASSETS_FOLDER = "game"
 local SOURCE_FOLDER = "source"
 local FILEOUT = "snakescape.html"
 local LDFLAGS = "--emrun"
-local DEFINEFLAGS = {"REMAKE_VETEX_ON_BIND","RENDER_OPENGL2","SUPPORT_SINGLE_BUFFER", "NEED_SHADER_LOCATION"}
+local DEFINEFLAGS = {"REMAKE_VETEX_ON_BIND","RENDER_OPENGLES2","SUPPORT_SINGLE_BUFFER", "NEED_SHADER_LOCATION"}
 local PRELOADSTUFF = "--preload-file engine/ --preload-file lua/ --preload-file ui/ --preload-file data/ --preload-file test.burr --preload-file snd.burr --preload-file teste.txt"
 local CFLAGS 	= "-s ASSERTIONS=1 "..expandFlags(DEFINEFLAGS).." -O2 -Oz -s USE_SDL=2 -s USE_SDL_TTF=2 -s USE_VORBIS=1 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1 -std=c++11"
 local CCFLAGS 	= "-s ASSERTIONS=1 "..expandFlags(DEFINEFLAGS).." -O2 -Oz -s USE_SDL=2 -s USE_SDL_TTF=2 -s USE_VORBIS=1 --use-preload-plugins -s ALLOW_MEMORY_GROWTH=1"
 
+local paral = 2
 
 local OUTSTR = ""
 local FILES = "";
@@ -76,6 +77,7 @@ function parseFolderRecursively(Fold)
 					--check the avaliability of the dir
 					--print("Now:",line)
 					cmdLines = cmdLines..fileOut.." "
+
 					owo[#owo+1] = line
 					--local ret = os.execute(line)
 					if ret == 1 then
@@ -113,9 +115,16 @@ if parseFolderRecursively(SOURCE_FOLDER) then
 
 	for i,b in pairs(owo) do 
 		print("-->"..b)
-		local ret = os.execute(b)
+		if i == #owo then
+			paral = 0
+		end 
+		local ret = os.execute(b..(paral <= 0 and " &" or ""))
+		paral = paral - 1
+		if (paral < 0) then 
+			paral = 2
+		end
 		a:write(b.."\r\n")
-		if ret == 1 then
+		if ret == 1 or ret == nil then
 			return false
 		end
 	end
