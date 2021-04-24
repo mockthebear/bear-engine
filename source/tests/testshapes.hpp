@@ -1,8 +1,9 @@
 #include "../settings/definitions.hpp"
 #ifndef DISABLE_UNIT_TESTS
 
-
-
+#define VERT_POS_INDEX 0
+#define COLOR_INDEX 1
+#include "../glm/gtx/rotate_vector.hpp"
 #include "../engine/genericstate.hpp"
 #include "../engine/renderhelp.hpp"
 #pragma once
@@ -18,8 +19,7 @@ class Test_Shapes: public State{
         };
         void Begin(){
             ScreenManager::GetInstance().SetScreenName("Test Shapes");
-        };
-
+        }
         void Update(float dt){
             duration -= dt;
             if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
@@ -29,9 +29,51 @@ class Test_Shapes: public State{
         };
         void Render(){
 
+	/*// Use the program object
+	glUseProgram(programObject);
+
+	glEnableVertexAttribArray(VERT_POS_INDEX);
+	glBindBuffer(GL_ARRAY_BUFFER, gVboId);
+
+	glVertexAttribPointer(VERT_POS_INDEX, 3, GL_FLOAT,
+		GL_FALSE, 3 * sizeof(GLfloat), (const void*) 0);
+
+	glEnableVertexAttribArray(COLOR_INDEX);
+	glBindBuffer(GL_ARRAY_BUFFER, gVboColorId);
+
+	glVertexAttribPointer(COLOR_INDEX, 4, GL_FLOAT,
+		GL_FALSE, 4*sizeof(GLfloat), (const void*) 0);
+
+	updateColor();
+
+	glm::vec3 eye(0, 0, 2);
+	glm::vec3 direction = glm::vec3(0.0f, 0.0f, -1.0f);
+	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+
+	glm::vec3 target = eye + direction;
+	gViewMatrix = glm::lookAt(eye, target, up);
+
+	//gProjectionMatrix = glm::ortho(-1.0f, 1.0f, -0.75f, 0.75f, DefaultNearPlaneDistance, DefaultFarPlaneDistance);
+	gProjectionMatrix = glm::perspective(30.0f, 1.0f / 0.75f, 1.0f, 20.0f);
+
+	glm::mat4x4 mat;
+	GLuint wmpLoc = glGetUniformLocation(programObject, "WorldViewProjection");
+	updatePosition(mat);
+	glm::mat4 wvp = gProjectionMatrix * gViewMatrix * mat;
+	glUniformMatrix4fv(wmpLoc, 1, GL_FALSE, &wvp[0][0]);
 
 
-            RenderHelp::DrawLineColor(LineColor(Point(32,32),g_input.GetMouse()));
+	// Draw
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);*/
+
+	 int shid = Painter::textureShader.GetId();
+	 Painter::textureShader.Bind();
+        RenderHelp::DrawSquareColor(RectColor(Rect(32,32,32,38)));
+
+    RenderHelp::DrawSquareColor(Rect(64,64,2,2),255,0,0,255);
+
+    RenderHelp::DrawLineColor(LineColor(Point(32,32),g_input.GetMouse()));
+            //RenderHelp::DrawSquareColor(Rect(64,64,2,2),255,0,0,255);
 
             RenderHelp::DrawSquareColor(Rect(32,32,64,64),255,255,100,255 *(1.0f - (duration/130.0)),false, 360.f * (duration/130.0) );
             RenderHelp::DrawSquareColor(Rect(32,32,64,64),255,255,255,255,true);
@@ -132,6 +174,8 @@ class Test_Shapes: public State{
 
             RenderHelp::DrawCircleColor(CircleColor(98,220,32,100,100,255,100) );
         };
+
+
         void Input();
         void Resume(){};
         void End(){};

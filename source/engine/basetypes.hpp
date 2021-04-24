@@ -64,20 +64,20 @@ class Vertex{
 
 class RectColor : public Rect{
     public:
-        RectColor():Rect(),colors(BCWhite4),angle(0.0f){};
-        RectColor(Rect r,const BearColor cols[4] = BCWhite4, float ang = 0.0f):Rect(r),colors(BCWhite4),angle(ang){
+        RectColor():Rect(),colors(),angle(0.0f){};
+        RectColor(Rect r,const BearColor cols[4] = BCWhite4, float ang = 0.0f):Rect(r),colors(),angle(ang){
             for (int i=0;i<4;i++)
                 colors[i] = cols[i];
         };
-        RectColor(Rect r,const BearColor col, float ang = 0.0f):Rect(r),colors(BCWhite4),angle(ang){
+        RectColor(Rect r,const BearColor col, float ang = 0.0f):Rect(r),colors(),angle(ang){
             SetColor(col);
         };
 
-        RectColor(float _x, float _y, float _w, float _h, int r, int g, int b, int a = 255,float ang = 0.0f):Rect(_x,_y,_w,_h),colors(BCWhite4),angle(ang){
+        RectColor(float _x, float _y, float _w, float _h, int r, int g, int b, int a = 255,float ang = 0.0f):Rect(_x,_y,_w,_h),colors(),angle(ang){
             colors[0] = colors[1] = colors[2] = colors[3] = BearColor(r,g,b,a);
         };
 
-        RectColor(float _x, float _y, float _w, float _h, BearColor co ,float ang = 0.0f):Rect(_x,_y,_w,_h),colors(BCWhite4),angle(ang){
+        RectColor(float _x, float _y, float _w, float _h, BearColor co ,float ang = 0.0f):Rect(_x,_y,_w,_h),colors(),angle(ang){
             colors[0] = colors[1] = colors[2] = colors[3] = co;
         };
 

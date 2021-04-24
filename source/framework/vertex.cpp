@@ -32,6 +32,7 @@ VertexArrayObject::~VertexArrayObject(){
 
 void VertexArrayObject::Bind(){
     AquireBufferIds();
+    DisplayGlError("oack");
     if (m_vertexBuffer != 0 && Painter::CanSupport(SUPPORT_VERTEXBUFFER)){
         #ifdef REMAKE_VETEX_ON_BIND
         //SetupVertexes(); necessary?
@@ -39,6 +40,9 @@ void VertexArrayObject::Bind(){
         glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
         if (m_useElementBuffer)
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
+
+            DisplayGlError("bounded");
+
         #endif // REMAKE_VETEX_ON_BIND
     }else{
         std::cout << "Failed to bind?\n";
@@ -52,11 +56,17 @@ void VertexArrayObject::UnBind(){
 }
 
 bool VertexArrayObject::SetVertexBuffer(){
-    glBufferData(GL_ARRAY_BUFFER,  m_vertexData.size() * sizeof(Vertex), 0, GL_DYNAMIC_DRAW);
+    //glBindBuffer(GL_ARRAY_BUFFER, vboId);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER,  m_vertexData.size() * sizeof(Vertex), &m_vertexData[0], GL_DYNAMIC_DRAW);
+	//glBindBuffer(GL_ARRAY_BUFFER, vboId);
+	//glBufferData(GL_ARRAY_BUFFER, numVertices*(sizeof(GLfloat) * numElems),
+	//	vertexBuffer, usage);
+
     DisplayGlError("now the buffer is located");
 
-    glBufferSubData(GL_ARRAY_BUFFER, 0, m_vertexData.size() * sizeof(Vertex), &m_vertexData[0]);
-    DisplayGlError("on set subdata");
+    //glBufferSubData(GL_ARRAY_BUFFER, 0, m_vertexData.size() * sizeof(Vertex), &m_vertexData[0]);
+    //DisplayGlError("on set subdata");
 
     return true;
 }
@@ -65,10 +75,11 @@ bool VertexArrayObject::SetElementBuffer(){
     if (!m_useElementBuffer){
         return false;
     }
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,  m_indexes.size() * sizeof(uint32_t), 0, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,  m_indexes.size() * sizeof(uint32_t), &m_indexes[0], GL_DYNAMIC_DRAW);
     DisplayGlError("now the buffer is located");
 
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, m_indexes.size() * sizeof(uint32_t), &m_indexes[0]);
+    //glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, m_indexes.size() * sizeof(uint32_t), &m_indexes[0]);
     DisplayGlError("on set elems");
     return true;
 }

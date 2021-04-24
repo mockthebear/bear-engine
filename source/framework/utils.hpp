@@ -3,10 +3,12 @@
 
 #include "../engine/bear.hpp"
 #include <string>
+#include <cstring>
 #include <vector>
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <random>
 #include <map>
 #include <memory>
 

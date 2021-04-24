@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <cstdint>
+#include <vector>
 #include <algorithm>
 #include <float.h>
 #include "../settings/definitions.hpp"
@@ -298,7 +299,7 @@ template <typename T=float>class GenericPolygon{
 
         uint32_t GetVerticesCount(){ return vertices.size(); };
 
-        std::vector<GenericPoint<T>> vertices;
+        std::vector<GenericPoint<T> > vertices;
 
 
 };

@@ -48,7 +48,7 @@ class Test_Files: public State{
                 f.Close();
             }else{
                 bear::out << "Failed.\n";
-                getchar();
+
             }
             bear::out << "Loading a simple binary file.\n";
             f.Open("teste.bin",true);
@@ -66,7 +66,7 @@ class Test_Files: public State{
                 f.Close();
             }else{
                 bear::out << "Failed.\n";
-                getchar();
+
             }
 
             bear::out << "Loading a .burr file\n";
@@ -85,18 +85,18 @@ class Test_Files: public State{
                 f.Close();
             }else{
                 bear::out << "Failed.\n";
-                getchar();
+
             }
             rf.Close();
             bear::out << "Opening basefile enginedata.burr\n";
             if (!ResourceManager::GetInstance().Load("engine/enginedata.burr","engine")){
                 Console::GetInstance().AddTextInfo("engine/enginedata.burr missing!!!");
-                getchar();
+
             }
             bear::out << "Opening basefile ui.burr\n";
             if (!ResourceManager::GetInstance().Load("engine/ui.burr","ui")){
                 Console::GetInstance().AddTextInfo("engine/ui.burr missing!!!");
-                getchar();
+
             }
 
 
@@ -114,12 +114,12 @@ class Test_Files: public State{
 
                 }else{
                     bear::out << "Failed to write the file.\n";
-                    getchar();
+
                 }
 
             }else{
                 bear::out << "Error on writing an file.\n";
-                getchar();
+
             }
 
             bear::out << "Completed.\n";

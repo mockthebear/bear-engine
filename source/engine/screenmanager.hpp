@@ -95,6 +95,7 @@ class ScreenManager{
             m_allowedResolutions.emplace_back(f);
             std::sort(m_allowedResolutions.begin(), m_allowedResolutions.end());
         }
+        SDL_Window* m_window;
 
     private:
         friend class Painter;
@@ -119,7 +120,7 @@ class ScreenManager{
         Point shake;
         Point MinimumScale;
         SDL_Renderer* m_renderer;
-        SDL_Window* m_window;
+
         PointInt m_display;
         PointInt m_screen;
         PointInt m_originalScreen;

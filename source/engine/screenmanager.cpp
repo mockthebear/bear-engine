@@ -69,7 +69,7 @@ bool ScreenManager::SetupOpenGL(){
         return false;
     }
     ResetProjection();
-
+    postProcess = false;
     if (postProcess){
         StartPostProcessing();
     }
@@ -154,10 +154,10 @@ bool ScreenManager::StartPostProcessing(){
     postProcess = true;
 
 
-    m_targetScreen.ClearTexture();
-    m_targetScreen.Generate(m_originalScreen.x, m_originalScreen.y);
+    //m_targetScreen.ClearTexture();
+    //m_targetScreen.Generate(m_originalScreen.x, m_originalScreen.y);
 
-    DisplayGlError("StartPostProcessing");
+    //DisplayGlError("StartPostProcessing");
     return true;
 }
 
