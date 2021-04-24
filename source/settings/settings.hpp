@@ -10,10 +10,10 @@
 /**
     Screen and display
 */
-    #define SCREEN_SIZE_W 800
-    #define SCREEN_SIZE_H 600
+    #define SCREEN_SIZE_W 480
+    #define SCREEN_SIZE_H 800
 
-    #define MAXFPS 900.0
+    #define MAXFPS 60.0
 
     //#define RENDER_OPENGL
     //#define RENDER_OPENGL3

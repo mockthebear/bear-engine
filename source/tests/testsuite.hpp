@@ -73,6 +73,9 @@ void SetupTests(){
     Game::GetInstance()->AddState(new Test_Node());
     Game::GetInstance()->AddState(new Test_Pool());
     */
+
+    Game::GetInstance()->AddState(new Test_Sound());
+
     Game::GetInstance()->AddState(new Test_Perlin());
     Game::GetInstance()->AddState(new Test_TargetTexture());
     Game::GetInstance()->AddState(new Test_Shader());

@@ -106,7 +106,7 @@ if parseFolderRecursively(SOURCE_FOLDER) then
 	local outp = FILES..' '..CFLAGS..' '..LDFLAGS.. ' '..PRELOADSTUFF
 	--print("Ready files: ",outp)
 
-	outp = "cd game/ && emcc -o kek.html "..outp
+	outp = "cd game/ && emcc -o kek3.html "..outp
 
 	--
 	local a = io.open("OWO.txt","w")

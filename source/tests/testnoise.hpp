@@ -15,7 +15,7 @@ class Test_Perlin: public State{
         Test_Perlin(){
             requestQuit = requestDelete = false;
             bear::out << "Test\n";
-            duration = 1000000.0f;
+            duration = 100000.0f;
         };
         ~Test_Perlin(){
 
@@ -62,7 +62,7 @@ class Test_Perlin: public State{
         void Update(float dt){
             duration -= dt;
             if( InputManager::GetInstance().IsAnyKeyPressed() != -1 || duration <= 0 ) {
-                //requestDelete = true;
+                requestDelete = true;
             }
             trasher = g_input.GetMouse().y /(float)SCREEN_SIZE_H;
 
